@@ -1,0 +1,153 @@
+<html>
+<head>
+<title>Admin</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<script>
+
+
+function DoOrderSearch(){
+
+	var FormsObj = document.forms["ordersearchform"];
+	var CCnum = FormsObj.ccnum.value;
+	var TrackNum = FormsObj.trackingnum.value;
+	var BillingName = FormsObj.billingname.value;
+
+	if(CCnum == "" && TrackNum == "" && BillingName == ""){
+		alert("You must enter some search criteria.");
+		return false;
+	}
+	if(CCnum.search(/^(\d{4})?$/)){
+		alert("If you are searching by Credit Card number that you Must use exactly 4 numbers.");
+		return false;
+	}
+	if(TrackNum != "" && TrackNum.length < 5){
+		alert("If you are searching by Tracking Number then you must have at least 5 characters.");
+		return false;
+	}
+	if(BillingName != "" && BillingName.length < 3){
+		alert("If you are searching by the Billing Name then you must have at least 3 characters.");
+		return false;
+	}
+
+	return true;
+}
+</script>
+<link rel="stylesheet" type="text/css" href="library/calendar/themes/winter.css"/>
+<script type="text/javascript" src="library/calendar/src/utils.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar.js"></script>
+<script type="text/javascript" src="library/calendar/lang/calendar-en.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar-setup.js"></script>
+<script type="text/javascript" src="library/formatDate.js"></script>
+</head>
+<body bgcolor="#FFFFFF" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="">
+<div align="center">
+{HEADER}
+&nbsp;
+<table width="760" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td class="Body">
+<br/>
+<table width="100%" border="0" cellspacing="0" cellpadding="1" bgcolor="#999999">
+  <tr>
+    <td><table width="100%" border="0" cellspacing="0" cellpadding="3" bgcolor="#DDDDDD">
+  <tr>
+    <td class="Body">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<form name="ordersearchform" action="./ad_orders_search.php" onSubmit="return DoOrderSearch();">
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+<input type="hidden" name="dosearch" value="true" />
+  <tr>
+    <td class="Body"><b>Date Range:</b> <br/>
+{DATE_SELECT}</td>
+    <td class="Body"><b>Last 4 #'s on CC:</b> <br/>
+<input type="text" name="ccnum" value="{CC_NUM}" class="InputBox" style="width:50px;" maxlength="4" /></td>
+    <td class="Body"><b>Tracking Number:</b> <font class="ReallySmallBody" style="color:#990000">(Complete)</font><br/>
+<input type="text" name="trackingnum" value="{TRACK_NUM}" class="InputBox" style="width:180px;" maxlength="50" /></td>
+    <td class="Body"><b>Billing Name:</b> <br/>
+<input type="text" name="billingname" value="{BILLING_NAME_SEARCH}" class="InputBox" style="width:160px;" maxlength="60" /></td>
+<td class="Body"><input type="submit" name="Generate" value="Search" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" /></td>
+  </tr>
+  </form>
+</table>
+	</td>
+  </tr>
+</table>
+</td>
+  </tr>
+</table>
+<br/><br/>
+ <!-- BEGIN NoSearchBL -->
+<font class="AdminLabel">Matching Orders</font>
+<img  src="./images/greypixel.gif" border="0" width="742" height="1" alt="" /><br/>
+<img  src="./images/transparent.gif" border="0" width="1" height="10" alt="" /><br/>
+ <!-- BEGIN EmptyItemsBL -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#333333">
+  <tr>
+    <td><table width="100%" border="0" cellspacing="1" cellpadding="4">
+  <tr bgcolor="#6699CC">
+
+	              <td class="Body" width="22%"><font color="#FFFFFF">Order</font></td>
+	              <td class="Body" width="43%"><font color="#FFFFFF">Shipping
+                    Details</font></td>
+	              <td class="Body" width="35%"><font color="#FFFFFF">Payment Details</font></td>
+  </tr>
+ <!-- BEGIN itemsBL -->
+   <tr bgcolor="#F3F3F3">
+	              <td class="SmallBody" width="22%"><a href="./ad_order.php?orderno={ORDERNO}" class="BlueRedLink">{ORDERNO}</a><br/>
+                    <img  src="./images/transparent.gif" border="0" width="1" height="5" alt="" /><br/>{ORDER_DATE}<br/><img  src="./images/transparent.gif" border="0" width="1" height="5" alt="" /><br/>{SHIP_METHOD}</td>
+	              <td class="SmallBody" width="43%">{SHIPPING_ADDRESS}<br/>
+                    <img  src="./images/transparent.gif" border="0" width="1" height="5" alt="" /><br/>{TRACKING}</td>
+	              <td class="SmallBody" width="35%">
+				  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+                        <td class="SmallBody" width="35%"><b>Grand Total:</b></td>
+                        <td class="SmallBody" width="65%">${GRAND_TOTAL}</td>
+  </tr>
+  <tr>
+  <td colspan="2"><img src="./images/transparent.gif" border="0" width="1" height="5" alt="" /></td>
+  </tr>
+  <tr>
+                        <td class="SmallBody" width="35%"><b>Payment:</b></td>
+                        <td class="SmallBody" width="65%">{PAYMENT_TYPE}</td>
+  </tr>
+   <tr>
+  <td colspan="2"><img src="./images/transparent.gif" border="0" width="1" height="5" alt="" /></td>
+  </tr>
+  <tr>
+                        <td class="SmallBody" width="35%"><b>Billing Name:</b></td>
+                        <td class="SmallBody" width="65%">{BILLING_NAME}</td>
+  </tr>
+</table>
+</td>
+  </tr>
+  <!-- END itemsBL -->
+</table></td>
+  </tr>
+</table>
+ <!-- END EmptyItemsBL -->
+  <!-- END NoSearchBL -->
+ <form name="newMessageForm" action="./ad_returnedpackages.php">
+ <input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+ <input type="hidden" name="action" value="newmessage" />
+  <input type="hidden" name="notificationid" value="" />
+  <input type="hidden" name="message" value="" />
+ </form>
+<br/><br/><br/><br/>
+        <br/>
+        &nbsp;<br/></td>
+</tr>
+</table>
+<table width="760" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="360" class="NavColor"><img src="./images/footer.gif" border="0" width="350" height="16" usemap="#footer" alt="" /></td>
+	<td width="400" align="right" class="NavColor"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+  </tr>
+</table>
+<font class="copyright"> </font>
+</div>
+&nbsp;
+<script type="text/javascript" src="./library/ImageMap-footer.js"></script>
+</body>
+</html>

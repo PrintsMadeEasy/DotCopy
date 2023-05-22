@@ -1,0 +1,250 @@
+<html>
+<head>
+<title>Admin</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<script language="javascript">
+
+	//Make an array of the images we want to preload for the mouse-overs.
+	arImageSrc = new Array (
+		"./images/button-go-d.gif",
+		"./images/button-sendmessage-u.gif"
+	)
+
+	//Preload images.
+	arImageList = new Array ();
+	for (counter in arImageSrc) {
+		arImageList[counter] = new Image();
+		arImageList[counter].src = arImageSrc[counter];
+	}
+
+	function hl(e)
+	{
+		e.style.textDecoration='underline';
+	}
+	function dl(e)
+	{
+		e.style.textDecoration='none';
+	}
+	
+
+	function submitenter(myfield,e){
+		var keycode;
+		
+		if (window.event)
+			keycode = window.event.keyCode;
+		else if (e) 
+			keycode = e.which;
+		else 
+			return true;
+		
+		if (keycode == 13){
+			document.forms["ConfirmButton"].submit();
+			return false;
+		}
+		else{
+			return true;
+		}
+	}
+
+	
+
+	function confirmButtonChangeFocus(inFocus){
+		
+		if(inFocus)
+			document.forms["ConfirmButton"].confirmationCode.style.backgroundColor = "#6699cc";
+		else
+			document.forms["ConfirmButton"].confirmationCode.style.backgroundColor = "#9900cc";
+	}
+	
+	function intializeFormDelay(){
+		document.forms["ConfirmButton"].confirmationCode.focus();
+	}
+	
+	function FormLoaded(){
+		setTimeout("intializeFormDelay()",200);
+	}
+	
+	function changePrintingPressID(pressID){
+		document.location = "./ad_gangQueue.php?action=ChangePrintingPress&form_sc={FORM_SECURITY_CODE}&printingPressID=" + pressID;
+	}
+
+	function GangRunPopUP(gangRunID){
+		var gangURL = "./ad_gangRun.php?current_action=ShowGangRunID&form_sc={FORM_SECURITY_CODE}&gangRunID=" + gangRunID;
+		newWindow = window.open(gangURL, "gangRunPopup", "height=600,width=750,directories=no,location=no,menubar=no,scrollbars=no,status=no,toolbar=no,resizable=no");
+		newWindow.focus();
+	}
+	
+	function NewBatchWindow(projectList){
+	
+		var ran_number = Math.round(Math.random()*300);
+	
+		var gangURL = "./ad_batchwindow_new.php?viewtype=admin&projectlist=" + projectList;
+		newWindow = window.open(gangURL, ("gangRunPopup" + ran_number), "height=600,width=600,directories=no,location=no,menubar=no,scrollbars=yes,status=no,toolbar=no,resizable=yes");
+		newWindow.focus();
+	}
+	
+	function ShowGangRunCover(gangRunID){
+		var downloadURL = "./ad_gangRun.php?current_action=saveFileToDisk&downloadFileType=Cover&form_sc={FORM_SECURITY_CODE}&gangRunID=" + gangRunID;
+		fileDownloadWindow(downloadURL);
+	}
+	function ShowGangRunFront(gangRunID){
+		var downloadURL = "./ad_gangRun.php?current_action=saveFileToDisk&downloadFileType=Front&form_sc={FORM_SECURITY_CODE}&gangRunID=" + gangRunID;
+		fileDownloadWindow(downloadURL);
+	}
+	function ShowGangRunBack(gangRunID){
+		var downloadURL = "./ad_gangRun.php?current_action=saveFileToDisk&downloadFileType=Back&form_sc={FORM_SECURITY_CODE}&gangRunID=" + gangRunID;
+		fileDownloadWindow(downloadURL);
+	}
+	
+	function fileDownloadWindow(popUpURL){
+		newWindow = window.open(popUpURL, "gangRunDownload", "height=600,width=750,directories=no,location=no,menubar=no,scrollbars=no,status=no,toolbar=no,resizable=yes");
+		newWindow.focus();
+	}
+
+</script>
+
+<link rel="stylesheet" type="text/css" href="library/calendar/themes/winter.css"/>
+<script type="text/javascript" src="library/calendar/src/utils.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar.js"></script>
+<script type="text/javascript" src="library/calendar/lang/calendar-en.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar-setup.js"></script>
+<script type="text/javascript" src="library/formatDate.js"></script>
+</head>
+<body bgcolor="#FFFFFF" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="">
+<div align="center">
+{HEADER}
+&nbsp;
+<br/><br/>
+
+<table width="760" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td class="Body">
+<!-- Inner Body  -->
+
+
+<table width="100%" border="0" cellspacing="0" cellpadding="1">
+  <tr>
+    <td bgcolor="#003399"><table width="100%" border="0" cellspacing="1" cellpadding="3">
+  <tr>
+    <td class="SmallBody" bgcolor="#6699cc" align="center" style="background-image: url(./images/header-blue-swirl.jpg); background-repeat: no-repeat;">
+	
+	
+	<table width="100%" border="0" cellspacing="1" cellpadding="0">
+	<form name="ConfirmButton" action="ad_gangQueue.php" onSumit="return false">
+	<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+	<input type="hidden" name="action" value="confirmGangID" />
+	
+  <tr>
+      <td width="42%" class="SmallBody" ><font color="#FFFFFF"><strong>Confirm: </strong></font>
+        <input  onKeyPress="return submitenter(this,event);" onFocus="confirmButtonChangeFocus(true)" onBlur="confirmButtonChangeFocus(false)" align="absmiddle" type="text" value="" name="confirmationCode" style="width:70px; font-family:Arial, Helvetica, sans-serif; font-size:13px;  background-color:#6699cc; color:#FFFFFF" maxlength="9" />
+		&nbsp;&nbsp;&nbsp;&nbsp;<font color="#FFFFFF"><strong>Your Name: </strong></font> 
+		
+		
+		<input  onKeyPress="return submitenter(this,event);" type="text" value="{CONFIRM_NAME}" name="confirmName" style="width:90px; font-family:Arial, Helvetica, sans-serif; font-size:13px;  background-color:#6699cc; color:#FFFFFF" maxlength="15" />
+		</td>
+
+    <td width="58%" align="right" class="SmallBody"><font color="#FFFFFF"><strong>Show Queue for Printer:</strong> 
+      <select name="printingPress" class="AdminDropDown" onChange="changePrintingPressID(this.value)"> {PRINTER_LIST}</select></font></td>
+  </tr>
+  </form>
+</table>
+
+	</td>
+  </tr>
+</table></td>
+  </tr>
+</table>
+&nbsp;
+
+
+
+
+<br/>
+
+<br/>
+<br/>
+
+<!-- BEGIN EmptyResults -->
+
+  <!-- BEGIN gangBlock -->
+<table width="100%" border="0" cellspacing="0" cellpadding="1" bgcolor="#666699">
+  <tr>
+    <td><table width="100%" border="0" cellspacing="1" cellpadding="5">
+
+   <tr>
+                  <td bgcolor="#f3f3ff" class="Body" width="93%">&nbsp;
+<table width="100%" border="0" cellspacing="1" cellpadding="0">
+  <tr>
+    <td width="20%">
+       <span style="color: #006600"><font style="font-size:42px"><strong>{SHEET_COUNT}</strong></font></span></td>
+    <td width="25%">
+       <span style="color: #663300"><font style="font-size:32px"><strong>{DESC}</strong></font></span></td>
+    <td width="55%"><strong>Paper:</strong><br/>
+       <font color="#0000cc" style="font-size:36px">{MATERIAL_TYPE}</font></td>
+  </tr>
+</table>
+
+Profile: <strong>{SUPER_PROFILE_NAME}</strong>
+{NOTES}
+
+&nbsp;<br/>
+<a href="javascript:ShowGangRunCover({GANGID});" class="BlueRedLinkRecord"><strong>CoverSheet</strong></a><br/>
+&nbsp;
+<table width="100%" border="0" cellspacing="1" cellpadding="0">
+  <tr>
+    <td align="center" class="Body"><a href="javascript:ShowGangRunFront({GANGID});" class="BlueRedLinkRecord"><font style="font-size:13px"><strong>{FRONT_PDF_NAME}</strong></font></a><br/><br/>
+{FRONT_PDF_THUMB}
+
+</td>
+    <td align="center"><a href="javascript:ShowGangRunBack({GANGID});" class="BlueRedLinkRecord"><font style="font-size:13px"><strong>{BACK_PDF_NAME}</strong></font></a><br/><br/>
+{BACK_PDF_THUMB}</td>
+  </tr>
+</table>
+&nbsp;<br/>
+
+
+				  </td>
+                  <td bgcolor="#f3f3ff" class="SmallBody" width="7%" align="center"><a href="javascript:GangRunPopUP({GANGID})" class="BlueRedLinkRecord">Options</a><br/><br/><br/><a href="javascript:NewBatchWindow('{PROJECT_LIST}')" class="BlueRedLinkRecord">Batch<br/>Window</a></td>
+  </tr>
+  
+</table></td>
+  </tr>
+</table>
+
+<br/><br/><br/><br/><br/>
+<br/>
+<br/>
+
+ <!-- END gangBlock -->
+
+
+<!-- END EmptyResults -->
+<br/>
+<br/>
+<br/><br/><br/>
+<br/>
+<br/>
+<br/>
+<br/>
+
+
+<!-- Inner Body  END -->
+</td>
+</tr>
+</table>
+<table width="760" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="360" class="NavColor"><img src="./images/footer.gif" border="0" width="350" height="16" usemap="#footer" alt="" /></td>
+	<td width="400" align="right" class="NavColor"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+  </tr>
+</table>
+<font class="copyright"> </font>
+</div>
+&nbsp;
+<script type="text/javascript" src="./library/ImageMap-footer.js"></script>
+<script> FormLoaded(); </script>
+</body>
+</html>
+

@@ -1,0 +1,190 @@
+<html>
+<head>
+<title>Reply to Customer</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+
+<script language="javascript">
+
+	//Make an array of the images we want to preload for the mouse-overs.
+	arImageSrc = new Array (
+		"./images/button-go-d.gif",
+		"./images/button-cancel-blue-d.gif",
+		"./images/button-sendmessage-blue-d.gif"
+	)
+
+	//Preload images.
+	arImageList = new Array ();
+	for (counter in arImageSrc) {
+		arImageList[counter] = new Image();
+		arImageList[counter].src = arImageSrc[counter];
+	}
+
+
+	function CheckSubmitForm(){
+
+		PossiblyCloseAttachmentWindow();
+
+		//Strip white space from ends.
+		document.forms[0].emailaddr.value = document.forms[0].emailaddr.value.replace(/^\s+/, "");
+		document.forms[0].emailaddr.value = document.forms[0].emailaddr.value.replace(/\s+$/, "");
+
+		if(document.forms[0].body.value==""){
+			alert("Please type a message before sending.");
+		}
+		else if(document.forms[0].emailaddr.value.search(/^\w+([-.]\w+)*\@\w+([-.]\w+)*\.\w+$/) == -1){
+			alert("The email address is not correct.");
+		}
+		else{
+			return true;
+		}
+
+		return false;
+	}
+
+	function TryToSubmit(){
+		if(CheckSubmitForm()){
+			document.forms[0].submit();
+		}
+	}
+
+	function ManageAttachments(){
+		AttachmentWindowOpened = true;
+		AttachmentWindow = window.open("./ad_cs_attachments.php?cs_message_unique={CS_MESSAGE_UNIQUE}&command=new", "csattachments", "height=300,width=450,directories=no,location=no,menubar=no,scrollbars=yes,status=yes,toolbar=no,resizable=no");
+		AttachmentWindow.focus();
+	}
+	function PossiblyCloseAttachmentWindow(){
+		if(AttachmentWindowOpened){
+			if(!AttachmentWindow.closed){
+				AttachmentWindow.close();
+			}
+		}
+	}
+
+
+	var AttachmentWindowOpened= false;
+
+</script>
+<script type="text/javascript" src="./library/admin_library.js"></script>
+</head>
+
+<body bgcolor="#3366CC" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" >
+<img  src="./images/transparent.gif" border="0" width="1" height="10" alt="" /><br/>
+<div align="center">
+
+
+<!-- BEGIN createBL -->
+
+<table width="650" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td bgcolor="#333333"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+</tr>
+<tr>
+<td bgcolor="#999999" class="Body" align="center"><img  src="./images/transparent.gif" border="0" width="1" height="3" alt="" /><br/>{LOGO_SMALL}<img  src="./images/transparent.gif" border="0" width="10" height="1" alt="" /><font color="#FFFFFF">Send an Email to the Customer</font><img  src="./images/transparent.gif" border="0" width="50" height="1" alt="" /><a href="javascript:CannedMessages();" class="blueredlink">Resource Center</a><br/><img src="./images/transparent.gif" border="0" width="1" height="3" alt="" /></td>
+</tr>
+<tr>
+<td bgcolor="#666666"><img src="./images/transparent.gif" border="0" width="1" height="2" alt="" /></td>
+</tr>
+<tr>
+<td align="center">
+<table bgcolor="#EEEEEE" width="650" cellpadding="0" cellspacing="0" border="0">
+<form name="report" onsubmit="return false" action="./ad_cs_email.php" method="post">
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+ 	<input type="hidden" name="customername" value="{NAME}" />
+	<input type="hidden" name="csthreadid" value="{CSTHREADID}" />
+	<input type="hidden" name="save" value="true" />
+
+	<!-- cs_messageid is made from the CS thread ID and a unix timestamp ... It makes sure that the number is specific anytime this window is launched.  We use this for tracking attachments -->
+	<input type="hidden" name="cs_messageid" value="{CS_MESSAGE_UNIQUE}" />
+
+<tr>
+<td colspan="2"><img src="./images/transparent.gif" border="0" width="1" height="3" alt="" /></td>
+</tr>
+<tr>
+<td width="8">&nbsp;</td>
+<td width="630" class="Body">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="69%" class="SmallBody"><img  src="./images/transparent.gif" border="0" width="1" height="5" alt="" /><br/>
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+                          <td class="SmallBody" width="14%"><b>To:</b></td>
+                          <td class="SmallBody" width="86%">
+<input type="text" name="emailaddr" value="{EMAIL}" class="AdminInput" style="width:250px;" /></td>
+  </tr>
+  <tr>
+                          <td class="SmallBody" width="14%"><img  src="./images/transparent.gif" border="0" width="1" height="10" alt="" /><br/>
+                            <b>Subject:</b></td>
+                          <td class="SmallBody" width="86%"><img  src="./images/transparent.gif" border="0" width="1" height="10" alt="" /><br/>
+                            <input type="text" name="subject" value="{SUBJECT}" class="AdminInput" style="width:350px;" /></td>
+  </tr>
+</table>
+</td>
+    <td width="1%"><img src="./images/lightgreypixel.gif" border="0" width="1" height="40" align="absmiddle" alt="" /></td>
+	<td width="30%" class="SmallBody" align="center"><a class="blueRedLink" href="javascript:ManageAttachments();">Manage Attachments</a><br/><img  src="./images/transparent.gif" border="0" width="1" height="5" alt="" /><br/><div id="ManageAttDesc">Currently No Attachments</div></td>
+  </tr>
+</table>
+
+
+ <table width="100%" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td><img src="./images/transparent.gif" border="0" width="1" height="7" alt="" /></td>
+</tr>
+<tr>
+<td bgcolor="#999999"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+</tr>
+<tr>
+<td><img src="./images/transparent.gif" border="0" width="1" height="7" alt="" /></td>
+</tr>
+</table>
+
+<font class="OptionNames"><b>Message</b></font><br/>
+<textarea name="body" style="width:630px; height:330px; font-size:14;" wrap="VIRTUAL">{CUSTOMER_MESSAGE}</textarea>
+
+
+</td>
+</tr>
+<tr>
+<td colspan="2"><img src="./images/transparent.gif" border="0" width="1" height="5" alt="" /></td>
+</tr>
+</form>
+</table>
+</td>
+</tr>
+
+
+<tr>
+<td><img src="images/header-editoptions-fade-bot.gif" width="650" height="30" alt="" /></td>
+</tr>
+</table>
+
+<table width="350" border="0" cellspacing="0" cellpadding="0">
+
+  <tr>
+
+    <td align="center">
+
+<img  src="./images/transparent.gif" border="0" width="1" height="5" alt="" /><br/>
+<a href="javascript:TryToSubmit();" ><img src="./images/button-sendmessage-blue-u.gif" onmouseover="this.src='./images/button-sendmessage-blue-d.gif';" onmouseout="this.src='./images/button-sendmessage-blue-u.gif';" border="0" width="116" height="25" align="absmiddle" alt="" /></a>  &nbsp;&nbsp;
+
+<a href="javascript:PossiblyCloseAttachmentWindow(); window.close();" ><img src="./images/button-cancel-blue-u.gif" onmouseover="this.src='./images/button-cancel-blue-d.gif';" onmouseout="this.src='./images/button-cancel-blue-u.gif';" border="0" width="76" height="25" align="absmiddle" alt="" /></a>
+<br/>
+&nbsp;
+	</td>
+
+  </tr>
+</table>
+
+<!-- END createBL -->
+
+
+
+
+
+</div>
+
+
+</body>
+</html>

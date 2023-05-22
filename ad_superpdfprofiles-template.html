@@ -1,0 +1,627 @@
+<html>
+<head>
+<title>Admin</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<script type="text/javascript" src="./library/admin_library.js"></script>
+<script type="text/javascript" src="./library/general_lib.js"></script>
+<script language="javascript">
+
+
+
+	//Make an array of the images we want to preload for the mouse-overs.
+	arImageSrc = new Array (
+		"./images/arrow_small_blue_up-d.png",
+		"./images/arrow_small_blue_down-d.png"
+	)
+
+	//Preload images.
+	arImageList = new Array ();
+	for (counter in arImageSrc) {
+		arImageList[counter] = new Image();
+		arImageList[counter].src = arImageSrc[counter];
+	}
+
+	var floatNumRegex = /^\s*((\d+(\.\d+)?)|(\.\d+))\s*$/;
+	var floatNumRegexNegative = /^\s*(\-)?((\d+(\.\d+)?)|(\.\d+)\s*)$/;
+	var decimalNumRegex = /^\s*\d+\s*$/;
+	
+	function superProfileChange(dropdownChangeValue){
+		
+		if(dropdownChangeValue == "mainMenu")
+			document.location = "ad_superpdfprofiles.php?view=start";
+		
+		else if(dropdownChangeValue != "listLabel")
+			document.location = "ad_superpdfprofiles.php?view=editSuperPDFProfile&superPDFProfileID=" + dropdownChangeValue;
+	}
+	
+	
+	function CheckPDFProfileForm(){
+
+		var ErrorMessage = "";
+
+		var FormObj = document.forms["superPDFprofileForm"];
+
+		var transparentPixel = "./images/transparent.gif";
+
+		if({ENABLE_PROFILE_NAMES_CHECK})
+		{
+			var existingProfileNameArrGlobal = new Array({EXISTING_PROFILE_NAMES_ARRAY});
+
+			var profileName = FormObj.SuperPDFProfileName.value;
+
+			document.images.img_superPDFProfileName.src = transparentPixel;
+
+			if(isInArray(existingProfileNameArrGlobal,profileName.toUpperCase())){
+				document.images.img_superPDFProfileName.src = "./images/error_arrow.gif";
+				ErrorMessage += "*) The Profile Name already exists.\n\n";
+			}
+
+			if(profileName==""){
+				document.images.img_superPDFProfileName.src = "./images/error_arrow.gif";
+				ErrorMessage += "*) Please enter a Profile Name.\n\n";
+			}
+
+			if(profileName.search(/^\w{3,60}$/) == -1 ) {
+				document.images.img_superPDFProfileName.src = "./images/error_arrow.gif";
+				ErrorMessage += "*) The Profile Name must be between 3 and 60 characters and it may not contain any spaces or special characters.\n\n";
+			}
+		}
+
+		var sheetWidth = FormObj.superPDFProfileWidth.value;
+		var sheetHeight = FormObj.superPDFProfileHeight.value;
+		var barcodeX = FormObj.superPDFProfileBarcodeX.value;
+		var barcodeY = FormObj.superPDFProfileBarcodeY.value;
+		
+
+		document.images.img_superPDFProfileSize.src = transparentPixel;
+		document.images.img_superPDFProfileBarcode.src = transparentPixel;
+
+
+		if(sheetWidth.search(floatNumRegex) == -1 || parseFloat(sheetWidth) < 0.01 || sheetHeight.search(floatNumRegex) == -1 || parseFloat(sheetHeight) < 0.01){
+			document.images.img_superPDFProfileSize.src = "./images/error_arrow.gif";
+			ErrorMessage += "*) The Sheet Size must be a number greater than zero.\n\n";
+		}
+		if(barcodeX.search(floatNumRegex) == -1 || barcodeY.search(floatNumRegex) == -1){
+			document.images.img_superPDFProfileBarcode.src = "./images/error_arrow.gif";
+			ErrorMessage += "*) The Barcode Coordinates must be a number.\n\n";
+		}
+		
+		// Now check all of the Coordinates of the Sub PDF profiles.
+		var subPdfProfileIDs = new Array({SUB_PDF_PROFILE_IDS_ARRAY});
+
+		for(var j=0; j<subPdfProfileIDs.length; j++){
+
+			var pdfImageObj = eval('document.images.img_subProfile_' + subPdfProfileIDs[j]);
+			pdfImageObj.src = transparentPixel;
+			
+			var pdfXcoordObj = eval('document.superPDFprofileForm.pdfSubProfileX_' + subPdfProfileIDs[j]  +'.value');
+			var pdfYcoordObj = eval('document.superPDFprofileForm.pdfSubProfileY_' + subPdfProfileIDs[j]  +'.value');
+	
+			if(pdfXcoordObj.search(floatNumRegex) == -1 || pdfYcoordObj.search(floatNumRegex) == -1){
+				pdfImageObj.src = "./images/error_arrow.gif";
+				ErrorMessage += "*) The Sub PDF Profile Coordinates must be a number.\n\n";
+			}
+		}
+		
+		if(ErrorMessage != ""){
+			alert("Fix the following errors.\n--------------------------\n\n" + ErrorMessage);
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+	}
+	
+	function RemovePDFProfile(profileID){
+		if(confirm("Are you sure that you want to delete this Sub PDF Profile?\nIt could have an affect on existing jobs in the middle of production."))
+			document.location = "ad_superpdfprofiles.php?form_sc={FORM_SECURITY_CODE}&action=DeleteSubPDFprofile&superPDFProfileID={SUPER_PROFILE_ID}&subPdfProfileID=" + profileID;
+	}
+	
+	function RemoveSuperPDFProfile(){
+		if(confirm("Are you sure that you want to delete this Super PDF Profile?\nIt could have an affect on existing jobs in the middle of production."))
+			document.location = "ad_superpdfprofiles.php?form_sc={FORM_SECURITY_CODE}&action=DeleteSuperProfile&superPDFProfileID={SUPER_PROFILE_ID}";
+	}
+
+
+	function hlSuperRow(e)
+	{
+		e.style.backgroundColor='#eeeeff';
+	}
+	function dlSuperRow(e)
+	{
+		e.style.backgroundColor='#f3f3f3';
+	}
+
+	function hlPdfSubRow(e)
+	{
+		e.style.textDecoration='underline';
+		e.style.backgroundColor='#eeeeff';
+	}
+	function dlPdfSubRow(e)
+	{
+		e.style.textDecoration='none';
+		e.style.backgroundColor='#ffffff';
+	}
+	function moveSuperPDFprofileUp(profileID){
+		document.location = "ad_superpdfprofiles.php?form_sc={FORM_SECURITY_CODE}&action=MoveSuperProfileUp&superPDFProfileID=" + profileID;
+	}
+	function moveSuperPDFprofileDown(profileID){
+		document.location = "ad_superpdfprofiles.php?form_sc={FORM_SECURITY_CODE}&action=MoveSuperProfileDown&superPDFProfileID=" + profileID;
+	}
+	function moveSubPDFprofileUp(profileID){
+		document.location = "ad_superpdfprofiles.php?form_sc={FORM_SECURITY_CODE}&action=MoveSubProfileUp&superPDFProfileID={SUPER_PROFILE_ID}&subPDFProfileID=" + profileID;
+	}
+	function moveSubPDFprofileDown(profileID){
+		document.location = "ad_superpdfprofiles.php?form_sc={FORM_SECURITY_CODE}&action=MoveSubProfileDown&superPDFProfileID={SUPER_PROFILE_ID}&subPDFProfileID=" + profileID;
+	}
+	
+	function ShowSuperPDFprofilePreview(){
+		
+		var address = "./ad_superpdf_preview.php?superPDFProfileID={SUPER_PROFILE_ID}";
+		newWindow = window.open(address, "superPreview", "height=880,width=650,directories=no,location=no,menubar=yes,scrollbars=yes,status=yes,toolbar=yes,resizable=yes");
+		newWindow.focus();
+	}
+	
+
+	
+	function changeSuperProfileName(){
+		var newProfileName = prompt("What should the new name be?", "{SUPER_PROFILE_NAME}");
+		if(newProfileName){
+		
+			if(newProfileName.search(/^\w{3,60}$/) == -1 ) {
+				alert("The Profile Name must be between 3 and 60 characters and it may not contain any spaces or special characters.");
+			}
+			else{
+				document.location = "ad_superpdfprofiles.php?form_sc={FORM_SECURITY_CODE}&action=ChangeSuperProfileName&superPDFProfileID={SUPER_PROFILE_ID}&newSuperProfileName=" + escape(newProfileName);
+			}
+		}
+	}
+	
+	var profileIDsAllProducts = [{SUB_PDF_PROFILE_IDS_ALL_PRODUCTS_ARRAY}];
+	var profileNotesAllProducts = [{SUB_PDF_PROFILE_NOTES_ALL_PRODUCTS_ARRAY}];
+	
+	function getProfileNotes(subProfileID){
+	
+		for(var i =0; i< profileIDsAllProducts.length; i++){
+			if(profileIDsAllProducts[i] == subProfileID)
+				return profileNotesAllProducts[i];
+		}
+		
+		alert("Error in function getProfileNotes");
+	}
+	
+	function showProfileNotesOnNewSubProfile(subProfileID){
+
+		if(subProfileID == "")
+			document.getElementById("newProfileDescription").innerHTML = "";
+		else
+			document.getElementById("newProfileDescription").innerHTML = "&nbsp;<br/><u><b>SubProfile Notes</b></u><br/>" + htmlize(getProfileNotes(subProfileID)) + "<br/>&nbsp;";
+	}
+	
+	function CopySuperProfile(profileID, profileName){
+		if(confirm("Do you want to copy this profile?\nDefault Profile Name will be...\n______________\n" + profileName + "_COPY\n______________"))
+			document.location = "./ad_superpdfprofiles.php?action=CopyProfile&superPDFProfileID="+profileID+"&form_sc={FORM_SECURITY_CODE}";
+	}
+	
+</script>
+
+
+<link rel="stylesheet" type="text/css" href="library/calendar/themes/winter.css"/>
+<script type="text/javascript" src="library/calendar/src/utils.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar.js"></script>
+<script type="text/javascript" src="library/calendar/lang/calendar-en.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar-setup.js"></script>
+<script type="text/javascript" src="library/formatDate.js"></script>
+</head>
+<body bgcolor="#FFFFFF" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="">
+<div align="center">
+{HEADER}
+
+<table width="760" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td class="Body">
+
+
+
+
+<br/><br/>
+
+<table width="100%" border="0" cellspacing="0" cellpadding="1">
+  <tr>
+    <td width="39%"><font class="LargeBody"><font color="#336699"><b>Super PDF Profiles</b></font></font></td>
+	<td width="48%"><!-- BEGIN HidePreviewProfileLink --><a href="javascript:ShowSuperPDFprofilePreview();" class="BlueRedLink">Preview Super PDF Profile</a><!-- END HidePreviewProfileLink --> </td>
+    <td width="13%" align="right">
+	<!-- BEGIN SuperProfilesListBL -->
+	<select name="SuperProfileNames" class="AdminInput" onChange="superProfileChange(this.value)">{SUPER_PROFILES_LIST}</select>
+	<!-- END SuperProfilesListBL -->
+	</td>
+  </tr>
+</table>
+
+
+
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td bgcolor="#3366CC"><img src="./images/transparent.gif" border="0" width="2" height="4" alt="" /></td>
+</tr>
+</table>
+<br/>
+
+
+
+
+
+
+<!-- BEGIN SuperProfileStartBL -->
+<br/>
+
+<br/>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td align="right"><input type="button" name="Add" value="Create a new Super PDF Profile" class="AdminButton" onmouseover="this.style.background='#ffeeaa';" onmouseout="this.style.background='#FFFFDD';" onclick="document.location='./ad_superpdfprofiles.php?view=newSuperPDFProfile'" /></td>
+  </tr>
+</table>
+
+<!-- BEGIN ExistingSuperProfilesBL -->
+
+<font class="LargeBody"><font color="#336699"><b>Saved Super PDF Profiles</b></font>
+		<img onmouseover="this.src='./images/question_mark_down.png'; showTheToolTip('helpDiv_superPDFprofileList'); this.style.cursor ='hand';" onmouseout="hideTheToolTipContainer('helpDiv_superPDFprofileList'); this.src='./images/question_mark_up.png'; " src="./images/question_mark_up.png"  border="0"  align="absmiddle" alt="" />	
+
+<div><div id="helpDiv_superPDFprofileList" style='width:500px; background-image: url(./images/tool_tips_back.png);  border:solid; border-color:#660000; border-width:1px; padding:6; filter:progid:DXImageTransform.Microsoft.dropShadow(Color=#999999,offX=3,offY=3)' class="SmallBody">
+If there are many Super PDF Profiles then the sequence in which they are listed here may be significant.  Profiles listed at top will be filled up first by the automation system when it is trying to figure out the most efficient Gang Run possible.  Put Profiles higher up if you prefer them to be used more often.
+</div> </div>
+<script>
+hideTheToolTipContainer("helpDiv_superPDFprofileList");
+</script>	
+
+
+<br/>
+<img  src="./images/transparent.gif" width="5" height="7" alt="" /><br/>
+<table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#3366CC">
+<tr>
+<td>
+<table width="760" border="0" cellspacing="1" cellpadding="4">
+<form name="defaultProfileForm" action="ad_superpdfprofiles.php">
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+
+<tr>
+	<td width="20" class="SmallBody" bgcolor="#ddeeff">&nbsp;</td>
+	<td width="159" class="SmallBody" bgcolor="#ddeeff"><strong>Super PDF Profile Name</strong></td>
+	<td width="119" class="SmallBody" bgcolor="#ddeeff"><strong>Compatible Printers</strong></td>
+	<td width="104" class="SmallBody" bgcolor="#ddeeff"><strong>Sheet Size</strong></td>
+	<td width="300" class="SmallBody" bgcolor="#ddeeff"><strong>Notes</strong></td>
+	<td width="28" class="SmallBody" bgcolor="#ddeeff"> </td>
+</tr>
+
+ <!-- BEGIN existingSuperProfileNameBL -->
+ <tr bgcolor="#f3f3f3" onmouseover="hlSuperRow(this)" onmouseout="dlSuperRow(this)">
+    <td width="20"  class="SmallBody" align="center"><!-- BEGIN upLink --><a href="javascript:moveSuperPDFprofileUp({SUPER_PROFILE_ID});"><img src="./images/arrow_small_blue_up-u.png" onmouseover="this.src='./images/arrow_small_blue_up-d.png';" onmouseout="this.src='./images/arrow_small_blue_up-u.png';" border="0" align="absmiddle" alt="" /></a><!-- END upLink --><!-- BEGIN downLink --><a href="javascript:moveSuperPDFprofileDown({SUPER_PROFILE_ID});"><img src="./images/arrow_small_blue_down-u.png" onmouseover="this.src='./images/arrow_small_blue_down-d.png';" onmouseout="this.src='./images/arrow_small_blue_down-u.png';" border="0" align="absmiddle" alt="" /></a><!-- END downLink --></td>
+	<td class="SmallBody"><a href="./ad_superpdfprofiles.php?view=editSuperPDFProfile&superPDFProfileID={SUPER_PROFILE_ID}" class="BlueRedLink">{SUPER_PROFILE_NAME}</a></td>
+	<td class="SmallBody" >{PRINTERS}</td>
+ 	<td class="SmallBody" ><font color="#333333">{SUPER_PROFILE_WIDTH}&quot; x {SUPER_PROFILE_HEIGHT}&quot;</font></td>
+	<td class="SmallBody" ><font color="#333333">{SUPER_PROFILE_NOTES}</font></td>
+	<td class="SmallBody" ><a class="BlueRedLink" href="javascript:CopySuperProfile({SUPER_PROFILE_ID}, '{SUPER_PROFILE_NAME}');">Copy</a></td>
+  </tr>
+ <!-- END existingSuperProfileNameBL -->
+
+</form>
+</table>
+</td>
+</tr>
+</table>
+
+<!-- END ExistingSuperProfilesBL -->
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+
+<!-- END SuperProfileStartBL -->
+
+
+
+
+<!-- BEGIN MainSuperPDFprofileForm -->
+<br/>
+
+<form name="superPDFprofileForm" action="./ad_superpdfprofiles.php" method="post" onsubmit="return CheckPDFProfileForm();">
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+<input type="hidden" name="superPDFProfileID" value="{SUPER_PROFILE_ID}" />
+<input type="hidden" name="action" value="{FORM_SUBMIT_ACTION}" />
+<table width="100%" border="0" cellspacing="0" cellpadding="2">
+<tr> <td colspan="2" bgcolor="DDDDE3"><img src="./images/transparent.gif" border="0" width="1" height="2" alt="" /></td>
+</tr>
+
+
+
+<tr>
+<td width="25%" class="Body" align="right">
+<!-- BEGIN NewSuperProfileNameBLHelpIcon -->
+<img onmouseover="this.src='./images/question_mark_down.png'; showTheToolTip('helpDiv_newProfile'); this.style.cursor ='hand';" onmouseout="hideTheToolTipContainer('helpDiv_newProfile'); this.src='./images/question_mark_up.png'; " src="./images/question_mark_up.png"  border="0"  align="absmiddle" alt="" />
+<!-- END NewSuperProfileNameBLHelpIcon -->
+Super PDF Profile Name&nbsp;&nbsp;</td>
+<td width="75%" class="SmallBody">
+
+<!-- BEGIN NewSuperProfileNameBL -->
+<div><div id="helpDiv_newProfile" style='width:350px; background-image: url(./images/tool_tips_back.png);  border:solid; border-color:#660000; border-width:1px; padding:6; filter:progid:DXImageTransform.Microsoft.dropShadow(Color=#999999,offX=3,offY=3)' class="SmallBody">
+Enter a unique SuperPDFProfile Name for this product.<br/>
+It may not contain any spaces or special characters.
+</div> </div>
+<script>
+hideTheToolTipContainer("helpDiv_newProfile");
+</script>	
+
+
+<input type="text" name="SuperPDFProfileName" value="" class="adminInput" maxlength="60" style="background-color:#F3F3F3; width:250px;" />&nbsp;&nbsp;<img name="img_superPDFProfileName" src="./images/transparent.gif" height="16" width="22" alt="" />
+<!-- END NewSuperProfileNameBL -->
+
+<!-- BEGIN ExistingSuperProfileNameBL -->
+<font color="#CC6600" style="font-size:14px"><strong>{SUPER_PROFILE_NAME}</strong></font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<!-- BEGIN DeleteProfileLink --><a href="javascript:RemoveSuperPDFProfile('{SUPER_PROFILE_ID}');" class="BlueRedLink">Delete</a><!-- END DeleteProfileLink -->
+&nbsp;&nbsp;&nbsp;&nbsp;
+<!-- BEGIN ChangeProfileNameLink --><a href="javascript:changeSuperProfileName();" class="BlueRedLink">Change Name</a><!-- END ChangeProfileNameLink -->
+<!-- END ExistingSuperProfileNameBL --></td>
+
+</tr>
+
+
+
+<tr>
+<td colspan="2" bgcolor="DDDDE3"><img src="./images/transparent.gif" border="0" width="1" height="2" alt="" /></td>
+</tr>
+
+
+
+<tr>
+<td width="25%" class="Body" align="right">
+<img onmouseover="this.src='./images/question_mark_down.png'; showTheToolTip('helpDiv_profileNotes'); this.style.cursor ='hand';" onmouseout="hideTheToolTipContainer('helpDiv_profileNotes'); this.src='./images/question_mark_up.png'; " src="./images/question_mark_up.png"  border="0"  align="absmiddle" alt="" />	
+
+<font color="#CCCCCC"><b>Optional</b></font>&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Notes&nbsp;&nbsp;</td>
+<td width="75%" class="SmallBody">
+<div><div id="helpDiv_profileNotes" style='width:400px; background-image: url(./images/tool_tips_back.png);  border:solid; border-color:#660000; border-width:1px; padding:6; filter:progid:DXImageTransform.Microsoft.dropShadow(Color=#999999,offX=3,offY=3)' class="SmallBody">
+It may be helpful for others if you describe what this profile is used for. <br/>
+</div> </div>
+<script>
+hideTheToolTipContainer("helpDiv_profileNotes");
+</script>	
+
+<input type="text" name="profileNotes" value="{SUPER_PROFILE_NOTES}" class="adminInput" maxlength="200" style="background-color:#F3F3F3; width:450px;" /></td>
+</tr>
+
+
+
+<tr>
+<td colspan="2" bgcolor="DDDDE3"><img src="./images/transparent.gif" border="0" width="1" height="2" alt="" /></td>
+</tr>
+
+
+
+<tr>
+<td width="25%" class="Body" align="right">
+<img onmouseover="this.src='./images/question_mark_down.png'; showTheToolTip('helpDiv_sheetSize'); this.style.cursor ='hand';" onmouseout="hideTheToolTipContainer('helpDiv_sheetSize'); this.src='./images/question_mark_up.png'; " src="./images/question_mark_up.png"  border="0"  align="absmiddle" alt="" />	
+
+Sheet Size&nbsp;&nbsp;</td>
+<td width="75%" class="SmallBody">
+
+<div><div id="helpDiv_sheetSize" style='background-image: url(./images/tool_tips_back.png);  border:solid; border-color:#660000; border-width:1px; padding:6; filter:progid:DXImageTransform.Microsoft.dropShadow(Color=#999999,offX=3,offY=3)' class="SmallBody">
+Size of the parent sheet in inches.  One parent sheet may contain 1 or many Sub PDF Profiles within it. 
+</div> </div>
+<script>
+hideTheToolTipContainer("helpDiv_sheetSize");
+</script>	
+
+
+<strong>Width:</strong>   <input   type="text" name="superPDFProfileWidth" value="{SUPER_PROFILE_WIDTH}" class="adminInput" style=" width:60px; background-color:#F3F3F3;" maxlength="10" /> <font class="ReallySmallBody">Inches</font>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<strong>Height:</strong>   <input type="text" name="superPDFProfileHeight" value="{SUPER_PROFILE_HEIGHT}" class="adminInput" style=" width:60px; background-color:#F3F3F3;" maxlength="10" /> <font class="ReallySmallBody">Inches</font>&nbsp;&nbsp;<img name="img_superPDFProfileSize" src="./images/transparent.gif" height="16" width="22" alt="" /></td>
+</tr>
+
+
+
+<tr>
+<td colspan="2" bgcolor="DDDDE3"><img src="./images/transparent.gif" border="0" width="1" height="2" alt="" /></td>
+</tr>
+
+
+
+<tr>
+<td width="25%" class="Body" align="right">
+<img onmouseover="this.src='./images/question_mark_down.png'; showTheToolTip('helpDiv_barcodePosition'); this.style.cursor ='hand';" onmouseout="hideTheToolTipContainer('helpDiv_barcodePosition'); this.src='./images/question_mark_up.png'; " src="./images/question_mark_up.png"  border="0"  align="absmiddle" alt="" />	
+
+Barcode Position&nbsp;&nbsp;</td>
+<td width="75%" class="SmallBody">
+<div><div id="helpDiv_barcodePosition" style='background-image: url(./images/tool_tips_back.png);  border:solid; border-color:#660000; border-width:1px; padding:6; filter:progid:DXImageTransform.Microsoft.dropShadow(Color=#999999,offX=3,offY=3)' class="SmallBody">
+On each Gang Run a barcode and instructions must be printed somewhere on the sheet.  These instructions may list Paper Type and finishing instructions.  Place the coordinates and rotation of the barcode in a scrap area.<br/>
+</div> </div>
+<script>
+hideTheToolTipContainer("helpDiv_barcodePosition");
+</script>	
+
+
+<strong>X Coordinate:</strong>   <input   type="text" name="superPDFProfileBarcodeX" value="{SUPER_PROFILE_BARCODE_X}" class="adminInput" style=" width:60px; background-color:#F3F3F3;" maxlength="10" /> <font class="ReallySmallBody">Inches</font>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<strong>Y Coordinate:</strong>   <input type="text" name="superPDFProfileBarcodeY" value="{SUPER_PROFILE_BARCODE_Y}" class="adminInput" style=" width:60px; background-color:#F3F3F3;" maxlength="10" /> <font class="ReallySmallBody">Inches</font>&nbsp;&nbsp;<img name="img_superPDFProfileBarcode" src="./images/transparent.gif" height="16" width="22" alt="" /></td>
+</tr>
+
+
+
+<tr>
+<td colspan="2" bgcolor="DDDDE3"><img src="./images/transparent.gif" border="0" width="1" height="2" alt="" /></td>
+</tr>
+
+
+
+<tr>
+<td width="25%" class="Body" align="right">Barcode Rotation&nbsp;&nbsp;</td>
+<td width="75%" class="SmallBody">
+<select name="superPDFProfileBarcodeRotation">
+{SUPER_PROFILE_BARCODE_ROTATION_VALUES}
+</select></td>
+</tr>
+
+<tr>
+<td colspan="2" bgcolor="DDDDE3"><img src="./images/transparent.gif" border="0" width="1" height="2" alt="" /></td>
+</tr>
+
+
+
+<tr>
+<td width="25%" class="Body" align="right">
+<img onmouseover="this.src='./images/question_mark_down.png'; showTheToolTip('helpDiv_printingPresses'); this.style.cursor ='hand';" onmouseout="hideTheToolTipContainer('helpDiv_printingPresses'); this.src='./images/question_mark_up.png'; " src="./images/question_mark_up.png"  border="0"  align="absmiddle" alt="" />	
+
+Compatible Printers&nbsp;&nbsp;</td>
+<td width="75%" class="SmallBody">
+<div><div id="helpDiv_printingPresses" style='background-image: url(./images/tool_tips_back.png);  border:solid; border-color:#660000; border-width:1px; padding:6; filter:progid:DXImageTransform.Microsoft.dropShadow(Color=#999999,offX=3,offY=3)' class="SmallBody">
+When a production operator is trying to start a Gang Run for a particular printer, the system needs to know what Super PDF Profiles are possible to use.  <br/>
+<br/>
+Another benefit is that Super PDF Profiles are associated with Products.  That means you can restrict which Products are printed on which printing presses based upon the Printers saved against the respective Super PDF Profiles.
+</div> </div>
+<script>
+hideTheToolTipContainer("helpDiv_printingPresses");
+</script>	
+
+<select name="printingPressIDs[]" size="5" style="font-family:Arial, Helvetica, sans-serif; font-size:11px" multiple>
+{PRINTING_PRESS_LIST}
+
+</select></td>
+</tr>
+
+<!-- BEGIN SubPDFprofilesSectionBL -->
+<tr>
+<td colspan="2" bgcolor="DDDDE3"><img src="./images/transparent.gif" border="0" width="1" height="2" alt="" /></td>
+</tr>
+
+
+
+
+<tr>
+<td width="25%" class="Body" align="right">
+<img onmouseover="this.src='./images/question_mark_down.png'; showTheToolTip('helpDiv_subProfilesList'); this.style.cursor ='hand';" onmouseout="hideTheToolTipContainer('helpDiv_subProfilesList'); this.src='./images/question_mark_up.png'; " src="./images/question_mark_up.png"  border="0"  align="absmiddle" alt="" />	
+
+Sub PDF Profiles&nbsp;&nbsp;</td>
+<td width="75%" class="SmallBody">
+
+<div><div id="helpDiv_subProfilesList" style='background-image: url(./images/tool_tips_back.png);  border:solid; border-color:#660000; border-width:1px; padding:6; filter:progid:DXImageTransform.Microsoft.dropShadow(Color=#999999,offX=3,offY=3)' class="SmallBody">
+<strong>Multiple Sub Profiles</strong><br/>
+Super PDF Profiles are created by inserting 1 or more Sub PDF Profiles.  Sub PDF Profiles can only have 1 product per grid, but Super PDF Profiles can have multiple Sub PDF Profiles, and therefore may contain multiple Products.<br/>
+<br/>
+<strong>Product Rotation</strong><br/>
+You can not rotate a Sub PDF Profile from within a Super PDF Profile. However you can change the canvas rotation on the Sub PDF Profile itself.<br/>
+<br/>
+<strong>Sup Profile Positions</strong><br/>
+The order of the Sub PDF Profiles is significant because it affects which Artwork Grid sits on top (if multiple Sub PDF Profiles overlap).  Also, in case there are multiple Sub PDF Profiles with matching Product ID's, the Profile on top will try to fill up first.  This is relevant if the quantities between the Sub Profiles are not equal. Projects can not be split between Sub PDF Profiles if the order quantity requires up multiple spaces.  This is important depending on whether you are trying to fill up a Gang Run with either Large or Small quantities first.
+<br/>
+<br/>
+<strong>Options Limiter</strong><br/>
+If you leave the Options Limiter blank, then the same product (with different options) may fill the corresponding Sub PDF Profile.  However, you may choose to limit a Sub PDF Profile so that it is only filled with products having matching Product Options.  Just enter a partial option description (exactly as seen within the Open Order List).  For example, &quot;Card Stock - Glossy&quot;.  Because you can insert multiple Sub PDF Profiles into this Super PDF Profile (with the same Product ID) you can create Gang Run full of business cards, with only the top half meant for UV coating.
+</div> 
+</div>
+<script>
+hideTheToolTipContainer("helpDiv_subProfilesList");
+</script>	
+
+
+<!-- BEGIN NoExistingPDFprofilesBL -->
+<table width="100%" border="0" cellspacing="0" cellpadding="2">
+<tr>
+<td width="23" nowrap="nowrap" class="ReallySmallBody"></td>
+<td width="171" nowrap="nowrap" class="ReallySmallBody">PDF Profile Name</td>
+<td width="141" nowrap="nowrap" class="ReallySmallBody">Options Limiter</td>
+<td width="65" nowrap="nowrap" class="ReallySmallBody">X Coordinate</td>
+<td width="66" nowrap="nowrap" class="ReallySmallBody">Y Coordinate</td>
+<td width="22" nowrap="nowrap" class="ReallySmallBody">&nbsp;</td>
+<td width="50" nowrap="nowrap" class="ReallySmallBody">&nbsp;</td>
+</tr>
+<!-- BEGIN AttachedPDFProfilesBL -->
+<tr onmouseover="hlPdfSubRow(this)" onmouseout="dlPdfSubRow(this)">
+ <td class="SmallBody" align="center"><!-- BEGIN upLink --><a href="javascript:moveSubPDFprofileUp({PDFPROFILE_ID});"><img src="./images/arrow_small_blue_up-u.png" onmouseover="this.src='./images/arrow_small_blue_up-d.png';" onmouseout="this.src='./images/arrow_small_blue_up-u.png';" border="0" align="absmiddle" alt="" /></a><!-- END upLink --> <!-- BEGIN downLink --><a href="javascript:moveSubPDFprofileDown({PDFPROFILE_ID});"><img src="./images/arrow_small_blue_down-u.png" onmouseover="this.src='./images/arrow_small_blue_down-d.png';" onmouseout="this.src='./images/arrow_small_blue_down-u.png';" border="0" align="absmiddle" alt="" /></a><!-- END downLink --></td>
+
+<td class="SmallBody">{PDF_PROFILE_PRODUCT}: <br/>
+  <strong>{PDFPROFILE_NAME}</strong>&nbsp;&nbsp;&nbsp;<a href="javascript:alert(getProfileNotes({PDFPROFILE_ID}))">?</a></td>
+<td class="SmallBody"><input   type="text" name="pdfOptionLimiter_{PDFPROFILE_ID}" value="{OPTION_LIMITER}" class="adminInput" style=" width:135px; background-color:#F3F3F3;" maxlength="250" /></td>
+<td class="SmallBody"><input   type="text" name="pdfSubProfileX_{PDFPROFILE_ID}" value="{PDFPROFILE_X}" class="adminInput" style=" width:50px; background-color:#F3F3F3;" maxlength="10" /></td>
+<td class="SmallBody"><input   type="text" name="pdfSubProfileY_{PDFPROFILE_ID}" value="{PDFPROFILE_Y}" class="adminInput" style=" width:50px; background-color:#F3F3F3;" maxlength="10" /></td>
+<td class="SmallBody"><img name="img_subProfile_{PDFPROFILE_ID}" src="./images/transparent.gif" height="16" width="22" alt="" /></td>
+<td class="ReallySmallBody" align="right"><a href="javascript:RemovePDFProfile('{PDFPROFILE_ID}')" class="BlueRedLink">Remove</a></td>
+</tr>
+<!-- END AttachedPDFProfilesBL -->
+</table>
+
+<!-- END NoExistingPDFprofilesBL -->
+
+
+<br/><font class="SmallBody">Add a new Sub PDF Profile <select style="font-family:Arial, Helvetica, sans-serif; font-size:11px;" name="newSubPdfProfile" onChange="showProfileNotesOnNewSubProfile(this.value)">{NEW_SUB_PROFILE_LIST}</select></font>
+<div id="newProfileDescription" style="color:#663300"></div>
+
+</td>
+</tr>
+
+
+<!-- END SubPDFprofilesSectionBL -->
+
+
+
+
+
+
+
+
+<tr>
+<td colspan="2" bgcolor="DDDDE3"><img src="./images/transparent.gif" border="0" width="1" height="2" alt="" /></td>
+</tr>
+
+
+</table>
+<br/>
+<table width="100%" border="0" cellspacing="0" cellpadding="1">
+  <tr>
+    <td align="right">
+	<!-- BEGIN SaveChangesButtonBL -->
+	<input type="submit" name="Add" value="Save Changes" class="AdminButton" onmouseover="this.style.background='#ffeeaa';" onmouseout="this.style.background='#FFFFDD';" />
+	<!-- END SaveChangesButtonBL -->
+	<!-- BEGIN SaveNewButtonBL -->
+	<input type="submit" name="Add" value="Save New Profile" class="AdminButton" onmouseover="this.style.background='#ffeeaa';" onmouseout="this.style.background='#FFFFDD';" />
+	<!-- END SaveNewButtonBL -->
+	</td>
+  </tr>
+</table>
+</form>
+
+<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+<br/>
+<br/>
+<br/>
+<br/>
+
+<!-- END MainSuperPDFprofileForm -->
+
+
+
+</td>
+</tr>
+</table>
+
+
+
+<table width="760" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="360" class="NavColor"><img src="./images/footer.gif" border="0" width="350" height="16" usemap="#footer" alt="" /></td>
+	<td width="400" align="right" class="NavColor"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+  </tr>
+</table>
+<font class="copyright"> </font>
+</div>
+&nbsp;
+<script type="text/javascript" src="./library/ImageMap-footer.js"></script>
+</body>
+</html>

@@ -1,0 +1,216 @@
+<html>
+<head>
+<title>Admin</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<script>
+
+function SaveButton(){
+	
+
+	var contentDescription = document.forms["contenttemplateform"].contentDescription.value;
+	var contentTitle = document.forms["contenttemplateform"].contentTitle.value;
+
+	// Trim Whitespace
+	contentTitle = contentTitle.replace(/^\s+/, "");
+	contentTitle = contentTitle.replace(/\s+$/, "");
+	
+	errorMessage = "";
+		
+	if(contentDescription == "")
+		errorMessage += "* The content can not be left blank.\n\n";
+	
+	if(errorMessage != ""){
+		alert(errorMessage);
+	}
+	else{
+		document.forms["contenttemplateform"].submit();
+	}
+	
+
+}
+
+
+
+function ViewLiveContent(){
+
+		var contentAddress = "{LIVE_CONTENT_LINK}";
+		newWindow = window.open(contentAddress, "LiveContentCategory", "height=700,width=1000,directories=no,location=yes,menubar=no,scrollbars=yes,status=yes,toolbar=no,resizable=yes");
+		newWindow.focus();
+}
+
+function RemoveTemplateContent(){
+
+	if(confirm("Are you sure that you want to delete this Content for the Tempalate?"))
+		document.location = "./ad_contentTemplate.php?action=removeContentTemplate&viewType=edit&editContentTemplateID={ITEM_EDIT_ID}&form_sc={FORM_SECURITY_CODE}";
+}
+
+function ChangeTemplateImage(){
+
+
+		var address = "./ad_contentTemplateSelect.php?editContentItemID={CONTENT_ITEM_ID}";
+		newWindow = window.open(address, "contentTemplateSelect", "height=500,width=480,directories=no,location=no,menubar=no,scrollbars=yes,status=no,toolbar=no,resizable=no");
+		newWindow.focus();
+
+}
+
+function TemplatePicked(TemplateID){
+	document.location = "./ad_contentTemplate.php?viewType=edit&editContentTemplateID={ITEM_EDIT_ID}&form_sc={FORM_SECURITY_CODE}&action=changeTemplateImage&artworkTemplateID=" + TemplateID;
+}
+
+
+
+</script>
+
+<script type="text/javascript" src="./library/admin_library.js"></script>
+<link rel="stylesheet" type="text/css" href="library/calendar/themes/winter.css"/>
+<script type="text/javascript" src="library/calendar/src/utils.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar.js"></script>
+<script type="text/javascript" src="library/calendar/lang/calendar-en.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar-setup.js"></script>
+<script type="text/javascript" src="library/formatDate.js"></script>
+<style type="text/css">
+<!--
+.style1 {
+	color: #000000;
+	font-weight: bold;
+}
+.style2 {color: #000000}
+.style3 {
+	color: #333333;
+	font-weight: bold;
+}
+-->
+</style>
+</head>
+<body bgcolor="#FFFFFF" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="">
+<div align="center">
+{HEADER}
+&nbsp;
+<table width="760" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td class="SmallBody">
+<form name="contenttemplateform" action="./ad_contentTemplate.php" method="post" >
+<input type="hidden" name="action" value="save" />
+<input type="hidden" name="viewType" value="{NEW_OR_EDIT}" />
+<input type="hidden" name="editContentTemplateID" value="{ITEM_EDIT_ID}" />
+<input type="hidden" name="contentItemID" value="{CONTENT_ITEM_ID}" />
+<input type="hidden" name="artworkTemplateID" value="{ARTWORK_TEMPLATE_ID}" />
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+
+
+<font class="Error">{MESSAGE}</font><br/>
+
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+  <td>
+
+
+	<img src="./images/content-back.jpg" align="absmiddle" width="18" height="17" alt="" /> <a href='./ad_contentItem.php?viewType=edit&editContentItemID={CONTENT_ITEM_ID}' class='BlueRedLink'>Back to Content Item</a>  <em><font class="SmallBody">( {CONTENT_ITEM_TITLE} )</font></em>
+	
+			<!-- BEGIN parentDisabledBL -->
+		<font class="SmallBody" style="color:#cc0000"><i>An ancestor has been disabled.</i></font>
+		<!-- END parentDisabledBL -->	
+	<br/><img  src="./images/transparent.gif" width="7" height="7" alt="" /><br/>
+
+
+		<!-- BEGIN LiveContentLinkBL -->
+		<img  src="./images/content-earth.jpg" align="absmiddle" width="18" height="17" alt="" /> <a href='javascript:ViewLiveContent()' class='BlueRedLink'>View Live Content</a><br/><img  src="./images/transparent.gif" width="7" height="7" alt="" /><br/>
+		<img  src="./images/content-remove.jpg" align="absmiddle" width="18" height="17" alt="" /> <a href='javascript:RemoveTemplateContent()' class='BlueRedLink'>Remove this Template Content</a><br/><img  src="./images/transparent.gif" width="7" height="7" alt="" /><br/>
+		<!-- END LiveContentLinkBL -->
+&nbsp;</td>
+    <td align="right">
+	<!-- BEGIN SavedMessageBL -->
+<OBJECT classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"
+ codebase="https://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=7,0,19,0"
+ WIDTH=200 HEIGHT=30>
+ <param name="movie" VALUE="./Saved-WhiteBack.swf" /> <param name="quality" value="high" /> <param NAME=bgcolor VALUE=#FFFFFF /> <EMBED src="./Saved-WhiteBack.swf" quality=high bgcolor=#FFFFFF  WIDTH=200 HEIGHT=30 TYPE="application/x-shockwave-flash" PLUGINSPAGE="https://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash"></EMBED>
+</OBJECT>
+<br/> &nbsp;<!-- END SavedMessageBL --></td>
+  </tr>
+</table>
+
+<table width="100%" border="0" cellspacing="0" cellpadding="5">
+  <tr>
+    <td bgcolor="#CCCCFF" class="SmallBody"><br/>
+	
+<span class="style1">Title</span><br/>
+<input type="text" name="contentTitle" value="{CONTENT_TITLE}" style="font-family:Arial, Helvetica, sans-serif; font-size:14px; width:600px; font-weight:bold; color:#993333" />
+
+
+<br/><img  src="./images/transparent.gif" width="15" height="15" alt="" /><br/>
+	
+{TEMPLATE_PREVIEW_IMAGE}
+
+<br/><br/><br/>
+<img  src="./images/transparent.gif" width="15" height="15" alt="" /><br/>
+
+
+<span class="style2"><strong>Content Format</strong></span><br/>
+<input type="radio" name="descriptionFormat" value="text" {DESC_FORMAT_TEXT_CHECKED} /> Text &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<input type="radio" name="descriptionFormat" value="html" {DESC_FORMAT_HTML_CHECKED} /> HTML
+<br/>
+<br/>
+<span class="style2"><strong>Active</strong></span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font class="ReallySmallBody">De-activating a Content Template will cause a 404 error on the front-end.</font><br/>
+<input type="radio" name="activeContent" value="Y" {ACTIVE_YES_CHECKED} /> Yes &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<input type="radio" name="activeContent" value="N" {ACTIVE_NO_CHECKED} /> No
+<br/>
+<br/>
+<span class="style2"><strong>Template Description</strong></span><br/>
+<textarea name="contentDescription" style="font-family:Arial, Helvetica, sans-serif; font-size:13px; width:750px; height:400px; color:#333333" wrap="VIRTUAL">{CONTENT_DESCRIPTION}</textarea>
+
+
+<br/>
+<br/>
+<span class="style2"><strong>HTML Header</strong> (optional)</span><br/>
+<textarea name="htmlHeader" style="font-family:Arial, Helvetica, sans-serif; font-size:13px; width:750px; height:80px; color:#333333" wrap="VIRTUAL">{HTML_HEADER}</textarea>
+
+
+<br/>
+<br/>
+<span class="style2"><strong>Links</strong></span><br/>
+<textarea name="contentLinks" style="font-family:Arial, Helvetica, sans-serif; font-size:13px; width:750px; height:80px; color:#333333" wrap="VIRTUAL">{CONTENT_LINKS}</textarea>
+
+
+
+
+
+<br/><img  src="./images/transparent.gif" width="15" height="15" alt="" /><br/>
+<br/>
+<br/>
+
+<input type="button" name="SaveBtn" value="Save" class="AdminButton" onmouseover="this.style.background='#ffeeaa';" onmouseout="this.style.background='#FFFFDD';" onclick="SaveButton();" />
+<br/><br/><br/><br/>
+
+</td>
+  </tr>
+</table>
+</form>
+
+
+
+<!-- BEGIN TimeStampBL -->
+<br/>
+Created By: {CREATED_BY} &nbsp;&nbsp;&nbsp;&nbsp;<font class="ReallySmallBody">{CREATED_ON}</font>
+<br/>
+Last Edited By: {LAST_EDITED_BY} &nbsp;&nbsp;&nbsp;&nbsp;<font class="ReallySmallBody">{LAST_EDITED_ON}</font>
+<br/>
+&nbsp;
+<!-- END TimeStampBL -->
+</td>
+</tr>
+</table>
+<table width="760" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="360" class="NavColor"><img src="./images/footer.gif" border="0" width="350" height="16" usemap="#footer" alt="" /></td>
+	<td width="400" align="right" class="NavColor"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+  </tr>
+</table>
+<font class="copyright"> </font>
+</div>
+&nbsp;
+<script type="text/javascript" src="./library/ImageMap-footer.js"></script>
+</body>
+</html>

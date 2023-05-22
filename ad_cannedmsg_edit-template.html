@@ -1,0 +1,52 @@
+<html>
+<head>
+<title>Resource Center</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<script>
+	function SaveMessage(CatID){
+
+		if(document.forms["msgform"].message.value == ""){
+			alert("Please enter a message before saving");
+			return;
+		}
+		else if(document.forms["msgform"].thetitle.value == ""){
+			alert("Please enter a title before saving");
+			return;
+		}
+		else{
+			document.forms["msgform"].submit();
+		}
+	}
+
+</script>
+
+</head>
+
+<body background="./images/tree/edit_message_back.gif" text="#000000" class="Body">
+<form name="msgform" action="./ad_cannedmsg_edit.php" method="post">
+<b>Title</b>
+<br/>
+<input  class="AdminInput" style="width:300px;" type="text" name="thetitle" value="{MSG_TITLE}" />
+<br/>
+<br/>
+<b>Message</b>
+<br/>
+<textarea class="AdminInput" name="message" style="width:370px; height:250px; background-color:#FFFFEE" wrap="VIRTUAL">{MSG_DATA}</textarea>
+<br/>
+<table width="90%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td align="right"><input type="button" name="SaveBtn" value="Save" class="AdminButton" onmouseover="this.style.background='#ffeeaa';" onmouseout="this.style.background='#FFFFDD';" onclick="SaveMessage();" />
+&nbsp;&nbsp;&nbsp;<input type="button" name="CancelBtn" value="Cancel" class="AdminButton" onmouseover="this.style.background='#ffeeaa';" onmouseout="this.style.background='#FFFFDD';" onclick="self.close();" /></td>
+  </tr>
+</table>
+
+<input type="hidden" name="categoryid" value="{CATEGORYID}" />
+<input type="hidden" name="messageid" value="{MESSAGEID}" />
+<input type="hidden" name="savemessage" value="true" />
+<input type="hidden" name="view" value="{VIEW}" />
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+
+</form>
+</body>
+</html>

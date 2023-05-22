@@ -1,0 +1,236 @@
+<html>
+<head>
+<title>Admin</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<script language="javascript">
+
+	//Make an array of the images we want to preload for the mouse-overs.
+	arImageSrc = new Array (
+		"./images/button-go-d.gif",
+		"./images/button-go-grey-u.gif",
+		"./images/button-hasbeenshipped-u.gif"
+
+	)
+
+	//Preload images.
+	arImageList = new Array ();
+	for (counter in arImageSrc) {
+		arImageList[counter] = new Image();
+		arImageList[counter].src = arImageSrc[counter];
+	}
+
+	function SelectPeriodTypeTimeFrame( state )
+	{
+		document.all.TimeFrame.disabled = !state;
+		document.all.DateRangeStartDay.disabled = state;
+		document.all.DateRangeStartMonth.disabled = state;
+		document.all.DateRangeStartYear.disabled = state;
+		document.all.DateRangeEndDay.disabled = state;
+		document.all.DateRangeEndMonth.disabled = state;
+		document.all.DateRangeEndYear.disabled = state;
+	}
+
+	function InitializeTimeFields()
+	{
+		var periodTimeFrame = {PERIODISTIMEFRAME};
+		document.all.TimeFrame.disabled = !periodTimeFrame;
+		document.all.DateRangeStartDay.disabled = periodTimeFrame;
+		document.all.DateRangeStartMonth.disabled = periodTimeFrame;
+		document.all.DateRangeStartYear.disabled = periodTimeFrame;
+		document.all.DateRangeEndDay.disabled = periodTimeFrame;
+		document.all.DateRangeEndMonth.disabled = periodTimeFrame;
+		document.all.DateRangeEndYear.disabled = periodTimeFrame;
+	}
+
+	function OrderLink(OrderNo){
+
+		var address = "./ad_order.php?orderno=" + OrderNo;
+		newWindow = window.open(address, "orderwindow", "height=500,width=820,directories=no,location=no,menubar=no,scrollbars=yes,status=yes,toolbar=no,resizable=yes");
+		newWindow.focus();
+
+	}
+	function ProjectLink(ProjectNo){
+		var address = "./ad_project.php?projectorderid=" + ProjectNo;
+		newWindow = window.open(address, "projectwindow", "height=500,width=820,directories=no,location=no,menubar=no,scrollbars=yes,status=yes,toolbar=no,resizable=yes");
+		newWindow.focus();
+	}
+	function ArtworkLink(ProjectNo){
+		dateObj = new Date();
+		var address = "./ad_proof_artwork.php?projectid=" + ProjectNo + "&nocache=" + dateObj.getTime();
+		newWindow = window.open(address, "artworkWindow", "height=500,width=820,directories=no,location=no,menubar=no,scrollbars=yes,status=yes,toolbar=no,resizable=yes");
+		newWindow.focus();
+	}
+	function PDFlink(ProjectNo){
+
+		var address = "./pdf_launch.php?forward=ad_display_pdf.php%3Fprojectrecord=" + ProjectNo + "%26pdfprofile=Proof%26viewtype=proof";
+
+		newWindow = window.open(address, "pdfpreviewProof", "height=500,width=700,directories=no,location=no,menubar=no,scrollbars=yes,status=no,toolbar=no,resizable=yes");
+		newWindow.moveTo((self.screenLeft + self.screen.width/9),(self.screenTop + self.screen.height/9));
+		newWindow.focus();
+
+	}
+
+	function hl(e)
+	{
+		e.style.color='#990000';
+		e.style.textDecoration='underline';
+	}
+	function dl(e)
+	{
+		e.style.color='black';
+		e.style.textDecoration='none';
+	}
+
+	function Search(){
+		document.SearchForm.submit();
+	}
+</script>
+
+
+<link rel="stylesheet" type="text/css" href="library/calendar/themes/winter.css"/>
+<script type="text/javascript" src="library/calendar/src/utils.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar.js"></script>
+<script type="text/javascript" src="library/calendar/lang/calendar-en.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar-setup.js"></script>
+<script type="text/javascript" src="library/formatDate.js"></script>
+</head>
+<body bgcolor="#FFFFFF" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="">
+<div align="center">
+{HEADER}
+&nbsp;
+<table width="760" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td class="Body">
+<!-- Inner Body  -->
+<FORM name="SearchForm" method="get" onsubmit="return false">
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+
+
+				
+				<tr>
+				 <td>
+					<TABLE width="100%" border="0" cellspacing="0" cellpadding="2" bgcolor="#999999">
+						<TR>
+							<TD>
+								<TABLE width="100%" border="0" cellspacing="2" cellpadding="0" bgcolor="#EEEEEE" >
+									<TR>
+
+                    <TD class="SmallBodyBold" width="26%">&nbsp;&nbsp;Phrase Match
+                      Within Artworks:</TD>
+
+                    <TD class="SmallBodyBlack" width="74%">
+                      <input type="text" name="keywords" value="{KEYWORDS}" class="admininput" size="30" /> &nbsp;&nbsp;<font class="SmallBody">(not case sensitive... spaces matter)</font>
+										</TD>
+
+
+									</TR>
+									<TR>
+
+                    <TD class="SmallBodyBold" width="26%">&nbsp;&nbsp;Report Period:</TD>
+
+                    <TD class="SmallBodyBlack" width="74%">
+                      <input type="radio" name="PeriodType" class="SmallBody" value="TIMEFRAME" onclick="SelectPeriodTypeTimeFrame( true );"
+											{PERIODTYPETIMEFRAME} />
+											{TIMEFRAMESELS}
+										</TD>
+
+
+									</TR>
+									<TR>
+
+                    <TD class="SmallBodyBold" width="26%"></TD>
+
+                    <TD class="SmallBodyBlack" width="74%" >
+                      <input type="radio" name="PeriodType"  class="SmallBody" value="DATERANGE" onclick="SelectPeriodTypeTimeFrame( false );"
+											{PERIODTYPEDATERANGE} />
+											{DATERANGESELS}
+										</TD>
+
+
+									</TR>
+									<TR>
+								</TABLE>
+							</TD>
+						</TR>
+					</TABLE>
+				<TABLE width="100%" border="0" cellspacing="0" cellpadding="0">
+					<TR>
+						<TD colspan="2"><img src="./images/transparent.gif" border="0" width="1" height="4" alt="" /></TD>
+					</TR>
+					<TR>
+						<TD width="59%">&nbsp;</TD>
+						<TD width="41%" align="center">
+
+<OBJECT classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"
+ codebase="https://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=7,0,19,0"
+ WIDTH=270 HEIGHT=70>
+ <param name="movie" VALUE="./searchbutton.swf" /> <param name="quality" value="high" /> <param NAME=bgcolor VALUE=#FFFFFF /> <EMBED name="buybuttonflash" src="./searchbutton.swf" quality=high bgcolor=#FFFFFF  WIDTH=270 HEIGHT=70 TYPE="application/x-shockwave-flash" PLUGINSPAGE="https://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash"></EMBED>
+</OBJECT>
+
+						</TD>
+					</TR>
+				</TABLE>
+				</td>
+  </tr>
+			
+
+</table>
+</FORM>
+        <span class="Error">{MESSAGE}</span> <br/>
+
+
+						<!-- BEGIN NoResultsBL -->
+						Total Results: {TOTAL_RESULTS}<br/>
+						<br/>
+
+						<table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#666666">
+  <tr>
+    <td><table width="100%" border="0" cellspacing="1" cellpadding="4">
+  <tr>
+                  <td bgcolor="#9999AA" class="Body" width="36%"><font color="#FFFFFF"><b>Order
+                    #</b></font></td>
+
+                  <td bgcolor="#9999AA" class="Body" width="35%"><font color="#FFFFFF"><b>Name
+                    - Company</b></font></td>
+
+                  <td bgcolor="#9999AA" class="Body" width="29%"><font color="#FFFFFF"><b>Date
+                    Ordered </b></font></td>
+  </tr>
+  <!-- BEGIN SearchResultBL -->
+  <tr onmouseover="hl(this)" onmouseout="dl(this)">
+                  <td bgcolor="#EEEEF6" width="36%" class="Body" ><a href="javascript:OrderLink({ORDERNO})">{ORDERNO}</a>
+                    - <a href="javascript:ProjectLink({PROJECTNO})" >{PROJECTNO}</a>
+                    - <a href="javascript:ArtworkLink({PROJECTNO})">Artwork</a>
+                    - <a href="javascript:PDFlink({PROJECTNO})" >PDF</a></td>
+                  <td bgcolor="#EEEEF6" width="35%" class="Body">{CUSTOMER_NAME}</td>
+                  <td bgcolor="#EEEEF6" width="29%" class="Body">{ORDER_DATE}</td>
+  </tr>
+  <!-- END SearchResultBL -->
+</table>
+</td>
+  </tr>
+</table>
+			<!-- END NoResultsBL -->
+						<br/><br/>
+<br/>
+
+<!-- Inner Body  END -->
+</td>
+</tr>
+</table>
+<table width="760" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="360" class="NavColor"><img src="./images/footer.gif" border="0" width="350" height="16" usemap="#footer" alt="" /></td>
+	<td width="400" align="right" class="NavColor"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+  </tr>
+</table>
+<font class="copyright"> </font>
+</div>
+&nbsp;
+<script type="text/javascript" src="./library/ImageMap-footer.js"></script>
+<script type="text/javascript">InitializeTimeFields()</script>
+</body>
+</html>

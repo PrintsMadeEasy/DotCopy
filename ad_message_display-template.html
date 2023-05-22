@@ -1,0 +1,130 @@
+<html>
+<head>
+<title>Admin</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<script language="javascript">
+
+	//Make an array of the images we want to preload for the mouse-overs.
+	arImageSrc = new Array (
+		"./images/button-go-d.gif",
+		"./images/button-sendmessage-u.gif"
+	)
+
+	//Preload images.
+	arImageList = new Array ();
+	for (counter in arImageSrc) {
+		arImageList[counter] = new Image();
+		arImageList[counter].src = arImageSrc[counter];
+	}
+
+	function SubmitForm(){
+		if(document.forms["writethread"].message.value==""){
+			alert("Please type a message before sending.");
+		}
+		else{
+			document.forms["writethread"].submit();
+		}
+	}
+	function makeNewWindow2(address){
+		newWindow = window.open(address, "sub", "height=395,width=375,directories=no,location=no,menubar=no,scrollbars=no,status=no,toolbar=no,resizable=no");
+		newWindow.focus();
+	}
+
+	function CloseUser(ThreadID, PipedIDlist){
+		document.location = "./ad_actions.php?returl={RETURL_ENCODED}&action=markmessageread&messagelist=" + PipedIDlist + "&form_sc={FORM_SECURITY_CODE}";
+	}
+
+
+</script>
+<script type="text/javascript" src="./library/admin_library.js"></script>
+<link rel="stylesheet" type="text/css" href="library/calendar/themes/winter.css"/>
+<script type="text/javascript" src="library/calendar/src/utils.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar.js"></script>
+<script type="text/javascript" src="library/calendar/lang/calendar-en.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar-setup.js"></script>
+<script type="text/javascript" src="library/formatDate.js"></script>
+</head>
+<body bgcolor="#FFFFFF" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="">
+<div align="center">
+{HEADER}
+&nbsp;
+<table width="760" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td class="Body">
+<!-- Inner Body  -->
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td class="Body">{NAVLINK} {PEOPLE_IN_THREAD}</td>
+    <td class="SmallBody" align="right">
+                          <!-- BEGIN CloseMessageLinkBL -->
+                              <br/><a href='javascript:CloseUser("{THREADID}", "{UNREADMESSAGES}")' class='BlueRedLink'>Close</a>
+                          <!-- END CloseMessageLinkBL -->
+	</td>
+  </tr>
+</table>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <form name="writethread" method="post" action="./ad_message_save.php">
+  <input type="hidden" name="replyto" value="{THREADID}" />
+  <input type="hidden" name="unreadmessages" value="{UNREADMESSAGES}" />
+  <input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+  <tr>
+
+    <td>
+	<br/>
+
+<font class="Body"> Add a New Message to This Thread</font>
+<br/>
+<textarea name="message" style="width:740px; height:170px; background-color:#EEEEFF; font-size:12px;" wrap="VIRTUAL"></textarea>
+<br/>
+<a onclick="SubmitForm();" >
+<img src="./images/button-sendmessage-u.gif" onmouseover="this.src='./images/button-sendmessage-d.gif';" onmouseout="this.src='./images/button-sendmessage-u.gif';" border="0" width="119" height="25" align="absmiddle" alt="" /></a></td>
+  </tr>
+  </form>
+</table>
+
+<br/>&nbsp;<br/>
+<table width="100%" border="0" cellspacing="0" cellpadding="0" >
+  <tr>
+    <td class="Body" width="50%"><font color="#660000"><b>Subject:</b>
+    
+     <!-- BEGIN subjectLinkBL -->
+	<a href='{LINKURL}{REFID}&message' class='BlueRedLinkRecord'>{LINKSUBJECT}{REFID}</a>&nbsp;&nbsp; 
+	 <!-- END subjectLinkBL -->
+	 {SUBJECT}
+    
+    </font></td>
+	<td class="Body" width="50%" align="right"><a onclick="MakeNewTask('message', {THREADID}, true)"><img src="./images/button-createtask2-u.gif" onmouseover="this.src='./images/button-createtask2-d.gif';" onmouseout="this.src='./images/button-createtask2-u.gif';" border="0" width="142" height="25" align="absmiddle" alt="" /></a></td>
+<tr>
+</table>
+<table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#CCCCCC">
+  <tr>
+    <td class="Body"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+  </tr>
+</table>
+&nbsp;
+{MESSAGE_BLOCK}<br/>
+
+<br/>
+{TASKS}
+
+
+				<br/><br/><br/>
+<!-- Inner Body  END -->
+</td>
+</tr>
+</table>
+<table width="760" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="360" class="NavColor"><img src="./images/footer.gif" border="0" width="350" height="16" usemap="#footer" alt="" /></td>
+	<td width="400" align="right" class="NavColor"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+  </tr>
+</table>
+<font class="copyright"> </font>
+</div>
+&nbsp;
+<script type="text/javascript" src="./library/ImageMap-footer.js"></script>
+</body>
+</html>

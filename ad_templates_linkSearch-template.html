@@ -1,0 +1,158 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Template Text Fields</title>
+<link rel="stylesheet" href="./library/stylesheet.css" type="text/css" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+
+<script type="text/javascript" src="./library/admin_library.js"></script>
+<script type="text/javascript" src="./library/general_lib.js"></script>
+<script language="javascript">
+
+
+	
+	function selectTemplate(tempArea, tempID){
+
+		document.location = "ad_templates_linkSearch.php?action=linkTemplate&linkTemplateArea={LINK_TEMPLATE_AREA}&linkTemplateID={LINK_TEMPLATE_ID}&searchProductId={SEARCH_PRODUCT_ID}&selectTemplateArea=" + tempArea + "&selectTemplateID=" + tempID + "&form_sc={FORM_SECURITY_CODE}";
+	}
+	
+	function autoTranfer(){
+
+		if(confirm("After transferring artwork onto the new product in a pop-up window,\nyou must 'Save' the artwork to create preview images (which also makes it go live).\n\nIf you 'Cancel' from the Editing Tool immediately, you can gain access to the\nClipboard before putting the template live.")){
+			var address = "ad_templates_linkSearch.php?action=autoTransfer&linkTemplateArea={LINK_TEMPLATE_AREA}&linkTemplateID={LINK_TEMPLATE_ID}&searchProductId={SEARCH_PRODUCT_ID}&form_sc={FORM_SECURITY_CODE}";
+			newWindow = window.open(address, "autoTransfer", "height=700,width=800,directories=no,location=yes,menubar=no,scrollbars=yes,status=yes,toolbar=no,resizable=yes");
+			newWindow.focus();
+		}
+
+	}
+	
+
+
+</script>
+
+</head>
+
+<body bgcolor="#3366CC" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="">
+<img  src="./images/transparent.gif" border="0" width="1" height="10" alt="" /><br/>
+<div align="center">
+<table bgcolor="#EEEEEE" width="530" cellpadding="0" cellspacing="0" border="0">
+
+<tr>
+<td bgcolor="#CCCCCC" align="center" class="Body" style="background-image: url(./images/admin/header-shipping.png); background-repeat: no-repeat;">
+<b>Locate a Similar Design</b>
+</td>
+
+<tr>
+<tr>
+<td bgcolor="#666666" align="center" class="Body"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+
+<tr>
+<td align="center">
+
+<table width="96%" border="0" cellspacing="0" cellpadding="0">
+
+  <tr>
+              <td class="Body" align="left"><img  src="./images/transparent.gif" width="5" height="5" alt="" />
+		<table width="100%" border="0" cellspacing="0" cellpadding="5">
+	<tr>
+		<td width="98%"><strong><font style="color:#660000">{PRODUCT_NAME}</font></strong></td>
+		<td width="1%" align="right"><img src="./images/question_mark_up.png" onMouseOver="this.src='./images/question_mark_down.png'; showTheToolTip('helpDiv_AutoTransfer'); this.style.cursor ='hand';" onMouseOut="this.src='./images/question_mark_up.png';  hideTheToolTipContainer('helpDiv_AutoTransfer');" border="0"  align="absmiddle" alt="" />
+	<div style="position:relative;">
+		<div id="helpDiv_AutoTransfer" style='background-image: url(./images/tool_tips_back.png); position:absolute;  border:solid; border-color:#660000; border-width:1px; padding:6px; left:-250px; top:4px; width:350px; filter:progid:DXImageTransform.Microsoft.dropShadow(Color=#999999,offX=3,offY=3)' align="left" >
+		<font class="SmallBody">
+			This feature copies all layers from the source template onto the destination product.  This can speed up the time that it takes to create a matching design.  <br />
+			<br />
+			After adjusting layers sizes and positions on the destination template, you may need to replace images  using the clipboard if the DPI is not sufficient.<br />
+			<br />
+			Templates are automatically created for the destination product within the search engine. A single keyword is associated with the template using the  the following format. <br /> 
+			<font color="#993300">(&quot;<strong>TS</strong>&quot; or &quot;<strong>TC</strong>) + &quot;<strong>Originating Template ID</strong>&quot;</font><br />
+			 The prefix says whether it was from an auto-transfered Template Category, or the Search Engine. This can be helpful to locate a matching design within another browser window in the future.<br />
+			<br />
+			</font></div> 
+	</div>
+<script>
+hideTheToolTipContainer("helpDiv_AutoTransfer");
+</script>		</td>
+		<td width="1%;"><input type="button" value="Auto-Transfer" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" onclick="autoTranfer();"  /></td>
+	</tr>
+</table>
+<a href="ad_templates_link.php?templateArea={LINK_TEMPLATE_AREA}&templateID={LINK_TEMPLATE_ID}" class="BlueRedLink" style="font-size:10px;">&lt; Return to Linking Profile</a>
+<br />
+
+
+
+<br />
+
+
+
+
+
+
+
+
+
+				  <table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#666666">
+  <tr>
+    <td><table width="100%" border="0" cellspacing="1" cellpadding="4">
+  <tr>
+    <td class="SmallBody" bgcolor="#f3f3f3"><strong>Search Engine</strong></td>
+	<td class="SmallBody" bgcolor="#f3f3f3"><strong>Categories</strong></td>
+  </tr>
+  <tr>
+    <td class="SmallBody" bgcolor="#e3e3e3"><form style="display:inline;" name="keywordSearch" action="ad_templates_linkSearch.php">
+	<input type="text" name="keywords" value="{KEYWORDS}" style="width:250px;" />
+	<input type="hidden" name="view" value="keywordSearch"  />
+	<input type="hidden" name="linkTemplateID" value="{LINK_TEMPLATE_ID}"  />
+	<input type="hidden" name="linkTemplateArea" value="{LINK_TEMPLATE_AREA}"  />
+	<input type="hidden" name="searchProductId" value="{SEARCH_PRODUCT_ID}"  />
+	</form></td>
+	<td class="SmallBody" bgcolor="#e3e3e3">
+<form style="display:inline;" name="categorySearch" action="ad_templates_linkSearch.php">
+	<input type="hidden" name="view" value="categorySearch"  />
+	<input type="hidden" name="linkTemplateID" value="{LINK_TEMPLATE_ID}"  />
+	<input type="hidden" name="linkTemplateArea" value="{LINK_TEMPLATE_AREA}"  />
+	<input type="hidden" name="searchProductId" value="{SEARCH_PRODUCT_ID}"  />
+	<select name="categoryID" onchange="document.forms['categorySearch'].submit();">
+	{CATEGORY_SELECT}
+	</select>
+</form>	
+	</td>
+  </tr>
+</table>
+</td>
+  </tr>
+</table>
+		&nbsp;		  <br/>
+
+ <!-- BEGIN DefaultDescriptionBL -->
+ <div style="background-color:#DCE8F5; border:solid; border-color:#3366CC; border-width:1px; padding:4px; font-size:10px;">
+ Default Search Engine templates shown, having similar keywords as the source template.
+ </div>
+ <br />
+
+
+ <!-- END DefaultDescriptionBL -->
+<br/>
+
+<!-- BEGIN TemplateResultBL -->
+<a href="javascript:selectTemplate('{TEMP_AREA}', '{TEMP_ID}')"><img src="{THUMBNAIL_PHOTO}" style="border:solid; border-width:1px; border-color:#000000; margin:6px;" /></a>
+<!-- END TemplateResultBL -->
+
+              </td>
+  </tr>
+
+</table>
+</td>
+</tr>
+
+
+<tr>
+<td><img src="images/header-editoptions-fade-bot.gif" width="530" alt="" /></td>
+</tr>
+</table>
+
+
+</div>
+
+</body>
+</html>

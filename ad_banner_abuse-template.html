@@ -1,0 +1,115 @@
+<html>
+<head>
+<title>Banner Click Abuse</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+
+<script language="javascript">
+
+	//Make an array of the images we want to preload for the mouse-overs.
+	arImageSrc = new Array (
+		"./images/button-go-d.gif",
+		"./images/button-closewindow-blue-d.gif",
+		"./images/button-sendmessage-blue-d.gif"
+	)
+
+	function ShowSalesPerson(SalesUserID){
+	
+		if(window.opener)
+			window.opener.location = "./myaccount_sales.php?view=report&salesrep=" + SalesUserID;
+		else
+			alert("The parent Window has been closed.  You may need to close this pop-up window and re-open it again.");
+	
+	}
+	function ShowOrdersFromBannerAndIP(ipAddress){
+		var abuseURL = "./ad_marketing_bannerorders.php?starttime={STARTTIMESTAMP}&endtime={ENDTIMESTAMP}&bannername={BANNER_NAME_ENCODED}&ipaddress=" + escape(ipAddress);
+		newWindow = window.open(abuseURL, "ordersbybannerip", "height=620,width=270,directories=no,location=no,menubar=no,scrollbars=yes,status=yes,toolbar=no,resizable=yes");
+		newWindow.focus();
+	}
+
+</script>
+<script type="text/javascript" src="./library/admin_library.js"></script>
+
+<style type="text/css">
+<!--
+.style2 {color: #FFFF99}
+-->
+</style>
+</head>
+
+<body bgcolor="#3366CC" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="" >
+<img  src="./images/transparent.gif" border="0" width="1" height="10" alt="" /><br/>
+<div align="center">
+<table bgcolor="#EEEEEE" width="400" cellpadding="0" cellspacing="0" border="0">
+
+<tr>
+<td bgcolor="#999999" class="Body" align="center"><img  src="./images/transparent.gif" border="0" width="1" height="3" alt="" /><br/><font color="#FFFFFF"><b>Banner Click Abuse for... </b><br/></font><b><font class="SmallBody"><font color="#FFFF99">{BANNER_NAME}</font></font></b><br/>
+<img src="./images/transparent.gif" border="0" width="1" height="3" alt="" /></td>
+
+<tr>
+<td align="center" class="Body">
+<br/>
+<table width="95%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+            <td class="SmallBody"> Shows how many times an IP address has clicked 
+              on the banner within the time range.<br/>
+              From: {START_DATE} to {END_DATE}<br/>
+            </td>
+  </tr>
+</table>
+
+<!-- BEGIN NoAbuseBL -->
+
+
+
+
+<table width="100%" border="0" cellspacing="8" cellpadding="3">
+  <tr>
+            <td class="SmallBody" bgcolor="#CCCCEE" width="40%">&nbsp;<b>IP Address</b></td>
+	        <td class="SmallBody" bgcolor="#CCCCEE" width="20%">&nbsp;<b>Clicks</b></td>
+			<td class="SmallBody" bgcolor="#CCCCEE" width="20%">&nbsp;<b>Purchases</b></td>
+			<td class="SmallBody" bgcolor="#CCCCEE" width="20%">&nbsp;<b>Conversion</b></td>
+  </tr>
+<!-- BEGIN AbuseBL -->
+  <tr>
+            <td class="SmallBody" bgcolor="#DDDDFF" width="40%">&nbsp;<a class="blueredlink" href="javascript:ShowIPaddress('{IPADDRESS}');">{IPADDRESS_DESC}</a></td>
+	        <td class="SmallBody" bgcolor="#DDDDFF" width="20%">&nbsp;{CLICK_NUMBER}</td>
+			<td class="SmallBody" bgcolor="#DDDDFF" width="20%">&nbsp;<a class="blueredlink" href="javascript:ShowOrdersFromBannerAndIP('{IPADDRESS}');">{BUYS}</a></td>
+			<td class="SmallBody" bgcolor="#DDDDFF" width="20%">&nbsp;{CONVERSION}</td>
+  </tr>
+ <!-- END AbuseBL -->
+</table>
+
+<!-- END NoAbuseBL -->
+
+</td>
+</tr>
+
+
+<tr>
+<td><img src="images/header-editoptions-fade-bot.gif" width="400" alt="" /></td>
+</tr>
+</table>
+
+<table width="350" border="0" cellspacing="0" cellpadding="0">
+
+  <tr>
+
+    <td align="center">
+
+<img  src="./images/transparent.gif" border="0" width="1" height="5" alt="" /><br/>
+<a onclick="self.close();" ><img src="./images/button-closewindow-blue-u.gif" onmouseover="this.src='./images/button-closewindow-blue-d.gif';" onmouseout="this.src='./images/button-closewindow-blue-u.gif';" border="0"  align="absmiddle" alt="" /></a>  &nbsp;&nbsp;
+
+
+<br/>
+&nbsp;
+	</td>
+
+  </tr>
+</table>
+</div>
+
+
+</body>
+</html>

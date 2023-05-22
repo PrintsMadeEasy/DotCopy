@@ -1,0 +1,1992 @@
+# Allows "FancyIndexing" so that people who bookmark the website can see the PME icon.
+Options -Indexes
+
+AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document docx
+AddType application/vnd.openxmlformats-officedocument.spreadsheetml.sheet xlsx
+AddType application/postscript ai
+
+# Make sure that some Directory Names are not case sensitive
+# For more information on Mod Rewrite visit... http://www.ilovejackdaniels.com/mod_rewrite_cheat_sheet.pdf
+RewriteEngine on
+
+# For any directory or sub directory... list all of the posible letter combinations and redirect to the chosen destination.
+# ------ The last command must contain the letter "L" in the 3rd parameter... letting Apache know that their are no more rules to check.
+
+
+#-- Prevent Hacking through the HTTP Trace method http://www.apacheweek.com/issues/03-01-24#news
+RewriteEngine On 
+RewriteCond %{REQUEST_METHOD} ^TRACE 
+RewriteRule .* - [F] 
+
+
+
+#--- Enforce WWW for SEO and also SSL certificates
+RewriteCond %{HTTP_HOST} ^postcards\.com$ [NC]
+RewriteRule ^(.*)$ http://www.postcards.com/$1 [R=301,L]
+
+RewriteCond %{HTTP_HOST} ^printsmadeeasy\.com$ [NC]
+RewriteRule ^(.*)$ http://www.printsmadeeasy.com/$1 [R=301,L]
+RewriteCond %{HTTP_HOST} ^mail\.printsmadeeasy\.com$ [NC]
+RewriteRule ^(.*)$ http://www.printsmadeeasy.com/$1 [R=301,L]
+#RewriteCond %{HTTP_HOST} ^s10\.printsmadeeasy\.com$ [NC]
+#RewriteRule ^(.*)$ http://www.printsmadeeasy.com/$1 [R=301,L]
+
+RewriteCond %{HTTP_HOST} ^mail\.postcards\.com$ [NC]
+RewriteRule ^(.*)$ http://www.postcards.com/$1 [R=301,L]
+
+
+# Make sure that index.html is never scene in the browser URL.  Google won't like that for SEO.
+RewriteCond %{THE_REQUEST} ^.*/index.html 
+RewriteRule ^(.*)index.html$ /$1 [R=301,L] 
+RewriteCond %{THE_REQUEST} ^.*/index.php 
+RewriteRule ^(.*)index.php$ /$1 [R=301,L] 
+
+
+#-- Redirect the power of the Make business Cards page to our home page.
+RewriteCond %{HTTP_HOST} ^www\.printsmadeeasy\.com$ [NC]
+RewriteRule ^business-cards.html$ http://www.printsmadeeasy.com/business-cards.php [NC,R=301,L]
+RewriteCond %{HTTP_HOST} ^www\.printsmadeeasy\.com$ [NC]
+RewriteRule ^code_samples/php/text_generation\.php\s*$ http://www.printsmadeeasy.com/code_samples/php/text_generation.html [NC,R=301,L]
+RewriteCond %{HTTP_HOST} ^www\.printsmadeeasy\.com$ [NC]
+RewriteRule ^customer_service_orders\.php$ http://www.printsmadeeasy.com/order_history.php [NC,R=301,L]
+
+
+
+# Redirect from the content system
+RewriteCond %{HTTP_HOST} ^www\.printsmadeeasy\.com$ [NC]
+RewriteRule ^ci/Business\+Cards$ http://www.printsmadeeasy.com/business-cards.php [NC,R=301,L]
+RewriteCond %{HTTP_HOST} ^www\.printsmadeeasy\.com$ [NC]
+RewriteRule ^ci/Making\+business\+cards$ http://www.printsmadeeasy.com/business-cards.php [NC,R=301,L]
+
+
+
+# The S is optional for "printsmadeeasy.com/greeting(s)"
+RewriteCond %{HTTP_HOST} ^www\.printsmadeeasy\.com$ [NC]
+RewriteRule ^Greetings\s*$ /greeting-cards.html [L]
+RewriteCond %{HTTP_HOST} ^www\.printsmadeeasy\.com$ [NC]
+RewriteRule ^greetingcard[sS]?\s*$ /Greetings [NC,R=301]
+RewriteCond %{HTTP_HOST} ^www\.printsmadeeasy\.com$ [NC]
+RewriteRule ^greeting[sS]?/\s*$ /Greetings [NC,R=301]
+RewriteCond %{HTTP_HOST} ^www\.printsmadeeasy\.com$ [NC]
+RewriteRule ^greeting[sS]?\s*$ /Greetings [R=301]
+RewriteCond %{HTTP_HOST} ^www\.printsmadeeasy\.com$ [NC]
+RewriteRule ^greetingcard[sS]?/\s*$ /Greetings [NC,R=301]
+
+
+RewriteCond %{HTTP_HOST} ^www\.printsmadeeasy\.com$ [NC]
+RewriteRule ^birthdays?\s*$ /birthday-parties.html [NC]
+
+RewriteCond %{HTTP_HOST} ^www\.printsmadeeasy\.com$ [NC]
+RewriteRule ^birthdays?/\s*$ /Birthdays [NC,R]
+
+RewriteRule ^birthannouncements?\s*$ /birth-announcements.html [NC]
+RewriteRule ^birthannouncements?/\s*$ /BirthAnnouncements [NC,R]
+
+
+
+RewriteCond %{HTTP_HOST} ^www\.printsmadeeasy\.com$ [NC]
+RewriteRule ^savethedate/\s*$ /Save-The-Date-Postcards [NC,R=301,L]
+RewriteCond %{HTTP_HOST} ^www\.printsmadeeasy\.com$ [NC]
+RewriteRule ^savethedate\s*$ /Save-The-Date-Postcards [NC,R=301,L]
+RewriteCond %{HTTP_HOST} ^www\.printsmadeeasy\.com$ [NC]
+RewriteRule ^Save-The-Date-Postcards/\s*$ /Save-The-Date-Postcards [NC,R=301,L]
+RewriteCond %{HTTP_HOST} ^www\.printsmadeeasy\.com$ [NC]
+RewriteRule ^Save-The-Date-Postcards\s*$ /save-the-date.html [L]
+
+RewriteCond %{HTTP_HOST} ^www\.printsmadeeasy\.com$ [NC]
+RewriteRule ^pv(.*)$ /offer.php$1 [NC,L]
+
+RewriteCond %{HTTP_HOST} ^www\.printsmadeeasy\.com$ [NC]
+RewriteRule ^coupon/\s*$ /coupon [NC,R=301,L]
+RewriteCond %{HTTP_HOST} ^www\.printsmadeeasy\.com$ [NC]
+RewriteRule ^coupon\s*$ /coupon.php [NC,L]
+RewriteCond %{HTTP_HOST} ^www\.printsmadeeasy\.com$ [NC]
+RewriteRule ^coupon/(\w+)\s*$ /coupon.php?couponCode=$1 [NC,R=301,L]
+
+RewriteCond %{HTTP_HOST} ^www\.printsmadeeasy\.com$ [NC]
+RewriteRule ^paypal/?$ /actions.php?action=PaypalCheckout [NC,R=302,L]
+
+RewriteRule ^realty\s*$ /realtyPostcards.html [NC]
+RewriteRule ^realty/\s*$ /realty [NC,R]
+
+
+RewriteRule ^free\s*$ /log.php?from=m-PR-free&dest=free-business-cards.html [NC]
+RewriteRule ^free/\s*$ /free [NC,R]
+
+RewriteRule ^MyGym\s*$ /partners-MyGym.html [NC]
+
+# Anytime anyone accessed a subdirectory /pens.... assume they are putting their phone number afterwards and redirect them to a promtional page for that Product ID.
+RewriteRule ^pens/(.*)$ /promo.php?pr=91&ph=$1 [NC,R]
+
+
+
+# Show the template gallery in place of a static HTML page.
+RewriteCond %{HTTP_HOST} ^(www\.postcards\.com|74\.53\.2\.167)$ [NC]
+RewriteRule ^save_the_date_postcards\.html$ /templates.php?productid=157&resultsCount=32&keywords_and=horizontal&TemplateNumber=SaveTheDateV2&TemplateSwitchOnPaging=&keywords=category:Save-the-Date& [NC]
+RewriteCond %{HTTP_HOST} ^(www\.postcards\.com|74\.53\.2\.167)$ [NC]
+RewriteRule ^custom_postcards\.html$ /templates.php?productid=156&resultsCount=32&keywords_and=horizontal&TemplateNumber=CustomPostcards&TemplateSwitchOnPaging=&keywords=category:Popular [NC]
+RewriteCond %{HTTP_HOST} ^(www\.postcards\.com|74\.53\.2\.167)$ [NC]
+RewriteRule ^cheap_postcards\.html$ /templates.php?productid=156&resultsCount=32&keywords_and=horizontal&TemplateNumber=CheapPostCards&TemplateSwitchOnPaging=&keywords=category:Popular [NC]
+RewriteCond %{HTTP_HOST} ^(www\.postcards\.com|74\.53\.2\.167)$ [NC]
+RewriteRule ^business_cards\.html$ /templates.php?productid=159&resultsCount=32&keywords_and=horizontal&TemplateNumber=BusinessCards&TemplateSwitchOnPaging=&keywords=category:Popular [NC]
+RewriteCond %{HTTP_HOST} ^(www\.postcards\.com|74\.53\.2\.167)$ [NC]
+RewriteRule ^cheap_business_cards\.html$ /templates.php?productid=159&resultsCount=32&keywords_and=horizontal&TemplateNumber=CheapBC&TemplateSwitchOnPaging=&keywords=category:Popular [NC]
+RewriteCond %{HTTP_HOST} ^(www\.postcards\.com|74\.53\.2\.167)$ [NC]
+RewriteRule ^postcards_shipped\.html$ /templates.php?productid=156&resultsCount=32&keywords_and=horizontal&TemplateNumber=PremPostcards&TemplateSwitchOnPaging=&keywords=category:Popular [NC]
+RewriteCond %{HTTP_HOST} ^(www\.postcards\.com|74\.53\.2\.167)$ [NC]
+RewriteRule ^mailing_services\.html$ /templates.php?productid=153&resultsCount=32&keywords_and=horizontal&TemplateNumber=MailingServ&TemplateSwitchOnPaging=&keywords=category:Popular [NC]
+RewriteCond %{HTTP_HOST} ^(www\.postcards\.com|74\.53\.2\.167)$ [NC]
+RewriteRule ^direct_mail_postcards\.html$ /templates.php?productid=153&resultsCount=32&keywords_and=horizontal&TemplateNumber=DirectMail&TemplateSwitchOnPaging=&keywords=category:Popular [NC]
+RewriteCond %{HTTP_HOST} ^(www\.postcards\.com|74\.53\.2\.167)$ [NC]
+RewriteRule ^postcard_marketing\.html$ /templates.php?productid=153&resultsCount=32&keywords_and=horizontal&TemplateNumber=PostcardMarket&TemplateSwitchOnPaging=&keywords=category:Popular [NC]
+RewriteCond %{HTTP_HOST} ^(www\.postcards\.com|74\.53\.2\.167)$ [NC]
+RewriteRule ^greeting_cards\.html$ /templates.php?productid=174&resultsCount=32&TemplateNumber=GreetingCards&TemplateSwitchOnPaging=&keywords_and=horizontal&keywords=category:SpecialOccasion [NC]
+RewriteCond %{HTTP_HOST} ^(www\.postcards\.com|74\.53\.2\.167)$ [NC]
+RewriteRule ^letterhead\.html$ /templates.php?productid=160&resultsCount=32&keywords_and=vertical&TemplateNumber=Letterhead&TemplateSwitchOnPaging=&keywords=category:Popular [NC]
+RewriteCond %{HTTP_HOST} ^(www\.postcards\.com|74\.53\.2\.167)$ [NC]
+RewriteRule ^envelopes\.html$ /templates.php?productid=161&resultsCount=32&keywords_and=horizontal&TemplateNumber=Envelopes&TemplateSwitchOnPaging=&keywords=category:Popular [NC]
+RewriteCond %{HTTP_HOST} ^(www\.postcards\.com|74\.53\.2\.167)$ [NC]
+RewriteRule ^brochures\.html$ /templates.php?productid=188&resultsCount=32&keywords_and=horizontal&TemplateNumber=Brochures&TemplateSwitchOnPaging=&keywords=category:Popular [NC]
+RewriteCond %{HTTP_HOST} ^(www\.postcards\.com|74\.53\.2\.167)$ [NC]
+RewriteRule ^address_labels\.html$ /templates.php?productid=181&resultsCount=32&keywords_and=horizontal&TemplateNumber=AddressLabels&TemplateSwitchOnPaging=&keywords=category:Popular [NC]
+RewriteCond %{HTTP_HOST} ^(www\.postcards\.com|74\.53\.2\.167)$ [NC]
+RewriteRule ^address_labels\.html$ /templates.php?productid=181&resultsCount=32&keywords_and=horizontal&TemplateNumber=AddressLabels&TemplateSwitchOnPaging=&keywords=category:Popular [NC]
+RewriteCond %{HTTP_HOST} ^(www\.postcards\.com|74\.53\.2\.167)$ [NC]
+RewriteRule ^greeting_cards_variable\.html$ /templates.php?productid=174&resultsCount=32&TemplateNumber=GreetingCaVar&TemplateSwitchOnPaging=&keywords_and=horizontal&keywords=category:SpecialOccasion [NC]
+RewriteCond %{HTTP_HOST} ^(www\.postcards\.com|74\.53\.2\.167)$ [NC]
+RewriteRule ^real_estate_postcards\.html$ /templates.php?productid=156&resultsCount=32&TemplateNumber=RealEstate&TemplateSwitchOnPaging=&keywords_and=horizontal&keywords=category:RealEstate [NC]
+RewriteCond %{HTTP_HOST} ^(www\.postcards\.com|74\.53\.2\.167)$ [NC]
+RewriteRule ^realtor_postcards\.html$ /templates.php?productid=156&resultsCount=32&TemplateNumber=Realtor&TemplateSwitchOnPaging=&keywords_and=horizontal&keywords=category:RealEstate [NC]
+RewriteCond %{HTTP_HOST} ^(www\.postcards\.com|74\.53\.2\.167)$ [NC]
+RewriteRule ^photo_postcards\.html$ /templates.php?productid=156&resultsCount=32&TemplateNumber=Photo&TemplateSwitchOnPaging=&keywords_and=horizontal&keywords=Photo [NC]
+RewriteCond %{HTTP_HOST} ^(www\.postcards\.com|74\.53\.2\.167)$ [NC]
+RewriteRule ^business_postcards\.html$ /templates.php?productid=156&resultsCount=32&TemplateNumber=Business&TemplateSwitchOnPaging=&keywords_and=horizontal&keywords=category:Business [NC]
+RewriteCond %{HTTP_HOST} ^(www\.postcards\.com|74\.53\.2\.167)$ [NC]
+RewriteRule ^personalized_postcards\.html$ /templates.php?productid=156&resultsCount=32&TemplateNumber=PersonalizedPostCards&TemplateSwitchOnPaging=&keywords_and=horizontal&keywords=category:Popular [NC]
+RewriteCond %{HTTP_HOST} ^(www\.postcards\.com|74\.53\.2\.167)$ [NC]
+RewriteRule ^just_listed_postcards\.html$ /templates.php?productid=156&keywords=category:RealEstate&keywords_and=horizontal&resultsCount=32&TemplateNumber=JustListed&offset=0 [NC]
+RewriteCond %{HTTP_HOST} ^(www\.postcards\.com|74\.53\.2\.167)$ [NC]
+RewriteRule ^just_sold_postcards\.html$ /templates.php?productid=156&keywords=category:RealEstate&keywords_and=horizontal&resultsCount=32&TemplateNumber=JustSold&offset=0 [NC]
+
+RewriteCond %{HTTP_HOST} ^(www\.postcards\.com|74\.53\.2\.167)$ [NC]
+RewriteRule ^svrprgrm\.html$ /lyltyprgrm.php [NC]
+
+
+# Show the template gallery in place of a static HTML page.
+
+RewriteCond %{HTTP_HOST} ^(www\.letterhead\.com|74\.53\.59\.106)$ [NC]
+RewriteRule ^wedding/$ /templates.php?productid=197&resultsCount=30&StepDownDir=1&TemplateNumber=LhWedding&keywords=popular+wedding [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.letterhead\.com|74\.53\.59\.106)$ [NC]
+RewriteRule ^technology/$ /templates.php?productid=197&resultsCount=30&StepDownDir=1&TemplateNumber=LhTechnology&keywords=popular+technology [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.letterhead\.com|74\.53\.59\.106)$ [NC]
+RewriteRule ^sports/$ /templates.php?productid=197&resultsCount=30&StepDownDir=1&TemplateNumber=LhSports&keywords=popular+sports [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.letterhead\.com|74\.53\.59\.106)$ [NC]
+RewriteRule ^special-occasion/$ /templates.php?productid=197&resultsCount=30&StepDownDir=1&TemplateNumber=LhSpecialOcc&keywords=popular+special+occasions [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.letterhead\.com|74\.53\.59\.106)$ [NC]
+RewriteRule ^save-the-date/$ /templates.php?productid=197&resultsCount=30&StepDownDir=1&TemplateNumber=LhSaveDate&keywords=popular+save+the+date [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.letterhead\.com|74\.53\.59\.106)$ [NC]
+RewriteRule ^real-estate/$ /templates.php?productid=197&resultsCount=30&StepDownDir=1&TemplateNumber=LhRealEstate&keywords=popular+real+estate [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.letterhead\.com|74\.53\.59\.106)$ [NC]
+RewriteRule ^personal/$ /templates.php?productid=197&resultsCount=30&StepDownDir=1&TemplateNumber=LhPersonal&keywords=popular+personal [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.letterhead\.com|74\.53\.59\.106)$ [NC]
+RewriteRule ^patriotic/$ /templates.php?productid=197&resultsCount=30&StepDownDir=1&TemplateNumber=LhPatriotic&keywords=popular+patriotic [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.letterhead\.com|74\.53\.59\.106)$ [NC]
+RewriteRule ^nature/$ /templates.php?productid=197&resultsCount=30&StepDownDir=1&TemplateNumber=LhNature&keywords=popular+nature [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.letterhead\.com|74\.53\.59\.106)$ [NC]
+RewriteRule ^legal/$ /templates.php?productid=197&resultsCount=30&StepDownDir=1&TemplateNumber=LhLegal&keywords=popular+legal [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.letterhead\.com|74\.53\.59\.106)$ [NC]
+RewriteRule ^home-maintance/$ /templates.php?productid=197&resultsCount=30&StepDownDir=1&TemplateNumber=LhHomeMaint&keywords=popular+home+maintenance [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.letterhead\.com|74\.53\.59\.106)$ [NC]
+RewriteRule ^holiday/$ /templates.php?productid=197&resultsCount=30&StepDownDir=1&TemplateNumber=LhHoliday&keywords=popular+holiday [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.letterhead\.com|74\.53\.59\.106)$ [NC]
+RewriteRule ^hobbies/$ /templates.php?productid=197&resultsCount=30&StepDownDir=1&TemplateNumber=LhHobbies&keywords=popular+hobbies [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.letterhead\.com|74\.53\.59\.106)$ [NC]
+RewriteRule ^health/$ /templates.php?productid=197&resultsCount=30&StepDownDir=1&TemplateNumber=LhHealth&keywords=popular+health [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.letterhead\.com|74\.53\.59\.106)$ [NC]
+RewriteRule ^graphic-design/$ /templates.php?productid=197&resultsCount=30&StepDownDir=1&TemplateNumber=LhGraphicDes&keywords=popular+graphics [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.letterhead\.com|74\.53\.59\.106)$ [NC]
+RewriteRule ^food/$ /templates.php?productid=197&resultsCount=30&StepDownDir=1&TemplateNumber=LhFood&keywords=popular+food [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.letterhead\.com|74\.53\.59\.106)$ [NC]
+RewriteRule ^executive/$ /templates.php?productid=197&resultsCount=30&StepDownDir=1&TemplateNumber=LhExecutive&keywords=popular+executive [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.letterhead\.com|74\.53\.59\.106)$ [NC]
+RewriteRule ^education/$ /templates.php?productid=197&resultsCount=30&StepDownDir=1&TemplateNumber=LhEducation&keywords=popular+education [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.letterhead\.com|74\.53\.59\.106)$ [NC]
+RewriteRule ^corporate/$ /templates.php?productid=197&resultsCount=30&StepDownDir=1&TemplateNumber=LhCorporate&keywords=popular+corporate [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.letterhead\.com|74\.53\.59\.106)$ [NC]
+RewriteRule ^company/$ /templates.php?productid=197&resultsCount=30&StepDownDir=1&TemplateNumber=LhCompany&keywords=popular+company [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.letterhead\.com|74\.53\.59\.106)$ [NC]
+RewriteRule ^color/$ /templates.php?productid=197&resultsCount=30&StepDownDir=1&TemplateNumber=LhColor&keywords=popular+color [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.letterhead\.com|74\.53\.59\.106)$ [NC]
+RewriteRule ^christmas/$ /templates.php?productid=197&resultsCount=30&StepDownDir=1&TemplateNumber=LhChristmas&keywords=popular+christmas [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.letterhead\.com|74\.53\.59\.106)$ [NC]
+RewriteRule ^calendars/$ /templates.php?productid=197&resultsCount=30&StepDownDir=1&TemplateNumber=LhCalendar&keywords=popular+calendar [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.letterhead\.com|74\.53\.59\.106)$ [NC]
+RewriteRule ^business/$ /templates.php?productid=197&resultsCount=30&StepDownDir=1&TemplateNumber=LhBusiness&keywords=popular+business [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.letterhead\.com|74\.53\.59\.106)$ [NC]
+RewriteRule ^beauty/$ /templates.php?productid=197&resultsCount=30&StepDownDir=1&TemplateNumber=LhBeauty&keywords=popular+beauty [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.letterhead\.com|74\.53\.59\.106)$ [NC]
+RewriteRule ^automotive/$ /templates.php?productid=197&resultsCount=30&StepDownDir=1&TemplateNumber=LhAutomotive&keywords=popular+automotive [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.letterhead\.com|74\.53\.59\.106)$ [NC]
+RewriteRule ^attorney/$ /templates.php?productid=197&resultsCount=30&StepDownDir=1&TemplateNumber=LhAttorney&keywords=popular+attorney [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.letterhead\.com|74\.53\.59\.106)$ [NC]
+RewriteRule ^apparel/$ /templates.php?productid=197&resultsCount=30&StepDownDir=1&TemplateNumber=LhApparel&keywords=popular+apparel [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.letterhead\.com|74\.53\.59\.106)$ [NC]
+RewriteRule ^animal/$ /templates.php?productid=197&resultsCount=30&StepDownDir=1&TemplateNumber=LhAnimal&keywords=popular+animal [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.letterhead\.com|74\.53\.59\.106)$ [NC]
+RewriteRule ^western/$ /templates.php?productid=197&resultsCount=30&StepDownDir=1&TemplateNumber=LhWestern&keywords=popular+western [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.letterhead\.com|74\.53\.59\.106)$ [NC]
+RewriteRule ^travel/$ /templates.php?productid=197&resultsCount=30&StepDownDir=1&TemplateNumber=LhTravel&keywords=popular+travel [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.letterhead\.com|74\.53\.59\.106)$ [NC]
+RewriteRule ^personal-services/$ /templates.php?productid=197&resultsCount=30&StepDownDir=1&TemplateNumber=LhPServ&keywords=popular+personal+service [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.letterhead\.com|74\.53\.59\.106)$ [NC]
+RewriteRule ^modern/$ /templates.php?productid=197&resultsCount=30&StepDownDir=1&TemplateNumber=LhModern&keywords=popular+modern [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.letterhead\.com|74\.53\.59\.106)$ [NC]
+RewriteRule ^creative/$ /templates.php?productid=197&resultsCount=30&StepDownDir=1&TemplateNumber=LhCreative&keywords=popular+creative [NC,L]
+
+#---- Raised Ink Letterehad
+
+RewriteCond %{HTTP_HOST} ^(www\.letterhead\.com|74\.53\.59\.106)$ [NC]
+RewriteRule ^raised-ink/$ /templates.php?productid=202&resultsCount=30&StepDownDir=1&TemplateNumber=2cLh&keywords=popular [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.letterhead\.com|74\.53\.59\.106)$ [NC]
+RewriteRule ^raised-ink/wedding/$ /templates.php?productid=202&resultsCount=30&StepDownDir=2&TemplateNumber=2cLhWedding&keywords=popular+wedding [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.letterhead\.com|74\.53\.59\.106)$ [NC]
+RewriteRule ^raised-ink/technology/$ /templates.php?productid=202&resultsCount=30&StepDownDir=2&TemplateNumber=2cLhTechnology&keywords=popular+technology [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.letterhead\.com|74\.53\.59\.106)$ [NC]
+RewriteRule ^raised-ink/sports/$ /templates.php?productid=202&resultsCount=30&StepDownDir=2&TemplateNumber=2cLhSports&keywords=popular+sports [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.letterhead\.com|74\.53\.59\.106)$ [NC]
+RewriteRule ^raised-ink/special-occasion/$ /templates.php?productid=202&resultsCount=30&StepDownDir=2&TemplateNumber=2cLhSpecialOcc&keywords=popular+special+occasions [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.letterhead\.com|74\.53\.59\.106)$ [NC]
+RewriteRule ^raised-ink/save-the-date/$ /templates.php?productid=202&resultsCount=30&StepDownDir=2&TemplateNumber=2cLhSaveDate&keywords=popular+save+the+date [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.letterhead\.com|74\.53\.59\.106)$ [NC]
+RewriteRule ^raised-ink/real-estate/$ /templates.php?productid=202&resultsCount=30&StepDownDir=2&TemplateNumber=2cLhRealEstate&keywords=popular+real+estate [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.letterhead\.com|74\.53\.59\.106)$ [NC]
+RewriteRule ^raised-ink/personal/$ /templates.php?productid=202&resultsCount=30&StepDownDir=2&TemplateNumber=2cLhPersonal&keywords=popular+personal [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.letterhead\.com|74\.53\.59\.106)$ [NC]
+RewriteRule ^raised-ink/patriotic/$ /templates.php?productid=202&resultsCount=30&StepDownDir=2&TemplateNumber=2cLhPatriotic&keywords=popular+patriotic [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.letterhead\.com|74\.53\.59\.106)$ [NC]
+RewriteRule ^raised-ink/nature/$ /templates.php?productid=202&resultsCount=30&StepDownDir=2&TemplateNumber=2cLhNature&keywords=popular+nature [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.letterhead\.com|74\.53\.59\.106)$ [NC]
+RewriteRule ^raised-ink/legal/$ /templates.php?productid=202&resultsCount=30&StepDownDir=2&TemplateNumber=2cLhLegal&keywords=popular+legal [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.letterhead\.com|74\.53\.59\.106)$ [NC]
+RewriteRule ^raised-ink/home-maintance/$ /templates.php?productid=202&resultsCount=30&StepDownDir=2&TemplateNumber=2cLhHomeMaint&keywords=popular+home+maintenance [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.letterhead\.com|74\.53\.59\.106)$ [NC]
+RewriteRule ^raised-ink/holiday/$ /templates.php?productid=202&resultsCount=30&StepDownDir=2&TemplateNumber=2cLhHoliday&keywords=popular+holiday [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.letterhead\.com|74\.53\.59\.106)$ [NC]
+RewriteRule ^raised-ink/hobbies/$ /templates.php?productid=202&resultsCount=30&StepDownDir=2&TemplateNumber=2cLhHobbies&keywords=popular+hobbies [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.letterhead\.com|74\.53\.59\.106)$ [NC]
+RewriteRule ^raised-ink/health/$ /templates.php?productid=202&resultsCount=30&StepDownDir=2&TemplateNumber=2cLhHealth&keywords=popular+health [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.letterhead\.com|74\.53\.59\.106)$ [NC]
+RewriteRule ^raised-ink/graphic-design/$ /templates.php?productid=202&resultsCount=30&StepDownDir=2&TemplateNumber=2cLhGraphicDes&keywords=popular+graphics [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.letterhead\.com|74\.53\.59\.106)$ [NC]
+RewriteRule ^raised-ink/food/$ /templates.php?productid=202&resultsCount=30&StepDownDir=2&TemplateNumber=2cLhFood&keywords=popular+food [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.letterhead\.com|74\.53\.59\.106)$ [NC]
+RewriteRule ^raised-ink/executive/$ /templates.php?productid=202&resultsCount=30&StepDownDir=2&TemplateNumber=2cLhExecutive&keywords=popular+executive [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.letterhead\.com|74\.53\.59\.106)$ [NC]
+RewriteRule ^raised-ink/education/$ /templates.php?productid=202&resultsCount=30&StepDownDir=2&TemplateNumber=2cLhEducation&keywords=popular+education [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.letterhead\.com|74\.53\.59\.106)$ [NC]
+RewriteRule ^raised-ink/corporate/$ /templates.php?productid=202&resultsCount=30&StepDownDir=2&TemplateNumber=2cLhCorporate&keywords=popular+corporate [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.letterhead\.com|74\.53\.59\.106)$ [NC]
+RewriteRule ^raised-ink/company/$ /templates.php?productid=202&resultsCount=30&StepDownDir=2&TemplateNumber=2cLhCompany&keywords=popular+company [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.letterhead\.com|74\.53\.59\.106)$ [NC]
+RewriteRule ^raised-ink/color/$ /templates.php?productid=202&resultsCount=30&StepDownDir=2&TemplateNumber=2cLhColor&keywords=popular+color [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.letterhead\.com|74\.53\.59\.106)$ [NC]
+RewriteRule ^raised-ink/christmas/$ /templates.php?productid=202&resultsCount=30&StepDownDir=2&TemplateNumber=2cLhChristmas&keywords=popular+christmas [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.letterhead\.com|74\.53\.59\.106)$ [NC]
+RewriteRule ^raised-ink/calendars/$ /templates.php?productid=202&resultsCount=30&StepDownDir=2&TemplateNumber=2cLhCalendar&keywords=popular+calendar [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.letterhead\.com|74\.53\.59\.106)$ [NC]
+RewriteRule ^raised-ink/business/$ /templates.php?productid=202&resultsCount=30&StepDownDir=2&TemplateNumber=2cLhBusiness&keywords=popular+business [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.letterhead\.com|74\.53\.59\.106)$ [NC]
+RewriteRule ^raised-ink/beauty/$ /templates.php?productid=202&resultsCount=30&StepDownDir=2&TemplateNumber=2cLhBeauty&keywords=popular+beauty [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.letterhead\.com|74\.53\.59\.106)$ [NC]
+RewriteRule ^raised-ink/automotive/$ /templates.php?productid=202&resultsCount=30&StepDownDir=2&TemplateNumber=2cLhAutomotive&keywords=popular+automotive [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.letterhead\.com|74\.53\.59\.106)$ [NC]
+RewriteRule ^raised-ink/attorney/$ /templates.php?productid=202&resultsCount=30&StepDownDir=2&TemplateNumber=2cLhAttorney&keywords=popular+attorney [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.letterhead\.com|74\.53\.59\.106)$ [NC]
+RewriteRule ^raised-ink/apparel/$ /templates.php?productid=202&resultsCount=30&StepDownDir=2&TemplateNumber=2cLhApparel&keywords=popular+apparel [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.letterhead\.com|74\.53\.59\.106)$ [NC]
+RewriteRule ^raised-ink/animal/$ /templates.php?productid=202&resultsCount=30&StepDownDir=2&TemplateNumber=2cLhAnimal&keywords=popular+animal [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.letterhead\.com|74\.53\.59\.106)$ [NC]
+RewriteRule ^raised-ink/western/$ /templates.php?productid=202&resultsCount=30&StepDownDir=2&TemplateNumber=2cLhWestern&keywords=popular+western [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.letterhead\.com|74\.53\.59\.106)$ [NC]
+RewriteRule ^raised-ink/travel/$ /templates.php?productid=202&resultsCount=30&StepDownDir=2&TemplateNumber=2cLhTravel&keywords=popular+travel [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.letterhead\.com|74\.53\.59\.106)$ [NC]
+RewriteRule ^raised-ink/personal-services/$ /templates.php?productid=202&resultsCount=30&StepDownDir=2&TemplateNumber=2cLhPServ&keywords=popular+personal+service [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.letterhead\.com|74\.53\.59\.106)$ [NC]
+RewriteRule ^raised-ink/modern/$ /templates.php?productid=202&resultsCount=30&StepDownDir=2&TemplateNumber=2cLhModern&keywords=popular+modern [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.letterhead\.com|74\.53\.59\.106)$ [NC]
+RewriteRule ^raised-ink/creative/$ /templates.php?productid=202&resultsCount=30&StepDownDir=2&TemplateNumber=2cLhCreative&keywords=popular+creative [NC,L]
+
+#---- Other Letterhead Products
+RewriteCond %{HTTP_HOST} ^(www\.letterhead\.com|74\.53\.59\.106)$ [NC]
+RewriteRule ^raised-ink/$ /templates.php?productid=202&resultsCount=30&StepDownDir=1&TemplateNumber=2cLh&keywords=popular [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.letterhead\.com|74\.53\.59\.106)$ [NC]
+RewriteRule ^full-color/$ /templates.php?productid=197&resultsCount=30&StepDownDir=1&TemplateNumber=Lh&keywords=popular [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.letterhead\.com|74\.53\.59\.106)$ [NC]
+RewriteRule ^raised-ink/business-cards/$ /templates.php?productid=203&resultsCount=30&StepDownDir=2&TemplateNumber=2cBc&keywords=popular [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.letterhead\.com|74\.53\.59\.106)$ [NC]
+RewriteRule ^full-color/business-cards/$ /templates.php?productid=201&resultsCount=30&StepDownDir=2&TemplateNumber=Bc&keywords=popular [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.letterhead\.com|74\.53\.59\.106)$ [NC]
+RewriteRule ^raised-ink/envelopes/$ /templates.php?productid=204&resultsCount=30&StepDownDir=2&TemplateNumber=2cEv&keywords=popular [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.letterhead\.com|74\.53\.59\.106)$ [NC]
+RewriteRule ^full-color/envelopes/$ /templates.php?productid=200&resultsCount=30&StepDownDir=2&TemplateNumber=Ev&keywords=popular [NC,L]
+
+
+
+
+
+# Show the template gallery in place of a static HTML page.
+
+RewriteCond %{HTTP_HOST} ^(www\.vinylbanners\.com|74\.53\.59\.108)$ [NC]
+RewriteRule ^full-color/$ /templates.php?productid=206&resultsCount=30&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=Popular&keywords=category:popular [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.vinylbanners\.com|74\.53\.59\.108)$ [NC]
+RewriteRule ^happy-birthday/$ /templates.php?productid=206&resultsCount=30&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=happyBirthday&keywords=category:happy-birthday [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.vinylbanners\.com|74\.53\.59\.108)$ [NC]
+RewriteRule ^business/$ /templates.php?productid=206&resultsCount=30&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=Business&keywords=category:business [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.vinylbanners\.com|74\.53\.59\.108)$ [NC]
+RewriteRule ^welcome-home/$ /templates.php?productid=206&resultsCount=30&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=WelcomeHome&keywords=category:welcome-home [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.vinylbanners\.com|74\.53\.59\.108)$ [NC]
+RewriteRule ^wedding/$ /templates.php?productid=206&resultsCount=30&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=Weddings&keywords=category:wedding [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.vinylbanners\.com|74\.53\.59\.108)$ [NC]
+RewriteRule ^graduation/$ /templates.php?productid=206&resultsCount=30&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=Graduation&keywords=category:graduation [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.vinylbanners\.com|74\.53\.59\.108)$ [NC]
+RewriteRule ^sports/$ /templates.php?productid=206&resultsCount=30&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=Sports&keywords=category:sports [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.vinylbanners\.com|74\.53\.59\.108)$ [NC]
+RewriteRule ^church/$ /templates.php?productid=206&resultsCount=30&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=Church&keywords=category:church [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.vinylbanners\.com|74\.53\.59\.108)$ [NC]
+RewriteRule ^grand-opening/$ /templates.php?productid=206&resultsCount=30&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=GrandOpening&keywords=category:grand-opening [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.vinylbanners\.com|74\.53\.59\.108)$ [NC]
+RewriteRule ^sale/$ /templates.php?productid=206&resultsCount=30&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=Sale&keywords=category:sale [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.vinylbanners\.com|74\.53\.59\.108)$ [NC]
+RewriteRule ^safety/$ /templates.php?productid=206&resultsCount=30&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=Safety&keywords=category:safety [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.vinylbanners\.com|74\.53\.59\.108)$ [NC]
+RewriteRule ^real-estate/$ /templates.php?productid=206&resultsCount=30&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=RealEstate&keywords=category:real-estate [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.vinylbanners\.com|74\.53\.59\.108)$ [NC]
+RewriteRule ^trade-show/$ /templates.php?productid=206&resultsCount=30&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=TradeShow&keywords=category:trade-show [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.vinylbanners\.com|74\.53\.59\.108)$ [NC]
+RewriteRule ^team/$ /templates.php?productid=206&resultsCount=30&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=Team&keywords=category:team [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.vinylbanners\.com|74\.53\.59\.108)$ [NC]
+RewriteRule ^love/$ /templates.php?productid=206&resultsCount=30&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=Love&keywords=category:love [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.vinylbanners\.com|74\.53\.59\.108)$ [NC]
+RewriteRule ^school/$ /templates.php?productid=206&resultsCount=30&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=School&keywords=category:school [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.vinylbanners\.com|74\.53\.59\.108)$ [NC]
+RewriteRule ^Christmas/$ /templates.php?productid=206&resultsCount=30&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=Christmas&keywords=category:Christmas [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.vinylbanners\.com|74\.53\.59\.108)$ [NC]
+RewriteRule ^band/$ /templates.php?productid=206&resultsCount=30&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=Band&keywords=category:band [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.vinylbanners\.com|74\.53\.59\.108)$ [NC]
+RewriteRule ^military/$ /templates.php?productid=206&resultsCount=30&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=Military&keywords=category:military [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.vinylbanners\.com|74\.53\.59\.108)$ [NC]
+RewriteRule ^luau/$ /templates.php?productid=206&resultsCount=30&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=Luau&keywords=category:luau [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.vinylbanners\.com|74\.53\.59\.108)$ [NC]
+RewriteRule ^restaurant/$ /templates.php?productid=206&resultsCount=30&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=Restaurant&keywords=category:restaurant [NC,L]
+
+
+
+
+# Show the template gallery in place of a static HTML page.
+RewriteCond %{HTTP_HOST} ^(www\.refrigeratormagnets\.com|74\.53\.59\.111)$ [NC]
+RewriteRule ^save-the-date/$ /templates.php?productid=208&resultsCount=10&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=saveDate&keywords=save-the-date [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.refrigeratormagnets\.com|74\.53\.59\.111)$ [NC]
+RewriteRule ^photo/$ /templates.php?productid=208&resultsCount=10&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=photo&keywords=photo [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.refrigeratormagnets\.com|74\.53\.59\.111)$ [NC]
+RewriteRule ^business-card/$ /templates.php?productid=208&resultsCount=10&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=businessCard&keywords=business-card [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.refrigeratormagnets\.com|74\.53\.59\.111)$ [NC]
+RewriteRule ^logo/$ /templates.php?productid=208&resultsCount=10&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=logo&keywords=logo [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.refrigeratormagnets\.com|74\.53\.59\.111)$ [NC]
+RewriteRule ^promotional/$ /templates.php?productid=208&resultsCount=10&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=promotional&keywords=promotional [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.refrigeratormagnets\.com|74\.53\.59\.111)$ [NC]
+RewriteRule ^real-estate/$ /templates.php?productid=208&resultsCount=10&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=RealEstate&keywords=real+estate [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.refrigeratormagnets\.com|74\.53\.59\.111)$ [NC]
+RewriteRule ^school/$ /templates.php?productid=208&resultsCount=10&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=school&keywords=school [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.refrigeratormagnets\.com|74\.53\.59\.111)$ [NC]
+RewriteRule ^calendar/$ /templates.php?productid=208&resultsCount=10&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=calendar&keywords=calendar [NC,L]
+RewriteCond %{HTTP_HOST} ^(www\.refrigeratormagnets\.com|74\.53\.59\.111)$ [NC]
+RewriteRule ^Christmas/$ /templates.php?productid=208&resultsCount=10&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=christmas&keywords=christmas [NC,L]
+
+
+
+RewriteCond %{HTTP_HOST} ^(businesscards24\.com|74\.53\.59\.115)$ [NC]
+RewriteRule ^blank-business-cards/$ /gallery.cgi?productid=228&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=blank&keywords=(group)blank [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.115$ [NC]
+RewriteRule ^photo-business-cards/$ /gallery.cgi?productid=228&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=photo&keywords=(group)photo [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.115$ [NC]
+RewriteRule ^accounting-business-cards/$ /gallery.cgi?productid=228&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=accounting&keywords=(group)accounting [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.115$ [NC]
+RewriteRule ^agriculture-business-cards/$ /gallery.cgi?productid=228&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=agriculture&keywords=(group)agriculture [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.115$ [NC]
+RewriteRule ^animal-business-cards/$ /gallery.cgi?productid=228&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=animal&keywords=(group)animal [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.115$ [NC]
+RewriteRule ^artist-business-cards/$ /gallery.cgi?productid=228&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=artist&keywords=(group)artist [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.115$ [NC]
+RewriteRule ^auto-dealer-business-cards/$ /gallery.cgi?productid=228&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=auto&keywords=(group)auto [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.115$ [NC]
+RewriteRule ^babysitting-business-cards/$ /gallery.cgi?productid=228&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=babysitting&keywords=(group)babysitting [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.115$ [NC]
+RewriteRule ^beauty-business-cards/$ /gallery.cgi?productid=228&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=beauty&keywords=(group)beauty [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.115$ [NC]
+RewriteRule ^cleaning-business-cards/$ /gallery.cgi?productid=228&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=cleaning&keywords=(group)cleaning [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.115$ [NC]
+RewriteRule ^computer-business-cards/$ /gallery.cgi?productid=228&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=computer&keywords=(group)computer [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.115$ [NC]
+RewriteRule ^construction-business-cards/$ /gallery.cgi?productid=228&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=construction&keywords=(group)construction [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.115$ [NC]
+RewriteRule ^craft-business-cards/$ /gallery.cgi?productid=228&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=craft&keywords=(group)craft [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.115$ [NC]
+RewriteRule ^dental-business-cards/$ /gallery.cgi?productid=228&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=dental&keywords=(group)dental [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.115$ [NC]
+RewriteRule ^education-business-cards/$ /gallery.cgi?productid=228&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=education&keywords=(group)education [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.115$ [NC]
+RewriteRule ^entertainment-business-cards/$ /gallery.cgi?productid=228&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=entertainment&keywords=(group)entertainment [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.115$ [NC]
+RewriteRule ^fitness-business-cards/$ /gallery.cgi?productid=228&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=fitness&keywords=(group)fitness [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.115$ [NC]
+RewriteRule ^floral-business-cards/$ /gallery.cgi?productid=228&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=floral&keywords=(group)floral [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.115$ [NC]
+RewriteRule ^graduate-cards/$ /gallery.cgi?productid=228&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=graduate&keywords=(group)graduate [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.115$ [NC]
+RewriteRule ^graphic-design-business-cards/$ /gallery.cgi?productid=228&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=graphic&keywords=(group)graphic-design [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.115$ [NC]
+RewriteRule ^hair-salon-business-cards/$ /gallery.cgi?productid=228&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=hair&keywords=(group)hair-salon [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.115$ [NC]
+RewriteRule ^interior-design-business-cards/$ /gallery.cgi?productid=228&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=interior&keywords=(group)interior-design [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.115$ [NC]
+RewriteRule ^jewelry-business-cards/$ /gallery.cgi?productid=228&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=jewelry&keywords=(group)jewelry [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.115$ [NC]
+RewriteRule ^landscaping-business-cards/$ /gallery.cgi?productid=228&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=landscaping&keywords=(group)landscaping [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.115$ [NC]
+RewriteRule ^law-enforcement-business-cards/$ /gallery.cgi?productid=228&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=law&keywords=(group)law-enforcement [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.115$ [NC]
+RewriteRule ^lawn-care-business-cards/$ /gallery.cgi?productid=228&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=lawn&keywords=(group)lawn-care [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.115$ [NC]
+RewriteRule ^legal-business-cards/$ /gallery.cgi?productid=228&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=legal&keywords=(group)legal [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.115$ [NC]
+RewriteRule ^makeup-artist-business-cards/$ /gallery.cgi?productid=228&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=makeup&keywords=(group)makeup-artist [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.115$ [NC]
+RewriteRule ^massage-therapy-business-cards/$ /gallery.cgi?productid=228&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=massage&keywords=(group)massage-therapy [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.115$ [NC]
+RewriteRule ^military-business-cards/$ /gallery.cgi?productid=228&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=military&keywords=(group)military [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.115$ [NC]
+RewriteRule ^medical-business-cards/$ /gallery.cgi?productid=228&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=medical&keywords=(group)medical [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.115$ [NC]
+RewriteRule ^mommy-cards/$ /gallery.cgi?productid=228&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=mommy&keywords=(group)mommy [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.115$ [NC]
+RewriteRule ^music-business-cards/$ /gallery.cgi?productid=228&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=music&keywords=(group)music [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.115$ [NC]
+RewriteRule ^personal-training-business-cards/$ /gallery.cgi?productid=228&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=personaltraining&keywords=(group)personal-training [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.115$ [NC]
+RewriteRule ^real-estate-business-cards/$ /gallery.cgi?productid=228&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=realestate&keywords=(group)real-estate [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.115$ [NC]
+RewriteRule ^religious-business-cards/$ /gallery.cgi?productid=228&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=religious&keywords=(group)religious [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.115$ [NC]
+RewriteRule ^restaurant-business-cards/$ /gallery.cgi?productid=228&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=restaurant&keywords=(group)restaurant [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.115$ [NC]
+RewriteRule ^student-business-cards/$ /gallery.cgi?productid=228&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=student&keywords=(group)student [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.115$ [NC]
+RewriteRule ^technology-business-cards/$ /gallery.cgi?productid=228&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=technology&keywords=(group)technology [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.115$ [NC]
+RewriteRule ^travel-agent-business-cards/$ /gallery.cgi?productid=228&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=travelagent&keywords=(group)travel-agent [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.115$ [NC]
+RewriteRule ^wedding-business-cards/$ /gallery.cgi?productid=228&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=wedding&keywords=(group)wedding [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.115$ [NC]
+RewriteRule ^black-business-cards/$ /gallery.cgi?productid=228&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=black&keywords=(group)black [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.115$ [NC]
+RewriteRule ^blue-business-cards/$ /gallery.cgi?productid=228&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=blue&keywords=(group)blue [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.115$ [NC]
+RewriteRule ^green-business-cards/$ /gallery.cgi?productid=228&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=green&keywords=(group)green [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.115$ [NC]
+RewriteRule ^red-business-cards/$ /gallery.cgi?productid=228&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=red&keywords=(group)red [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.115$ [NC]
+RewriteRule ^yellow-business-cards/$ /gallery.cgi?productid=228&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=yellow&keywords=(group)yellow [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.115$ [NC]
+RewriteRule ^modern-business-cards/$ /gallery.cgi?productid=228&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=modern&keywords=(group)modern [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.115$ [NC]
+RewriteRule ^recycled-business-cards/$ /gallery.cgi?productid=228&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=recycled&keywords=(group)recycled [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.115$ [NC]
+RewriteRule ^fun-business-cards/$ /gallery.cgi?productid=228&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=fun&keywords=(group)fun [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.115$ [NC]
+RewriteRule ^patriotic-business-cards/$ /gallery.cgi?productid=228&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=patriotic&keywords=(group)patriotic [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.115$ [NC]
+RewriteRule ^spiritual-business-cards/$ /gallery.cgi?productid=228&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=spiritual&keywords=(group)spiritual [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.115$ [NC]
+RewriteRule ^international-business-cards/$ /gallery.cgi?productid=228&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=international&keywords=(group)international [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.115$ [NC]
+RewriteRule ^girly-business-cards/$ /gallery.cgi?productid=228&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=girly&keywords=(group)girly [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.115$ [NC]
+RewriteRule ^full-color/$ /gallery.cgi?productid=228&StepDownDir=1&TemplateSwitchOnPaging=&keywords=all&TemplateNumber=BcFc [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.115$ [NC]
+RewriteRule ^raised-ink/$ /gallery.cgi?productid=229&StepDownDir=1&TemplateSwitchOnPaging=&keywords=all&TemplateNumber=BcRi [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.115$ [NC]
+RewriteRule ^foil-printed/$ /gallery.cgi?productid=234&StepDownDir=1&TemplateSwitchOnPaging=&keywords=all&TemplateNumber=BcFp [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.115$ [NC]
+RewriteRule ^yoga-business-cards/$ /gallery.cgi?productid=228&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=yoga&keywords=(group)yoga [NC,L]
+
+
+# Hide the Product ID's from the artwork upload pages.
+RewriteCond %{HTTP_HOST} ^(businesscards24\.com|74\.53\.59\.115)$ [NC]
+RewriteRule ^upload-artwork-business-cards/$ /product_uploadartwork.php?StepDownDir=1&productid=228&TemplateNumber=BcFc [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.115$ [NC]
+RewriteRule ^upload-artwork-raised-ink-business-cards/$ /product_uploadartwork.php?StepDownDir=1&productid=229&TemplateNumber=BcRi [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.115$ [NC]
+RewriteRule ^upload-artwork-foil-business-cards/$ /product_uploadartwork.php?StepDownDir=1&productid=234&TemplateNumber=BcFp [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.115$ [NC]
+RewriteRule ^upload-artwork-letterhead/$ /product_uploadartwork.php?StepDownDir=1&productid=230&TemplateNumber=LhFc [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.115$ [NC]
+RewriteRule ^upload-artwork-raised-ink-letterhead/$ /product_uploadartwork.php?StepDownDir=1&productid=231&TemplateNumber=LhRi [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.115$ [NC]
+RewriteRule ^upload-artwork-foil-letterhead/$ /product_uploadartwork.php?StepDownDir=1&productid=235&TemplateNumber=LhFp [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.115$ [NC]
+RewriteRule ^upload-artwork-envelopes/$ /product_uploadartwork.php?StepDownDir=1&productid=232&TemplateNumber=EvFc [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.115$ [NC]
+RewriteRule ^upload-artwork-raised-ink-envelopes/$ /product_uploadartwork.php?StepDownDir=1&productid=233&TemplateNumber=EvRi [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.115$ [NC]
+RewriteRule ^upload-artwork-foil-envelopes/$ /product_uploadartwork.php?StepDownDir=1&productid=236&TemplateNumber=EvFp [NC,L]
+
+
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.115$ [NC]
+RewriteRule ^sprShpPrgm\.html$ /lyltyprgrm.php [NC]
+
+
+
+
+RewriteCond %{HTTP_HOST} ^(www\.postcardprinting\.com|74\.53\.59\.113)$ [NC]
+RewriteRule ^all/$ /artworkGallery.cgi?productid=211&resultsCount=18&StepDownDir=1&TemplateNumber=S4x6&keywords=group{all} [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.113$ [NC]
+RewriteRule ^business/$ /artworkGallery.cgi?productid=211&resultsCount=18&StepDownDir=1&TemplateNumber=S4x6Business&keywords=group{business} [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.113$ [NC]
+RewriteRule ^real-estate/$ /artworkGallery.cgi?productid=211&resultsCount=18&StepDownDir=1&TemplateNumber=S4x6RealEstate&keywords=group{real-estate} [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.113$ [NC]
+RewriteRule ^mortgage/$ /artworkGallery.cgi?productid=211&resultsCount=18&StepDownDir=1&TemplateNumber=S4x6Mortgage&keywords=group{mortgage} [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.113$ [NC]
+RewriteRule ^promotional/$ /artworkGallery.cgi?productid=211&resultsCount=18&StepDownDir=1&TemplateNumber=S4x6Promotional&keywords=group{promotional} [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.113$ [NC]
+RewriteRule ^thank-you/$ /artworkGallery.cgi?productid=211&resultsCount=18&StepDownDir=1&TemplateNumber=S4x6ThankYou&keywords=group{thank-you} [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.113$ [NC]
+RewriteRule ^moving/$ /artworkGallery.cgi?productid=211&resultsCount=18&StepDownDir=1&TemplateNumber=S4x6Moving&keywords=group{moving} [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.113$ [NC]
+RewriteRule ^car/$ /artworkGallery.cgi?productid=211&resultsCount=18&StepDownDir=1&TemplateNumber=S4x6Car&keywords=group{car} [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.113$ [NC]
+RewriteRule ^medical/$ /artworkGallery.cgi?productid=211&resultsCount=18&StepDownDir=1&TemplateNumber=S4x6Medical&keywords=group{medical} [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.113$ [NC]
+RewriteRule ^dental/$ /artworkGallery.cgi?productid=211&resultsCount=18&StepDownDir=1&TemplateNumber=S4x6Dental&keywords=group{dental} [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.113$ [NC]
+RewriteRule ^restaurant/$ /artworkGallery.cgi?productid=211&resultsCount=18&StepDownDir=1&TemplateNumber=S4x6Restaurant&keywords=group{restaurant} [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.113$ [NC]
+RewriteRule ^fashion/$ /artworkGallery.cgi?productid=211&resultsCount=18&StepDownDir=1&TemplateNumber=S4x6Fashion&keywords=group{fashion} [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.113$ [NC]
+RewriteRule ^salon/$ /artworkGallery.cgi?productid=211&resultsCount=18&StepDownDir=1&TemplateNumber=S4x6Salon&keywords=group{salon} [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.113$ [NC]
+RewriteRule ^animal/$ /artworkGallery.cgi?productid=211&resultsCount=18&StepDownDir=1&TemplateNumber=S4x6Animal&keywords=group{animal} [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.113$ [NC]
+RewriteRule ^golf/$ /artworkGallery.cgi?productid=211&resultsCount=18&StepDownDir=1&TemplateNumber=S4x6Golf&keywords=group{golf} [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.113$ [NC]
+RewriteRule ^travel/$ /artworkGallery.cgi?productid=211&resultsCount=18&StepDownDir=1&TemplateNumber=S4x6Travel&keywords=group{travel} [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.113$ [NC]
+RewriteRule ^beach/$ /artworkGallery.cgi?productid=211&resultsCount=18&StepDownDir=1&TemplateNumber=S4x6Beach&keywords=group{beach} [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.113$ [NC]
+RewriteRule ^art/$ /artworkGallery.cgi?productid=211&resultsCount=18&StepDownDir=1&TemplateNumber=S4x6Art&keywords=group{art} [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.113$ [NC]
+RewriteRule ^church/$ /artworkGallery.cgi?productid=211&resultsCount=18&StepDownDir=1&TemplateNumber=S4x6Church&keywords=group{church} [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.113$ [NC]
+RewriteRule ^political/$ /artworkGallery.cgi?productid=211&resultsCount=18&StepDownDir=1&TemplateNumber=S4x6Political&keywords=group{political} [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.113$ [NC]
+RewriteRule ^teacher/$ /artworkGallery.cgi?productid=211&resultsCount=18&StepDownDir=1&TemplateNumber=S4x6Teacher&keywords=group{teacher} [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.113$ [NC]
+RewriteRule ^farming/$ /artworkGallery.cgi?productid=211&resultsCount=18&StepDownDir=1&TemplateNumber=S4x6Farming&keywords=group{farming} [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.113$ [NC]
+RewriteRule ^fitness/$ /artworkGallery.cgi?productid=211&resultsCount=18&StepDownDir=1&TemplateNumber=S4x6Fitness&keywords=group{fitness} [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.113$ [NC]
+RewriteRule ^insurance/$ /artworkGallery.cgi?productid=211&resultsCount=18&StepDownDir=1&TemplateNumber=S4x6Insurance&keywords=group{insurance} [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.113$ [NC]
+RewriteRule ^save-the-date/$ /artworkGallery.cgi?productid=211&resultsCount=18&StepDownDir=1&TemplateNumber=S4x6SaveTheDate&keywords=group{save-the-date} [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.113$ [NC]
+RewriteRule ^wedding/$ /artworkGallery.cgi?productid=211&resultsCount=18&StepDownDir=1&TemplateNumber=S4x6Wedding&keywords=group{wedding} [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.113$ [NC]
+RewriteRule ^happy-birthday/$ /artworkGallery.cgi?productid=211&resultsCount=18&StepDownDir=1&TemplateNumber=S4x6HappyBirthday&keywords=group{happy-birthday} [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.113$ [NC]
+RewriteRule ^holiday/$ /artworkGallery.cgi?productid=211&resultsCount=18&StepDownDir=1&TemplateNumber=S4x6Holiday&keywords=group{holiday} [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.113$ [NC]
+RewriteRule ^new-years/$ /artworkGallery.cgi?productid=211&resultsCount=18&StepDownDir=1&TemplateNumber=S4x6NewYears&keywords=group{new-years} [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.113$ [NC]
+RewriteRule ^christmas/$ /artworkGallery.cgi?productid=211&resultsCount=18&StepDownDir=1&TemplateNumber=S4x6Christmas&keywords=group{christmas} [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.113$ [NC]
+RewriteRule ^halloween/$ /artworkGallery.cgi?productid=211&resultsCount=18&StepDownDir=1&TemplateNumber=S4x6Halloween&keywords=group{halloween} [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.113$ [NC]
+RewriteRule ^easter/$ /artworkGallery.cgi?productid=211&resultsCount=18&StepDownDir=1&TemplateNumber=S4x6Easter&keywords=group{easter} [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.113$ [NC]
+RewriteRule ^thanksgiving/$ /artworkGallery.cgi?productid=211&resultsCount=18&StepDownDir=1&TemplateNumber=S4x6Thanksgiving&keywords=group{thanksgiving} [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.113$ [NC]
+RewriteRule ^valentines-day/$ /artworkGallery.cgi?productid=211&resultsCount=18&StepDownDir=1&TemplateNumber=S4x6ValentinesDay&keywords=group{valentines-day} [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.113$ [NC]
+RewriteRule ^invitation/$ /artworkGallery.cgi?productid=211&resultsCount=18&StepDownDir=1&TemplateNumber=S4x6Invitation&keywords=group{invitation} [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.113$ [NC]
+RewriteRule ^reminder/$ /artworkGallery.cgi?productid=211&resultsCount=18&StepDownDir=1&TemplateNumber=S4x6Reminder&keywords=group{reminder} [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.113$ [NC]
+RewriteRule ^love/$ /artworkGallery.cgi?productid=211&resultsCount=18&StepDownDir=1&TemplateNumber=S4x6Love&keywords=group{love} [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.113$ [NC]
+RewriteRule ^personal/$ /artworkGallery.cgi?productid=211&resultsCount=18&StepDownDir=1&TemplateNumber=S4x6Personal&keywords=group{personal} [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.113$ [NC]
+RewriteRule ^christian/$ /artworkGallery.cgi?productid=211&resultsCount=18&StepDownDir=1&TemplateNumber=S4x6Christian&keywords=group{christian} [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.113$ [NC]
+RewriteRule ^patriotic/$ /artworkGallery.cgi?productid=211&resultsCount=18&StepDownDir=1&TemplateNumber=S4x6Patriotic&keywords=group{patriotic} [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.113$ [NC]
+RewriteRule ^retro-postcards/$ /artworkGallery.cgi?productid=211&resultsCount=18&StepDownDir=1&TemplateNumber=S4x6RetroPostcards&keywords=group{retro} [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.113$ [NC]
+RewriteRule ^postcards/$ /artworkGallery.cgi?productid=211&resultsCount=18&StepDownDir=1&TemplateNumber=S4x6&keywords=group{postcards} [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.113$ [NC]
+RewriteRule ^funny/$ /artworkGallery.cgi?productid=211&resultsCount=18&StepDownDir=1&TemplateNumber=S4x6Funny&keywords=group{funny} [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.113$ [NC]
+RewriteRule ^black/$ /artworkGallery.cgi?productid=211&resultsCount=18&StepDownDir=1&TemplateNumber=S4x6Black&keywords=group{black} [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.113$ [NC]
+RewriteRule ^black-and-white/$ /artworkGallery.cgi?productid=211&resultsCount=18&StepDownDir=1&TemplateNumber=S4x6BlackAndWhite&keywords=group{black-and-white} [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.113$ [NC]
+RewriteRule ^photo/$ /artworkGallery.cgi?productid=211&resultsCount=18&StepDownDir=1&TemplateNumber=S4x6Photo&keywords=group{photo} [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.113$ [NC]
+RewriteRule ^mothers\-day/$ /artworkGallery.cgi?productid=211&resultsCount=18&StepDownDir=1&TemplateNumber=S4x6Photo&keywords=group{mothers-day} [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.113$ [NC]
+RewriteRule ^fathers\-day/$ /artworkGallery.cgi?productid=211&resultsCount=18&StepDownDir=1&TemplateNumber=S4x6Photo&keywords=group{fathers-day} [L]
+
+
+
+
+# Hide the Product ID's from the artwork upload pages.
+RewriteCond %{HTTP_HOST} ^(www\.postcardprinting\.com|74\.53\.59\.113)$ [NC]
+RewriteRule ^upload-postcards-4x6/$ /product_uploadartwork.php?StepDownDir=1&productid=211&TemplateNumber=S4x6 [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.113$ [NC]
+RewriteRule ^upload-postcards-5x8/$ /product_uploadartwork.php?StepDownDir=1&productid=212&TemplateNumber=S5x8 [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.113$ [NC]
+RewriteRule ^upload-postcards-6x11/$ /product_uploadartwork.php?StepDownDir=1&productid=213&TemplateNumber=S6x11 [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.113$ [NC]
+RewriteRule ^upload-personalized-postcards-4x6/$ /product_uploadartwork.php?StepDownDir=1&productid=214&TemplateNumber=P4x6 [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.113$ [NC]
+RewriteRule ^upload-personalized-postcards-5x8/$ /product_uploadartwork.php?StepDownDir=1&productid=215&TemplateNumber=P5x8 [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.113$ [NC]
+RewriteRule ^upload-personalized-postcards-6x11/$ /product_uploadartwork.php?StepDownDir=1&productid=216&TemplateNumber=P6x11 [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.113$ [NC]
+RewriteRule ^upload-mailed-postcards-4x6/$ /product_uploadartwork.php?StepDownDir=1&productid=217&TemplateNumber=M4x6 [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.113$ [NC]
+RewriteRule ^upload-mailed-postcards-5x8/$ /product_uploadartwork.php?StepDownDir=1&productid=218&TemplateNumber=M5x8 [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.113$ [NC]
+RewriteRule ^upload-mailed-postcards-6x11/$ /product_uploadartwork.php?StepDownDir=1&productid=219&TemplateNumber=M6x11 [NC,L]
+
+
+RewriteCond %{HTTP_HOST} ^(www\.postcardprinting\.com|74\.53\.59\.113)$ [NC]
+RewriteRule ^cgi-bin/neighbor\.cfm$ /neighbor.html [NC,L]
+
+
+
+
+
+
+
+
+# Hide the Product ID's from the artwork upload pages.
+RewriteCond %{HTTP_HOST} ^(www\.ThankYouCards\.com|74\.53\.59\.117)$ [NC]
+RewriteRule ^business/$ /templates.php?productid=248&resultsCount=30&StepDownDir=1&keywords_and=horizontal&TemplateNumber=business&keywords=category:business [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.117$ [NC]
+RewriteRule ^wedding/$ /templates.php?productid=248&resultsCount=30&StepDownDir=1&keywords_and=horizontal&TemplateNumber=wedding&keywords=category:wedding [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.117$ [NC]
+RewriteRule ^photo/$ /templates.php?productid=248&resultsCount=30&StepDownDir=1&keywords_and=horizontal&TemplateNumber=photo&keywords=category:photo [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.117$ [NC]
+RewriteRule ^baby-shower/$ /templates.php?productid=248&resultsCount=30&StepDownDir=1&keywords_and=horizontal&TemplateNumber=babyshower&keywords=category:baby-shower [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.117$ [NC]
+RewriteRule ^Christmas/$ /templates.php?productid=248&resultsCount=30&StepDownDir=1&keywords_and=horizontal&TemplateNumber=Christmas&keywords=category:Christmas [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.117$ [NC]
+RewriteRule ^holiday/$ /templates.php?productid=248&resultsCount=30&StepDownDir=1&keywords_and=horizontal&TemplateNumber=holidays&keywords=category:holiday [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.117$ [NC]
+RewriteRule ^graduation/$ /templates.php?productid=248&resultsCount=30&StepDownDir=1&keywords_and=horizontal&TemplateNumber=graduation&keywords=category:graduation [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.117$ [NC]
+RewriteRule ^teacher/$ /templates.php?productid=248&resultsCount=30&StepDownDir=1&keywords_and=horizontal&TemplateNumber=teacher&keywords=category:teacher [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.117$ [NC]
+RewriteRule ^sympathy/$ /templates.php?productid=248&resultsCount=30&StepDownDir=1&keywords_and=horizontal&TemplateNumber=sympathy&keywords=category:sympathy [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.117$ [NC]
+RewriteRule ^bridal-shower/$ /templates.php?productid=248&resultsCount=30&StepDownDir=1&keywords_and=horizontal&TemplateNumber=bridalshower&keywords=category:bridal-shower [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.117$ [NC]
+RewriteRule ^birthday/$ /templates.php?productid=248&resultsCount=30&StepDownDir=1&keywords_and=horizontal&TemplateNumber=birthday&keywords=category:birthday [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.117$ [NC]
+RewriteRule ^baptism/$ /templates.php?productid=248&resultsCount=30&StepDownDir=1&keywords_and=horizontal&TemplateNumber=baptism&keywords=category:baptism [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.117$ [NC]
+RewriteRule ^christening/$ /templates.php?productid=248&resultsCount=30&StepDownDir=1&keywords_and=horizontal&TemplateNumber=Christening&keywords=category:Christening [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.117$ [NC]
+RewriteRule ^funeral/$ /templates.php?productid=248&resultsCount=30&StepDownDir=1&keywords_and=horizontal&TemplateNumber=funeral&keywords=category:funeral [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.117$ [NC]
+RewriteRule ^corporate/$ /templates.php?productid=248&resultsCount=30&StepDownDir=1&keywords_and=horizontal&TemplateNumber=corporate&keywords=category:corporate [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.117$ [NC]
+RewriteRule ^funny/$ /templates.php?productid=248&resultsCount=30&StepDownDir=1&keywords_and=horizontal&TemplateNumber=funny&keywords=category:funny [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.117$ [NC]
+RewriteRule ^kids/$ /templates.php?productid=248&resultsCount=30&StepDownDir=1&keywords_and=horizontal&TemplateNumber=kids&keywords=category:kids [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.117$ [NC]
+RewriteRule ^party/$ /templates.php?productid=248&resultsCount=30&StepDownDir=1&keywords_and=horizontal&TemplateNumber=party&keywords=category:party [L]
+
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.117$ [NC]
+RewriteRule ^upload_thank_you_cards/$ /product_uploadartwork.php?productid=248&StepDownDir=1 [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.117$ [NC]
+RewriteRule ^upload_flat_thank_you_cards/$ /product_uploadartwork.php?productid=247&StepDownDir=1 [L]
+
+
+
+
+
+
+
+
+
+
+
+RewriteCond %{HTTP_HOST} ^(www\.businesscards\.co\.uk|74\.53\.2\.165)$ [NC]
+RewriteRule ^blank/$ /gallery.cgi?productid=284&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=blank&keywords=(group)blank [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.2\.165$ [NC]
+RewriteRule ^photo/$ /gallery.cgi?productid=284&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=photo&keywords=(group)photo [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.2\.165$ [NC]
+RewriteRule ^accounting/$ /gallery.cgi?productid=284&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=accounting&keywords=(group)accounting [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.2\.165$ [NC]
+RewriteRule ^agriculture/$ /gallery.cgi?productid=284&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=agriculture&keywords=(group)agriculture [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.2\.165$ [NC]
+RewriteRule ^animal/$ /gallery.cgi?productid=284&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=animal&keywords=(group)animal [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.2\.165$ [NC]
+RewriteRule ^artist/$ /gallery.cgi?productid=284&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=artist&keywords=(group)artist [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.2\.165$ [NC]
+RewriteRule ^auto-dealer/$ /gallery.cgi?productid=284&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=auto&keywords=(group)auto [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.2\.165$ [NC]
+RewriteRule ^babysitting/$ /gallery.cgi?productid=284&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=babysitting&keywords=(group)babysitting [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.2\.165$ [NC]
+RewriteRule ^beauty/$ /gallery.cgi?productid=284&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=beauty&keywords=(group)beauty [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.2\.165$ [NC]
+RewriteRule ^cleaning/$ /gallery.cgi?productid=284&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=cleaning&keywords=(group)cleaning [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.2\.165$ [NC]
+RewriteRule ^computer/$ /gallery.cgi?productid=284&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=computer&keywords=(group)computer [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.2\.165$ [NC]
+RewriteRule ^construction/$ /gallery.cgi?productid=284&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=construction&keywords=(group)construction [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.2\.165$ [NC]
+RewriteRule ^craft/$ /gallery.cgi?productid=284&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=craft&keywords=(group)craft [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.2\.165$ [NC]
+RewriteRule ^dental/$ /gallery.cgi?productid=284&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=dental&keywords=(group)dental [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.2\.165$ [NC]
+RewriteRule ^education/$ /gallery.cgi?productid=284&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=education&keywords=(group)education [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.2\.165$ [NC]
+RewriteRule ^entertainment/$ /gallery.cgi?productid=284&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=entertainment&keywords=(group)entertainment [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.2\.165$ [NC]
+RewriteRule ^fitness/$ /gallery.cgi?productid=284&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=fitness&keywords=(group)fitness [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.2\.165$ [NC]
+RewriteRule ^floral/$ /gallery.cgi?productid=284&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=floral&keywords=(group)floral [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.2\.165$ [NC]
+RewriteRule ^graduate/$ /gallery.cgi?productid=284&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=graduate&keywords=(group)graduate [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.2\.165$ [NC]
+RewriteRule ^graphic-design/$ /gallery.cgi?productid=284&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=graphic&keywords=(group)graphic-design [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.2\.165$ [NC]
+RewriteRule ^hair-salon/$ /gallery.cgi?productid=284&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=hair&keywords=(group)hair-salon [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.2\.165$ [NC]
+RewriteRule ^interior-design/$ /gallery.cgi?productid=284&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=interior&keywords=(group)interior-design [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.2\.165$ [NC]
+RewriteRule ^jewelry/$ /gallery.cgi?productid=284&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=jewelry&keywords=(group)jewelry [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.2\.165$ [NC]
+RewriteRule ^landscaping/$ /gallery.cgi?productid=284&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=landscaping&keywords=(group)landscaping [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.2\.165$ [NC]
+RewriteRule ^law-enforcement/$ /gallery.cgi?productid=284&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=law&keywords=(group)law-enforcement [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.2\.165$ [NC]
+RewriteRule ^lawn-care/$ /gallery.cgi?productid=284&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=lawn&keywords=(group)lawn-care [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.2\.165$ [NC]
+RewriteRule ^legal/$ /gallery.cgi?productid=284&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=legal&keywords=(group)legal [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.2\.165$ [NC]
+RewriteRule ^makeup-artist/$ /gallery.cgi?productid=284&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=makeup&keywords=(group)makeup-artist [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.2\.165$ [NC]
+RewriteRule ^massage-therapy/$ /gallery.cgi?productid=284&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=massage&keywords=(group)massage-therapy [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.2\.165$ [NC]
+RewriteRule ^military/$ /gallery.cgi?productid=284&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=military&keywords=(group)military [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.2\.165$ [NC]
+RewriteRule ^medical/$ /gallery.cgi?productid=284&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=medical&keywords=(group)medical [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.2\.165$ [NC]
+RewriteRule ^mommy/$ /gallery.cgi?productid=284&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=mommy&keywords=(group)mommy [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.2\.165$ [NC]
+RewriteRule ^music/$ /gallery.cgi?productid=284&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=music&keywords=(group)music [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.2\.165$ [NC]
+RewriteRule ^personal-training/$ /gallery.cgi?productid=284&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=personaltraining&keywords=(group)personal-training [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.2\.165$ [NC]
+RewriteRule ^real-estate/$ /gallery.cgi?productid=284&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=realestate&keywords=(group)real-estate [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.2\.165$ [NC]
+RewriteRule ^religious/$ /gallery.cgi?productid=284&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=religious&keywords=(group)religious [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.2\.165$ [NC]
+RewriteRule ^restaurant/$ /gallery.cgi?productid=284&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=restaurant&keywords=(group)restaurant [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.2\.165$ [NC]
+RewriteRule ^student/$ /gallery.cgi?productid=284&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=student&keywords=(group)student [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.2\.165$ [NC]
+RewriteRule ^technology/$ /gallery.cgi?productid=284&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=technology&keywords=(group)technology [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.2\.165$ [NC]
+RewriteRule ^travel-agent/$ /gallery.cgi?productid=284&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=travelagent&keywords=(group)travel-agent [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.2\.165$ [NC]
+RewriteRule ^wedding/$ /gallery.cgi?productid=284&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=wedding&keywords=(group)wedding [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.2\.165$ [NC]
+RewriteRule ^black/$ /gallery.cgi?productid=284&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=black&keywords=(group)black [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.2\.165$ [NC]
+RewriteRule ^blue/$ /gallery.cgi?productid=284&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=blue&keywords=(group)blue [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.2\.165$ [NC]
+RewriteRule ^green/$ /gallery.cgi?productid=284&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=green&keywords=(group)green [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.2\.165$ [NC]
+RewriteRule ^red/$ /gallery.cgi?productid=284&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=red&keywords=(group)red [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.2\.165$ [NC]
+RewriteRule ^yellow/$ /gallery.cgi?productid=284&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=yellow&keywords=(group)yellow [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.2\.165$ [NC]
+RewriteRule ^modern/$ /gallery.cgi?productid=284&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=modern&keywords=(group)modern [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.2\.165$ [NC]
+RewriteRule ^recycled/$ /gallery.cgi?productid=284&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=recycled&keywords=(group)recycled [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.2\.165$ [NC]
+RewriteRule ^fun/$ /gallery.cgi?productid=284&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=fun&keywords=(group)fun [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.2\.165$ [NC]
+RewriteRule ^patriotic/$ /gallery.cgi?productid=284&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=patriotic&keywords=(group)patriotic [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.2\.165$ [NC]
+RewriteRule ^spiritual/$ /gallery.cgi?productid=284&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=spiritual&keywords=(group)spiritual [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.2\.165$ [NC]
+RewriteRule ^international/$ /gallery.cgi?productid=284&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=international&keywords=(group)international [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.2\.165$ [NC]
+RewriteRule ^girly/$ /gallery.cgi?productid=284&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=girly&keywords=(group)girly [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.2\.165$ [NC]
+RewriteRule ^full-colour/$ /gallery.cgi?productid=284&StepDownDir=1&TemplateSwitchOnPaging=&keywords=all&TemplateNumber=BcFc [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.2\.165$ [NC]
+RewriteRule ^raised-ink/$ /gallery.cgi?productid=283&StepDownDir=1&TemplateSwitchOnPaging=&keywords=all&TemplateNumber=BcRi [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.2\.165$ [NC]
+RewriteRule ^foil-printed/$ /gallery.cgi?productid=285&StepDownDir=1&TemplateSwitchOnPaging=&keywords=all&TemplateNumber=BcFp [NC,L]
+
+
+
+
+
+# Hide the Product ID's from the artwork upload pages.
+RewriteCond %{HTTP_HOST} ^(www\.businesscards\.co\.uk|74\.53\.2\.165)$ [NC]
+RewriteRule ^upload-artwork-business-cards/$ /product_uploadartwork.php?StepDownDir=1&productid=284&TemplateNumber=BcFc [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.2\.165$ [NC]
+RewriteRule ^upload-artwork-raised-ink-business-cards/$ /product_uploadartwork.php?StepDownDir=1&productid=283&TemplateNumber=BcRi [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.2\.165$ [NC]
+RewriteRule ^upload-artwork-foil-business-cards/$ /product_uploadartwork.php?StepDownDir=1&productid=285&TemplateNumber=BcFp [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.2\.165$ [NC]
+RewriteRule ^upload-artwork-letterhead/$ /product_uploadartwork.php?StepDownDir=1&productid=291&TemplateNumber=LhFc [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.2\.165$ [NC]
+RewriteRule ^upload-artwork-raised-ink-letterhead/$ /product_uploadartwork.php?StepDownDir=1&productid=289&TemplateNumber=LhRi [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.2\.165$ [NC]
+RewriteRule ^upload-artwork-foil-letterhead/$ /product_uploadartwork.php?StepDownDir=1&productid=290&TemplateNumber=LhFp [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.2\.165$ [NC]
+RewriteRule ^upload-artwork-envelopes/$ /product_uploadartwork.php?StepDownDir=1&productid=288&TemplateNumber=EvFc [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.2\.165$ [NC]
+RewriteRule ^upload-artwork-raised-ink-envelopes/$ /product_uploadartwork.php?StepDownDir=1&productid=286&TemplateNumber=EvRi [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.2\.165$ [NC]
+RewriteRule ^upload-artwork-foil-envelopes/$ /product_uploadartwork.php?StepDownDir=1&productid=287&TemplateNumber=EvFp [NC,L]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+RewriteCond %{HTTP_HOST} ^(www\.HolidayGreetingCards\.com|74\.53\.59\.114)$ [NC]
+RewriteRule ^photo/$ /templates.php?keywords=category:photo&productid=302&StepDownDir=1&resultsCount=12&TemplateNumber=Photo [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.114$ [NC]
+RewriteRule ^seasons/$ /templates.php?keywords=category:seasons&productid=302&StepDownDir=1&resultsCount=12&TemplateNumber=Seasons [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.114$ [NC]
+RewriteRule ^Christmas/$ /templates.php?keywords=category:christmas&productid=302&StepDownDir=1&resultsCount=12&TemplateNumber=christmas [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.114$ [NC]
+RewriteRule ^Hanukkah/$ /templates.php?keywords=category:hanukkah&productid=302&StepDownDir=1&resultsCount=12&TemplateNumber=Hanukkah [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.114$ [NC]
+RewriteRule ^thank-you/$ /templates.php?keywords=category:thank-you&productid=302&StepDownDir=1&resultsCount=12&TemplateNumber=ThankYou [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.114$ [NC]
+RewriteRule ^birthday/$ /templates.php?keywords=category:birthday&productid=302&StepDownDir=1&resultsCount=12&TemplateNumber=birthday [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.114$ [NC]
+RewriteRule ^thanksgiving/$ /templates.php?keywords=category:thanksgiving&productid=302&StepDownDir=1&resultsCount=12&TemplateNumber=Thanksgiving [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.114$ [NC]
+RewriteRule ^new-year/$ /templates.php?keywords=category:new-year&productid=302&StepDownDir=1&resultsCount=12&TemplateNumber=NewYear [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.114$ [NC]
+RewriteRule ^Easter/$ /templates.php?keywords=category:easter&productid=302&StepDownDir=1&resultsCount=12&TemplateNumber=easter [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.114$ [NC]
+RewriteRule ^valentine/$ /templates.php?keywords=category:valentine&productid=302&StepDownDir=1&resultsCount=12&TemplateNumber=Valentine [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.114$ [NC]
+RewriteRule ^halloween/$ /templates.php?keywords=category:halloween&productid=302&StepDownDir=1&resultsCount=12&TemplateNumber=Halloween [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.114$ [NC]
+RewriteRule ^independence-day/$ /templates.php?keywords=category:independence-day&productid=302&StepDownDir=1&resultsCount=12&TemplateNumber=IndependenceDay [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.114$ [NC]
+RewriteRule ^fathers-day/$ /templates.php?keywords=category:fathers-day&productid=302&StepDownDir=1&resultsCount=12&TemplateNumber=FathersDay [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.114$ [NC]
+RewriteRule ^mothers-day/$ /templates.php?keywords=category:mothers-day&productid=302&StepDownDir=1&resultsCount=12&TemplateNumber=MothersDay [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.114$ [NC]
+RewriteRule ^all-occasion/$ /templates.php?keywords=category:all-occasion&productid=302&StepDownDir=1&resultsCount=12&TemplateNumber= [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.114$ [NC]
+RewriteRule ^corporate/$ /templates.php?keywords=category:corporate&productid=302&StepDownDir=1&resultsCount=12&TemplateNumber=corporate [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.114$ [NC]
+RewriteRule ^business/$ /templates.php?keywords=category:business&productid=302&StepDownDir=1&resultsCount=12&TemplateNumber=business [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.114$ [NC]
+RewriteRule ^executive/$ /templates.php?keywords=category:executive&productid=302&StepDownDir=1&resultsCount=12&TemplateNumber=executive [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.114$ [NC]
+RewriteRule ^blank/$ /templates.php?keywords=category:blank&productid=302&StepDownDir=1&resultsCount=12&TemplateNumber=blank [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.114$ [NC]
+RewriteRule ^christian/$ /templates.php?keywords=category:christian&productid=302&StepDownDir=1&resultsCount=12&TemplateNumber=christian [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.114$ [NC]
+RewriteRule ^wedding/$ /templates.php?keywords=category:wedding&productid=302&StepDownDir=1&resultsCount=12&TemplateNumber=Wedding [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.114$ [NC]
+RewriteRule ^funny/$ /templates.php?keywords=category:funny&productid=302&StepDownDir=1&resultsCount=12&TemplateNumber=Funny [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.114$ [NC]
+RewriteRule ^baby/$ /templates.php?keywords=category:baby&productid=302&StepDownDir=1&resultsCount=12&TemplateNumber=baby [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.114$ [NC]
+RewriteRule ^anniversary/$ /templates.php?keywords=category:anniversary&productid=302&StepDownDir=1&resultsCount=12&TemplateNumber=anniversary [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.114$ [NC]
+RewriteRule ^love/$ /templates.php?keywords=category:love&productid=302&StepDownDir=1&resultsCount=12&TemplateNumber=Love [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.114$ [NC]
+RewriteRule ^kids/$ /templates.php?keywords=category:kids&productid=302&StepDownDir=1&resultsCount=12&TemplateNumber=Kids [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.114$ [NC]
+RewriteRule ^get-well/$ /templates.php?keywords=category:get-well&productid=302&StepDownDir=1&resultsCount=12&TemplateNumber=GetWell [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.114$ [NC]
+RewriteRule ^congratulations/$ /templates.php?keywords=category:congratulations&productid=302&StepDownDir=1&resultsCount=12&TemplateNumber=congratulations [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.114$ [NC]
+RewriteRule ^art/$ /templates.php?keywords=category:art&productid=302&StepDownDir=1&resultsCount=12&TemplateNumber=art [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.114$ [NC]
+RewriteRule ^Chinese-new-year/$ /templates.php?keywords=category:chinese-new-year&productid=302&StepDownDir=1&resultsCount=12&TemplateNumber=chinese [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.114$ [NC]
+RewriteRule ^romantic/$ /templates.php?keywords=category:romantic&productid=302&StepDownDir=1&resultsCount=12&TemplateNumber=Romantic [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.114$ [NC]
+RewriteRule ^humorous/$ /templates.php?keywords=category:humorous&productid=302&StepDownDir=1&resultsCount=12&TemplateNumber=Humorous [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.114$ [NC]
+RewriteRule ^cute/$ /templates.php?keywords=category:cute&productid=302&StepDownDir=1&resultsCount=12&TemplateNumber=cute [L]
+
+
+
+
+
+
+RewriteCond %{HTTP_HOST} ^(www\.carmagnets\.com|74\.53\.59\.110)$ [NC]
+RewriteRule ^advertising/$ /templates.php?keywords=category:advertising&productid=252&StepDownDir=1&resultsCount=12&TemplateNumber= [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.110$ [NC]
+RewriteRule ^baseball/$ /templates.php?keywords=category:baseball&productid=252&StepDownDir=1&resultsCount=12&TemplateNumber= [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.110$ [NC]
+RewriteRule ^soccer/$ /templates.php?keywords=category:soccer&productid=252&StepDownDir=1&resultsCount=12&TemplateNumber= [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.110$ [NC]
+RewriteRule ^butterfly/$ /templates.php?keywords=category:butterfly&productid=252&StepDownDir=1&resultsCount=12&TemplateNumber= [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.110$ [NC]
+RewriteRule ^breast-cancer-awareness/$ /templates.php?keywords=category:breastcancer&productid=252&StepDownDir=1&resultsCount=12&TemplateNumber= [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.110$ [NC]
+RewriteRule ^cheerleading/$ /templates.php?keywords=category:cheerleading&productid=252&StepDownDir=1&resultsCount=12&TemplateNumber= [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.110$ [NC]
+RewriteRule ^just-married/$ /templates.php?keywords=category:justmarried&productid=252&StepDownDir=1&resultsCount=12&TemplateNumber= [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.110$ [NC]
+RewriteRule ^Patriotic/$ /templates.php?keywords=category:patriotic&productid=252&StepDownDir=1&resultsCount=12&TemplateNumber= [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.110$ [NC]
+RewriteRule ^american-flag/$ /templates.php?keywords=category:americanflag&productid=252&StepDownDir=1&resultsCount=12&TemplateNumber= [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.110$ [NC]
+RewriteRule ^support-our-troops/$ /templates.php?keywords=category:support-our-troops&productid=252&StepDownDir=1&resultsCount=12&TemplateNumber= [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.110$ [NC]
+RewriteRule ^military/$ /templates.php?keywords=category:military&productid=252&StepDownDir=1&resultsCount=12&TemplateNumber= [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.110$ [NC]
+RewriteRule ^religious/$ /templates.php?keywords=category:religious&productid=252&StepDownDir=1&resultsCount=12&TemplateNumber= [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.110$ [NC]
+RewriteRule ^yellow-ribbon/$ /templates.php?keywords=category:yellowribbon&productid=252&StepDownDir=1&resultsCount=12&TemplateNumber= [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.110$ [NC]
+RewriteRule ^pink-ribbon/$ /templates.php?keywords=category:pinkribbon&productid=252&StepDownDir=1&resultsCount=12&TemplateNumber= [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.110$ [NC]
+RewriteRule ^dog/$ /templates.php?keywords=category:dog&productid=252&StepDownDir=1&resultsCount=12&TemplateNumber= [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.110$ [NC]
+RewriteRule ^autism-awareness/$ /templates.php?keywords=category:autismawareness&productid=252&StepDownDir=1&resultsCount=12&TemplateNumber= [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.110$ [NC]
+RewriteRule ^softball/$ /templates.php?keywords=category:softball&productid=252&StepDownDir=1&resultsCount=12&TemplateNumber= [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.110$ [NC]
+RewriteRule ^paw-print/$ /templates.php?keywords=category:pawprint&productid=252&StepDownDir=1&resultsCount=12&TemplateNumber= [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.110$ [NC]
+RewriteRule ^fundraising/$ /templates.php?keywords=category:fundraiser&productid=252&StepDownDir=1&resultsCount=12&TemplateNumber= [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.110$ [NC]
+RewriteRule ^dance/$ /templates.php?keywords=category:dance&productid=252&StepDownDir=1&resultsCount=12&TemplateNumber= [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.110$ [NC]
+RewriteRule ^flower/$ /templates.php?keywords=category:flower&productid=252&StepDownDir=1&resultsCount=12&TemplateNumber= [L]
+
+
+
+
+
+
+
+
+
+RewriteCond %{HTTP_HOST} ^(www\.BridalShowerInvitations\.com|74\.53\.2\.161)$ [NC]
+RewriteRule ^beach/$ /templates.php?keywords=(grp)beach&productid=356&StepDownDir=1&resultsCount=10&TemplateNumber=&keywords_and=horizontal [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.2\.161$ [NC]
+RewriteRule ^daisy/$ /templates.php?keywords=(grp)daisy&productid=356&StepDownDir=1&resultsCount=10&TemplateNumber=&keywords_and=horizontal [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.2\.161$ [NC]
+RewriteRule ^modern/$ /templates.php?keywords=(grp)modern&productid=356&StepDownDir=1&resultsCount=10&TemplateNumber=&keywords_and=horizontal [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.2\.161$ [NC]
+RewriteRule ^luncheon/$ /templates.php?keywords=(grp)luncheon&productid=356&StepDownDir=1&resultsCount=10&TemplateNumber=&keywords_and=horizontal [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.2\.161$ [NC]
+RewriteRule ^Christmas/$ /templates.php?keywords=(grp)christmas&productid=356&StepDownDir=1&resultsCount=10&TemplateNumber=&keywords_and=horizontal [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.2\.161$ [NC]
+RewriteRule ^around\-the\-clock/$ /templates.php?keywords=(grp)around-the-clock&productid=356&StepDownDir=1&resultsCount=10&TemplateNumber=&keywords_and=horizontal [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.2\.161$ [NC]
+RewriteRule ^fun/$ /templates.php?keywords=(grp)fun&productid=356&StepDownDir=1&resultsCount=10&TemplateNumber=&keywords_and=horizontal [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.2\.161$ [NC]
+RewriteRule ^creative/$ /templates.php?keywords=(grp)creative&productid=356&StepDownDir=1&resultsCount=10&TemplateNumber=&keywords_and=horizontal [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.2\.161$ [NC]
+RewriteRule ^Hawaiian/$ /templates.php?keywords=(grp)hawaiian&productid=356&StepDownDir=1&resultsCount=10&TemplateNumber=&keywords_and=horizontal [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.2\.161$ [NC]
+RewriteRule ^tropical/$ /templates.php?keywords=(grp)tropical&productid=356&StepDownDir=1&resultsCount=10&TemplateNumber=&keywords_and=horizontal [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.2\.161$ [NC]
+RewriteRule ^formal/$ /templates.php?keywords=(grp)formal&productid=356&StepDownDir=1&resultsCount=10&TemplateNumber=&keywords_and=horizontal [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.2\.161$ [NC]
+RewriteRule ^kitchen/$ /templates.php?keywords=(grp)kitchen&productid=356&StepDownDir=1&resultsCount=10&TemplateNumber=&keywords_and=horizontal [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.2\.161$ [NC]
+RewriteRule ^blank/$ /templates.php?keywords=(grp)blank&productid=356&StepDownDir=1&resultsCount=10&TemplateNumber=&keywords_and=horizontal [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.2\.161$ [NC]
+RewriteRule ^couples/$ /templates.php?keywords=(grp)couples&productid=356&StepDownDir=1&resultsCount=10&TemplateNumber=&keywords_and=horizontal [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.2\.161$ [NC]
+RewriteRule ^cute/$ /templates.php?keywords=(grp)cute&productid=356&StepDownDir=1&resultsCount=10&TemplateNumber=&keywords_and=horizontal [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.2\.161$ [NC]
+RewriteRule ^bridesmaid/$ /templates.php?keywords=(grp)bridesmaid&productid=356&StepDownDir=1&resultsCount=10&TemplateNumber=&keywords_and=horizontal [L]
+
+
+
+
+
+
+
+
+RewriteCond %{HTTP_HOST} ^(www\.FlyerPrinting\.com|74\.53\.59\.112)$ [NC]
+RewriteRule ^all/$ /templates.php?keywords=all&productid=334&StepDownDir=1&resultsCount=12&TemplateNumber= [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.112$ [NC]
+RewriteRule ^occasion/$ /templates.php?keywords=category:occasion&productid=334&StepDownDir=1&resultsCount=12&TemplateNumber= [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.112$ [NC]
+RewriteRule ^party/$ /templates.php?keywords=category:party&productid=334&StepDownDir=1&resultsCount=12&TemplateNumber=party [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.112$ [NC]
+RewriteRule ^holiday/$ /templates.php?keywords=category:holiday&productid=334&StepDownDir=1&resultsCount=12&TemplateNumber=holiday [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.112$ [NC]
+RewriteRule ^christmas/$ /templates.php?keywords=category:christmas&productid=334&StepDownDir=1&resultsCount=12&TemplateNumber=christmas [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.112$ [NC]
+RewriteRule ^birthday/$ /templates.php?keywords=category:birthday&productid=334&StepDownDir=1&resultsCount=12&TemplateNumber=birthday [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.112$ [NC]
+RewriteRule ^grand\-opening/$ /templates.php?keywords=category:grand-opening&productid=334&StepDownDir=1&resultsCount=12&TemplateNumber=grandOpening [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.112$ [NC]
+RewriteRule ^club/$ /templates.php?keywords=category:club&productid=334&StepDownDir=1&resultsCount=12&TemplateNumber=club [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.112$ [NC]
+RewriteRule ^nightclub/$ /templates.php?keywords=category:nightclub&productid=334&StepDownDir=1&resultsCount=12&TemplateNumber=nightclub [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.112$ [NC]
+RewriteRule ^real\-estate/$ /templates.php?keywords=category:real-estate&productid=334&StepDownDir=1&resultsCount=12&TemplateNumber=realEstate [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.112$ [NC]
+RewriteRule ^mortgage/$ /templates.php?keywords=category:mortgage&productid=334&StepDownDir=1&resultsCount=12&TemplateNumber=mortgage [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.112$ [NC]
+RewriteRule ^music-band/$ /templates.php?keywords=category:music&productid=334&StepDownDir=1&resultsCount=12&TemplateNumber=music [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.112$ [NC]
+RewriteRule ^sale\-promotional/$ /templates.php?keywords=category:sale-promotional&productid=334&StepDownDir=1&resultsCount=12&TemplateNumber=promotional [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.112$ [NC]
+RewriteRule ^beauty/$ /templates.php?keywords=category:beauty&productid=334&StepDownDir=1&resultsCount=12&TemplateNumber=beauty [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.112$ [NC]
+RewriteRule ^babysitter/$ /templates.php?keywords=category:babysitter&productid=334&StepDownDir=1&resultsCount=12&TemplateNumber=babysitting [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.112$ [NC]
+RewriteRule ^sports/$ /templates.php?keywords=category:sports&productid=334&StepDownDir=1&resultsCount=12&TemplateNumber=sports [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.112$ [NC]
+RewriteRule ^travel/$ /templates.php?keywords=category:travel&productid=334&StepDownDir=1&resultsCount=12&TemplateNumber=travel [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.112$ [NC]
+RewriteRule ^home\-for\-sale/$ /templates.php?keywords=category:home-for-sale&productid=334&StepDownDir=1&resultsCount=12&TemplateNumber=homeSale [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.112$ [NC]
+RewriteRule ^home\-improvement/$ /templates.php?keywords=category:home-improvement&productid=334&StepDownDir=1&resultsCount=12&TemplateNumber=homeImprovement [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.112$ [NC]
+RewriteRule ^house\-cleaning/$ /templates.php?keywords=category:house-cleaning&productid=334&StepDownDir=1&resultsCount=12&TemplateNumber=houseCleaning [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.112$ [NC]
+RewriteRule ^landscaping/$ /templates.php?keywords=category:landscaping&productid=334&StepDownDir=1&resultsCount=12&TemplateNumber=Landscaping [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.112$ [NC]
+RewriteRule ^construction/$ /templates.php?keywords=category:construction&productid=334&StepDownDir=1&resultsCount=12&TemplateNumber=construction [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.112$ [NC]
+RewriteRule ^car/$ /templates.php?keywords=category:car&productid=334&StepDownDir=1&resultsCount=12&TemplateNumber=automotive [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.112$ [NC]
+RewriteRule ^computer/$ /templates.php?keywords=category:computer&productid=334&StepDownDir=1&resultsCount=12&TemplateNumber=computer [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.112$ [NC]
+RewriteRule ^art\-show/$ /templates.php?keywords=category:art-show&productid=334&StepDownDir=1&resultsCount=12&TemplateNumber=artShow [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.112$ [NC]
+RewriteRule ^personal\-trainer/$ /templates.php?keywords=category:personal-trainer&productid=334&StepDownDir=1&resultsCount=12&TemplateNumber=perosnalTrainer [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.112$ [NC]
+RewriteRule ^store\-grocery/$ /templates.php?keywords=category:grocery&productid=334&StepDownDir=1&resultsCount=12&TemplateNumber=store [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.112$ [NC]
+RewriteRule ^pet/$ /templates.php?keywords=category:pet&productid=334&StepDownDir=1&resultsCount=12&TemplateNumber=pet [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.112$ [NC]
+RewriteRule ^black-and-white/$ /templates.php?keywords=category:black-and-white&productid=334&StepDownDir=1&resultsCount=12&TemplateNumber=blackWhite [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.112$ [NC]
+RewriteRule ^bold/$ /templates.php?keywords=category:bold&productid=334&StepDownDir=1&resultsCount=12&TemplateNumber=bold [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.112$ [NC]
+RewriteRule ^conservative/$ /templates.php?keywords=category:conservative&productid=334&StepDownDir=1&resultsCount=12&TemplateNumber=conservative [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.112$ [NC]
+RewriteRule ^elegant/$ /templates.php?keywords=category:elegant&productid=334&StepDownDir=1&resultsCount=12&TemplateNumber=elegant [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.112$ [NC]
+RewriteRule ^modern/$ /templates.php?keywords=category:modern&productid=334&StepDownDir=1&resultsCount=12&TemplateNumber=modern [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.112$ [NC]
+RewriteRule ^retro/$ /templates.php?keywords=category:retro&productid=334&StepDownDir=1&resultsCount=12&TemplateNumber=retro [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.112$ [NC]
+RewriteRule ^solid-color/$ /templates.php?keywords=category:solid-color&productid=334&StepDownDir=1&resultsCount=12&TemplateNumber=solid [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.112$ [NC]
+RewriteRule ^restaurant/$ /templates.php?keywords=category:restaurant&productid=334&StepDownDir=1&resultsCount=12&TemplateNumber=restaurant [L]
+
+
+
+
+
+
+RewriteCond %{HTTP_HOST} ^(www\.PosterPrinting\.com|74\.53\.59\.123)$ [NC]
+RewriteRule ^sports/$ /templates.php?keywords=(group)sports&productid=358&StepDownDir=1&resultsCount=12&TemplateNumber= [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.123$ [NC]
+RewriteRule ^fitness/$ /templates.php?keywords=(group)fitness&productid=358&StepDownDir=1&resultsCount=12&TemplateNumber= [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.123$ [NC]
+RewriteRule ^band/$ /templates.php?keywords=(group)band&productid=358&StepDownDir=1&resultsCount=12&TemplateNumber= [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.123$ [NC]
+RewriteRule ^music/$ /templates.php?keywords=(group)music&productid=358&StepDownDir=1&resultsCount=12&TemplateNumber= [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.123$ [NC]
+RewriteRule ^car/$ /templates.php?keywords=(group)car&productid=358&StepDownDir=1&resultsCount=12&TemplateNumber= [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.123$ [NC]
+RewriteRule ^travel/$ /templates.php?keywords=(group)travel&productid=358&StepDownDir=1&resultsCount=12&TemplateNumber= [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.123$ [NC]
+RewriteRule ^club/$ /templates.php?keywords=(group)club&productid=358&StepDownDir=1&resultsCount=12&TemplateNumber= [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.123$ [NC]
+RewriteRule ^animal/$ /templates.php?keywords=(group)animal&productid=358&StepDownDir=1&resultsCount=12&TemplateNumber= [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.123$ [NC]
+RewriteRule ^business/$ /templates.php?keywords=(group)business&productid=358&StepDownDir=1&resultsCount=12&TemplateNumber= [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.123$ [NC]
+RewriteRule ^military/$ /templates.php?keywords=(group)military&productid=358&StepDownDir=1&resultsCount=12&TemplateNumber= [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.123$ [NC]
+RewriteRule ^massage/$ /templates.php?keywords=(group)massage&productid=358&StepDownDir=1&resultsCount=12&TemplateNumber= [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.123$ [NC]
+RewriteRule ^spa/$ /templates.php?keywords=(group)spa&productid=358&StepDownDir=1&resultsCount=12&TemplateNumber= [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.123$ [NC]
+RewriteRule ^floral/$ /templates.php?keywords=(group)floral&productid=358&StepDownDir=1&resultsCount=12&TemplateNumber= [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.123$ [NC]
+RewriteRule ^event/$ /templates.php?keywords=(group)event&productid=358&StepDownDir=1&resultsCount=12&TemplateNumber= [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.123$ [NC]
+RewriteRule ^campaign/$ /templates.php?keywords=(group)campaign&productid=358&StepDownDir=1&resultsCount=12&TemplateNumber= [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.123$ [NC]
+RewriteRule ^political/$ /templates.php?keywords=(group)political&productid=358&StepDownDir=1&resultsCount=12&TemplateNumber= [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.123$ [NC]
+RewriteRule ^education/$ /templates.php?keywords=(group)education&productid=358&StepDownDir=1&resultsCount=12&TemplateNumber= [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.123$ [NC]
+RewriteRule ^birthday/$ /templates.php?keywords=(group)birthday&productid=358&StepDownDir=1&resultsCount=12&TemplateNumber= [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.123$ [NC]
+RewriteRule ^promotional/$ /templates.php?keywords=(group)promotional&productid=358&StepDownDir=1&resultsCount=12&TemplateNumber= [L]
+
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.123$ [NC]
+RewriteRule ^upload/$ /product_uploadartwork.php?productid=358&StepDownDir=1 [L]
+
+
+
+
+
+
+RewriteCond %{HTTP_HOST} ^(www\.BusinessHolidayCards\.com|74\.53\.59\.119)$ [NC]
+RewriteRule ^holiday-cards/$ /templates.php?productid=275&StepDownDir=1&resultsCount=10&keywords=(group)designs&TemplateNumber=holidays [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.119$ [NC]
+RewriteRule ^christmas-cards/$ /templates.php?productid=275&StepDownDir=1&resultsCount=10&keywords=(group)christmas&TemplateNumber=christmas [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.119$ [NC]
+RewriteRule ^thanksgiving-cards/$ /templates.php?productid=275&StepDownDir=1&resultsCount=10&keywords=(group)thanksgiving&TemplateNumber=thanksgiving [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.119$ [NC]
+RewriteRule ^Hanukkah/$ /templates.php?productid=275&StepDownDir=1&resultsCount=10&keywords=(group)hanukkah&TemplateNumber=hanukkah [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.119$ [NC]
+RewriteRule ^kwanza-cards/$ /templates.php?productid=275&StepDownDir=1&resultsCount=10&keywords=(group)kwanzaa&TemplateNumber=kwanza [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.119$ [NC]
+RewriteRule ^kwanzaa-cards/$ /templates.php?productid=275&StepDownDir=1&resultsCount=10&keywords=(group)kwanzaa&TemplateNumber=kwanza [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.119$ [NC]
+RewriteRule ^valentines-day/$ /templates.php?productid=275&StepDownDir=1&resultsCount=10&keywords=(group)valentines-day&TemplateNumber=valentines [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.119$ [NC]
+RewriteRule ^halloween-cards/$ /templates.php?productid=275&StepDownDir=1&resultsCount=10&keywords=(group)halloween&TemplateNumber=halloween [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.119$ [NC]
+RewriteRule ^mothers-day-cards/$ /templates.php?productid=275&StepDownDir=1&resultsCount=10&keywords=(group)mothers-day&TemplateNumber=mothersday [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.119$ [NC]
+RewriteRule ^independence-day-cards/$ /templates.php?productid=275&StepDownDir=1&resultsCount=10&keywords=(group)independence-day&TemplateNumber=independence [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.119$ [NC]
+RewriteRule ^memorial-day-cards/$ /templates.php?productid=275&StepDownDir=1&resultsCount=10&keywords=(group)memorial-day&TemplateNumber=memorial [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.119$ [NC]
+RewriteRule ^verterans-day-cards/$ /templates.php?productid=275&StepDownDir=1&resultsCount=10&keywords=(group)veterans-day&TemplateNumber=verterans [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.119$ [NC]
+RewriteRule ^photo-holiday-cards/$ /templates.php?productid=275&StepDownDir=1&resultsCount=10&keywords=(group)photo&TemplateNumber=photo [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.119$ [NC]
+RewriteRule ^modern-holiday-cards/$ /templates.php?productid=275&StepDownDir=1&resultsCount=10&keywords=(group)modern&TemplateNumber=modern [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.119$ [NC]
+RewriteRule ^boxed-holiday-cards/$ /templates.php?keywords=boxed&productid=275&StepDownDir=1&resultsCount=10&TemplateNumber= [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.119$ [NC]
+RewriteRule ^recycled-holiday-cards/$ /templates.php?keywords=recycled&productid=275&StepDownDir=1&resultsCount=10&TemplateNumber= [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.119$ [NC]
+RewriteRule ^funny-holiday-cards/$ /templates.php?productid=275&StepDownDir=1&resultsCount=10&keywords=(group)funny&TemplateNumber=funny [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.119$ [NC]
+RewriteRule ^happy-holiday-cards/$ /templates.php?productid=275&StepDownDir=1&resultsCount=10&keywords=(group)happy&TemplateNumber=happy [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.119$ [NC]
+RewriteRule ^peace-holiday-cards/$ /templates.php?productid=275&StepDownDir=1&resultsCount=10&keywords=(group)peace&TemplateNumber=peace [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.119$ [NC]
+RewriteRule ^dog-holiday-cards/$ /templates.php?productid=275&StepDownDir=1&resultsCount=10&keywords=(group)dog&TemplateNumber=dog [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.119$ [NC]
+RewriteRule ^cat-holiday-cards/$ /templates.php?productid=275&StepDownDir=1&resultsCount=10&keywords=(group)cat&TemplateNumber=cat [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.119$ [NC]
+RewriteRule ^new-year-cards/$ /templates.php?productid=275&StepDownDir=1&resultsCount=10&keywords=(group)new-year&TemplateNumber=newyear [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.119$ [NC]
+RewriteRule ^st-patricks-day-cards/$ /templates.php?productid=275&StepDownDir=1&resultsCount=10&keywords=(group)st-patricks-day&TemplateNumber=stpatricks [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.119$ [NC]
+RewriteRule ^horse-holiday-cards/$ /templates.php?productid=275&StepDownDir=1&resultsCount=10&keywords=(group)horse&TemplateNumber=horse [L]
+
+
+
+
+
+RewriteCond %{HTTP_HOST} ^(www\.luauinvitations\.com|74\.53\.59\.118)$ [NC]
+RewriteRule ^photo/$ /templates.php?productid=244&keywords=(category)photo&resultsCount=100&TemplateNumber=photo&StepDownDir=1&TemplateSwitchOnPaging=& [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.118$ [NC]
+RewriteRule ^Hawaiian/$ /templates.php?productid=244&keywords=(category)hawaiian&resultsCount=100&TemplateNumber=hawaiian&StepDownDir=1&TemplateSwitchOnPaging=& [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.118$ [NC]
+RewriteRule ^tropical/$ /templates.php?productid=244&keywords=(category)tropical&resultsCount=100&TemplateNumber=tropical&StepDownDir=1&TemplateSwitchOnPaging=& [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.118$ [NC]
+RewriteRule ^graduation/$ /templates.php?productid=244&keywords=(category)graduation&resultsCount=100&TemplateNumber=graduation&StepDownDir=1&TemplateSwitchOnPaging=& [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.118$ [NC]
+RewriteRule ^wedding/$ /templates.php?productid=244&keywords=(category)wedding&resultsCount=100&TemplateNumber=wedding&StepDownDir=1&TemplateSwitchOnPaging=& [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.118$ [NC]
+RewriteRule ^bridal-shower/$ /templates.php?productid=244&keywords=(category)bridal-shower&resultsCount=100&TemplateNumber=bridalShower&StepDownDir=1&TemplateSwitchOnPaging=& [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.118$ [NC]
+RewriteRule ^baby-shower/$ /templates.php?productid=244&keywords=(category)baby-shower&resultsCount=100&TemplateNumber=babyShower&StepDownDir=1&TemplateSwitchOnPaging=& [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.118$ [NC]
+RewriteRule ^birthday/$ /templates.php?productid=244&keywords=(category)birthday&resultsCount=100&TemplateNumber=birthday&StepDownDir=1&TemplateSwitchOnPaging=& [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.118$ [NC]
+RewriteRule ^1st-birthday/$ /templates.php?productid=244&keywords=(category)1st-birthday&resultsCount=100&TemplateNumber=firstBirthday&StepDownDir=1&TemplateSwitchOnPaging=& [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.118$ [NC]
+RewriteRule ^sweet-16/$ /templates.php?productid=244&keywords=(category)sweet-16&resultsCount=100&TemplateNumber=sweetSixteen&StepDownDir=1&TemplateSwitchOnPaging=& [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.118$ [NC]
+RewriteRule ^kids/$ /templates.php?productid=244&keywords=(category)kids&resultsCount=100&TemplateNumber=kids&StepDownDir=1&TemplateSwitchOnPaging=& [NC,L]
+
+
+
+
+
+RewriteCond %{HTTP_HOST} ^(christmasphotocards\.com|74\.53\.59\.122)$ [NC]
+RewriteRule ^business/$ /templates.php?productid=305&keywords=(category)business&resultsCount=30&StepDownDir=1&TemplateSwitchOnPaging=& [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.122$ [NC]
+RewriteRule ^christian/$ /templates.php?productid=305&keywords=(category)christian&resultsCount=30&StepDownDir=1&TemplateSwitchOnPaging=& [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.122$ [NC]
+RewriteRule ^peace/$ /templates.php?productid=305&keywords=(category)peace&resultsCount=30&StepDownDir=1&TemplateSwitchOnPaging=& [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.122$ [NC]
+RewriteRule ^hanukah/$ /templates.php?productid=305&keywords=(category)hanukkah&resultsCount=30&StepDownDir=1&TemplateSwitchOnPaging=& [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.122$ [NC]
+RewriteRule ^easter/$ /templates.php?productid=305&keywords=(category)easter&resultsCount=30&StepDownDir=1&TemplateSwitchOnPaging=& [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.122$ [NC]
+RewriteRule ^love/$ /templates.php?productid=305&keywords=(category)love&resultsCount=30&StepDownDir=1&TemplateSwitchOnPaging=& [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.122$ [NC]
+RewriteRule ^caspari/$ /templates.php?productid=305&keywords=(category)caspari&resultsCount=30&StepDownDir=1&TemplateSwitchOnPaging=& [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.122$ [NC]
+RewriteRule ^discount/$ /templates.php?productid=305&keywords=(category)discount&resultsCount=30&StepDownDir=1&TemplateSwitchOnPaging=& [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.122$ [NC]
+RewriteRule ^merry-christmas/$ /templates.php?productid=305&keywords=(category)merry-christmas&resultsCount=30&StepDownDir=1&TemplateSwitchOnPaging=& [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.122$ [NC]
+RewriteRule ^thank-you/$ /templates.php?productid=305&keywords=(category)thank-you&resultsCount=30&StepDownDir=1&TemplateSwitchOnPaging=& [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.122$ [NC]
+RewriteRule ^funny/$ /templates.php?productid=305&keywords=(category)funny&resultsCount=30&StepDownDir=1&TemplateSwitchOnPaging=& [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.122$ [NC]
+RewriteRule ^patriotic/$ /templates.php?productid=305&keywords=(category)patriotic&resultsCount=30&StepDownDir=1&TemplateSwitchOnPaging=& [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.122$ [NC]
+RewriteRule ^cat/$ /templates.php?productid=305&keywords=(category)cat&resultsCount=30&StepDownDir=1&TemplateSwitchOnPaging=& [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.122$ [NC]
+RewriteRule ^dog/$ /templates.php?productid=305&keywords=(category)dog&resultsCount=30&StepDownDir=1&TemplateSwitchOnPaging=& [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.122$ [NC]
+RewriteRule ^horse/$ /templates.php?productid=305&keywords=(category)horse&resultsCount=30&StepDownDir=1&TemplateSwitchOnPaging=& [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.122$ [NC]
+RewriteRule ^recycled/$ /templates.php?productid=305&keywords=(category)recycled&resultsCount=30&StepDownDir=1&TemplateSwitchOnPaging=& [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.122$ [NC]
+RewriteRule ^snowman/$ /templates.php?productid=305&keywords=(category)snowman&resultsCount=30&StepDownDir=1&TemplateSwitchOnPaging=& [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.122$ [NC]
+RewriteRule ^wildlife/$ /templates.php?productid=305&keywords=(category)wildlife&resultsCount=30&StepDownDir=1&TemplateSwitchOnPaging=& [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.122$ [NC]
+RewriteRule ^family/$ /templates.php?productid=305&keywords=(category)family&resultsCount=30&StepDownDir=1&TemplateSwitchOnPaging=& [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.122$ [NC]
+RewriteRule ^construction/$ /templates.php?productid=305&keywords=(category)construction&resultsCount=30&StepDownDir=1&TemplateSwitchOnPaging=& [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.122$ [NC]
+RewriteRule ^kids/$ /templates.php?productid=305&keywords=(category)kids&resultsCount=30&StepDownDir=1&TemplateSwitchOnPaging=& [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.122$ [NC]
+RewriteRule ^beach/$ /templates.php?productid=305&keywords=(category)beach&resultsCount=30&StepDownDir=1&TemplateSwitchOnPaging=& [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.122$ [NC]
+RewriteRule ^tropical/$ /templates.php?productid=305&keywords=(category)tropical&resultsCount=30&StepDownDir=1&TemplateSwitchOnPaging=& [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.122$ [NC]
+RewriteRule ^boxed/$ /templates.php?productid=305&keywords=(category)boxed&resultsCount=30&StepDownDir=1&TemplateSwitchOnPaging=& [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.122$ [NC]
+RewriteRule ^bulk-chistmas/$ /templates.php?productid=305&keywords=(category)bulk-chistmas&resultsCount=30&StepDownDir=1&TemplateSwitchOnPaging=& [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.122$ [NC]
+RewriteRule ^africa-american/$ /templates.php?productid=305&keywords=(category)african-american&resultsCount=30&StepDownDir=1&TemplateSwitchOnPaging=& [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.122$ [NC]
+RewriteRule ^charity/$ /templates.php?productid=305&keywords=(category)charity&resultsCount=30&StepDownDir=1&TemplateSwitchOnPaging=& [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.122$ [NC]
+RewriteRule ^victorian-christmas/$ /templates.php?productid=305&keywords=(category)victorian-christmas&resultsCount=30&StepDownDir=1&TemplateSwitchOnPaging=& [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.122$ [NC]
+RewriteRule ^christmas-wishes/$ /templates.php?productid=305&keywords=(category)christmas-wishes&resultsCount=30&StepDownDir=1&TemplateSwitchOnPaging=& [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.122$ [NC]
+RewriteRule ^golf/$ /templates.php?productid=305&keywords=(category)golf&resultsCount=30&StepDownDir=1&TemplateSwitchOnPaging=& [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.122$ [NC]
+RewriteRule ^pets/$ /templates.php?productid=305&keywords=(category)pets&resultsCount=30&StepDownDir=1&TemplateSwitchOnPaging=& [NC,L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.122$ [NC]
+RewriteRule ^charity/$ /templates.php?productid=305&keywords=(category)charity&resultsCount=30&StepDownDir=1&TemplateSwitchOnPaging=& [NC,L]
+
+
+
+
+
+# Show the template gallery in place of a static HTML page.
+
+RewriteCond %{HTTP_HOST} ^(HotLaptopSkin.com|74\.53\.59\.124)$ [NC]
+RewriteRule ^girly/$ /templates.php?productid=363&resultsCount=6&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=&keywords=(group)girly [NC,L]
+RewriteCond %{HTTP_HOST} ^(HotLaptopSkin.com|74\.53\.59\.124)$ [NC]
+RewriteRule ^fairy/$ /templates.php?productid=363&resultsCount=6&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=&keywords=(group)fairy [NC,L]
+RewriteCond %{HTTP_HOST} ^(HotLaptopSkin.com|74\.53\.59\.124)$ [NC]
+RewriteRule ^crystal/$ /templates.php?productid=363&resultsCount=6&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=&keywords=(group)crystal [NC,L]
+RewriteCond %{HTTP_HOST} ^(HotLaptopSkin.com|74\.53\.59\.124)$ [NC]
+RewriteRule ^zebra/$ /templates.php?productid=363&resultsCount=6&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=&keywords=(group)zebra [NC,L]
+RewriteCond %{HTTP_HOST} ^(HotLaptopSkin.com|74\.53\.59\.124)$ [NC]
+RewriteRule ^music/$ /templates.php?productid=363&resultsCount=6&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=&keywords=(group)music [NC,L]
+RewriteCond %{HTTP_HOST} ^(HotLaptopSkin.com|74\.53\.59\.124)$ [NC]
+RewriteRule ^snow/$ /templates.php?productid=363&resultsCount=6&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=&keywords=(group)snow [NC,L]
+RewriteCond %{HTTP_HOST} ^(HotLaptopSkin.com|74\.53\.59\.124)$ [NC]
+RewriteRule ^fine-art/$ /templates.php?productid=363&resultsCount=6&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=&keywords=(group)fine-art [NC,L]
+RewriteCond %{HTTP_HOST} ^(HotLaptopSkin.com|74\.53\.59\.124)$ [NC]
+RewriteRule ^butterfly/$ /templates.php?productid=363&resultsCount=6&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=&keywords=(group)butterfly [NC,L]
+RewriteCond %{HTTP_HOST} ^(HotLaptopSkin.com|74\.53\.59\.124)$ [NC]
+RewriteRule ^military/$ /templates.php?productid=363&resultsCount=6&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=&keywords=(group)military [NC,L]
+RewriteCond %{HTTP_HOST} ^(HotLaptopSkin.com|74\.53\.59\.124)$ [NC]
+RewriteRule ^sports/$ /templates.php?productid=363&resultsCount=6&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=&keywords=(group)sports [NC,L]
+RewriteCond %{HTTP_HOST} ^(HotLaptopSkin.com|74\.53\.59\.124)$ [NC]
+RewriteRule ^football/$ /templates.php?productid=363&resultsCount=6&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=&keywords=(group)football [NC,L]
+RewriteCond %{HTTP_HOST} ^(HotLaptopSkin.com|74\.53\.59\.124)$ [NC]
+RewriteRule ^baseball/$ /templates.php?productid=363&resultsCount=6&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=&keywords=(group)baseball [NC,L]
+RewriteCond %{HTTP_HOST} ^(HotLaptopSkin.com|74\.53\.59\.124)$ [NC]
+RewriteRule ^owl/$ /templates.php?productid=363&resultsCount=6&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=&keywords=(group)owl [NC,L]
+RewriteCond %{HTTP_HOST} ^(HotLaptopSkin.com|74\.53\.59\.124)$ [NC]
+RewriteRule ^horse/$ /templates.php?productid=363&resultsCount=6&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=&keywords=(group)horse [NC,L]
+RewriteCond %{HTTP_HOST} ^(HotLaptopSkin.com|74\.53\.59\.124)$ [NC]
+RewriteRule ^wood/$ /templates.php?productid=363&resultsCount=6&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=&keywords=(group)wood [NC,L]
+RewriteCond %{HTTP_HOST} ^(HotLaptopSkin.com|74\.53\.59\.124)$ [NC]
+RewriteRule ^camouflage/$ /templates.php?productid=363&resultsCount=6&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=&keywords=(group)camouflage [NC,L]
+RewriteCond %{HTTP_HOST} ^(HotLaptopSkin.com|74\.53\.59\.124)$ [NC]
+RewriteRule ^cherry-blossom/$ /templates.php?productid=363&resultsCount=6&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=&keywords=(group)cherry-blossom [NC,L]
+RewriteCond %{HTTP_HOST} ^(HotLaptopSkin.com|74\.53\.59\.124)$ [NC]
+RewriteRule ^star/$ /templates.php?productid=363&resultsCount=6&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=&keywords=(group)star [NC,L]
+RewriteCond %{HTTP_HOST} ^(HotLaptopSkin.com|74\.53\.59\.124)$ [NC]
+RewriteRule ^funny/$ /templates.php?productid=363&resultsCount=6&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=&keywords=(group)funny [NC,L]
+RewriteCond %{HTTP_HOST} ^(HotLaptopSkin.com|74\.53\.59\.124)$ [NC]
+RewriteRule ^dragon/$ /templates.php?productid=363&resultsCount=6&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=&keywords=(group)dragon [NC,L]
+RewriteCond %{HTTP_HOST} ^(HotLaptopSkin.com|74\.53\.59\.124)$ [NC]
+RewriteRule ^peace-sign/$ /templates.php?productid=363&resultsCount=6&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=&keywords=(group)peace-sign [NC,L]
+RewriteCond %{HTTP_HOST} ^(HotLaptopSkin.com|74\.53\.59\.124)$ [NC]
+RewriteRule ^rhinestone/$ /templates.php?productid=363&resultsCount=6&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=&keywords=(group)rhinestone [NC,L]
+RewriteCond %{HTTP_HOST} ^(HotLaptopSkin.com|74\.53\.59\.124)$ [NC]
+RewriteRule ^skull/$ /templates.php?productid=363&resultsCount=6&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=&keywords=(group)skull [NC,L]
+RewriteCond %{HTTP_HOST} ^(HotLaptopSkin.com|74\.53\.59\.124)$ [NC]
+RewriteRule ^college/$ /templates.php?productid=363&resultsCount=6&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=&keywords=(group)college [NC,L]
+RewriteCond %{HTTP_HOST} ^(HotLaptopSkin.com|74\.53\.59\.124)$ [NC]
+RewriteRule ^religious/$ /templates.php?productid=363&resultsCount=6&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=&keywords=(group)religious [NC,L]
+RewriteCond %{HTTP_HOST} ^(HotLaptopSkin.com|74\.53\.59\.124)$ [NC]
+RewriteRule ^christian/$ /templates.php?productid=363&resultsCount=6&StepDownDir=1&TemplateSwitchOnPaging=&TemplateNumber=&keywords=(group)christian [NC,L]
+
+
+
+
+
+RewriteCond %{HTTP_HOST} ^(www\.luauinvitations\.com|74\.53\.59\.118)$ [NC]
+RewriteRule ^upload-4x6-luau-invitations$ /product_uploadartwork.php?productid=243 [L]
+RewriteCond %{HTTP_HOST} ^74\.53\.59\.118$ [NC]
+RewriteRule ^upload-5x8-luau-invitations$ /product_uploadartwork.php?productid=244 [L]
+
+
+
+
+# Change the URL structure for the Visitor Path report.
+RewriteCond %{HTTP_HOST} ^(businesscards24\.com|74\.53\.59\.115|www\.businesscards\.co\.uk|74\.53\.2\.165)$ [NC]
+RewriteCond %{REQUEST_URI} ^/report\.cgi$
+RewriteCond %{QUERY_STRING} ^(.*)$
+RewriteRule ^.*$ /track.php?%1 [L]
+
+
+
+
+RewriteCond %{HTTP_HOST} ^(www\.ThankYouCards\.com|74\.53\.59\.117)$ [NC]
+RewriteCond %{REQUEST_URI} ^/logger\.php$
+RewriteCond %{QUERY_STRING} ^(.*)$
+RewriteRule ^.*$ /track.php?%1 [L]
+
+# Change the Templates Gallery URL
+RewriteCond %{HTTP_HOST} ^(www\.ThankYouCards\.com|74\.53\.59\.117)$ [NC]
+RewriteCond %{REQUEST_URI} ^/catalog\.php$
+RewriteCond %{QUERY_STRING} ^(.*)$
+RewriteRule ^.*$ /templates.php?%1 [L]
+
+# Change the Templates Gallery Images
+RewriteCond %{HTTP_HOST} ^(www\.ThankYouCards\.com|74\.53\.59\.117)$ [NC]
+RewriteRule ^catalog/img_(\d+)\.jpg$ /image_preview/se_$1.jpg [L]
+
+
+
+
+# Change the Templates Gallery URL
+RewriteCond %{HTTP_HOST} ^(businesscards24\.com|74\.53\.59\.115|www\.businesscards.co.uk|74\.53\.2\.165)$ [NC]
+RewriteCond %{REQUEST_URI} ^/gallery\.cgi$
+RewriteCond %{QUERY_STRING} ^(.*)$
+RewriteRule ^.*$ /templates.php?%1 [L]
+
+
+
+
+# Change the URL structure for the Visitor Path report.
+RewriteCond %{HTTP_HOST} ^(www\.postcardprinting\.com|74\.53\.59\.113)$ [NC]
+RewriteCond %{REQUEST_URI} ^/tracker\.cgi$
+RewriteCond %{QUERY_STRING} ^(.*)$
+RewriteRule ^.*$ /track.php?%1 [L]
+
+# Change the Templates Gallery URL
+RewriteCond %{HTTP_HOST} ^(www\.postcardprinting\.com|74\.53\.59\.113)$ [NC]
+RewriteCond %{REQUEST_URI} ^/artworkGallery\.cgi$
+RewriteCond %{QUERY_STRING} ^(.*)$
+RewriteRule ^.*$ /templates.php?%1 [L]
+
+# Change the Templates Gallery Images
+RewriteCond %{HTTP_HOST} ^(www\.postcardprinting\.com|74\.53\.59\.113)$ [NC]
+RewriteRule ^gallery/(\d+)\.jpg$ /image_preview/se_$1.jpg [L]
+
+
+# Change the Registration  URL
+RewriteCond %{HTTP_HOST} ^(www\.postcardprinting\.com|74\.53\.59\.113)$ [NC]
+RewriteCond %{REQUEST_URI} ^/accountInfo\.cgi$
+RewriteCond %{QUERY_STRING} ^(.*)$
+RewriteRule ^.*$ /register.php?%1 [L]
+
+
+
+# For co-branding of a customer
+RewriteCond %{HTTP_HOST} ^(www\.postcards\.com|74\.53\.2\.167)$ [NC]
+RewriteRule ^egs$ /endogastricsolutions.html [NC]
+
+
+
+
+# For the Content System
+RewriteRule ^ci/templates/(.*)$ /content_view.php?contentType=template&contentID=$1 [NC]
+RewriteRule ^ci/(.*)$ /content_view.php?contentType=item&contentID=$1 [NC]
+RewriteRule ^cc/(.*)$ /content_view.php?contentType=category&contentID=$1 [NC]
+
+
+
+# For the Content System Images
+# Put in the "L"ast directive so the File Proxy doesn't try to get the JPG images instead.
+RewriteRule ^images/(.*)_CC\.jpg$ /content_image.php?contentType=category&id=$1 [NC,L]
+RewriteRule ^images/(.*)_CI\.jpg$ /content_image.php?contentType=item&id=$1 [NC,L]
+RewriteRule ^images/(.*)_CTB\.jpg$ /content_image.php?contentType=templateImageBig&id=$1 [NC,L]
+RewriteRule ^images/(.*)_CTS\.jpg$ /content_image.php?contentType=templateImageSmall&id=$1 [NC,L]
+
+
+
+
+
+# Make a blank directory request run index.html... which will get incercepted by the ModRewrite rules (needed for the File Proxy)
+# But because of [NC] the index.html will be run without displaying index.html in the browser URL bar (for SEO).
+
+#-- For PrintsMadeEasy... run index.php
+RewriteCond %{HTTP_HOST} ^(www\.printsmadeeasy\.com|74\.53\.59\.100)$ [NC]
+RewriteRule ^$ /index.php [NC,L]
+
+#-- For the home page of LuauInvitations, run the template page.
+RewriteCond %{HTTP_HOST} ^(www\.luauinvitations\.com|74\.53\.59\.118)$ [NC]
+RewriteRule ^$ /templates.php?productid=244&keywords=horizontal+vertical&resultsCount=100 [L]
+
+#-- For the home page of VinylBanners, run the template page.
+RewriteCond %{HTTP_HOST} ^(www\.vinylbanners\.com|74\.53\.59\.108)$ [NC]
+RewriteRule ^$ /templates.php?keywords=category:popular&productid=206&resultsCount=12&TemplateNumber=homepage [L]
+
+#-- For the home page of FlyerPrinting, run the template page.
+RewriteCond %{HTTP_HOST} ^(www\.FlyerPrinting\.com|74\.53\.59\.112)$ [NC]
+RewriteRule ^$ /templates.php?keywords=best-sellers&search=Search&productid=334&resultsCount=6&keywords_and=vertical&TemplateNumber=homepage2 [L]
+
+
+#-- For the home page of ChristmasPhotoCards, run the template page.
+RewriteCond %{HTTP_HOST} ^(www\.ChristmasPhotoCards\.com|74\.53\.59\.122)$ [NC]
+RewriteRule ^$ /templates.php?productid=305&TemplateNumber=homePage&resultsCount=8&keywords_and=horizontal&keywords=best-sellers [L]
+
+#-- For the home page of HolidayGreetingCards, run the template page.
+RewriteCond %{HTTP_HOST} ^(www\.HolidayGreetingCards\.com|74\.53\.59\.114)$ [NC]
+RewriteRule ^$ /templates.php?keywords=best-sellers&productid=302&resultsCount=6&keywords_and=horizontal&TemplateNumber=homepage [L]
+
+
+#-- For the home page of PosterPrinting.com, run the template page.
+RewriteCond %{HTTP_HOST} ^(www\.PosterPrinting\.com|74\.53\.59\.123)$ [NC]
+RewriteRule ^$ /templates.php?productid=358&keywords=best-sellers&&resultsCount=6&keywords_and=vertical&TemplateNumber=homepage2 [L]
+
+#-- For the home page of House of Blues, run the template page.
+RewriteCond %{HTTP_HOST} ^(www\.HouseOfBluesPrinting\.com|74\.53\.59\.103)$ [NC]
+RewriteRule ^$ /product_uploadartwork.php?productid=373 [L]
+
+
+#-- For the home page of NNAservices.org, run the template page.
+RewriteCond %{HTTP_HOST} ^(NNAServices\.org|74\.53\.2\.162)$ [NC]
+RewriteRule ^$ /templates.php?productid=391&resultsCount=10&keywords_and=horizontal&keywords=all  [L]
+
+
+#-- For the home page of BridalShowerInvitations.com, run the template page.
+RewriteCond %{HTTP_HOST} ^(www\.BridalShowerInvitations\.com|74\.53\.2\.161)$ [NC]
+RewriteRule ^$ /templates.php?productid=356&resultsCount=9&keywords=best-sellers&TemplateNumber=homepage  [L]
+
+
+#-- For the home page of ShakeysServices.com, run the template page.
+RewriteCond %{HTTP_HOST} ^(ShakeysServices\.com|74\.53\.2\.164)$ [NC]
+RewriteRule ^$ /templates.php?productid=396&resultsCount=10&keywords=all  [L]
+
+
+#-- For all other domains, open index.html
+RewriteRule ^$ /index.html [NC,L]
+RewriteRule ^(.*)/$ $1/index.html [NC,L]
+
+
+
+
+
+
+
+#EmailNotify TrackImage: Will report back to the server when the email is opened (if people allow Image Source Previews).
+#Allows different domains to have different URL's.  
+#There are 27 different values so that a domain ordinal letter value (A-Z) may consistently use the same structure.
+#---------------------------
+
+#1:  /tracker.php?t=2709  ->  /emailNotify_tracking.php?id=2709
+RewriteCond %{REQUEST_URI} ^/tracker\.php$
+RewriteCond %{QUERY_STRING} ^t=(\d+)$
+RewriteRule ^.*$ /emailNotify_tracking.php?id=%1 [L]
+
+#2:  /main/track.php?track=2709  ->  /emailNotify_tracking.php?id=2709
+RewriteCond %{REQUEST_URI} ^/main/track\.php$
+RewriteCond %{QUERY_STRING} ^track=(\d+)$
+RewriteRule ^.*$ /emailNotify_tracking.php?id=%1&StepDownDir=1 [L]
+
+#3:  /tracking.php?track=2709  ->  /emailNotify_tracking.php?id=2709
+RewriteCond %{REQUEST_URI} ^/tracking\.php$
+RewriteCond %{QUERY_STRING} ^track=(\d+)$
+RewriteRule ^.*$ /emailNotify_tracking.php?id=%1 [L]
+
+#4:  /gettrc.php?tc=2709  ->  /emailNotify_tracking.php?id=2709
+RewriteCond %{REQUEST_URI} ^/gettrc\.php$
+RewriteCond %{QUERY_STRING} ^tc=(\d+)$
+RewriteRule ^.*$ /emailNotify_tracking.php?id=%1 [L]
+
+#5:  /traco.php?trc=2709  ->  /emailNotify_tracking.php?id=2709
+RewriteCond %{REQUEST_URI} ^/traco\.php$
+RewriteCond %{QUERY_STRING} ^trc=(\d+)$
+RewriteRule ^.*$ /emailNotify_tracking.php?id=%1 [L]
+
+#6:  /tracker.asp?ct=2709  ->  /emailNotify_tracking.php?id=2709
+RewriteCond %{REQUEST_URI} ^/tracker\.asp$
+RewriteCond %{QUERY_STRING} ^ct=(\d+)$
+RewriteRule ^.*$ /emailNotify_tracking.php?id=%1 [L]
+
+#7:  /main/gettrack.asp?track=2709  ->  /emailNotify_tracking.php?id=2709
+RewriteCond %{REQUEST_URI} ^/main/gettrack\.asp$
+RewriteCond %{QUERY_STRING} ^track=(\d+)$
+RewriteRule ^.*$ /emailNotify_tracking.php?id=%1&StepDownDir=1 [L]
+
+#8:  /scripts/tracking.asp?track=2709  ->  /emailNotify_tracking.php?id=2709
+RewriteCond %{REQUEST_URI} ^/scripts/tracking\.asp$
+RewriteCond %{QUERY_STRING} ^track=(\d+)$
+RewriteRule ^.*$ /emailNotify_tracking.php?id=%1&StepDownDir=1 [L]
+
+#9:  /gettrc.asp?tmc=2709  ->  /emailNotify_tracking.php?id=2709
+RewriteCond %{REQUEST_URI} ^/gettrc\.asp$
+RewriteCond %{QUERY_STRING} ^tmc=(\d+)$
+RewriteRule ^.*$ /emailNotify_tracking.php?id=%1 [L]
+
+#10:  /traco.asp?trco=2709  ->  /emailNotify_tracking.php?id=2709
+RewriteCond %{REQUEST_URI} ^/traco\.asp$
+RewriteCond %{QUERY_STRING} ^trco=(\d+)$
+RewriteRule ^.*$ /emailNotify_tracking.php?id=%1 [L]
+
+#11:  /tracker.cgi?t=2709  ->  /emailNotify_tracking.php?id=2709
+RewriteCond %{REQUEST_URI} ^/tracker\.cgi$
+RewriteCond %{QUERY_STRING} ^t=(\d+)$
+RewriteRule ^.*$ /emailNotify_tracking.php?id=%1 [L]
+
+#12:  /main/track.cgi?tracker=2709  ->  /emailNotify_tracking.php?id=2709
+RewriteCond %{REQUEST_URI} ^/main/track\.cgi$
+RewriteCond %{QUERY_STRING} ^tracker=(\d+)$
+RewriteRule ^.*$ /emailNotify_tracking.php?id=%1&StepDownDir=1 [L]
+
+#13:  /main/gettracking.cgi?track=2709  ->  /emailNotify_tracking.php?id=2709
+RewriteCond %{REQUEST_URI} ^/main/gettracking\.cgi$
+RewriteCond %{QUERY_STRING} ^track=(\d+)$
+RewriteRule ^.*$ /emailNotify_tracking.php?id=%1&StepDownDir=1 [L]
+
+#14:  /gettrc.cgi?tc=2709  ->  /emailNotify_tracking.php?id=2709
+RewriteCond %{REQUEST_URI} ^/gettrc\.cgi$
+RewriteCond %{QUERY_STRING} ^tc=(\d+)$
+RewriteRule ^.*$ /emailNotify_tracking.php?id=%1 [L]
+
+#15:  /traco.cgi?trc=2709  ->  /emailNotify_tracking.php?id=2709
+RewriteCond %{REQUEST_URI} ^/traco\.cgi$
+RewriteCond %{QUERY_STRING} ^trc=(\d+)$
+RewriteRule ^.*$ /emailNotify_tracking.php?id=%1 [L]
+
+#16:  /tracker.cfm?t=2709  ->  /emailNotify_tracking.php?id=2709
+RewriteCond %{REQUEST_URI} ^/tracker\.cfm$
+RewriteCond %{QUERY_STRING} ^t=(\d+)$
+RewriteRule ^.*$ /emailNotify_tracking.php?id=%1 [L]
+
+#17:  /scripts/track.cfm?track=2709  ->  /emailNotify_tracking.php?id=2709
+RewriteCond %{REQUEST_URI} ^/scripts/track\.cfm$
+RewriteCond %{QUERY_STRING} ^track=(\d+)$
+RewriteRule ^.*$ /emailNotify_tracking.php?id=%1&StepDownDir=1 [L]
+
+#18:  /tracking.cfm?tracking=2709  ->  /emailNotify_tracking.php?id=2709
+RewriteCond %{REQUEST_URI} ^/tracking\.cfm$
+RewriteCond %{QUERY_STRING} ^tracking=(\d+)$
+RewriteRule ^.*$ /emailNotify_tracking.php?id=%1 [L]
+
+#19:  /scripts/gettrc.cfm?trc=2709  ->  /emailNotify_tracking.php?id=2709
+RewriteCond %{REQUEST_URI} ^/scripts/gettrc\.cfm$
+RewriteCond %{QUERY_STRING} ^trc=(\d+)$
+RewriteRule ^.*$ /emailNotify_tracking.php?id=%1&StepDownDir=1 [L]
+
+#20:  /gettraco.cfm?trco=2709  ->  /emailNotify_tracking.php?id=2709
+RewriteCond %{REQUEST_URI} ^/gettraco\.cfm$
+RewriteCond %{QUERY_STRING} ^trco=(\d+)$
+RewriteRule ^.*$ /emailNotify_tracking.php?id=%1 [L]
+
+#21:  /tracker.aspx?t=2709  ->  /emailNotify_tracking.php?id=2709
+RewriteCond %{REQUEST_URI} ^/tracker\.aspx$
+RewriteCond %{QUERY_STRING} ^t=(\d+)$
+RewriteRule ^.*$ /emailNotify_tracking.php?id=%1 [L]
+
+#22:  /scripts/track.aspx?track=2709  ->  /emailNotify_tracking.php?id=2709
+RewriteCond %{REQUEST_URI} ^/scripts/track\.aspx$
+RewriteCond %{QUERY_STRING} ^track=(\d+)$
+RewriteRule ^.*$ /emailNotify_tracking.php?id=%1&StepDownDir=1 [L]
+
+#23:  /tracking.aspx?track=2709  ->  /emailNotify_tracking.php?id=2709
+RewriteCond %{REQUEST_URI} ^/tracking\.aspx$
+RewriteCond %{QUERY_STRING} ^track=(\d+)$
+RewriteRule ^.*$ /emailNotify_tracking.php?id=%1 [L]
+
+#24:  /main/gettrc.aspx?tracking=2709  ->  /emailNotify_tracking.php?id=2709
+RewriteCond %{REQUEST_URI} ^/main/gettrc\.aspx$
+RewriteCond %{QUERY_STRING} ^tracking=(\d+)$
+RewriteRule ^.*$ /emailNotify_tracking.php?id=%1&StepDownDir=1 [L]
+
+#25:  /main/traco.aspx?traco=2709  ->  /emailNotify_tracking.php?id=2709
+RewriteCond %{REQUEST_URI} ^/main/traco\.aspx$
+RewriteCond %{QUERY_STRING} ^traco=(\d+)$
+RewriteRule ^.*$ /emailNotify_tracking.php?id=%1&StepDownDir=1 [L]
+
+#26:  /gettrac.php?tc=2709  ->  /emailNotify_tracking.php?id=2709
+RewriteCond %{REQUEST_URI} ^/gettrac\.php$
+RewriteCond %{QUERY_STRING} ^tc=(\d+)$
+RewriteRule ^.*$ /emailNotify_tracking.php?id=%1 [L]
+
+#27:  /tracode.php?trc=2709  ->  /emailNotify_tracking.php?id=2709
+RewriteCond %{REQUEST_URI} ^/tracode\.php$
+RewriteCond %{QUERY_STRING} ^trc=(\d+)$
+RewriteRule ^.*$ /emailNotify_tracking.php?id=%1 [L]
+
+
+
+
+
+
+
+
+
+#Unsubscription URL: Allows a domain to opt-out of future email notifications.
+#Allows different domains to have different URL's
+#There are 27 different values so that a domain ordinal letter value (A-Z) may consistently use the same structure.
+#-------------------------
+
+#1:  /unsubscribe.php?emailid=me@buy.biz  ->  /emailNotify_unsubscribe.php?email=me@buy.biz
+RewriteCond %{REQUEST_URI} ^/unsubscribe\.php$
+RewriteCond %{QUERY_STRING} ^emailid=(.*)$
+RewriteRule ^.*$ /emailNotify_unsubscribe.php?email=%1 [L]
+
+#2:  /main/unsub.php?id=me@buy.biz  ->  /emailNotify_unsubscribe.php?email=me@buy.biz
+RewriteCond %{REQUEST_URI} ^/main/unsub\.php$
+RewriteCond %{QUERY_STRING} ^id=(.*)$
+RewriteRule ^.*$ /emailNotify_unsubscribe.php?email=%1&StepDownDir=1 [L]
+
+#3:  /optout.php?eid=me@buy.biz  ->  /emailNotify_unsubscribe.php?email=me@buy.biz
+RewriteCond %{REQUEST_URI} ^/optout\.php$
+RewriteCond %{QUERY_STRING} ^eid=(.*)$
+RewriteRule ^.*$ /emailNotify_unsubscribe.php?email=%1 [L]
+
+#4:  /setuns.php?email=me@buy.biz  ->  /emailNotify_unsubscribe.php?email=me@buy.biz
+RewriteCond %{REQUEST_URI} ^/setuns\.php$
+RewriteCond %{QUERY_STRING} ^email=(.*)$
+RewriteRule ^.*$ /emailNotify_unsubscribe.php?email=%1 [L]
+
+#5:  /unsuco.php?email=me@buy.biz  ->  /emailNotify_unsubscribe.php?email=me@buy.biz
+RewriteCond %{REQUEST_URI} ^/unsuco\.php$
+RewriteCond %{QUERY_STRING} ^email=(.*)$
+RewriteRule ^.*$ /emailNotify_unsubscribe.php?email=%1 [L]
+
+#6:  /unsubscribe.asp?email=me@buy.biz  ->  /emailNotify_unsubscribe.php?email=me@buy.biz
+RewriteCond %{REQUEST_URI} ^/unsubscribe\.asp$
+RewriteCond %{QUERY_STRING} ^email=(.*)$
+RewriteRule ^.*$ /emailNotify_unsubscribe.php?email=%1 [L]
+
+#7:  /main/setunsub.asp?uid=me@buy.biz  ->  /emailNotify_unsubscribe.php?email=me@buy.biz
+RewriteCond %{REQUEST_URI} ^/main/setunsub\.asp$
+RewriteCond %{QUERY_STRING} ^uid=(.*)$
+RewriteRule ^.*$ /emailNotify_unsubscribe.php?email=%1&StepDownDir=1 [L]
+
+#8:  /scripts/unsubscr.asp?uid=me@buy.biz  ->  /emailNotify_unsubscribe.php?email=me@buy.biz
+RewriteCond %{REQUEST_URI} ^/scripts/unsubscr\.asp$
+RewriteCond %{QUERY_STRING} ^uid=(.*)$
+RewriteRule ^.*$ /emailNotify_unsubscribe.php?email=%1&StepDownDir=1 [L]
+
+#9:  /optout.asp?emailid=me@buy.biz  ->  /emailNotify_unsubscribe.php?email=me@buy.biz
+RewriteCond %{REQUEST_URI} ^/optout\.asp$
+RewriteCond %{QUERY_STRING} ^emailid=(.*)$
+RewriteRule ^.*$ /emailNotify_unsubscribe.php?email=%1 [L]
+
+#10:  /unsubme.asp?emailid=me@buy.biz  ->  /emailNotify_unsubscribe.php?email=me@buy.biz
+RewriteCond %{REQUEST_URI} ^/unsubme\.asp$
+RewriteCond %{QUERY_STRING} ^emailid=(.*)$
+RewriteRule ^.*$ /emailNotify_unsubscribe.php?email=%1 [L]
+
+#11:  /unsubscribe.cgi?u=me@buy.biz  ->  /emailNotify_unsubscribe.php?email=me@buy.biz
+RewriteCond %{REQUEST_URI} ^/unsubscribe\.cgi$
+RewriteCond %{QUERY_STRING} ^u=(.*)$
+RewriteRule ^.*$ /emailNotify_unsubscribe.php?email=%1 [L]
+
+#12:  /main/unsub.cgi?emailid=me@buy.biz  ->  /emailNotify_unsubscribe.php?email=me@buy.biz
+RewriteCond %{REQUEST_URI} ^/main/unsub\.cgi$
+RewriteCond %{QUERY_STRING} ^emailid=(.*)$
+RewriteRule ^.*$ /emailNotify_unsubscribe.php?email=%1&StepDownDir=1 [L]
+
+#13:  /main/optout.cgi?emailunid=me@buy.biz  ->  /emailNotify_unsubscribe.php?email=me@buy.biz
+RewriteCond %{REQUEST_URI} ^/main/optout\.cgi$
+RewriteCond %{QUERY_STRING} ^emailunid=(.*)$
+RewriteRule ^.*$ /emailNotify_unsubscribe.php?email=%1&StepDownDir=1 [L]
+
+#14:  /optout.cgi?mailid=me@buy.biz  ->  /emailNotify_unsubscribe.php?email=me@buy.biz
+RewriteCond %{REQUEST_URI} ^/optout\.cgi$
+RewriteCond %{QUERY_STRING} ^mailid=(.*)$
+RewriteRule ^.*$ /emailNotify_unsubscribe.php?email=%1 [L]
+
+#15:  /unsu.cgi?email=me@buy.biz  ->  /emailNotify_unsubscribe.php?email=me@buy.biz
+RewriteCond %{REQUEST_URI} ^/unsu\.cgi$
+RewriteCond %{QUERY_STRING} ^email=(.*)$
+RewriteRule ^.*$ /emailNotify_unsubscribe.php?email=%1 [L]
+
+#16:  /unsubscribe.cfm?email=me@buy.biz  ->  /emailNotify_unsubscribe.php?email=me@buy.biz
+RewriteCond %{REQUEST_URI} ^/unsubscribe\.cfm$
+RewriteCond %{QUERY_STRING} ^email=(.*)$
+RewriteRule ^.*$ /emailNotify_unsubscribe.php?email=%1 [L]
+
+#17:  /scripts/unsubs.cfm?unsubid=me@buy.biz  ->  /emailNotify_unsubscribe.php?email=me@buy.biz
+RewriteCond %{REQUEST_URI} ^/scripts/unsubs\.cfm$
+RewriteCond %{QUERY_STRING} ^unsubid=(.*)$
+RewriteRule ^.*$ /emailNotify_unsubscribe.php?email=%1&StepDownDir=1 [L]
+
+#18:  /optout.cfm?msid=me@buy.biz  ->  /emailNotify_unsubscribe.php?email=me@buy.biz
+RewriteCond %{REQUEST_URI} ^/optout\.cfm$
+RewriteCond %{QUERY_STRING} ^msid=(.*)$
+RewriteRule ^.*$ /emailNotify_unsubscribe.php?email=%1 [L]
+
+#19:  /scripts/gettrc.cfm?eid=me@buy.biz  ->  /emailNotify_unsubscribe.php?email=me@buy.biz
+RewriteCond %{REQUEST_URI} ^/scripts/gettrc\.cfm$
+RewriteCond %{QUERY_STRING} ^eid=(.*)$
+RewriteRule ^.*$ /emailNotify_unsubscribe.php?email=%1&StepDownDir=1 [L]
+
+#20:  /setunsub.cfm?eid=me@buy.biz  ->  /emailNotify_unsubscribe.php?email=me@buy.biz
+RewriteCond %{REQUEST_URI} ^/setunsub\.cfm$
+RewriteCond %{QUERY_STRING} ^eid=(.*)$
+RewriteRule ^.*$ /emailNotify_unsubscribe.php?email=%1 [L]
+
+#21:  /unsubscribe.aspx?u=me@buy.biz  ->  /emailNotify_unsubscribe.php?email=me@buy.biz
+RewriteCond %{REQUEST_URI} ^/unsubscribe\.aspx$
+RewriteCond %{QUERY_STRING} ^u=(.*)$
+RewriteRule ^.*$ /emailNotify_unsubscribe.php?email=%1 [L]
+
+#22:  /scripts/unsub.aspx?mid=me@buy.biz  ->  /emailNotify_unsubscribe.php?email=me@buy.biz
+RewriteCond %{REQUEST_URI} ^/scripts/unsub\.aspx$
+RewriteCond %{QUERY_STRING} ^mid=(.*)$
+RewriteRule ^.*$ /emailNotify_unsubscribe.php?email=%1&StepDownDir=1 [L]
+
+#23:  /optout.aspx?usidemail=me@buy.biz  ->  /emailNotify_unsubscribe.php?email=me@buy.biz
+RewriteCond %{REQUEST_URI} ^/optout\.aspx$
+RewriteCond %{QUERY_STRING} ^usidemail=(.*)$
+RewriteRule ^.*$ /emailNotify_unsubscribe.php?email=%1 [L]
+
+#24:  /main/unsubscribe.aspx?unemail=me@buy.biz  ->  /emailNotify_unsubscribe.php?email=me@buy.biz
+RewriteCond %{REQUEST_URI} ^/main/unsubscribe\.aspx$
+RewriteCond %{QUERY_STRING} ^unemail=(.*)$
+RewriteRule ^.*$ /emailNotify_unsubscribe.php?email=%1&StepDownDir=1 [L]
+
+#25:  /main/optout.aspx?idemail=me@buy.biz  ->  /emailNotify_unsubscribe.php?email=me@buy.biz
+RewriteCond %{REQUEST_URI} ^/main/optout\.aspx$
+RewriteCond %{QUERY_STRING} ^idemail=(.*)$
+RewriteRule ^.*$ /emailNotify_unsubscribe.php?email=%1&StepDownDir=1 [L]
+
+#26:  /unsub.php?email=me@buy.biz  ->  /emailNotify_unsubscribe.php?email=me@buy.biz
+RewriteCond %{REQUEST_URI} ^/unsub\.php$
+RewriteCond %{QUERY_STRING} ^email=(.*)$
+RewriteRule ^.*$ /emailNotify_unsubscribe.php?email=%1 [L]
+
+#27:  /unsubcode.php?si=me@buy.biz  ->  /emailNotify_unsubscribe.php?email=me@buy.biz
+RewriteCond %{REQUEST_URI} ^/unsubcode\.php$
+RewriteCond %{QUERY_STRING} ^si=(.*)$
+RewriteRule ^.*$ /emailNotify_unsubscribe.php?email=%1 [L]
+
+
+
+
+
+
+
+
+#Email Order Click: When someone clicks on the email advertisement, it will take them to an order page.
+#Allows different domains to have different URL's.  
+#There are 27 different values so that a domain ordinal letter value (A-Z) may consistently use the same structure.
+#---------------------------
+
+#1:  /order.php?id=Y2hyaXN0aWFuQGFzeW54LmNvbSYxNw==  ->  /emailNotify_recordOrderClick.php?id=Y2hyaXN0aWFuQGFzeW54LmNvbSYxNw==
+RewriteCond %{REQUEST_URI} ^/order\.php$
+RewriteCond %{QUERY_STRING} ^id=(.*)$
+RewriteRule ^.*$ /emailNotify_recordOrderClick.php?id=%1 [L]
+
+#2:  /main/ord.php?id=Y2hyaXN0aWFuQGFzeW54LmNvbSYxNw==  ->  /emailNotify_recordOrderClick.php?id=Y2hyaXN0aWFuQGFzeW54LmNvbSYxNw==
+RewriteCond %{REQUEST_URI} ^/main/ord\.php$
+RewriteCond %{QUERY_STRING} ^id=(.*)$
+RewriteRule ^.*$ /emailNotify_recordOrderClick.php?id=%1&StepDownDir=1 [L]
+
+#3:  /deal.php?oid=Y2hyaXN0aWFuQGFzeW54LmNvbSYxNw==  ->  /emailNotify_recordOrderClick.php?id=Y2hyaXN0aWFuQGFzeW54LmNvbSYxNw==
+RewriteCond %{REQUEST_URI} ^/deal\.php$
+RewriteCond %{QUERY_STRING} ^oid=(.*)$
+RewriteRule ^.*$ /emailNotify_recordOrderClick.php?id=%1 [L]
+
+#4:  /getorder.php?emailid=Y2hyaXN0aWFuQGFzeW54LmNvbSYxNw==  ->  /emailNotify_recordOrderClick.php?id=Y2hyaXN0aWFuQGFzeW54LmNvbSYxNw==
+RewriteCond %{REQUEST_URI} ^/getorder\.php$
+RewriteCond %{QUERY_STRING} ^emailid=(.*)$
+RewriteRule ^.*$ /emailNotify_recordOrderClick.php?id=%1 [L]
+
+#5:  /ordernow.php?emailid=Y2hyaXN0aWFuQGFzeW54LmNvbSYxNw==  ->  /emailNotify_recordOrderClick.php?id=Y2hyaXN0aWFuQGFzeW54LmNvbSYxNw==
+RewriteCond %{REQUEST_URI} ^/ordernow\.php$
+RewriteCond %{QUERY_STRING} ^emailid=(.*)$
+RewriteRule ^.*$ /emailNotify_recordOrderClick.php?id=%1 [L]
+
+#6:  /ordernow.asp?emailid=Y2hyaXN0aWFuQGFzeW54LmNvbSYxNw==  ->  /emailNotify_recordOrderClick.php?id=Y2hyaXN0aWFuQGFzeW54LmNvbSYxNw==
+RewriteCond %{REQUEST_URI} ^/ordernow\.asp$
+RewriteCond %{QUERY_STRING} ^emailid=(.*)$
+RewriteRule ^.*$ /emailNotify_recordOrderClick.php?id=%1 [L]
+
+#7:  /main/order.asp?oid=Y2hyaXN0aWFuQGFzeW54LmNvbSYxNw==  ->  /emailNotify_recordOrderClick.php?id=Y2hyaXN0aWFuQGFzeW54LmNvbSYxNw==
+RewriteCond %{REQUEST_URI} ^/main/order\.asp$
+RewriteCond %{QUERY_STRING} ^oid=(.*)$
+RewriteRule ^.*$ /emailNotify_recordOrderClick.php?id=%1&StepDownDir=1 [L]
+
+#8:  /scripts/order.asp?uid=Y2hyaXN0aWFuQGFzeW54LmNvbSYxNw==  ->  /emailNotify_recordOrderClick.php?id=Y2hyaXN0aWFuQGFzeW54LmNvbSYxNw==
+RewriteCond %{REQUEST_URI} ^/scripts/order\.asp$
+RewriteCond %{QUERY_STRING} ^uid=(.*)$
+RewriteRule ^.*$ /emailNotify_recordOrderClick.php?id=%1&StepDownDir=1 [L]
+
+#9:  /optout.asp?emailno=Y2hyaXN0aWFuQGFzeW54LmNvbSYxNw==  ->  /emailNotify_recordOrderClick.php?id=Y2hyaXN0aWFuQGFzeW54LmNvbSYxNw==
+RewriteCond %{REQUEST_URI} ^/optout\.asp$
+RewriteCond %{QUERY_STRING} ^emailno=(.*)$
+RewriteRule ^.*$ /emailNotify_recordOrderClick.php?id=%1 [L]
+
+#10:  /order.asp?emailid=Y2hyaXN0aWFuQGFzeW54LmNvbSYxNw==  ->  /emailNotify_recordOrderClick.php?id=Y2hyaXN0aWFuQGFzeW54LmNvbSYxNw==
+RewriteCond %{REQUEST_URI} ^/order\.asp$
+RewriteCond %{QUERY_STRING} ^emailid=(.*)$
+RewriteRule ^.*$ /emailNotify_recordOrderClick.php?id=%1 [L]
+
+#11:  /buynow.cgi?o=Y2hyaXN0aWFuQGFzeW54LmNvbSYxNw==  ->  /emailNotify_recordOrderClick.php?id=Y2hyaXN0aWFuQGFzeW54LmNvbSYxNw==
+RewriteCond %{REQUEST_URI} ^/buynow\.cgi$
+RewriteCond %{QUERY_STRING} ^o=(.*)$
+RewriteRule ^.*$ /emailNotify_recordOrderClick.php?id=%1 [L]
+
+#12:  /main/buy.cgi?custid=Y2hyaXN0aWFuQGFzeW54LmNvbSYxNw==  ->  /emailNotify_recordOrderClick.php?id=Y2hyaXN0aWFuQGFzeW54LmNvbSYxNw==
+RewriteCond %{REQUEST_URI} ^/main/buy\.cgi$
+RewriteCond %{QUERY_STRING} ^custid=(.*)$
+RewriteRule ^.*$ /emailNotify_recordOrderClick.php?id=%1&StepDownDir=1 [L]
+
+#13:  /main/buy.cgi?order=Y2hyaXN0aWFuQGFzeW54LmNvbSYxNw==  ->  /emailNotify_recordOrderClick.php?id=Y2hyaXN0aWFuQGFzeW54LmNvbSYxNw==
+RewriteCond %{REQUEST_URI} ^/main/buy\.cgi$
+RewriteCond %{QUERY_STRING} ^order=(.*)$
+RewriteRule ^.*$ /emailNotify_recordOrderClick.php?id=%1&StepDownDir=1 [L]
+
+#14:  /dobuy.cgi?mailid=Y2hyaXN0aWFuQGFzeW54LmNvbSYxNw==  ->  /emailNotify_recordOrderClick.php?id=Y2hyaXN0aWFuQGFzeW54LmNvbSYxNw==
+RewriteCond %{REQUEST_URI} ^/dobuy\.cgi$
+RewriteCond %{QUERY_STRING} ^mailid=(.*)$
+RewriteRule ^.*$ /emailNotify_recordOrderClick.php?id=%1 [L]
+
+#15:  /order.cgi?offer=Y2hyaXN0aWFuQGFzeW54LmNvbSYxNw==  ->  /emailNotify_recordOrderClick.php?id=Y2hyaXN0aWFuQGFzeW54LmNvbSYxNw==
+RewriteCond %{REQUEST_URI} ^/order\.cgi$
+RewriteCond %{QUERY_STRING} ^offer=(.*)$
+RewriteRule ^.*$ /emailNotify_recordOrderClick.php?id=%1 [L]
+
+#16:  /order.cfm?o=Y2hyaXN0aWFuQGFzeW54LmNvbSYxNw==  ->  /emailNotify_recordOrderClick.php?id=Y2hyaXN0aWFuQGFzeW54LmNvbSYxNw==
+RewriteCond %{REQUEST_URI} ^/order\.cfm$
+RewriteCond %{QUERY_STRING} ^o=(.*)$
+RewriteRule ^.*$ /emailNotify_recordOrderClick.php?id=%1 [L]
+
+#17:  /scripts/buynow.cfm?emailid=Y2hyaXN0aWFuQGFzeW54LmNvbSYxNw==  ->  /emailNotify_recordOrderClick.php?id=Y2hyaXN0aWFuQGFzeW54LmNvbSYxNw==
+RewriteCond %{REQUEST_URI} ^/scripts/buynow\.cfm$
+RewriteCond %{QUERY_STRING} ^emailid=(.*)$
+RewriteRule ^.*$ /emailNotify_recordOrderClick.php?id=%1&StepDownDir=1 [L]
+
+#18:  /buynow.cfm?oid=Y2hyaXN0aWFuQGFzeW54LmNvbSYxNw==  ->  /emailNotify_recordOrderClick.php?id=Y2hyaXN0aWFuQGFzeW54LmNvbSYxNw==
+RewriteCond %{REQUEST_URI} ^/buynow\.cfm$
+RewriteCond %{QUERY_STRING} ^oid=(.*)$
+RewriteRule ^.*$ /emailNotify_recordOrderClick.php?id=%1 [L]
+
+#19:  /scripts/toporder.cfm?eid=Y2hyaXN0aWFuQGFzeW54LmNvbSYxNw==  ->  /emailNotify_recordOrderClick.php?id=Y2hyaXN0aWFuQGFzeW54LmNvbSYxNw==
+RewriteCond %{REQUEST_URI} ^/scripts/toporder\.cfm$
+RewriteCond %{QUERY_STRING} ^eid=(.*)$
+RewriteRule ^.*$ /emailNotify_recordOrderClick.php?id=%1&StepDownDir=1 [L]
+
+#20:  /buynow.cfm?oidd=Y2hyaXN0aWFuQGFzeW54LmNvbSYxNw==  ->  /emailNotify_recordOrderClick.php?id=Y2hyaXN0aWFuQGFzeW54LmNvbSYxNw==
+RewriteCond %{REQUEST_URI} ^/buynow\.cfm$
+RewriteCond %{QUERY_STRING} ^oidd=(.*)$
+RewriteRule ^.*$ /emailNotify_recordOrderClick.php?id=%1 [L]
+
+#21:  /offer.aspx?is=Y2hyaXN0aWFuQGFzeW54LmNvbSYxNw==  ->  /emailNotify_recordOrderClick.php?id=Y2hyaXN0aWFuQGFzeW54LmNvbSYxNw==
+RewriteCond %{REQUEST_URI} ^/offer\.aspx$
+RewriteCond %{QUERY_STRING} ^is=(.*)$
+RewriteRule ^.*$ /emailNotify_recordOrderClick.php?id=%1 [L]
+
+#22:  /scripts/ordernow.aspx?orderid=Y2hyaXN0aWFuQGFzeW54LmNvbSYxNw==  ->  /emailNotify_recordOrderClick.php?id=Y2hyaXN0aWFuQGFzeW54LmNvbSYxNw==
+RewriteCond %{REQUEST_URI} ^/scripts/ordernow\.aspx$
+RewriteCond %{QUERY_STRING} ^orderid=(.*)$
+RewriteRule ^.*$ /emailNotify_recordOrderClick.php?id=%1&StepDownDir=1 [L]
+
+#23:  /getit.aspx?ordemail=Y2hyaXN0aWFuQGFzeW54LmNvbSYxNw==  ->  /emailNotify_recordOrderClick.php?id=Y2hyaXN0aWFuQGFzeW54LmNvbSYxNw==
+RewriteCond %{REQUEST_URI} ^/getit\.aspx$
+RewriteCond %{QUERY_STRING} ^ordemail=(.*)$
+RewriteRule ^.*$ /emailNotify_recordOrderClick.php?id=%1 [L]
+
+#24:  /main/myorder.aspx?oid=Y2hyaXN0aWFuQGFzeW54LmNvbSYxNw==  ->  /emailNotify_recordOrderClick.php?id=Y2hyaXN0aWFuQGFzeW54LmNvbSYxNw==
+RewriteCond %{REQUEST_URI} ^/main/myorder\.aspx$
+RewriteCond %{QUERY_STRING} ^oid=(.*)$
+RewriteRule ^.*$ /emailNotify_recordOrderClick.php?id=%1&StepDownDir=1 [L]
+
+#25:  /main/order.aspx?oiemail=Y2hyaXN0aWFuQGFzeW54LmNvbSYxNw==  ->  /emailNotify_recordOrderClick.php?id=Y2hyaXN0aWFuQGFzeW54LmNvbSYxNw==
+RewriteCond %{REQUEST_URI} ^/main/order\.aspx$
+RewriteCond %{QUERY_STRING} ^oiemail=(.*)$
+RewriteRule ^.*$ /emailNotify_recordOrderClick.php?id=%1&StepDownDir=1 [L]
+
+#26:  /order.php?oid=Y2hyaXN0aWFuQGFzeW54LmNvbSYxNw==  ->  /emailNotify_recordOrderClick.php?id=Y2hyaXN0aWFuQGFzeW54LmNvbSYxNw==
+RewriteCond %{REQUEST_URI} ^/order\.php$
+RewriteCond %{QUERY_STRING} ^oid=(.*)$
+RewriteRule ^.*$ /emailNotify_recordOrderClick.php?id=%1 [L]
+
+#27:  /offer.php?oi=Y2hyaXN0aWFuQGFzeW54LmNvbSYxNw==  ->  /emailNotify_recordOrderClick.php?id=Y2hyaXN0aWFuQGFzeW54LmNvbSYxNw==
+RewriteCond %{REQUEST_URI} ^/offer\.php$
+RewriteCond %{QUERY_STRING} ^oi=(.*)$
+RewriteRule ^.*$ /emailNotify_recordOrderClick.php?id=%1 [L]
+
+
+
+
+
+
+
+
+# $2 will match the filename with the extention.   $4 matches any name/value pairs follwing a question mark, and then adds the name/value pairs to the file_proxy.php request.
+RewriteRule ^(((.*)\.(html|gif|png|jpeg|jpg|staging|txt|swf|htm|css|gg|gz|tar|zip|mpeg|ico|js|flv|mpg|xml|pdf|csv))(\?.*)?)$ /file_proxy.php?fileName=$2&%{QUERY_STRING} [NC]
+
+
+
+
+#<FilesMatch "\.(html|gif|png|jpeg|jpg|swf|htm|css|gg|gz|tar|zip|mpeg|ico|js|mpg|xml)$">
+#Header unset Cache-Control
+#Header unset Pragma
+#Header set Cache-Control "max-age=604800"
+#</FilesMatch>
+
+# Send anything starting with "templates" into the the template dispatch PHP script... and send the remaing part of the URL as a parameter... so PHP can figure out what to do next.
+RewriteRule ^[tT][eE][mM][pP][lL][aA][tT][eE][sS]/(.*)$ /templates_dispatch.php?area=$1/ [NC,R,L]

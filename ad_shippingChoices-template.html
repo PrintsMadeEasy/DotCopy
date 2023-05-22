@@ -1,0 +1,1005 @@
+<html>
+<head>
+<title>Admin</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<script type="text/javascript" src="./library/admin_library.js"></script>
+<script language="javascript">
+
+
+
+	//Make an array of the images we want to preload for the mouse-overs.
+	arImageSrc = new Array (
+		"./images/arrow_small_blue_up-d.png",
+		"./images/arrow_small_blue_down-d.png"
+	)
+
+	//Preload images.
+	arImageList = new Array ();
+	for (counter in arImageSrc) {
+		arImageList[counter] = new Image();
+		arImageList[counter].src = arImageSrc[counter];
+	}
+
+	var floatNumRegex = /^\s*((\d+(\.\d+)?)|(\.\d+))\s*$/;
+	var floatNumRegexNegative = /^\s*(\-)?((\d+(\.\d+)?)|(\.\d+)\s*)$/;
+	var decimalNumRegex = /^\s*\d+\s*$/;
+	var hexColorCode = /^#([0-9a-fA-F]{6})$/;
+	
+	function shipppingChoiceChange(dropdownChangeValue){
+		
+		if(dropdownChangeValue == "mainMenu")
+			document.location = "ad_shippingChoices.php?view=start";
+		
+		else if(dropdownChangeValue != "listLabel")
+			document.location = "ad_shippingChoices.php?view=editShippingChoice&shippingChoiceID=" + dropdownChangeValue;
+	}
+	
+	function CheckNewShippingChoice(){
+	
+		var FormObj = document.forms["newShippingChoice"];
+		var newShippingChoice = FormObj.shippingChoiceName.value;
+		var daysInTransit = FormObj.daysInTransit.value;
+		
+		if(!newShippingChoice.match(/\w+/)){
+			alert("The Shipping Choice Name may not be blank.");
+			return false;
+		}
+		
+		if(!daysInTransit.match(decimalNumRegex) || daysInTransit == 0){
+			alert("Days in Transit must be a number greater than Zero");
+			return false;
+		}
+		
+		return true;
+		
+	}
+	
+	
+	// Displays an Error and returns false if there is an error.
+	// Returns true otherwise.
+	function checkChoiceEditForm(){
+	
+		var alertMessage = "";
+		
+		var formObj = document.forms["editShippingChoiceForm"];
+		var choiceColorCode = formObj.colorCode.value;
+		var daysInTranist = formObj.daysInTransit.value;
+		var basePrice = formObj.basePrice.value;
+		var pricePerPound = formObj.pricePerPound.value;
+		
+		var productOverridesArr = new Array({PRODUCT_OVERRIDES_ARR});
+		var weightQuantityBreaksArr = new Array({WEIGHT_QUANTITY_BREAKS_ARR});
+		var shippingMethodCodesArr = new Array({SHIPPING_METHOD_CODES});
+		
+		if(!choiceColorCode.match(hexColorCode))
+			alertMessage += " *) The color code is not in the correct format.\n";
+		if(!daysInTranist.match(decimalNumRegex) || daysInTranist == 0)
+			alertMessage += " *) The Days in Tranist must be a number greater than or equal to 1.\n";
+		if(!basePrice.match(floatNumRegex))
+			alertMessage += " *) Price is not in the correct format for the Base Price.\n";
+			
+		for(var i=0; i<productOverridesArr.length; i++){
+			var productID = productOverridesArr[i];
+			
+			var productOverridePrice = document.all("basePriceProduct_" + productID).value;
+			if(!productOverridePrice.match(floatNumRegex))
+				alertMessage += " *) The product override price is not in the correct format. > " + (productOverridePrice == "" ? "empty" : productOverridePrice)  +"\n";
+		}
+			
+		if(!pricePerPound.match(floatNumRegex))
+			alertMessage += " *) Price is not in the correct format for the Price per Pound: " + floatNumRegex + "\n";
+		
+		for(var i=0; i<weightQuantityBreaksArr.length; i++){
+			var weightVal = weightQuantityBreaksArr[i];
+	
+			var quanBreakPrice = document.all("quantityBreak_" + weightVal).value;
+			
+			if(!quanBreakPrice.match(floatNumRegex))
+				alertMessage += " *) The quantity price break is not in the correct format for the weight value " + weightVal  +".\n";
+		}
+
+
+		for(var i=0; i<shippingMethodCodesArr.length; i++){
+			var shippingMethodCode = shippingMethodCodesArr[i];
+
+			if(!document.all("defaultShippingMethod_" + shippingMethodCode))
+				var defaultCheckBoxFlag = true;
+			else
+				var defaultCheckBoxFlag = document.all("defaultShippingMethod_" + shippingMethodCode).checked;
+			
+			// Skip Default Shipping Methods, they don't have min/max weight values
+			if(defaultCheckBoxFlag)
+				continue;
+			
+			var minPrice = document.all("shippingCodeMinWeight_" + shippingMethodCode).value;
+			var maxPrice = document.all("shippingCodeMaxWeight_" + shippingMethodCode).value;
+			
+			if(minPrice != "" || maxPrice != ""){
+			
+				if(minPrice != "" && maxPrice == "")
+					alertMessage += " *) If you are adding a Minimum Weight Value for the Shipping Method you must also provide a Maximum.\n";
+				
+				if(minPrice == "")
+					minPrice = "0";
+					
+				if(!minPrice.match(floatNumRegex))
+					alertMessage += " *) The Minimum Weight value is in a wrong format. >" + minPrice  +".\n";
+				else if(!maxPrice.match(floatNumRegex))
+					alertMessage += " *) The Maximum Weight value is in a wrong format. >" + maxPrice  +".\n";
+				else if(minPrice != maxPrice && (parseFloat(minPrice) > parseFloat(maxPrice)))
+					alertMessage += " *) You can not have a Minimum Weight greater than the Maximum Maximum Weight.\n"; // minPrice != maxPrice fixes floating point mis-matches.
+				
+			}
+			
+
+		}
+	
+		
+
+	
+		if(alertMessage != ""){
+			alert(alertMessage);
+			return false;
+		}
+		else{
+			return true;
+		}
+		
+	}
+	
+	
+
+
+	function hlSuperRow(e)
+	{
+		e.style.backgroundColor='#eeeeff';
+	}
+	function dlSuperRow(e)
+	{
+		e.style.backgroundColor='#f3f3f3';
+	}
+
+	function hlPdfSubRow(e)
+	{
+		e.style.textDecoration='underline';
+		e.style.backgroundColor='#eeeeff';
+	}
+	function dlPdfSubRow(e)
+	{
+		e.style.textDecoration='none';
+		e.style.backgroundColor='#ffffff';
+	}
+	function moveShippingChoiceUp(shippingChoiceID){
+		document.location = "ad_shippingChoices.php?form_sc={FORM_SECURITY_CODE}&action=MoveShippingChoiceUp&shippingChoiceID=" + shippingChoiceID;
+	}
+	function moveShippingChoiceDown(shippingChoiceID){
+		document.location = "ad_shippingChoices.php?form_sc={FORM_SECURITY_CODE}&action=MoveShippingChoiceDown&shippingChoiceID=" + shippingChoiceID;
+	}
+
+	function moveShippingMethodLinkUp(shippingMethodLinkID, shippingChoiceID){
+		document.location = "ad_shippingChoices.php?form_sc={FORM_SECURITY_CODE}&action=MoveLinkedShippingMethodUp&shippingMethodLinkID=" + shippingMethodLinkID + "&shippingChoiceID=" + shippingChoiceID;
+	}
+	function moveShippingMethodLinkDown(shippingMethodLinkID, shippingChoiceID){
+		document.location = "ad_shippingChoices.php?form_sc={FORM_SECURITY_CODE}&action=MoveLinkedShippingMethodDown&shippingMethodLinkID=" + shippingMethodLinkID + "&shippingChoiceID=" + shippingChoiceID;
+	}
+
+
+
+	
+	function changeDefaultShippingChoice(shippingChoiceID, isChecked){
+	
+		document.location = "ad_shippingChoices.php?form_sc={FORM_SECURITY_CODE}&action=makeDefaultShippingChoice&shippingChoiceID=" + shippingChoiceID;
+		
+	}
+	
+	
+	function changeBasicShippingChoice(shippingChoiceID, isChecked){
+	
+		var boolflag = "N";
+	
+		if(isChecked)
+			boolflag = "Y";
+			
+		document.location = "ad_shippingChoices.php?form_sc={FORM_SECURITY_CODE}&action=makeBasicShippingChoice&shippingChoiceID=" + shippingChoiceID + "&boolflag=" + boolflag;
+	}
+	
+	function ChangeShippingChoiceName(){
+		var newChoiceName = prompt("What is the new Shipping Choice Name?", "");
+		if(newChoiceName.match(/\w+/))
+			document.location = "ad_shippingChoices.php?form_sc={FORM_SECURITY_CODE}&action=ChangeShippingChoiceName&shippingChoiceID={SHIPPING_CHOICE_ID}&shippingChoiceName=" + escape(newChoiceName);
+	}
+	
+	function newProductBasePrice(shippingChoiceID, productID){
+		if(productID=="choose")
+			return;
+			
+		document.location = "ad_shippingChoices.php?form_sc={FORM_SECURITY_CODE}&action=createProductOverride&shippingChoiceID=" + shippingChoiceID + "&productID=" +  productID;
+	}
+	
+	function newQuantityBreak(shippingChoiceID, weightValue){
+
+		if(!weightValue.match(decimalNumRegex) || weightValue=="0" || weightValue=="1"){
+			alert("When adding a new Quantity Break the weight value must be greater than or equal to 2.");
+			return;
+		}
+		document.location = "ad_shippingChoices.php?form_sc={FORM_SECURITY_CODE}&action=createQuantityBreak&shippingChoiceID=" + shippingChoiceID + "&weight=" +  weightValue;
+	}
+	
+	
+	function DeleteProductOverride(shippingChoiceID, productID){
+	
+		if(confirm("Are you sure that you want to delete Product Base Price Override?"))
+			document.location = "ad_shippingChoices.php?form_sc={FORM_SECURITY_CODE}&action=deleteProductOverride&shippingChoiceID=" + shippingChoiceID + "&productID=" +  productID;
+	}
+	
+	function DeleteQuantityBreak(shippingChoiceID, weight){
+	
+		if(confirm("Are you sure that you want to delete this Quantity Break?"))
+			document.location = "ad_shippingChoices.php?form_sc={FORM_SECURITY_CODE}&action=deleteQuantityBreak&shippingChoiceID=" + shippingChoiceID + "&weight=" +  weight;
+	}
+	
+	function changeDefaultShippingMethod(shippingMethodLinkID, shippingChoiceID){
+		document.location = "ad_shippingChoices.php?form_sc={FORM_SECURITY_CODE}&action=SetDefaultShippingMethodLink&shippingMethodLinkID=" + shippingMethodLinkID + "&shippingChoiceID=" + shippingChoiceID;
+	}
+	
+	function newShippingMethodLink(shippingChoiceID, shippingMethodCode){
+		document.location = "ad_shippingChoices.php?form_sc={FORM_SECURITY_CODE}&action=CreateShippingMethodLink&shippingChoiceID=" + shippingChoiceID + "&shippingMethod=" + shippingMethodCode;
+	}
+	
+	function RemoveShippingMethodLink(shippingMethodLinkID, shippingChoiceID){
+		if(confirm("Are you sure that you want to remove this Shipping Method?"))
+			document.location = "ad_shippingChoices.php?form_sc={FORM_SECURITY_CODE}&action=RemoveShippingMethodLink&shippingMethodLinkID=" + shippingMethodLinkID + "&shippingChoiceID=" + shippingChoiceID;
+	}
+	
+	function submitShippingChoiceEditForm(){
+		if(checkChoiceEditForm())
+			document.forms['editShippingChoiceForm'].submit();
+	}
+	
+</script>
+
+
+<link rel="stylesheet" type="text/css" href="library/calendar/themes/winter.css"/>
+<script type="text/javascript" src="library/calendar/src/utils.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar.js"></script>
+<script type="text/javascript" src="library/calendar/lang/calendar-en.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar-setup.js"></script>
+<script type="text/javascript" src="library/formatDate.js"></script>
+</head>
+<body bgcolor="#FFFFFF" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="">
+<div align="center">
+{HEADER}
+
+<table width="760" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td class="Body">
+
+
+
+
+<br/><br/>
+
+<table width="100%" border="0" cellspacing="0" cellpadding="1">
+  <tr>
+    <td width="63%"><font class="LargeBody"><font color="#336699"><b>Shipping Choices</b></font></font></td>
+    <td width="37%" align="right">
+	<!-- BEGIN ShippingChoicesListBL -->
+	<select name="ShippingChoicesNames" class="AdminInput" onChange="shipppingChoiceChange(this.value)">{SHIPPING_CHOICES_LIST}</select>
+	<!-- END ShippingChoicesListBL -->
+	</td>
+  </tr>
+</table>
+
+
+
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td bgcolor="#3366CC"><img src="./images/transparent.gif" border="0" width="2" height="4" alt="" /></td>
+</tr>
+</table>
+<br/>
+
+
+
+
+
+
+<!-- BEGIN StartBL -->
+<br/>
+
+<br/>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td align="right"><input type="button" name="Add" value="Create a new Shipping Choice" class="AdminButton" onmouseover="this.style.background='#ffeeaa';" onmouseout="this.style.background='#FFFFDD';" onclick="document.location='./ad_shippingChoices.php?view=newShippingChoice'" /></td>
+  </tr>
+</table>
+
+<!-- BEGIN ExistingShippingChoicesBL -->
+
+<font class="LargeBody"><font color="#336699"><b>Shipping Choices List</b></font>
+		<img onmouseover="this.src='./images/question_mark_down.png'; showTheToolTip('helpDiv_shippingChoices'); this.style.cursor ='hand';" onmouseout="hideTheToolTipContainer('helpDiv_shippingChoices'); this.src='./images/question_mark_up.png'; " src="./images/question_mark_up.png"  border="0"  align="absmiddle" alt="" />	
+
+<div>
+  <div id="helpDiv_shippingChoices" style='width:690px; background-image: url(./images/tool_tips_back.png);  border:solid; border-color:#660000; border-width:1px; padding:6; filter:progid:DXImageTransform.Microsoft.dropShadow(Color=#999999,offX=3,offY=3)' class="SmallBody">
+These are Shipping Choices that the customer will see (if active), providing that the linked shipping methods are able reach the customer's destination.  For each Shipping Choice there must be a Carrier Shipping Method linked to it or the choice will become inactive.  <br/>
+<br/>
+You may call the Shipping Choice whatever you want, regardless of what shipping method is linked to it.   This can be useful in case the website is developed for another language.  For example you may want the Shipping Choice to read "UPS 1 Dia" instead of "UPS 1 Day".
+<br/>
+<br/>
+The sequence of the Shipping Choices here is will be reflected in how customers view them on the checkout screen.  If a Shipping Choice is marked as default, then it will be selected initially for the customer at checkout time.  Otherwise, the first Shipping Choice in the list will be selected.
+
+<br/>
+<br/>
+Basic Shipping choices may show up on the front end to customers for displaying hypothetical arrival times before we know their shipping address.  This is necessary because not all shipping methods are possible to a particular destination.   For example, on a product home page we could say, &quot;Get Business Cards by Monday, May 1st with 1 Day Shipping&quot;.  It may be safe to offer &quot;UPS 1 day shipping&quot; to all destination, but not &quot;UPS Saturday Early Morning&quot; (which requires a business address).
+
+<br/>
+<br/>
+An asterisk on the Price-per-Pound means that that there are Quantity Breaks, meaning that the Base Price may change once a certain weight limit has been reached.  An asterisk on the Base Price means that the Base Price has been overridden by one or more products in the system.
+</div> 
+</div>
+<script>
+hideTheToolTipContainer("helpDiv_shippingChoices");
+</script>	
+
+
+<br/>
+<img  src="./images/transparent.gif" width="5" height="7" alt="" /><br/>
+<table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#CC6600">
+<tr>
+<td>
+<table width="760" border="0" cellspacing="1" cellpadding="4">
+<form name="shippingChoicesForm">
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+
+<tr>
+	<td width="11" class="SmallBody" bgcolor="#FCE6E0">&nbsp;</td>
+	<td width="179" class="SmallBody" bgcolor="#FCE6E0"><strong>Shipping Choices</strong></td>
+	<td width="46" class="SmallBody" bgcolor="#FCE6E0" align="center"><strong>Default</strong></td>
+	<td width="77" class="SmallBody" bgcolor="#FCE6E0" nowrap="nowrap"><strong>Priority</strong></td>
+	<td width="75" class="SmallBody" bgcolor="#FCE6E0" nowrap="nowrap"><strong>Basic Choice</strong></td>
+	<td width="105" class="SmallBody" bgcolor="#FCE6E0" nowrap="nowrap"><strong>Days In Transit</strong></td>
+	<td width="92" class="SmallBody" bgcolor="#FCE6E0" nowrap="nowrap"><strong>Base Price</strong></td>
+	<td width="102" class="SmallBody" bgcolor="#FCE6E0" nowrap="nowrap"><strong>Price/Pound</strong></td>
+</tr>
+
+ <!-- BEGIN shippingChoiceBL -->
+ <tr bgcolor="#f3f3f3" onmouseover="hlSuperRow(this)" onmouseout="dlSuperRow(this)">
+    <td width="11"  class="SmallBody" align="center"><!-- BEGIN upLink --><a href="javascript:moveShippingChoiceUp({SHIPPING_CHOICE_ID});"><img src="./images/arrow_small_blue_up-u.png" onmouseover="this.src='./images/arrow_small_blue_up-d.png';" onmouseout="this.src='./images/arrow_small_blue_up-u.png';" border="0" align="absmiddle" alt="" /></a><!-- END upLink --><!-- BEGIN downLink --><a href="javascript:moveShippingChoiceDown({SHIPPING_CHOICE_ID});"><img src="./images/arrow_small_blue_down-u.png" onmouseover="this.src='./images/arrow_small_blue_down-d.png';" onmouseout="this.src='./images/arrow_small_blue_down-u.png';" border="0" align="absmiddle" alt="" /></a><!-- END downLink --></td>
+	<td class="SmallBody"><a href="./ad_shippingChoices.php?view=editShippingChoice&shippingChoiceID={SHIPPING_CHOICE_ID}" class="BlueRedLink">{SHIPPING_CHOICE_NAME}</a></td>
+	<td class="SmallBody" align="center"><input type="checkbox" name="defaultShippingChoice" value="yesOrNo" {DEFAULT_IS_CHECKED} onclick="changeDefaultShippingChoice({SHIPPING_CHOICE_ID}, this.checked)" /></td>
+ 	<td class="SmallBody" ><font color="#333333">{PRIORITY}</font></td>
+	<td class="SmallBody" align="center"><input type="checkbox" name="basicShippingChoice" value="yesOrNo" {BASIC_IS_CHECKED} onclick="changeBasicShippingChoice({SHIPPING_CHOICE_ID}, this.checked)" /></td>
+	<td class="SmallBody" ><font color="#333333">{TRANSIT_DAYS}</font></td>
+	<td class="SmallBody" ><font color="#333333">{BASE_PRICE}</font></td>
+	<td class="SmallBody" ><font color="#333333">{PRICE_POUND}</font></td>
+  </tr>
+ <!-- END shippingChoiceBL -->
+
+</form>
+</table>
+</td>
+</tr>
+</table>
+
+<!-- END ExistingShippingChoicesBL -->
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+
+<!-- END StartBL -->
+
+
+
+
+
+
+
+
+
+<!-- BEGIN NewShippingChoiceBL -->
+<br/>
+
+<form name="newShippingChoice" action="./ad_shippingChoices.php" method="post" onsubmit="return CheckNewShippingChoice();">
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+<input type="hidden" name="action" value="SaveNewShippingChoice" />
+<table width="100%" border="0" cellspacing="0" cellpadding="2">
+<tr> <td colspan="2" bgcolor="DDDDE3"><img src="./images/transparent.gif" border="0" width="1" height="2" alt="" /></td>
+</tr>
+
+
+
+<tr>
+<td width="32%" class="Body" align="right">
+
+<img onmouseover="this.src='./images/question_mark_down.png'; showTheToolTip('helpDiv_shippingChoiceName'); this.style.cursor ='hand';" onmouseout="hideTheToolTipContainer('helpDiv_shippingChoiceName'); this.src='./images/question_mark_up.png'; " src="./images/question_mark_up.png"  border="0"  align="absmiddle" alt="" />
+
+Shipping Choice Name&nbsp;&nbsp;</td>
+<td width="68%" class="SmallBody">
+
+<div>
+  <div id="helpDiv_shippingChoiceName" style='width:350px; background-image: url(./images/tool_tips_back.png);  border:solid; border-color:#660000; border-width:1px; padding:6; filter:progid:DXImageTransform.Microsoft.dropShadow(Color=#999999,offX=3,offY=3)' class="SmallBody">
+Enter a unique Shipping Choice Name.  This should be what you want the customers to see, in your preferred language.   You will have the opportunity to change this name later if you wish.  After adding a new Shipping Choice you will be able to save additional parameters.
+</div> 
+</div>
+<script>
+hideTheToolTipContainer("helpDiv_shippingChoiceName");
+</script>	
+
+
+<input type="text" name="shippingChoiceName" value="" class="adminInput" maxlength="70" style="background-color:#F3F3F3; width:250px;" />
+
+</td>
+
+</tr>
+
+
+
+<tr>
+<td colspan="2" bgcolor="DDDDE3"><img src="./images/transparent.gif" border="0" width="1" height="2" alt="" /></td>
+</tr>
+
+
+
+
+<tr>
+<td width="32%" class="Body" align="right">
+
+<img onmouseover="this.src='./images/question_mark_down.png'; showTheToolTip('helpDiv_daysInTransit'); this.style.cursor ='hand';" onmouseout="hideTheToolTipContainer('helpDiv_daysInTransit'); this.src='./images/question_mark_up.png'; " src="./images/question_mark_up.png"  border="0"  align="absmiddle" alt="" />
+
+Days in Transit&nbsp;&nbsp;</td>
+<td width="68%" class="SmallBody">
+
+<div>
+  <div id="helpDiv_daysInTransit" style='width:450px; background-image: url(./images/tool_tips_back.png);  border:solid; border-color:#660000; border-width:1px; padding:6; filter:progid:DXImageTransform.Microsoft.dropShadow(Color=#999999,offX=3,offY=3)' class="SmallBody"> Enter a number representing how many days in transit this shipping method will take.  You should enter the worst case scenario.  For example, if UPS Ground shipping takes 1-5 business days in transit, then enter 5 here.  <br/>
+    <br/>
+    This number ties in with the Estimates Ship Date to calculate the Estimated/Guaranteed Arrival Date.</div> 
+</div>
+<script>
+hideTheToolTipContainer("helpDiv_daysInTransit");
+</script>	
+
+
+<input type="text" name="daysInTransit" value="" class="adminInput" maxlength="2" style="background-color:#F3F3F3; width:50px;" />
+
+</td>
+
+</tr>
+
+
+
+<tr>
+<td colspan="2" bgcolor="DDDDE3"><img src="./images/transparent.gif" border="0" width="1" height="2" alt="" /></td>
+</tr>
+
+
+</table>
+<br/>
+<table width="100%" border="0" cellspacing="0" cellpadding="1">
+  <tr>
+    <td align="right">
+
+	<input type="submit" name="Add" value="Add Shipping Choice" class="AdminButton" onmouseover="this.style.background='#ffeeaa';" onmouseout="this.style.background='#FFFFDD';" />
+
+
+	</td>
+  </tr>
+</table>
+</form>
+
+<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+<!-- END NewShippingChoiceBL -->
+
+
+
+
+<!-- BEGIN EditShippingChoiceBL -->
+<br/>
+
+<form name="editShippingChoiceForm" action="./ad_shippingChoices.php" method="post" onsubmit="">
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+<input type="hidden" name="shippingChoiceID" value="{SHIPPING_CHOICE_ID}" />
+<input type="hidden" name="action" value="UpdateShippingChoice" />
+<table width="100%" border="0" cellspacing="0" cellpadding="2">
+<tr> <td colspan="2" bgcolor="DDDDE3"><img src="./images/transparent.gif" border="0" width="1" height="2" alt="" /></td>
+</tr>
+
+
+
+<tr>
+<td width="32%" class="Body" align="right">
+
+Shipping Choice Name&nbsp;&nbsp;</td>
+<td width="68%" class="SmallBody">
+
+
+
+
+
+<font color="#CC6600" style="font-size:14px"><strong>{SHIPPING_CHOICE_NAME}</strong></font>
+
+<img src="./images/transparent.gif" width="70" height="1" alt="" /><a href="javascript:ChangeShippingChoiceName()" class="BlueRedLink">Change Name</a>
+
+</td>
+
+</tr>
+
+
+<tr>
+<td colspan="2" bgcolor="DDDDE3"><img src="./images/transparent.gif" border="0" width="1" height="2" alt="" /></td>
+</tr>
+
+
+<tr>
+<td width="32%" class="Body" align="right">
+
+<img onmouseover="this.src='./images/question_mark_down.png'; showTheToolTip('helpDiv_colorCode'); this.style.cursor ='hand';" onmouseout="hideTheToolTipContainer('helpDiv_colorCode'); this.src='./images/question_mark_up.png'; " src="./images/question_mark_up.png"  border="0"  align="absmiddle" alt="" />
+
+Shipping Choice Color Code&nbsp;&nbsp;</td>
+<td width="68%" class="SmallBody">
+
+<div>
+ <div id="helpDiv_colorCode" style='width:450px; background-image: url(./images/tool_tips_back.png);  border:solid; border-color:#660000; border-width:1px; padding:6; filter:progid:DXImageTransform.Microsoft.dropShadow(Color=#999999,offX=3,offY=3)' class="SmallBody"> 
+This RGB color code may be seen by customers and production personnel.  The color of the shipping choices will show up on orders lists, orders screens, order history, and some printed material.  Color recognition can be quicker than context interpretation and it can be very beneficial in case you are fulfilling orders in multiple languages.</div> 
+</div>
+<script>
+hideTheToolTipContainer("helpDiv_colorCode");
+</script>	
+
+
+<input type="text" name="colorCode" value="{COLOR_CODE}" class="adminInput" maxlength="7" style="background-color:#F3F3F3; width:70px;" />
+
+</td>
+
+</tr>
+
+
+
+<tr>
+<td colspan="2" bgcolor="DDDDE3"><img src="./images/transparent.gif" border="0" width="1" height="2" alt="" /></td>
+</tr>
+
+
+<tr>
+<td width="32%" class="Body" align="right">
+
+<img onmouseover="this.src='./images/question_mark_down.png'; showTheToolTip('helpDiv_daysInTransit'); this.style.cursor ='hand';" onmouseout="hideTheToolTipContainer('helpDiv_daysInTransit'); this.src='./images/question_mark_up.png'; " src="./images/question_mark_up.png"  border="0"  align="absmiddle" alt="" />
+
+Days in Transit&nbsp;&nbsp;</td>
+<td width="68%" class="SmallBody">
+
+<div>
+  <div id="helpDiv_daysInTransit" style='width:450px; background-image: url(./images/tool_tips_back.png);  border:solid; border-color:#660000; border-width:1px; padding:6; filter:progid:DXImageTransform.Microsoft.dropShadow(Color=#999999,offX=3,offY=3)' class="SmallBody"> Enter a number representing how many days in transit this shipping method will take.  You should enter the worst case scenario.  For example, if UPS Ground shipping takes 1-5 business days in transit, then enter 5 here.  <br/>
+    <br/>
+    This number ties in with the Estimates Ship Date to calculate the Estimated/Guaranteed Arrival Date.</div> 
+</div>
+<script>
+hideTheToolTipContainer("helpDiv_daysInTransit");
+</script>	
+
+
+<input type="text" name="daysInTransit" value="{TRANSIT_DAYS}" class="adminInput" maxlength="2" style="background-color:#F3F3F3; width:40px;" />
+
+</td>
+
+</tr>
+
+
+
+<tr>
+<td colspan="2" bgcolor="DDDDE3"><img src="./images/transparent.gif" border="0" width="1" height="2" alt="" /></td>
+</tr>
+
+
+<tr>
+<td width="32%" class="Body" align="right">
+
+<img onmouseover="this.src='./images/question_mark_down.png'; showTheToolTip('helpDiv_priority'); this.style.cursor ='hand';" onmouseout="hideTheToolTipContainer('helpDiv_priority'); this.src='./images/question_mark_up.png'; " src="./images/question_mark_up.png"  border="0"  align="absmiddle" alt="" />
+
+Priority&nbsp;&nbsp;</td>
+<td width="68%" class="SmallBody">
+
+<div>
+  <div id="helpDiv_priority" style='width:500px; background-image: url(./images/tool_tips_back.png);  border:solid; border-color:#660000; border-width:1px; padding:6; filter:progid:DXImageTransform.Microsoft.dropShadow(Color=#999999,offX=3,offY=3)' class="SmallBody"> 
+    Each Shipping Choice must have a Priority Level associated with it.   This will help determine which projects to grab first when starting a new print run.. <br/>
+	<br/>
+The Home Screen shows counts of orders with &quot;Expedited Shipping&quot;. An order is considered to have &quot;Expedited Shipping&quot; if the  Shipping Choice has a Priority of Elevated, High, or Urgent.. Note that if you change a Shipping Priority on this screen it will not instantly change priorities on orders which have already been placed. <br/>
+
+    <br/>
+    Priority Levels also assist in production by correlating color codes with urgency.  The color code relating to this priority setting (which you can't change) is more important to production personnel than the custom color code value attached to the Shipping Choice Name. 
+	
+	</div> 
+</div>
+<script>
+hideTheToolTipContainer("helpDiv_priority");
+</script>	
+
+
+<select style="font-family:Arial, Helvetica, sans-serif; font-size:11px;" name="priority">{PRIORITY_LIST}</select>
+
+</td>
+</tr>
+
+
+<tr>
+<td colspan="2" bgcolor="DDDDE3"><img src="./images/transparent.gif" border="0" width="1" height="2" alt="" /></td>
+</tr>
+
+
+<tr>
+<td width="32%" class="Body" align="right">
+
+<img onmouseover="this.src='./images/question_mark_down.png'; showTheToolTip('helpDiv_basePrice'); this.style.cursor ='hand';" onmouseout="hideTheToolTipContainer('helpDiv_basePrice'); this.src='./images/question_mark_up.png'; " src="./images/question_mark_up.png"  border="0"  align="absmiddle" alt="" />
+
+Base Price&nbsp;&nbsp;</td>
+<td width="68%" class="SmallBody">
+
+<div>
+  <div id="helpDiv_basePrice" style='width:500px; background-image: url(./images/tool_tips_back.png);  border:solid; border-color:#660000; border-width:1px; padding:6; filter:progid:DXImageTransform.Microsoft.dropShadow(Color=#999999,offX=3,offY=3)' class="SmallBody"> 
+   Every Shipping Choice has a Base Price that customers will be forced to pay, even if their order ways 1 ounce.   The Price-per-Pound is calculated in addition to the Base Price.  For example, if the Base Price is $5.00, the Price per Pound is $1.00 and the Product weighs 2 pounds, the customer would pay $7.00 for shipping.
+   <br/>
+<br/>
+The default Base Price may be overridden for any product.  For example if you are giving away 6&quot; x 9&quot; Greeting Cards for free, you may want to charge a higher Shipping Base Price compared to the 6&quot; x 9&quot; Postcard equivalent to offset the marketing gimmick.
+	
+	</div> 
+</div>
+<script>
+hideTheToolTipContainer("helpDiv_basePrice");
+</script>	
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td class="SmallBody">$<input type="text" name="basePrice" value="{BASE_PRICE}" class="adminInput" maxlength="5" style="background-color:#F3F3F3; width:70px;" /></td>
+    <td>
+<select style="font-family:Arial, Helvetica, sans-serif; font-size:11px;" name="newProductBasePriceOverride" onChange="newProductBasePrice({SHIPPING_CHOICE_ID}, this.value)">{PRODUCT_OVERRIDE_LIST}</select>
+
+	</td>
+  </tr>
+</table>
+
+
+<!-- BEGIN AllProductOverridesBL -->
+<br/>
+<u><strong>Product Overrides</strong></u>
+<table width="100%" border="0" cellspacing="0" cellpadding="2">
+
+<!-- BEGIN ProductOverrideBL -->
+  <tr onmouseover="hlPdfSubRow(this)" onmouseout="dlPdfSubRow(this)">
+    <td class="SmallBody">{PRODUCT_NAME}</td>
+    <td class="SmallBody">$<input type="text" name="basePriceProduct_{PRODUCT_ID}" value="{BASE_PRICE_PRODUCT}" class="adminInput" maxlength="5" style="background-color:#F3F3F3; width:70px;" /></td>
+	<td width="1%" class="SmallBody"><a href='javascript:DeleteProductOverride({SHIPPING_CHOICE_ID}, {PRODUCT_ID});' class="BlueRedLink">X</a></td>
+  </tr>
+<!-- END ProductOverrideBL -->
+</table>
+<!-- END AllProductOverridesBL -->
+
+
+
+
+</td>
+</tr>
+
+
+
+
+
+<tr>
+<td colspan="2" bgcolor="DDDDE3"><img src="./images/transparent.gif" border="0" width="1" height="2" alt="" /></td>
+</tr>
+
+
+<tr>
+<td width="32%" class="Body" align="right">
+
+<img onmouseover="this.src='./images/question_mark_down.png'; showTheToolTip('helpDiv_pricePerPound'); this.style.cursor ='hand';" onmouseout="hideTheToolTipContainer('helpDiv_pricePerPound'); this.src='./images/question_mark_up.png'; " src="./images/question_mark_up.png"  border="0"  align="absmiddle" alt="" />
+
+Price per Pound&nbsp;&nbsp;</td>
+<td width="68%" class="SmallBody">
+
+<div>
+  <div id="helpDiv_pricePerPound" style='width:500px; background-image: url(./images/tool_tips_back.png);  border:solid; border-color:#660000; border-width:1px; padding:6; filter:progid:DXImageTransform.Microsoft.dropShadow(Color=#999999,offX=3,offY=3)' class="SmallBody"> 
+   Set a default price-per-pound.   The system will snap to the next highest integer when the order weight has a fraction.  For example, if the price-per-pound is $1.00 and a customer's order weighs 1.2 pounds, the customer would be charged $2.00 for shipping (in addition to the Shipping Base Price).  
+   
+     <br/>
+     <br/>
+     You can add Quantity Breaks to adjust your price-per-pound based upon the weight.  For example, you may want to charge $1 per pound for Ground Shipping.  However, if the customer were to place a very large order you might be charging them too much and scare them away.  In this case you could put in a Quantity Break at 50 pounds that adjusts the price-per-pound down to $0.70 and another break at 80 pounds adjusting the price to $0.60.  That means the customer would pay $1.00 per pound up until 49 pounds.  After that the customer would pay $0.70 per pound, up until 79 pounds.  Any order at 80 pounds or above would cost $0.60 per pound.  You could increase the price as weight increased, but this is probably unlikely due to economies of scale.<br/>
+     <br/>
+Quantity Breaks do not cause sliding scale calculations in the price.  In our last example, if the customer's order weight is 100 pounds, the customer would pay $60.00 (in addition to the Shipping Base Price).  In other words, the system does factor in Quantity Breaks underneath.  
+ </div> 
+</div>
+<script>
+hideTheToolTipContainer("helpDiv_pricePerPound");
+</script>	
+
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="55%" class="SmallBody">$
+      <input type="text" name="pricePerPound" value="{PRICE_PER_POUND}" class="adminInput" maxlength="5" style="background-color:#F3F3F3; width:70px;" /></td>
+    <td width="45%" class="SmallBody">
+<input type="text" name="newQuantityBreak" value="" class="adminInput" maxlength="4" style="background-color:#DDDDDD; width:50px; font-size:10px;" /> pounds <a href='javascript:newQuantityBreak("{SHIPPING_CHOICE_ID}", document.forms["editShippingChoiceForm"].newQuantityBreak.value)' class='BlueRedLink' style="font-size:10px;">Add Quantity Break</a>
+
+	</td>
+  </tr>
+</table>
+
+
+<!-- BEGIN AllQuantityBreaksBL -->
+<br/>
+<u><strong>Quantity Breaks</strong></u>
+<table width="100%" border="0" cellspacing="0" cellpadding="2">
+
+<!-- BEGIN QuantityBreakBL -->
+  <tr onmouseover="hlPdfSubRow(this)" onmouseout="dlPdfSubRow(this)">
+    <td class="SmallBody">{WEIGHT} Pounds</td>
+    <td class="SmallBody">$<input type="text" name="quantityBreak_{WEIGHT}" value="{PRICE_PER_POUND_QUANTITY_BREAK}" class="adminInput" maxlength="5" style="background-color:#F3F3F3; width:70px;" /></td>
+	<td width="1%" class="SmallBody"><a href='javascript:DeleteQuantityBreak({SHIPPING_CHOICE_ID}, {WEIGHT});' class="BlueRedLink">X</a></td>
+  </tr>
+<!-- END QuantityBreakBL -->
+</table>
+<!-- END AllQuantityBreaksBL -->
+
+
+</td>
+</tr>
+
+
+
+
+
+
+
+
+
+
+<tr>
+<td colspan="2" bgcolor="DDDDE3"><img src="./images/transparent.gif" border="0" width="1" height="2" alt="" /></td>
+</tr>
+
+
+<tr>
+<td width="32%" class="Body" align="right">
+
+<img onmouseover="this.src='./images/question_mark_down.png'; showTheToolTip('helpDiv_extraFees'); this.style.cursor ='hand';" onmouseout="hideTheToolTipContainer('helpDiv_extraFees'); this.src='./images/question_mark_up.png'; " src="./images/question_mark_up.png"  border="0"  align="absmiddle" alt="" />
+
+Extra Fees&nbsp;&nbsp;</td>
+<td width="68%" class="SmallBody">
+
+<div>
+  <div id="helpDiv_extraFees" style='width:500px; background-image: url(./images/tool_tips_back.png);  border:solid; border-color:#660000; border-width:1px; padding:6; filter:progid:DXImageTransform.Microsoft.dropShadow(Color=#999999,offX=3,offY=3)' class="SmallBody"> 
+   These are fixed charges that  will supplement   the Base Price. It is possible to have both a Rural Fee and an Extended Distance Fee. You can not control whether an address is considered Rural or Extended Distance. This is decided by the Primary Shipping Carrier's interface.<br/>
+   <br/>
+   For a point of reference, consider UPS within the United States.  You can find a number of rural zip codes located in parts of  Hawaii and Alaska. View the UPS Rates guide to figure out how much extra you want to charge the customer if a zip code is rural. Extended Distance could be thought of like a semi-rural fee. You could find some extended zones by looking at a UPS Rates guide, such as  Ground shipments to Puerto Rico (from the United States). Generally speaking, a Rural fee is more expensive than an Extended Distance Fee.</div> 
+</div>
+<script>
+hideTheToolTipContainer("helpDiv_extraFees");
+</script>	
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="33%" class="SmallBody"><strong>Rural</strong></td>
+    <td width="67%" class="SmallBody"><strong>Extended Distance</strong></td>
+  </tr>
+  <tr>
+    <td width="33%" class="SmallBody">$
+      <input type="text" name="ruralFee" value="{RURAL_FEE}" class="adminInput" maxlength="5" style="background-color:#F3F3F3; width:70px;" /></td>
+    <td width="67%" class="SmallBody">
+<input type="text" name="extendedFee" value="{EXTENDED_FEE}" class="adminInput" maxlength="5" style="background-color:#F3F3F3; width:70px;" />
+
+	</td>
+  </tr>
+</table>
+
+
+
+
+
+</td>
+</tr>
+
+
+
+
+
+<!-- BEGIN ShippingDowngradingBL -->
+<tr>
+<td colspan="2" bgcolor="DDDDE3"><img src="./images/transparent.gif" border="0" width="1" height="2" alt="" /></td>
+</tr>
+
+
+
+
+<tr>
+<td width="32%" class="Body" align="right">
+<img onmouseover="this.src='./images/question_mark_down.png'; showTheToolTip('helpDiv_shipMethodLink'); this.style.cursor ='hand';" onmouseout="hideTheToolTipContainer('helpDiv_shipMethodLink'); this.src='./images/question_mark_up.png'; " src="./images/question_mark_up.png"  border="0"  align="absmiddle" alt="" />	
+
+Shipment Method Linking&nbsp;&nbsp;</td>
+<td width="68%" class="SmallBody">
+
+<div>
+  <div  id="helpDiv_shipMethodLink" style='width:700px; margin-left:-150px; margin-top:-150px; background-image: url(./images/tool_tips_back.png);  border:solid; border-color:#660000; border-width:1px; padding:6; filter:progid:DXImageTransform.Microsoft.dropShadow(Color=#999999,offX=3,offY=3)' class="SmallBody">
+
+<strong>Default Shipping Methods</strong><br/>
+If a shipping carrier does not offer the &quot;default shipping method&quot; to a Customer's delivery address, then this Shipping Choice will not be offered to the Customer as a Shipping Choice. The default shipping method  also links &quot;arrival time of day&quot; to this Shipping Choice. Every shipping address may have a different &quot;arrival time of day&quot; based upon shipping carrier rules. Therefore it is not possible to calculate this value ahead of time (as we can with Days in Transit). If this Shipping Choice is called "Priority Early" then we want the customer to have an estimated time of arrival, such as 11:00 AM.    If the default Shipping Method has an arrival time associated with it (from the carrier), that &quot;arrival time of day&quot; will be passed onto the customer for this Shipping Choice.<br/>
+  <br/>
+  
+<strong>Shipment Downgrading</strong><br/>
+Right before the shipping label is generated, the system will figure out how many days in transit are required to make sure the customer receives their merchandise on time.   If multiple Shipping Methods are linked to this shipping choice, the system will try using the method listed  top first.  It will go down the list and pick the first shipping method that meets the requirement.  If all shipping methods  fail to make the customer arrival time then the system will use the default Shipping Method.   Generally speaking, put the cheapest shipping methods at top (with the longest transit times).  If a Customer Shipping method has an Arrival Time associated with it and a substitute method does not have a matching arrival time, the downgrading algorithm will pad an extra day before substituting.
+<br/>
+<br/>
+
+ <strong>Weight Restrictions</strong><br/>
+  The Min &amp; Max weight values can prevent a Shipping Method from being used. The default Shipping Method can not have a weight restriction  because it must always available, even as the least favorite option. The Min &amp; Max weight values may have decimal places. For example, if U.S. Post Office is only economical up until 8 ounces, you may put in a weight restriction for Min=0 &amp; Max=0.5 <br/>
+  <br/>
+<strong>Alert Messages</strong><br/>
+Alert messages will be printed on little Barcode labels before a package is ready to be boxed.  This message can inform production operators where to direct the packages during the final stages of fulfillment.  It is especially useful if there are multiple shipping stations.  For example, there could be one labeling station for UPS shipments, another for Post Office, and another for international exports.  Shipping Methods  have a unique alert message (in relation to the Shipping Choice).
+  <br/>
+  </div> 
+</div>
+<script>
+hideTheToolTipContainer("helpDiv_shipMethodLink");
+</script>	
+
+
+<!-- BEGIN NoExistingShippingLinksBL -->
+<table width="100%" border="0" cellspacing="0" cellpadding="2">
+<tr>
+<td width="18" nowrap="nowrap" class="ReallySmallBody"></td>
+<td width="204" nowrap="nowrap" class="ReallySmallBody">Shipping Method Name</td>
+<td width="46" nowrap="nowrap" class="ReallySmallBody">Default</td>
+<td width="90" nowrap="nowrap" class="ReallySmallBody">Min / Max Weight</td>
+<td width="72" nowrap="nowrap" class="ReallySmallBody">Address Type</td>
+<td width="80" nowrap="nowrap" class="ReallySmallBody">Alert Message</td>
+<td width="12" nowrap="nowrap" class="ReallySmallBody">&nbsp;</td>
+</tr>
+<!-- BEGIN ShippingCodesBL -->
+<tr onmouseover="hlPdfSubRow(this)" onmouseout="dlPdfSubRow(this)">
+ <td class="SmallBody" align="center"><!-- BEGIN upLink --><a href="javascript:moveShippingMethodLinkUp({SHIPPING_METHOD_LINK_ID}, {SHIPPING_CHOICE_ID});"><img src="./images/arrow_small_blue_up-u.png" onmouseover="this.src='./images/arrow_small_blue_up-d.png';" onmouseout="this.src='./images/arrow_small_blue_up-u.png';" border="0" align="absmiddle" alt="" /></a><!-- END upLink --> <!-- BEGIN downLink --><a href="javascript:moveShippingMethodLinkDown({SHIPPING_METHOD_LINK_ID}, {SHIPPING_CHOICE_ID});"><img src="./images/arrow_small_blue_down-u.png" onmouseover="this.src='./images/arrow_small_blue_down-d.png';" onmouseout="this.src='./images/arrow_small_blue_down-u.png';" border="0" align="absmiddle" alt="" /></a><!-- END downLink --></td>
+
+<td class="ReallySmallBody">{SHIPPING_METHOD_NAME}</td>
+<td class="SmallBody"><input type="checkbox" name="defaultShippingMethod_{SHIPPING_METHOD_LINK_ID}" value="yesOrNo" {DEFAULT_IS_CHECKED} onclick="changeDefaultShippingMethod({SHIPPING_METHOD_LINK_ID}, {SHIPPING_CHOICE_ID})" /></td>
+<td class="SmallBody">
+<!-- BEGIN MixMaxWeightBL -->
+<input   type="text" name="shippingCodeMinWeight_{SHIPPING_METHOD_LINK_ID}" value="{SHIPPING_METHOD_MIN_WEIGHT}" class="adminInput" style=" width:30px; background-color:#F3F3F3; font-size:10px;" maxlength="4" /> / <input   type="text" name="shippingCodeMaxWeight_{SHIPPING_METHOD_LINK_ID}" value="{SHIPPING_METHOD_MAX_WEIGHT}" class="adminInput" style=" width:30px; background-color:#F3F3F3; font-size:10px;" maxlength="4" />
+<!-- END MixMaxWeightBL -->
+</td>
+<td class="SmallBody"><select name="shippingAddressType_{SHIPPING_METHOD_LINK_ID}" style="font-family:Arial, Helvetica, sans-serif; font-size:9px; color:#333333">{SHIPPING_ADDRESS_TYPE_LIST}</select></td>
+<td class="SmallBody"><input   type="text" name="shippingCodeAlert_{SHIPPING_METHOD_LINK_ID}" value="{SHIPPING_METHOD_ALERT}" class="adminInput" style=" width:80px; background-color:#F3F3F3; font-size:9px;" maxlength="30" {DISABLED_ALERT} /></td>
+<td class="ReallySmallBody" align="right"><a href="javascript:RemoveShippingMethodLink({SHIPPING_METHOD_LINK_ID}, {SHIPPING_CHOICE_ID})" class="BlueRedLink">X</a></td>
+</tr>
+<!-- END ShippingCodesBL -->
+</table>
+
+<!-- END NoExistingShippingLinksBL -->
+
+
+<br/><font class="SmallBody"><select style="font-family:Arial, Helvetica, sans-serif; font-size:11px;" name="newShippingLinklist" onChange="newShippingMethodLink({SHIPPING_CHOICE_ID}, this.value)">{SHIPPING_METHOD_LINK_LIST}</select></font>
+
+</td>
+</tr>
+
+
+<!-- END ShippingDowngradingBL -->
+
+
+
+
+
+
+<!-- BEGIN Shipping1to1MapBL -->
+<tr>
+<td colspan="2" bgcolor="DDDDE3"><img src="./images/transparent.gif" border="0" width="1" height="2" alt="" /></td>
+</tr>
+
+
+
+
+<tr>
+<td width="32%" class="Body" align="right">
+<img onmouseover="this.src='./images/question_mark_down.png'; showTheToolTip('helpDiv_shipMethodLink'); this.style.cursor ='hand';" onmouseout="hideTheToolTipContainer('helpDiv_shipMethodLink'); this.src='./images/question_mark_up.png'; " src="./images/question_mark_up.png"  border="0"  align="absmiddle" alt="" />	
+
+Shipment Method Linking&nbsp;&nbsp;</td>
+<td width="68%" class="SmallBody">
+
+<div>
+  <div id="helpDiv_shipMethodLink" style='background-image: url(./images/tool_tips_back.png);  border:solid; border-color:#660000; border-width:1px; padding:6; filter:progid:DXImageTransform.Microsoft.dropShadow(Color=#999999,offX=3,offY=3)' class="SmallBody">
+Each Shipping Choice must have a Shipping Method linked to it or the Shipping Choice will become inactive.  <br/><br/>
+Alert messages will be printed on little Barcode labels before a package is ready to be boxed.  This message can inform production operators where direct the package during the final stages of fulfillment.  It is especially useful if there are multiple shipping stations.  For example, there could be one labeling station for UPS shipments, another for Post Office, and another for international exports.  
+
+
+
+ </div> 
+</div>
+<script>
+hideTheToolTipContainer("helpDiv_shipMethodLink");
+</script>	
+
+
+<!-- BEGIN NoExistingShippingLinksBL -->
+<table width="100%" border="0" cellspacing="0" cellpadding="2">
+<tr>
+
+<td width="260" nowrap="nowrap" class="ReallySmallBody">Shipping Method Name</td>
+
+<td width="180" nowrap="nowrap" class="ReallySmallBody">Alert Message</td>
+<td width="61" nowrap="nowrap" class="ReallySmallBody">&nbsp;</td>
+</tr>
+
+<tr onmouseover="hlPdfSubRow(this)" onmouseout="dlPdfSubRow(this)">
+
+<td class="ReallySmallBody">{SHIPPING_METHOD_NAME}</td>
+<td class="SmallBody"><input   type="text" name="shippingCodeAlert_{SHIPPING_METHOD_LINK_ID}" value="{SHIPPING_METHOD_ALERT}" class="adminInput" style=" width:100px; background-color:#F3F3F3; font-size:9px;" maxlength="30" /></td>
+<td class="ReallySmallBody" align="right"><a href="javascript:RemoveShippingMethodLink({SHIPPING_METHOD_LINK_ID}, '{SHIPPING_CHOICE_ID}')" class="BlueRedLink">X</a></td>
+</tr>
+
+</table>
+
+<!-- END NoExistingShippingLinksBL -->
+
+
+<br/><font class="SmallBody"><select style="font-family:Arial, Helvetica, sans-serif; font-size:11px;" name="newShippingLinklist" onChange="newShippingMethodLink({SHIPPING_CHOICE_ID}, this.value)">{SHIPPING_METHOD_LINK_LIST}</select></font>
+
+</td>
+</tr>
+
+
+<!-- END Shipping1to1MapBL -->
+
+
+
+
+
+
+
+<tr>
+<td colspan="2" bgcolor="DDDDE3"><img src="./images/transparent.gif" border="0" width="1" height="2" alt="" /></td>
+</tr>
+
+
+</table>
+<br/>
+<table width="100%" border="0" cellspacing="0" cellpadding="1">
+  <tr>
+    <td align="right">
+
+	<input type="button" name="Add" value="Save Changes" class="AdminButton" onmouseover="this.style.background='#ffeeaa';" onmouseout="this.style.background='#FFFFDD';" onclick="submitShippingChoiceEditForm();" />
+
+
+	</td>
+  </tr>
+</table>
+</form>
+
+<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+<!-- END EditShippingChoiceBL -->
+
+
+
+</td>
+</tr>
+</table>
+
+
+
+<table width="760" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="360" class="NavColor"><img src="./images/footer.gif" border="0" width="350" height="16" usemap="#footer" alt="" /></td>
+	<td width="400" align="right" class="NavColor"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+  </tr>
+</table>
+<font class="copyright"> </font>
+</div>
+&nbsp;
+<script type="text/javascript" src="./library/ImageMap-footer.js"></script>
+</body>
+</html>

@@ -1,0 +1,499 @@
+<html>
+<head>
+<title>PME - Template</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+
+</head>
+<body bgcolor="#FFFFFF" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="">
+<div align="center">
+
+
+
+
+
+<!-- ADMIN_TEMPLATE_START -->
+<table width="760" height="50" cellpadding="0" cellspacing="0" border="0">
+
+<tr>
+<td style="background-image: URL(./images/admin/{TEMPLATE_HEADER_BACKGROUND}); background-repeat: no-repeat;"><table width="760" cellpadding="0" cellspacing="0" border="0">
+<tr>
+			<td width="4" class="SmallBody" valign="top"><div id="domainSelecterOuterShell" style="position:absolute; z-index:10000; visibility:hidden"><div id="div_domainOuter" align="left" style='width:370px; margin-left:0px; margin-top:48px; display:inline; font-family:Arial, Helvetica, sans-serif; font-size:11px; color:#555555; border:solid; border-color:#660000; border-width:1px; padding:0;' >
+			<div id="div_domainInner" >
+			<table width="100%" border="0" cellspacing="0" cellpadding="1">
+  <tr style="background-image: URL(./images/admin/nav-pop-select-header-back.png); background-repeat:repeat">
+    <td width="1%" nowrap="nowrap"><a href='#' id='saveDomainIDs'><img src="./images/admin/save-icon-up.png" border="0" onMouseOver="this.src='./images/admin/save-icon-down.png'" onMouseOut="this.src='./images/admin/save-icon-up.png'" alt="" /></a></td>
+    <td width="10%" nowrap="nowrap" class="ReallySmallBody"><img src="./images/transparent.gif" border="0" width="20" height="5" align="absmiddle" alt="" /><a href='#' id="selectAllDomains" class="NavBarDomLinkSM">All</a><img src="./images/transparent.gif" border="0" width="25" height="5" align="absmiddle" alt="" /><a href='#' id="clearAllDomains" class="NavBarDomLinkSM">None</a><div style="display:inline; color:222222;" id="domainsSelectedDescription" class="ReallySmallBody"></div></td>
+	<td width="80%" nowrap="nowrap" class="ReallySmallBody" align="right"><div id="domainsTotals" class="ReallySmallBody" align="right" style="color:#222222;"></div></td>
+	<td width="1%" nowrap="nowrap" class="ReallySmallBody"><!-- BEGIN MoreButtonBL --><a href='#' id="domainMoreIcon"><img width="42" height="14" align="absmiddle" src="./images/admin/more-icon-up.png" border="0" onMouseOver="this.src='./images/admin/more-icon-down.png'" onMouseOut="this.src='./images/admin/more-icon-up.png'" alt="" /></a><!-- END MoreButtonBL --><img src="./images/transparent.gif" border="0" width="20" height="5" alt="" /></td>
+	<td width="1%" nowrap="nowrap" align="right" valign="top"><a href='#' id="domainCloseIcon"><img src="./images/admin/icon-X-close-up.png" border="0" onMouseOver="this.src='./images/admin/icon-X-close-down.png'" onMouseOut="this.src='./images/admin/icon-X-close-up.png'" alt="" /></a></td>
+  </tr>
+</table>
+<iframe id="domainSelectorIframe" name="domainSelectorIframe" width="100%" style="height:{DOMAIN_WINDOW_HEIGHT}px" src=""></iframe>
+			</div> </div></div></td>
+			<td width="151" align="center" valign="middle" onMouseOver="this.style.backgroundImage='url(./images/admin/tempHeader-Back-logo.png)';" onMouseOut="this.style.backgroundImage='';">{DOMAIN_LOGOS}</td>
+			<td width="20" class="ReallySmallBody" align="center"><font color="#DDDDDD">{D}</font></td>
+            <td width="166" class="SmallBody" align="left" valign="top"><img  src="./images/transparent.gif" border="0" width="5" height="5" alt="" /><br/><a href="./ad_cs_report.php" class="AdminTemplateLink" style="text-decoration:none; font-size:12px;">{NAME}</a>
+			  <!-- BEGIN StatusChangeBL --><br/><img src="./images/transparent.gif" border="0" width="5" height="3" alt="" /><table width="100%" border="0" cellspacing="0" cellpadding="1">
+<form name="admin_status" action="./ad_actions.php">
+<input type="hidden" name="action" value="ChangeAttendanceStatus" />
+<input type="hidden" name="returl" value="{RETURN_URL}" />
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+  <tr>
+    <td width="37%" align="left"><select style="font-face: arial; background-color:#828CB3; font: 10px; color:#eeeeee; border: 1 solid #000000; " name="StatusChar" onChange="document.forms['admin_status'].submit()">{STATUS_CHOICES}</select></td>
+  	<td width="63%" align="left">
+    <div id="chatBlock" style="position:relative">
+    <div id="chatInfoMenu" style="position:absolute; top:18px; left:-10px; background-color:#EEEEE3; border:solid; border-color:#DBCABF; border-width:1px; padding:4px; width:150px; font-size:11px; display:none;" onMouseOut="chatInfoLeave();" onMouseOver="chatInfoHover();">
+    Fly Open<br>
+Menu
+</div>
+    &nbsp;&nbsp;<span id="chatStatusLink" style="font-size:10px;"></span>
+    </div></td>
+  </tr>
+ </form>
+</table>
+<!-- END StatusChangeBL -->
+<!-- BEGIN LogoutLinkBL -->
+<br/><a href="./logout.php" class="Logout">Logout</a>
+<!-- END LogoutLinkBL --></td>
+            <td width="180" valign="top"><img src="./images/transparent.gif" border="0" width="1" height="6" alt="" /><table width="100%" border="0" cellspacing="0" cellpadding="0" style="background-repeat:no-repeat" onMouseOver="this.style.backgroundImage='url(./images/admin/tempHeader-Back-searchUsers.png)';" onMouseOut="this.style.backgroundImage='';">
+			<form name="admin_usersearch" onSubmit="return AdminUserSearch();">
+			<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+			<input type="hidden" name="username" value="" />
+			<input type="hidden" name="customerid" value="" />
+			<input type="hidden" name="email" value="" />
+			<input type="hidden" name="phone" value="" />
+  <tr>
+    <td align="left" class="SmallBody"><div id="tipNameOuterShell" style="visibility:hidden; position:absolute; z-index:10002;"><div id="helpDiv_searchForUsers" align="left" style='width:350px; margin-left:105px; font-family:Arial, Helvetica, sans-serif; font-size:11px; color:#555555; background-image: url(./images/tool_tips_back.png);  border:solid; border-color:#660000; border-width:1px; padding:6; filter:progid:DXImageTransform.Microsoft.dropShadow(Color=#999999,offX=3,offY=3)' >
+			<strong>Search By Phone</strong><br/>Type in the phone number without spaces or dashes including the area code.  This is probably the easiest way to find a user while speaking over the phone.  Ex: <font color="#993333"><em>8008675309</em> or <em>18008675309</em></font><br/><br/>
+			<strong>Wildcards</strong><br/>
+			Use asterisk(s) as wildcards to perform broader searches.  For example, if a user has stored &quot;John H. Doe&quot; on their account you will not be able to find them when searching for &quot;John Doe&quot;.  Instead, try searching for... <font color="#993333">John<font style="font-size:14px">*</font>Doe</font>.  <br/><br/>
+If a person has a long or complicated name you can perform a partial search like... <font color="#993333">Marry Superfragilistic<font style="font-size:14px">*</font></font><br/><br/>
+
+<strong>Search By Company</strong><br/>
+If you want to search by company name you must add the prefix <strong>C:</strong> to the search term.  For example, do a search for <font color="#993333">C:Acme<font style="font-size:15px">*</font></font> if you want to find <font color="#993333"><em>Acme Inc.</em></font> or <font color="#993333"><em>Acme.com</em></font>.<br/>
+<br/>
+<strong>By UserID</strong><br/>
+
+If you know the UserID of the account just type in the number preceded by the letter <em>U</em>, such as <font color="#993333"><em>U123456</em></font>.<br/><br/>
+
+
+<strong>Order Screen</strong><br/>Type in an order number with or without the preceding hash-code. Ex: <font color="#993333"><em><b>O</b>123456</em></font> or <font color="#993333"><em>C057-123456</em></font>.  If you leave off the hash-code, you must include the prefix <strong>O</strong> (as in <strong>O</strong>rder).<br/><br/>
+<strong>Project Screen</strong><br/>
+Project Numbers begin with the letter P without any spaces or dashes.  Such as <font color="#993333"><em>P7654321</em></font> <br/><br/>
+<strong>Proofing Screen</strong><br/>
+Artworks begin with the letter A and the number matches the Project Number. Ex: <font color="#993333"><em>A7654321</em></font>
+</div>
+</div>
+<!-- BEGIN SearchForUsersBL -->
+<font style="font-size:10px; font-family:Arial, Helvetica, sans-serif; color:#000000">&nbsp;Search Engine&nbsp;&nbsp;&nbsp;<img  src="./images/admin/question-up.png" onMouseOver="globalTipMouseAlreadyLeftFlag=false; this.src='./images/admin/question-down.png'; showTip('helpDiv_searchForUsers'); this.style.cursor ='hand';" onMouseOut="globalTipMouseAlreadyLeftFlag=true; this.src='./images/admin/question-up.png';  hideTip('helpDiv_searchForUsers');" border="0"  align="absmiddle" alt="" /></font><br/><input type="input" name="usersearch" value="" class="AdminTemplateInputBox" style="width:140px" />
+<!-- END SearchForUsersBL -->
+<br/><img src="./images/transparent.gif" border="0" width="1" height="6" alt="" /></td>
+  </tr>
+  </form>
+</table></td>
+            <td width="32" align="center"><img src="./images/transparent.gif" border="0" width="1" height="2" alt="" /></td>
+			<td width="175" valign="top"><!-- BEGIN StandardLinksBL --><img src="./images/transparent.gif" border="0" width="1" height="3" alt="" /><table width="100%" border="0" cellspacing="0" cellpadding="0" onMouseOver="this.style.backgroundImage='url(./images/admin/tempHeader-Back-mainLinks.png)';" onMouseOut="this.style.backgroundImage='';">
+  <tr><td class="ReallySmallBody" width="10%" >&nbsp;</td>
+                  <td class="ReallySmallBody" width="49%" ><img  src="./images/transparent.gif" border="0" width="1" height="6" alt="" /><br/><a href="./ad_home.php" class="AdminTemplateLink">Home</a><br/>
+                    <img  src="./images/transparent.gif" border="0" width="1" height="3" alt="" /><br/>
+	<a href="./ad_openorders.php" class="AdminTemplateLink">Open Orders</a><br/><img src="./images/transparent.gif" border="0" width="1" height="5" alt="" /></td>
+                  <td class="ReallySmallBody" width="41%"><img  src="./images/transparent.gif" border="0" width="1" height="6" alt="" /><br/>
+	<a href="./ad_tasks.php" class="AdminTemplateLink">Tasks</a><br/>
+	<img  src="./images/transparent.gif" border="0" width="1" height="3" alt="" /><br/>
+	<a href="./ad_messages.php" class="AdminTemplateLink">Messages</a><br/><img src="./images/transparent.gif" border="0" width="1" height="5" alt="" /></td>
+  </tr>
+</table>
+<!-- END StandardLinksBL --></td>
+			<td width="32" align="left" height="50" valign="top"><!-- BEGIN MenuImageBL -->
+		    <img src="./images/transparent.gif" name="menu0" id="menu0" onMouseOver="showMenu(event); this.src='./images/admin/tempHeader-Back-ArrowDown.png';" onMouseOut="hideMenu(event); this.src='./images/transparent.gif';" width="25" height="50" alt="" />			  <!-- END MenuImageBL --></td>
+</tr>
+</table></td>
+</tr>
+</table>
+<script>
+	//Make an array of the images we want to preload for the mouse-overs.
+	// This has to be done before the MooTools library is loaded. Otherwise all kinds of weird "file not found" errors happen in apache.
+	// That is because they extend the "Image" object in javascript and actually try to request URLs with some of the javascript code???
+	arImageSrc = new Array (
+		"./images/admin/more-icon-down.png",
+		"./images/admin/save-icon-down.png",
+		"./images/admin/icon-X-close-down.png",
+		"./images/admin/tempHeader-Back-ArrowDown.png",
+		"./images/admin/tempHeader-Back-jumpOrder.png",
+		"./images/admin/tempHeader-Back-mainLinks.png",
+		"./images/admin/tempHeader-Back-searchUsers.png",
+		"./images/admin/tempHeader-Back-logo.png",
+		"./domain_logos/all-down.png",
+		"./images/admin/question-down.png",
+		"./images/thinking_blue.gif",
+		"./domain_logos/all-down.png"
+	)
+
+	//Preload images.
+	arImageList = new Array ();
+	for (counter in arImageSrc) {
+		arImageList[counter] = new Image();
+		arImageList[counter].src = arImageSrc[counter];
+	}
+</script>
+
+<script type="text/javascript" src="./library/mootools.js"></script>
+<script type="text/javascript" src="./library/domainNavBar.js"></script>
+
+<!-- BEGIN PasswordUpdateRequiredBL -->
+<div align="center">
+&nbsp;
+<div style="width:760px; border:solid; border-width:2px; background:#EEEEEE; border-color:#FF0000; padding:5px; font-family:Arial, Helvetica, sans-serif; font-size:14px; color:#CC0000;">
+Please change your password by visiting your <a href="./register.php?registrationtype=edit">account settings</a>.
+</div>
+</div>
+<!-- END PasswordUpdateRequiredBL -->
+
+<!-- BEGIN ChatSystem -->
+<script type="text/javascript">
+var userIdForCaching = "U{DATA:UserID}";
+var statusFetchInterval = 0;
+var statusFetchSecondSnapTo = 5;
+
+</script>
+
+<script type="text/javascript" src="./library/admin_library.js"></script>
+<script type="text/javascript" src="./library/api_dot.js"></script>
+<script type="text/javascript" src="./library/general_lib.js"></script>
+<script type="text/javascript" src="./library/api_chat.js"></script>
+<script type="text/javascript" src="./library/api_chat_for_admin.js"></script>
+<script type="text/javascript" src="./library/chat_common_admin.js"></script>
+<!-- END ChatSystem -->
+
+
+<!-- ADMIN_TEMPLATE_END -->
+
+
+
+<!-- TIME_CLOCK_START --><!-- BEGIN ReturnTimeBL --><img src="./images/transparent.gif" border="0" width="1" height="5" alt="" /><table width="760" border="0" cellspacing="0" cellpadding="1" bgcolor="#993333">
+  <tr>
+    <td><table width="100%" border="0" cellspacing="0" cellpadding="10">
+	<form name="returndateform" action="ad_actions.php" onSubmit="return CheckTimeForm();">
+	<input type="hidden" name="action" value="ChangeMemberReturnDate" />
+	<input type="hidden" name="TimeStampLoaded" value="{TIMSTAMP_LOADED}" />
+	<input type="hidden" name="returl" value="{RETURN_URL}" />
+	<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+
+	<!-- Allows us to find out how long the form was sitting here before being submitted -->
+	<input type="hidden" name="secondsElapsed" value="0" />
+
+	<!-- This hidden input is just for communication between the calendar and our other Javascript function -->
+	<input type="hidden" name="timefield" value="" id="datefield" onChange="CalenderDateChanged(this.value)" />
+  <tr>
+    <td bgcolor="#eeeeee" class="SmallBody">Your status indicates that you are currently <b>{STATUS_DESC}</b>.  Don't forget to switch your status back to <a href="./ad_actions.php?action=ChangeAttendanceStatus&form_sc={FORM_SECURITY_CODE}&StatusChar=K&returl={RETURN_URL}" class="blueredlink">Working</a> when you are back.
+
+		<br/><img  src="./images/transparent.gif" border="0" width="1" height="5" alt="" /><br/>
+                Do you want automatic replies sent to customers while you are away?&nbsp;&nbsp;&nbsp;<b>Yes</b>
+                <input type="radio" name="autoreply" value="Y" {AUTOREPLY_YES}  onclick="document.location='ad_actions.php?action=ChangeAutoReply&form_sc={FORM_SECURITY_CODE}&AutoReplyFlag=Y&returl={RETURN_URL_ENCODED}'" />
+				&nbsp;&nbsp;<b>No</b> <input type="radio" name="autoreply" value="N" {AUTOREPLY_NO}  onclick="document.location='ad_actions.php?action=ChangeAutoReply&form_sc={FORM_SECURITY_CODE}&AutoReplyFlag=N&returl={RETURN_URL_ENCODED}'" />
+
+	<br/><img  src="./images/transparent.gif" border="0" width="5" height="5" alt="" /><br/>
+	Do you have an idea how long it will be before you return?<img src="./images/transparent.gif" border="0" width="20" height="1" alt="" />
+	Days <input type="input" name="days" value="" class="AdminTemplateInputBox" style="width:22px; border-width:1" maxlength="2" onKeyUp="checkDays(this.value)" />&nbsp;&nbsp;&nbsp;Hours <input type="input" name="hours" value="" class="AdminTemplateInputBox" style="width:22px; border-width:1" maxlength="2" onKeyUp="checkHours(this.value)" />&nbsp;&nbsp;&nbsp;Minutes <input type="input" name="minutes" value="" class="AdminTemplateInputBox" style="width:22px; border-width:1" maxlength="2" onKeyUp="checkMinutes(this.value)" />
+	&nbsp;&nbsp;<input type="image" src="./images/button-change-u.png" onMouseOver="this.src='./images/button-change-d.png';" onMouseOut="this.src='./images/button-change-u.png';" border="0" align="absmiddle" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img alt='Calendar' align='absmiddle' src='./images/calendar5.gif' border='0' id='calicon'  onmouseover="this.style.cursor='pointer'" onMouseOut="this.style.cursor='default'" />
+
+
+
+
+
+	<script type="text/javascript">
+		var cal = new Zapatec.Calendar.setup({
+
+		inputField     :    "datefield",     // id of the input field
+		singleClick    :     false,     // require two clicks to submit
+		ifFormat       :    '%a, %e %b %Y %H:%M:%S',     //  of the input field
+		timeFormat     : 	"12",
+		ampm           :     true,
+		showsTime      :     true,     // show time as well as date
+		button         :    "calicon",  // trigger button
+		dateStatusFunc :    timeOutOfRange,
+		timeInterval   :     10,
+		floating			 : 	  true
+
+		});
+
+	var startTimer = new Date();
+
+	// don't let a date in the past get submitted.
+	// Also don't allow a date greater than 99 days from now
+	function timeOutOfRange(date, year, month, day, hours, minutes) {
+
+		var curdate = new Date();
+
+		// Give it a 3 mintue buffer time for what it considers the Past... otherwise the "Today" link might not work to well.
+		if(date.getTime() < (curdate.getTime() - 1000 * 60 * 3))
+			return true;
+
+		var daysInFuture = Math.round((date.getTime() - curdate.getTime()) / (1000 * 60 * 60 * 24));
+
+		if(daysInFuture > 98)
+			return true;
+
+		return false;
+	}
+
+	function CalenderDateChanged(newDateStr){
+
+		var calendarDate = new Date(Date.parse(newDateStr));
+
+		var curdate = new Date();
+
+		var millisecondsInADay = (1000 * 60 * 60 * 24);
+		var millisecondsInAnHour = (1000 * 60 * 60);
+		var millisecondsInAMinute = (1000 * 60);
+
+		var daysInFuture = Math.floor((calendarDate.getTime() - curdate.getTime()) / millisecondsInADay);
+		var hoursInFuture = Math.floor((calendarDate.getTime() - curdate.getTime() - (daysInFuture * millisecondsInADay)) / millisecondsInAnHour);
+		var minutesInFuture = Math.floor((calendarDate.getTime() - curdate.getTime() - (daysInFuture * millisecondsInADay) - (hoursInFuture * millisecondsInAnHour)) / millisecondsInAMinute);
+
+		if(daysInFuture < 0){
+			daysInFuture = 0;
+			hoursInFuture = 0;
+			minutesInFuture = 0;
+		}
+		if(hoursInFuture < 0){
+			hoursInFuture = 0;
+			minutesInFuture = 0;
+		}
+		if(minutesInFuture < 0){
+			minutesInFuture = 0;
+		}
+
+		if(daysInFuture == 0)
+			daysInFuture = "";
+		if(hoursInFuture == 0)
+			hoursInFuture = "";
+		if(minutesInFuture == 0)
+			minutesInFuture = "";
+
+		document.forms["returndateform"].days.value = daysInFuture;
+		document.forms["returndateform"].hours.value = hoursInFuture;
+		document.forms["returndateform"].minutes.value = minutesInFuture;
+
+	}
+
+	function checkDays(inputVal){
+		document.forms["returndateform"].days.value = inputVal.replace(/([^\d])/g, "");
+	}
+	function checkHours(inputVal){
+		document.forms["returndateform"].hours.value = inputVal.replace(/([^\d])/g, "");
+	}
+	function checkMinutes(inputVal){
+		document.forms["returndateform"].minutes.value = inputVal.replace(/([^\d])/g, "");
+	}
+
+	function CheckTimeForm(){
+		var endTimer = new Date();
+		var elapsedMiliseconds = endTimer.getTime() - startTimer.getTime();
+
+		// Update the elapsed timer.
+		document.forms["returndateform"].secondsElapsed.value = Math.round(elapsedMiliseconds / 1000);
+
+		return true;
+	}
+
+	function displayReturnDateInLocal(SecondsInFuture){
+		var thisDateObj = new Date();
+		var clientsUnixTimeStamp = Math.ceil(thisDateObj.getTime() / 1000);
+		var theDate = new Date((clientsUnixTimeStamp + SecondsInFuture) * 1000);
+
+		var newDateDescription = "";
+		if(thisDateObj.getMonth() == theDate.getMonth() && thisDateObj.getDate() == theDate.getDate()){
+			newDateDescription = "Today at " + theDate.formatDate("g:i a");
+		}
+		else if(thisDateObj.getMonth() == theDate.getMonth() && (thisDateObj.getDate() + 1) == theDate.getDate()){
+			newDateDescription = "Tomorrow at " + theDate.formatDate("g:i a");
+		}
+		else{
+			newDateDescription = theDate.formatDate("D, M jS, g:i a");
+		}
+
+		document.all.returnDateSaved.innerHTML = "<b>" + newDateDescription + "</b>";
+	}
+
+	</script>
+
+
+<!-- BEGIN ReturnDateSavedBL -->
+
+	<br/><img  src="./images/transparent.gif" border="0" width="1" height="5" alt="" /><br/>
+                The return date (relative to your computer's clock) is scheduled
+                for:
+                <div id="returnDateSaved" class="Body">
+&nbsp;
+	</div>
+
+	<script>
+		displayReturnDateInLocal({RETURN_FUTURE_SECONDS});
+	</script>
+
+<!-- END ReturnDateSavedBL -->
+
+
+	</td>
+  </tr>
+  </form>
+</table>
+</td>
+  </tr>
+</table>
+<!-- END ReturnTimeBL -->
+
+
+<!-- BEGIN AWOLstatusBL -->
+<table width="760" border="0" cellspacing="0" cellpadding="2" bgcolor="#CC0000">
+  <tr>
+    <td>
+<table width="100%" border="0" cellspacing="0" cellpadding="10">
+  <tr>
+    <td class="Body" bgcolor="#EEEEEE">It appears that you left your computer without clocking out.  <br/>
+              The last activity from you was recorded at <a href="./ad_pagevisits.php?pagename=all" class="blueredlink">{MOST_RECENT_ACTVITY} PST</a> ({AWOL_HOURS} hours ago).<br/>
+              <br/>
+	<a href="./ad_actions.php?action=ChangeAttendanceStatus&StatusChar=K&form_sc={FORM_SECURITY_CODE}&awolAck=true&returl={RETURN_URL_ENCODED}" class="blueredlink">Click Here</a> if you just forgot to clock out.<br/><br/>If you were working offline the whole time (<em>phone, Photoshop, etc.</em>) then <a href="javascript:OverrideAWOL()" class="blueredlink">Click Here</a>.
+	<br/><br/>FYI: The system changes your status to AWOL if it does not sense any activity over a period of time.
+
+	<script>
+		function OverrideAWOL(){
+			var Repsonse = prompt("Enter a short description of what you were up to.", "");
+
+			if(Repsonse == null)
+				return;
+
+			// Trim spaces from the front of the string... just to make sure that they are not entering a bunch of spaces.
+			Repsonse = Repsonse.replace(/^\s+/, "");
+
+			if(Repsonse == "")
+				return;
+
+			document.location = "./ad_actions.php?action=OverrideAWOLstatus&form_sc={FORM_SECURITY_CODE}&returl={RETURN_URL_ENCODED}&message=" + encodeURI(Repsonse);
+
+		}
+	</script>
+
+	</td>
+  </tr>
+</table>
+	</td>
+  </tr>
+</table>
+
+<!-- END AWOLstatusBL -->
+
+
+<script language="javascript">
+
+	function AdminUserSearch(){
+
+		var SearchTerm = document.forms["admin_usersearch"].usersearch.value;
+
+		// Find out if the user typed in a search pattern which indicates the user wants to find an order number instead of search by "Name" or "company".
+		if(SearchTerm.search(/^O\d+/i) != -1 || SearchTerm.search(/^C\d+/i) != -1 || SearchTerm.search(/^A\d+/i) != -1 || SearchTerm.search(/^P\d+/i) != -1 || SearchTerm.search(/^\#?(\d|\w)+\-\d+/) != -1){
+
+			// The PHP script expects a prefix "P" or "A" if you want to direct to the project page, artwork editing tool, or Order editing tool.
+			// If the Order Number includes a prefix with a pound symbol with an alpha-numberic hash... then it means we want to search by an order number digit.
+			if(SearchTerm.search(/^\#?(\d|\w)+\-\d+/) != -1){
+				var OrderNumber = SearchTerm.replace(/^\#?(\d|\w)+\-/gi, "");
+				document.location = "./ad_jumptoorder.php?orderno=" + OrderNumber;
+				return false;
+			}
+			else if(SearchTerm.search(/^O\d+/i) != -1){
+				// If the Order Number just includes a prefix of "O"... then it means we want to search by order number... which means pass in just digits to the PHP script, and nothing else.
+				var OrderNumber = SearchTerm.replace(/^O/i, "");
+				document.location = "./ad_jumptoorder.php?orderno=" + OrderNumber;
+				return false;
+			}
+			else if(SearchTerm.search(/^C\d+/i) != -1){
+				// If the Order Number just includes a prefix of "O"... then it means we want to search by order number... which means pass in just digits to the PHP script, and nothing else.
+				var chatID = SearchTerm.replace(/^C/i, "");
+				document.location = "./ad_chat_search.php?chat_id=" + chatID;
+				return false;
+			}
+			else{
+				document.location = "./ad_jumptoorder.php?orderno=" + SearchTerm;
+				return false;
+			}
+
+		}
+
+		// ---- If we don't find a pattern for order number search.... then search by name, phone, etc.
+
+		if(SearchTerm.search(/@/) != -1){
+			document.forms["admin_usersearch"].email.value = SearchTerm;
+		}
+		else if(SearchTerm.search(/^(u|U)\d+\s*$/) != -1){
+			document.forms["admin_usersearch"].customerid.value = SearchTerm.replace(/(u|U)/, "");
+		}
+		else if(SearchTerm.search(/^\d+$/) != -1){
+			document.forms["admin_usersearch"].phone.value = SearchTerm;
+		}
+		else{
+			document.forms["admin_usersearch"].username.value = SearchTerm;
+		}
+
+		var tempSearchCheck = SearchTerm;
+		tempSearchCheck = tempSearchCheck.replace(/\s/g, "");
+		tempSearchCheck = tempSearchCheck.replace(/\*/g, "");
+		if(tempSearchCheck.length < 3 && tempSearchCheck.search(/U\d+/i) == -1){
+			alert("You must enter at least 3 characters to search for.\n\nOtherwise, too many search results will be returned.");
+			return false;
+		}
+
+		document.forms["admin_usersearch"].action = "./ad_users_search.php";
+		document.forms["admin_usersearch"].submit();
+	}
+
+	function JumpToOrder(){
+		var OrderNumber = document.forms["admin_orderjump"].orderno.value;
+
+		OrderNumber = OrderNumber.replace(/\s/g, "");
+
+		// In case an employee pastes in an order number with a digestive hash
+		OrderNumber = OrderNumber.replace(/^(\#|\d|\w)+\-/gi, "");
+
+		// For the Affilate System there is an X used instead of a Dash
+		OrderNumber = OrderNumber.replace(/^(\#|\d|\w)+X/gi, "");
+
+		if(OrderNumber.search(/^\d+$/) == -1 && OrderNumber.search(/^P\d+$/i) == -1 && OrderNumber.search(/^A\d+$/i) == -1 && OrderNumber.search(/^3d\d+$/i) == -1){
+			alert("Order numbers are numeric.  Project numbers are numeric with the prefix 'P'");
+		}
+		else{
+			document.location = "./ad_jumptoorder.php?orderno=" + OrderNumber;
+		}
+		return false;
+	}
+
+</script>
+
+<script language="JavaScript1.2">dqm__codebase = "library/menu/script/" //script folder location</script>
+
+<!-- Load Differnet menus based on permissions -->
+{MENU_JS_SETTINGS}
+
+<script language="JavaScript1.2" src="./library/menu/script/dqm_loader.js"></script>
+
+<!-- TIME_CLOCK_END -->
+
+<table width="760" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td><br/><br/><br/>This is a test<br/></td>
+</tr>
+</table>
+<table width="760" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="360" class="NavColor"><img src="./images/footer.gif" border="0" width="350" height="16" usemap="#footer" alt="" /></td>
+	<td width="400" align="right" class="NavColor"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+  </tr>
+</table>
+<font class="copyright"> </font>
+</div>
+&nbsp;
+<script type="text/javascript" src="./library/ImageMap-footer.js"></script>
+</body>
+</html>

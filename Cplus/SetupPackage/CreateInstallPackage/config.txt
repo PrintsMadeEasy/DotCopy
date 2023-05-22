@@ -1,0 +1,22 @@
+domain=letterhead.com;
+senderemail=noreply@letterhead.com;
+sendername=John Doe;
+xmlhost=www.letterhead.com;
+xmlfile=/server_emailNotifyGetJob.php;
+sendtype=direct;
+mailhost=;
+mailuser=;
+mailpass=;
+ehlo=www.letterhead.com;
+pop3server=on;
+smtpserver=on;
+bindip=mail.letterhead.com;
+spam=;
+keepspam=on;
+log=on;
+downloadtime=02:30:00;
+failmailhost=www.letterhead.com;
+failmailscript=/server_checkBouncedEmailsAtDomains.php;
+submitfailmail=ON;
+EOF
+

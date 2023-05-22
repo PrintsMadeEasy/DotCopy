@@ -1,0 +1,461 @@
+<html>
+<head>
+<title>Admin</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+
+<script>
+
+	function ShowPriceAdjustments(){
+		document.forms["ordersbyrange"].showadjustments.value = "true";
+		document.forms["ordersbyrange"].submit();
+	}
+	function HidePriceAdjustments(){
+		document.forms["ordersbyrange"].showadjustments.value = "";
+		document.forms["ordersbyrange"].submit();
+	}
+	function ShowMonthBackup(){
+		document.location = "./ad_monthbackup.php?starttimestamp={START_TIMESTAMP}&endtimestamp={END_TIMESTAMP}";
+	}
+	
+	function ProductionReport(){
+			var win2=window.open("./ad_report_production.php?starttimestamp={START_TIMESTAMP}&endtimestamp={END_TIMESTAMP}", "productionreport", "width=650, height=530, toolbar=0, locaction=0, directories=0, status=0, menubar=0, scrollbars=1, resizeable=0, copyhistory=0");
+		win2.focus();
+		}
+		
+
+		
+	function fixYearDropDownIfReportCachedOnAllForms(){
+
+		// There are 3 year drop downs on the form.
+		var startYearRangeObj = document.forms["ordersbyrange"].DateRangeStartYear;
+		var endYearRangeObj = document.forms["ordersbyrange"].DateRangeEndYear;
+
+		fixYearDropDownIfReportCached(startYearRangeObj);
+		fixYearDropDownIfReportCached(endYearRangeObj);
+		
+		
+		
+		var yearSelect = document.forms["ordersbymonth"].year;
+		fixYearDropDownIfReportCached(yearSelect);
+		
+	}
+	
+</script>
+<script type="text/javascript" src="library/admin_library.js"></script>
+<link rel="stylesheet" type="text/css" href="library/calendar/themes/winter.css"/>
+<script type="text/javascript" src="library/calendar/src/utils.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar.js"></script>
+<script type="text/javascript" src="library/calendar/lang/calendar-en.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar-setup.js"></script>
+<script type="text/javascript" src="library/formatDate.js"></script>
+</head>
+<body bgcolor="#FFFFFF" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<div align="center">
+{HEADER}
+&nbsp;
+<table width="760" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td class="Body">
+
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+            <td valign="bottom" class="Largebody" width="32%"><font color="#990000"><b>Orders
+              Summary</b></font></td>
+            <td align="right" width="68%" class="SmallBody">{PERIOD_DESC}</td>
+  </tr>
+</table>
+<table width="100%" border="0" cellspacing="0" cellpadding="1" bgcolor="#666666">
+<tr>
+<td>
+<table width="100%" border="0" cellspacing="0" cellpadding="4" bgcolor="#CCCCCC">
+
+<tr>
+                    <td width="66%" align="left" class="Body">
+					<table width="100%" border="0" cellspacing="0" cellpadding="0">
+					<form name="ordersbymonth" action="./ad_report_month.php" method="GET">
+					<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+					<input type="hidden" name="datetype" value="month" />
+  <tr>
+    <td class="Body">
+					By Month<br/>{DATE_SELECT}
+
+		</td>
+  </tr>
+  </form>
+</table>
+&nbsp;
+					<table width="100%" border="0" cellspacing="0" cellpadding="0">
+					<form name="ordersbyrange" action="./ad_report_month.php" method="GET">
+					<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+					<input type="hidden" name="datetype" value="range" />
+					<input type="hidden" name="showadjustments" value="" />
+					<input type="hidden" name="doNotCacheReport" value="" />
+  <tr>
+    <td class="Body">
+                      By Range<br/>{DATERANGESELS} <input type="submit" name="xx" value="GO" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" />
+		</td>
+  </tr>
+  </form>
+</table>
+					  </td>
+
+
+
+
+                    <td width="34%" align="center" class="Body">
+<input type="button" name="xx" value="Download Details" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" onClick="ShowMonthBackup();" /><br/><font class="ReallySmallBody">Don't forget to &quot;View Source&quot;
+</font>
+
+<br/>
+<br/>
+<input type="button" name="prodreport" value="Production Report" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" onClick="ProductionReport();" />
+</td>
+</tr>
+
+</table>
+</td>
+</tr>
+</table>
+<img  src="./images/transparent.gif" border="0" width="1" height="20" alt="" /><br/>
+<!-- ReportCacheNoticePlaceHolder -->
+<!-- BEGIN EmptyOrdersBL -->
+
+
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td bgcolor="#000000"><img src="./images/transparent.gif" border="0" width="1" height="2" alt="" /></td>
+  </tr>
+    <tr>
+    <td>
+	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+                  <td width="34%" valign="top">&nbsp;</td>
+                  <td width="66%" align="right" class="Body">{MESSAGE}</td>
+  </tr>
+</table>
+	</td>
+  </tr>
+</table>
+<img src="./images/transparent.gif" border="0" width="1" height="30" alt="" />
+<!-- BEGIN HideVendorBlocksBL -->
+<!-- BEGIN EmptyVendorTotalsBL -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr bgcolor="#EEEEEE">
+            <td class="SmallBody" width="12%">&nbsp;Vendor Name</td>
+            <td class="SmallBody" width="23%" align="right">Vendor Subtotals&nbsp;</td>
+            <td class="SmallBody" width="19%" align="right">Vendor Adjustments&nbsp;</td>
+			<td class="SmallBody" width="23%" align="right">Vendor Reprints&nbsp;</td>
+			<td class="SmallBody" width="23%" align="right">Vendor Totals&nbsp;</td>
+  </tr>
+    <tr bgcolor="#CCCCCC">
+    <td class="Body" colspan="5"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+  </tr>
+  <!-- BEGIN vendorSummaryBL -->
+  <tr>
+            <td class="SmallBody" width="12%">{VENDOR_NAME}</td>
+            <td class="Body" width="23%" align="right">{SUM_VENDOR_SUBTOTALS}&nbsp;</td>
+            <td class="Body" width="19%" align="right">{SUM_VENDOR_ADJMTS}&nbsp;</td>
+			<td class="Body" width="23%" align="right">{SUM_VENDOR_REPRINTS}&nbsp;</td>
+			<td class="Body" width="23%" align="right">{SUM_VENDOR_PRICES}&nbsp;</td>
+  </tr>
+    <tr bgcolor="#CCCCCC">
+    <td class="Body" colspan="5"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+  </tr>
+  <!-- END vendorSummaryBL -->
+     <tr bgcolor="#000000">
+    <td class="Body" colspan="5"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+  </tr>
+  <tr>
+            <td class="Body" width="12%"><font color="#000099"><b>Totals</b></font></td>
+            <td class="Body" width="23%" align="right"><font color="#000099"><b>{SUM_P_V_SUBTOTALS}</b></font>&nbsp;</td>
+            <td class="Body" width="19%" align="right"><font color="#000099"><b>{TOT_VENDORADJMTS}</b></font>&nbsp;</td>
+
+            <td class="Body" width="23%" align="right"><font color="#000099"><b>{RP_SUM_V_SUBTOTALS}</b></font>&nbsp;</td>
+
+            <td class="Body" width="23%" align="right"><font color="#000099"><b>{ALL_VENDOR_TOTALS}</b></font>&nbsp;</td>
+  </tr>
+    <tr bgcolor="#000000">
+    <td class="Body" colspan="5"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+  </tr>
+</table>
+
+
+
+<!-- END EmptyVendorTotalsBL -->
+
+
+
+
+
+<br/>
+<!-- END HideVendorBlocksBL -->
+<br/>
+<!-- BEGIN ShowPriceAdjustButtonBL -->
+<input type="button" name="xx" value="List Price Adjustments" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" onClick="ShowPriceAdjustments();" />
+<!-- END ShowPriceAdjustButtonBL -->
+
+<!-- BEGIN HidePriceAdjustButtonBL -->
+<input type="button" name="xx" value="Hide Details" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" onClick="HidePriceAdjustments();" />
+<!-- END HidePriceAdjustButtonBL -->
+
+<!-- BEGIN AdminPriceAdjustTableBL -->
+		<b>Price Adjustments</b>&nbsp;&nbsp;&nbsp;
+<table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#6699FF">
+<tr>
+<td>
+		<table width="100%" cellpadding="2" cellspacing="1" border="0">
+
+
+<tr>
+                  <td width="14%" class="SmallBody" align="left" bgcolor="#DDDDFF">Order</td>
+                  <td width="11%" class="SmallBody" align="left" bgcolor="#DDDDFF">Date</td>
+				  <td width="11%" class="SmallBody" align="left" bgcolor="#DDDDFF">By</td>
+                  <td width="30%" class="SmallBody" align="left" bgcolor="#DDDDFF">Reason</td>
+                  <td width="24%" class="SmallBody" align="right" bgcolor="#DDDDFF">Vendor</td>
+                  <td width="10%" class="SmallBody" align="right" bgcolor="#DDDDFF">Customer</td>
+
+</tr>
+<!-- BEGIN AdminAdjustmentBL -->
+<tr>
+                  <td width="14%" class="SmallBody" align="left" bgcolor="#EEF3FF">&nbsp;<a href="./ad_order.php?orderno={ADJ_ORDERID}" class="BlueRedLink">{ADJ_ORDERID}</a></td>
+                  <td width="11%" class="SmallBody" align="left" bgcolor="#EEF3FF">{ADJUSTDATE}</td>
+				   <td width="11%" class="SmallBody" align="left" bgcolor="#EEF3FF">{ADJUSTBY}</td>
+                  <td width="30%" class="SmallBody" align="left" bgcolor="#EEF3FF">{ADJUSTSUMMARY}</td>
+                  <td width="24%" class="SmallBody" bgcolor="#EEF3FF">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td class="SmallBody"><font class="ReallySmallBody">{V_NAME}</font></td>
+    <td class="SmallBody" align="right">{VENDORADUST}</td>
+  </tr>
+</table>
+</td>
+                  <td width="10%" class="SmallBody" align="right" bgcolor="#EEF3FF">{CUSTOMERADJUST}</td>
+</tr>
+<!-- END AdminAdjustmentBL -->
+<tr>
+                  <td colspan="4" class="SmallBody" align="right" bgcolor="#EEEEEE">Total Adjustments&nbsp;&nbsp;</td>
+                  <td width="24%" class="SmallBody" align="right" bgcolor="#EEEEEE"><b>{TOTALVENDORADJUST}</b>&nbsp;</td>
+                  <td width="10%" class="SmallBody" align="right" bgcolor="#EEEEEE"><b>{TOTALCUSTOMERADJUST}</b>&nbsp;</td>
+</tr>
+</table>
+
+	</td>
+	</tr>
+	</table>
+<!-- END AdminPriceAdjustTableBL -->
+
+
+
+
+
+<!-- BEGIN VendorPriceAdjustTableBL -->
+		<b>Price Adjustments</b>
+<table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#6699FF">
+<tr>
+<td>
+		<table width="100%" cellpadding="2" cellspacing="1" border="0">
+
+
+<tr>
+                  <td width="14%" class="SmallBody" align="left" bgcolor="#DDDDFF">Order</td>
+                  <td width="18%" class="SmallBody" align="left" bgcolor="#DDDDFF">Date</td>
+                  <td width="34%" class="SmallBody" align="left" bgcolor="#DDDDFF">Reason</td>
+                  <td width="24%" class="SmallBody" align="right" bgcolor="#DDDDFF">Amount</td>
+
+</tr>
+<!-- BEGIN VendorAdjustmentBL -->
+<tr>
+                  <td width="14%" class="SmallBody" align="left" bgcolor="#EEF3FF">&nbsp;<a href="./ad_order.php?orderno={ADJ_ORDERID}" class="BlueRedLink">{ADJ_ORDERID}</a></td>
+                  <td width="18%" class="SmallBody" align="left" bgcolor="#EEF3FF">{ADJUSTDATE}</td>
+                  <td width="34%" class="SmallBody" align="left" bgcolor="#EEF3FF">{ADJUSTSUMMARY}</td>
+                  <td width="24%" class="SmallBody" bgcolor="#EEF3FF" align="right">{VENDORADUST}</td>
+
+
+</tr>
+<!-- END VendorAdjustmentBL -->
+<tr>
+                  <td colspan="3" class="SmallBody" align="right" bgcolor="#EEEEEE">Total Adjustments&nbsp;&nbsp;</td>
+                  <td width="24%" class="SmallBody" align="right" bgcolor="#EEEEEE"><b>{TOTALVENDORADJUST}</b>&nbsp;</td>
+</tr>
+</table>
+
+	</td>
+	</tr>
+	</table>
+<!-- END VendorPriceAdjustTableBL -->
+
+&nbsp;
+
+
+
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="51%" valign="top">
+
+&nbsp;<br/>
+<br/>
+<font class="Body">
+Total Orders <font class="ReallySmallBody">(including re-prints)</font>: <font color="#000099">{NUMBER_ORDERS}</font><br/><img  src="./images/transparent.gif" border="0" width="1" height="5" alt="" /><br/>
+Total Projects: <font color="#000099">{NUMBER_PROJECTS}</font>
+<br/><img  src="./images/transparent.gif" border="0" width="1" height="5" alt="" /><br/>
+Total Re-prints: <font color="#000099">{NUMBER_REPRINTS}</font><br/><img  src="./images/transparent.gif" border="0" width="1" height="5" alt="" /><br/><br/><br/>
+
+<!-- BEGIN HideAdminReportsBL -->
+
+Customer Subtotals: {SUM_CUS_SUBTOTALS}
+<br/><img  src="./images/transparent.gif" border="0" width="1" height="5" alt="" /><br/>
+Subtotals Income: {SUM_PROJECT_INCOME}
+<br/><img  src="./images/transparent.gif" border="0" width="1" height="5" alt="" /><br/>
+Customer Re-print Subtotals: {RP_SUM_CUS_SUBTOTALS}
+<br/><img  src="./images/transparent.gif" border="0" width="1" height="5" alt="" /><br/>
+Re-print Income: {RP_SUM_ORDERINCOME}<br/><img  src="./images/transparent.gif" border="0" width="1" height="5" alt="" /><br/>
+
+<font class="ReallySmallBody"><font color=red>*</font> Note: &quot;Income&quot; does NOT include Price Adjustments or Shipping.</font>
+
+<br/>&nbsp;<br/><br/>
+
+
+Shipping &amp; Handling Charged to Customers: <font color="#000099">{TOTAL_SHIPPING_CHARGES}</font><br/><img  src="./images/transparent.gif" border="0" width="1" height="5" alt="" /><br/>
+Freight Charges: <font color="#000099">{FREIGHT_CHARGES}</font><br/><img  src="./images/transparent.gif" border="0" width="1" height="5" alt="" /><br/>
+Shipping &amp; Handling Income: <font color="#000099">{SHIPPING_INCOME}</font><br/><img  src="./images/transparent.gif" border="0" width="1" height="5" alt="" /><br/>
+        Average profit per pound: <font color="#000099">{PROFFIT_PER_POUND}</font><br/>
+        <img  src="./images/transparent.gif" border="0" width="1" height="5" alt="" /><br/>
+<br/>
+<br/>
+<!-- BEGIN LoyaltyChargesBL -->
+Loyalty Charges: <font color="#000099">{LOYALTY_CHARGES_TOTAL}</font><br/><img  src="./images/transparent.gif" border="0" width="1" height="5" alt="" /><br/>
+Loyalty Refunds: <font color="#000099">{LOYALTY_REFUND_TOTALS}</font><br/><img  src="./images/transparent.gif" border="0" width="1" height="5" alt="" /><br/>
+Loyalty Balance: <font color="#000099">{LOYALTY_BALANCE_TOTALS}</font><br/><img  src="./images/transparent.gif" border="0" width="1" height="5" alt="" /><br/><br>
+
+<!-- END LoyaltyChargesBL -->
+Customer Balance Adjustments: <font color="#000099">{TOTALCUSTOMERADJUST}</font><br/><img  src="./images/transparent.gif" border="0" width="1" height="5" alt="" /><br/>
+Vendor &amp Customer Adjustments Combined: <font color="#000099">{ADJUSTMENTS_PROFIT}</font><br/><img  src="./images/transparent.gif" border="0" width="1" height="5" alt="" /><br/><br>
+
+Total Taxes Collected: <font color="#000099">{TOTAL_TAXES}</font><br/><img  src="./images/transparent.gif" border="0" width="1" height="5" alt="" /><br/>
+Merchant Provider Fees: <font color="#000099">{MERCHANT_FEES}</font><br/><img  src="./images/transparent.gif" border="0" width="1" height="5" alt="" /><br/>
+<br/>
+Total Sales Commissions:  <font color="#000099">{SALESREPS_TOTAL_COMMISSIONS}</font><br/><img  src="./images/transparent.gif" border="0" width="1" height="5" alt="" /><br/>
+        Customer Subtotals From Sales Reps: <font color="#000099">{SALESREPS_CUSTOMER_SUBTOTALS}</font><br/>
+        <img  src="./images/transparent.gif" border="0" width="1" height="5" alt="" /><br/>
+        Vendor Subtotals From Sales Reps: <font color="#000099">{SALESREPS_VENDOR_SUBTOTALS}</font><br/>
+        <img  src="./images/transparent.gif" border="0" width="1" height="5" alt="" /><br/>
+Income From Sales Reps:  <font color="#000099">{SALESREPS_INCOME}</font><br/><img  src="./images/transparent.gif" border="0" width="1" height="5" alt="" /><br/>
+<br/>
+Order Totals (Invoiced):  <font color="#000099">{ORDER_TOTALS_INVOICED}</font><br/><img  src="./images/transparent.gif" border="0" width="1" height="5" alt="" /><br/>
+Project Income (Invoiced):  <font color="#000099">{PROJECT_INCOME_INVOICED}</font><br/><img  src="./images/transparent.gif" border="0" width="1" height="5" alt="" /><br/>
+
+Offline Payments Received: <font color="#000099">{OFFLINE_PAYMENTS}</font><br/><img  src="./images/transparent.gif" border="0" width="1" height="5" alt="" /><br/>
+
+<br/>
+
+<!-- END HideAdminReportsBL -->
+
+<!-- BEGIN HideVendorReportsBL -->
+<br/>
+<b>Revenue From Projects: </b> <font color="#000099">{VENDOR_PROJECT_REVENUE}</font><br/><img  src="./images/transparent.gif" border="0" width="1" height="5" alt="" /><br/>
+<b>Revenue From Reprints: </b> <font color="#000099">{VENDOR_REPRINT_REVENUE}</font><br/><img  src="./images/transparent.gif" border="0" width="1" height="5" alt="" /><br/>
+<b>PriceAdjustments: </b> <font color="#000099">{VENDOR_PRICE_ADJUSTMENTS}</font><br/><img  src="./images/transparent.gif" border="0" width="1" height="5" alt="" /><br/>
+<b>Total Revenue: </b> <font color="#000099">{VENDOR_REVENUE}</font><br/><img  src="./images/transparent.gif" border="0" width="1" height="5" alt="" /><br/>
+
+<!-- END HideVendorReportsBL -->
+
+<br/>
+</font>
+<br/></td>
+    <td width="49%" valign="top" class="SmallBody" align="left">
+	<!-- BEGIN HideAdminReportsBL2 -->
+	&nbsp;<br/>
+	<br/>
+	<font class="Body">
+Gross Sales:  <font color="#000099"><strong>{GROSS_SALES}</strong></font><br/><img  src="./images/transparent.gif" border="0" width="1" height="5" alt="" /><br/>
+Total Income:  <font color="#000099"><strong>{TOTAL_INCOME}</strong></font><br/><img  src="./images/transparent.gif" border="0" width="1" height="5" alt="" /><br/>
+</font>
+
+        <font color=red>*</font> <font class="ReallySmallBody">( Includes Adjustments,
+        Tax, Shipping, Merchant Fees, Re-prints, Sales Commissions, and Corporate
+        Invoiced Orders)</font> <br/>
+ <font color=red>*</font> <font class="ReallySmallBody">( On 'Cash', not 'Accrual' basis.  We don't wait for the payments of invoiced orders to be received before calculating their income. )</font> <br/>
+        <br/>
+<b>Total Retail Sales (non-taxable): </b> <font color="#000099">{TOTAL_RETAIL_SALES_NONTAXABLE}</font><br/><img  src="./images/transparent.gif" border="0" width="1" height="5" alt="" /><br/>
+<b>Total Retail Sales (taxable): </b> <font color="#000099">{TOTAL_RETAIL_SALES_TAXABLE}</font><br/><img  src="./images/transparent.gif" border="0" width="1" height="5" alt="" /><br/>
+<font color=red>*</font> <font class="ReallySmallBody">( Includes S&amp;H : Does not include sales tax charged to customer )</font>
+<!-- END HideAdminReportsBL2 -->
+</td>
+  </tr>
+</table>
+
+
+
+<br/>
+<!-- END EmptyOrdersBL -->
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td bgcolor="#000000"><img src="./images/transparent.gif" border="0" width="1" height="2" alt="" /></td>
+  </tr>
+ </table>
+
+<br/>&nbsp;<br/>
+
+ <!-- BEGIN HideChargesBL -->
+<font class="AdminLabel">Credit Card Cancellations</font>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td bgcolor="#000000"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+  </tr>
+ </table>
+
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#333333">
+  <tr>
+    <td><table width="100%" border="0" cellspacing="1" cellpadding="2">
+  <tr bgcolor="#CCCCCC">
+                  <td class="Body" width="15%">Charge Type</td>
+	              <td class="Body" width="12%">Order #</td>
+				  <td class="Body" width="17%">Error Date</td>
+	              <td class="Body" width="42%">Error Description</td>
+				  <td class="Body" width="14%">Retries</td>
+
+  </tr>
+ <!-- BEGIN chargesBL -->
+   <tr bgcolor="#EEEEEE">
+                  <td class="SmallBody" width="15%">{CHARGE_TYPE}</td>
+	              <td class="SmallBody" width="12%"><a href="./ad_order.php?orderno={ORDERNO}" class="BlueRedLink">{ORDERNO}</a></td>
+				  <td class="SmallBody" width="17%">{ERROR_DATE}</td>
+	              <td class="SmallBody" width="42%">{ERROR_DESC}</td>
+				  <td class="SmallBody" width="14%">{RETRIES}</td>
+
+  </tr>
+  <!-- END chargesBL -->
+</table></td>
+  </tr>
+</table>
+ <!-- END HideChargesBL -->
+&nbsp;<br/><br/><br/>
+
+
+
+<!-- Inner Body  END -->
+</td>
+</tr>
+</table>
+<table width="760" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="360" class="NavColor"><img src="./images/footer.gif" border="0" width="350" height="16" usemap="#footer" alt="" /></td>
+	<td width="400" align="right" class="NavColor"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+  </tr>
+</table>
+<font class="copyright"> </font>
+</div>
+&nbsp;
+<script type="text/javascript" src="./library/ImageMap-footer.js"></script>
+</body>
+<script>
+fixYearDropDownIfReportCachedOnAllForms();
+</script>
+</html>

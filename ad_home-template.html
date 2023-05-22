@@ -1,0 +1,570 @@
+<html>
+<head>
+<title>Admin</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<script>
+	//Make an array of the images we want to preload for the mouse-overs.
+	arImageSrc = new Array (
+		"./images/button-change-d.png",
+		"./images/UploadMailingList-b.gif"
+	)
+
+	//Preload images.
+	arImageList = new Array ();
+	for (counter in arImageSrc) {
+		arImageList[counter] = new Image();
+		arImageList[counter].src = arImageSrc[counter];
+	}
+
+
+	function makeNewWindow(address){
+		newWindow = window.open(address, "sub", "height=360,width=375,directories=no,location=no,menubar=no,scrollbars=no,status=no,toolbar=no,resizable=no");
+		newWindow.focus();
+	}
+	function makeNewWindow2(address){
+		newWindow = window.open(address, "sub", "height=395,width=375,directories=no,location=no,menubar=no,scrollbars=no,status=no,toolbar=no,resizable=no");
+		newWindow.focus();
+	}
+	function makeNewWindow3(address){
+		newWindow3 = window.open(address, "newwin3", "height=695,width=575,directories=no,location=no,menubar=no,scrollbars=yes,status=no,toolbar=no,resizable=yes");
+		newWindow3.focus();
+	}
+
+
+	function changeMemoResultsPerPage(amount){
+		document.location = "./ad_home.php?form_sc={FORM_SECURITY_CODE}&action=changeMemoDaysResults&memoDaysCounts=" + amount;
+	}
+
+	function changeTaskResultsPerPage(amount){
+		document.location = "./ad_home.php?form_sc={FORM_SECURITY_CODE}&action=changeTaskPageResults&taskPageCounts=" + amount;
+	}
+
+	function VerifyPOform(){
+		if(confirm("Please ensure that the P.O. Numbers you have selected are accurate.\n\nThe 'Issue Purcahse Order(s)' button should only be clicked 1 time for each shipment that is leaving."))
+			return true;
+		else
+			return false;
+	}
+
+	function CheckMessageForm(){
+		if(confirm("Are you sure that you want to mark these messages as read?"))
+			return true;
+		else
+			return false;
+	}
+
+
+	function ShowMailingBatches(showFlag){
+
+		if(showFlag)
+			document.location = "./ad_actions.php?action=ShowMailingBatches&returl=ad_home.php&form_sc={FORM_SECURITY_CODE}";
+		else
+			document.location = "./ad_actions.php?action=HideMailingBatches&returl=ad_home.php&form_sc={FORM_SECURITY_CODE}";
+	}
+
+	function showProductSelecter(showFlag){
+
+		var spanname = "productSelectSPAN";
+		var divname = "productSelectDIV";
+
+		if (showFlag) {
+			document.all(spanname).style.visibility = "visible";
+			document.all(spanname).style.zIndex = 500;
+			document.all(divname).style.zIndex = 501;
+
+			document.all(spanname).style.left = "107px";
+		}
+		else{
+			document.all(spanname).style.left = "-1000px";
+			document.all(spanname).style.visibility = "hidden";
+		}
+
+	}
+
+</script>
+<script type="text/javascript" src="./library/admin_library.js"></script>
+<link rel="stylesheet" type="text/css" href="library/calendar/themes/winter.css"/>
+<script type="text/javascript" src="library/calendar/src/utils.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar.js"></script>
+<script type="text/javascript" src="library/calendar/lang/calendar-en.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar-setup.js"></script>
+<script type="text/javascript" src="library/formatDate.js"></script>
+</head>
+<body bgcolor="#FFFFFF" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="">
+<div align="center">
+{HEADER}
+&nbsp;
+<table width="760" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td class="Body">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+            <td class="Body" valign="top" width="34%"><font class="AdminLabel">Orders by Day</font><br/>
+              <img  src="./images/blackpixel.gif" height="1" width="190" alt="" /><br/>
+              <a href="./ad_openorders.php?action=addlimiter&l_status=&l_product={LIMIT_PRODUCT}&l_shipping=&l_vendor=&l_startdate={TODAY_START_TIME}&l_enddate={TODAY_END_TIME}&l_estship=" class="adminOrderLink">Projects today - {TOTAL_ORDERS}</a><br/>
+			  <a href="./ad_openorders.php?action=addlimiter&l_status=&l_product={LIMIT_PRODUCT}&l_shipping=&l_vendor=&l_startdate={YESTERDAY_START_TIME}&l_enddate={TODAY_START_TIME}&l_estship=" class="adminOrderLink">Projects yesterday - {TOTAL_YESTERDAY}</a><br/>
+			  <a href="./ad_openorders.php?action=addlimiter&l_status=&l_product={LIMIT_PRODUCT}&l_shipping=&l_vendor=&l_startdate={DAY_BEFORE_YESTERDAY_START_TIME}&l_enddate={YESTERDAY_START_TIME}&l_estship=" class="adminOrderLink">Projects on {2_DAYS_AGO_DAY} - {TOTAL_DAYBEFORE}</a><br/>
+
+			 <a href="./ad_openorders.php?action=addlimiter&l_status=&l_product={LIMIT_PRODUCT}&l_shipping=&l_vendor=&l_startdate={3_DAY_STARTTIME}&l_enddate={DAY_BEFORE_YESTERDAY_START_TIME}&l_estship=" class="adminOrderLink">Projects on {3_DAYS_AGO_DAY} - {TOTAL_3DAYSAGO}</a><br/>
+			<!-- BEGIN LongOrderHistoryBL -->
+			<a href="./ad_openorders.php?action=addlimiter&l_status=&l_product={LIMIT_PRODUCT}&l_shipping=&l_vendor=&l_startdate={4_DAY_STARTTIME}&l_enddate={3_DAY_STARTTIME}&l_estship=" class="adminOrderLink">Projects on {4_DAYS_AGO_DAY} - {TOTAL_4DAYSAGO}</a><br/>
+			<a href="./ad_openorders.php?action=addlimiter&l_status=&l_product={LIMIT_PRODUCT}&l_shipping=&l_vendor=&l_startdate={5_DAY_STARTTIME}&l_enddate={4_DAY_STARTTIME}&l_estship=" class="adminOrderLink">Projects on {5_DAYS_AGO_DAY} - {TOTAL_5DAYSAGO}</a><br/>
+			<a href="./ad_openorders.php?action=addlimiter&l_status=&l_product={LIMIT_PRODUCT}&l_shipping=&l_vendor=&l_startdate={6_DAY_STARTTIME}&l_enddate={5_DAY_STARTTIME}&l_estship=" class="adminOrderLink">Projects on {6_DAYS_AGO_DAY} - {TOTAL_6DAYSAGO}</a><br/>
+			<a href="./ad_openorders.php?action=addlimiter&l_status=&l_product={LIMIT_PRODUCT}&l_shipping=&l_vendor=&l_startdate={7_DAY_STARTTIME}&l_enddate={6_DAY_STARTTIME}&l_estship=" class="adminOrderLink">Projects on {7_DAYS_AGO_DAY} (1 wk.) - {TOTAL_7DAYSAGO}</a><br/>
+			<a href="./ad_openorders.php?action=addlimiter&l_status=&l_product={LIMIT_PRODUCT}&l_shipping=&l_vendor=&l_startdate={8_DAY_STARTTIME}&l_enddate={7_DAY_STARTTIME}&l_estship=" class="adminOrderLink">Projects on {8_DAYS_AGO_DAY} (1 wk. yst.) - {TOTAL_8DAYSAGO}</a><br/>
+
+		<!-- END LongOrderHistoryBL -->
+			  <br/>
+			  <div id="productSelectDIV" class="hiddenDHTMLwindow" style="cursor:default">
+			 <a href='javascript:showProductSelecter(true);' class="BlueRedLink"><strong>Show Products</strong></a>  - {PRODUCTS_DISPLAYED}
+			  <span style="visibility:hidden; left:-370px; top:-115; cursor:default" id="productSelectSPAN">
+			  <table width="400" border="0" cellspacing="0" cellpadding="4" bgcolor="#666688">
+  <tr>
+    <td><table width="100%" border="0" cellspacing="0" cellpadding="3" bgcolor="#f3f3f3">
+  <form name="productselectform" method="get" action="./ad_openorders.php">
+  <input type="hidden" name="returnurl" value="ad_home.php" />
+  <input type="hidden" name="action" value="changeProductLimiter" />
+  <input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+  <tr>
+    <td class="SmallBody">
+	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+                                <td >
+								<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+  <td class="ReallySmallBody"><strong>Hold CTRL or SHIFT to select multiple.</strong></td>
+    <td align="right"><a href="javascript:showProductSelecter(false);" class="BlueRedLink">X</a></td>
+  </tr>
+</table>
+
+                                  <select class="AdminDropDown" name="productlimitselect[]" size="{PRODUCT_DROP_DOWN_SIZE}" multiple style="width:370px;">
+	{PRODUCT_DROPDOWN}
+	</select></td>
+
+  </tr>
+  <tr>
+                                <td align="left"><input type="image" src="./images/button-change-u.png" onMouseOver="this.src='./images/button-change-d.png';" onMouseOut="this.src='./images/button-change-u.png';" border="0" align="absmiddle" style="cursor:pointer" /></td>
+
+  </tr>
+</table>
+
+
+	</td>
+  </tr>
+  </form>
+</table>
+</td>
+  </tr>
+</table>
+</span>
+</div>
+
+</td>
+            <td valign="top" width="38%" class="Body" ><font class="AdminLabel">Open Order Status</font><br/>
+              <img src="./images/blackpixel.gif" height="1" width="230" alt="" /><table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+                  <td class="Body" valign="top" width="50%"><a href="./ad_openorders.php?action=addlimiter&l_status=N&l_product={LIMIT_PRODUCT}&l_shipping=&l_vendor=&l_startdate=&l_enddate=&l_estship=" class="adminOrderLink">New - {NEW_CNT}</a>
+				   <a href="./ad_openorders.php?action=addlimiter&l_status=N&l_product={LIMIT_PRODUCT}&l_shipping={EXPEDITED_SHIPPING_PRIORITIES}&l_vendor=&l_startdate=&l_enddate=&l_estship=" class="adminOrderLink">(<strong>{NEW_CNT_EXP}</strong>)</a>
+				  <br/>
+	<a href="./ad_openorders.php?action=addlimiter&l_status=P&l_product={LIMIT_PRODUCT}&l_shipping=&l_vendor=&l_startdate=&l_enddate=&l_estship=" class="adminOrderLink">Proofed - {PROOF_CNT}</a>
+   <a href="./ad_openorders.php?action=addlimiter&l_status=P&l_product={LIMIT_PRODUCT}&l_shipping={EXPEDITED_SHIPPING_PRIORITIES}&l_vendor=&l_startdate=&l_enddate=&l_estship=" class="adminOrderLink">(<strong>{PROOF_CNT_EXP}</strong>)</a>
+	<br/>
+	<a href="./ad_openorders.php?action=addlimiter&l_status=Q&l_product={LIMIT_PRODUCT}&l_shipping=&l_vendor=&l_startdate=&l_enddate=&l_estship=" class="adminOrderLink">Queued - {QUEUED_CNT}</a>
+<a href="./ad_openorders.php?action=addlimiter&l_status=Q&l_product={LIMIT_PRODUCT}&l_shipping={EXPEDITED_SHIPPING_PRIORITIES}&l_vendor=&l_startdate=&l_enddate=&l_estship=" class="adminOrderLink">(<strong>{QUEUED_CNT_EXP}</strong>)</a>
+	<br/>
+	<a href="./ad_openorders.php?action=addlimiter&l_status=W&l_product={LIMIT_PRODUCT}&l_shipping=&l_vendor=&l_startdate=&l_enddate=&l_estship=" class="adminOrderLink">Waiting for Reply - {WAITING_CNT}</a><br/>
+	<a href="./ad_openorders.php?action=addlimiter&l_status=L&l_product={LIMIT_PRODUCT}&l_shipping=&l_vendor=&l_startdate=&l_enddate=&l_estship=" class="adminOrderLink">Artwork Help - {ARTWORKHELP_CNT}</a><br/>
+	<a href="./ad_openorders.php?action=addlimiter&l_status={ALLOPEN_STATUSES}&l_product={LIMIT_PRODUCT}&l_shipping=&l_vendor=&l_startdate=&l_enddate=&l_estship=" class="adminOrderLink">Total open orders - {TOTAL_OPEN}</a>
+	</td>
+                  <td class="Body" valign="top" width="50%"><a href="./ad_openorders.php?action=addlimiter&l_status=T&l_product={LIMIT_PRODUCT}&l_shipping=&l_vendor=&l_startdate=&l_enddate=&l_estship=" class="adminOrderLink">Printed - {PRINT_CNT}</a>
+				  <a href="./ad_openorders.php?action=addlimiter&l_status=T&l_product={LIMIT_PRODUCT}&l_shipping={EXPEDITED_SHIPPING_PRIORITIES}&l_vendor=&l_startdate=&l_enddate=&l_estship=" class="adminOrderLink">(<strong>{PRINT_CNT_EXP}</strong>)</a>
+				  <br/>
+	<a href="./ad_openorders.php?action=addlimiter&l_status=B&l_product={LIMIT_PRODUCT}&l_shipping=&l_vendor=&l_startdate=&l_enddate=&l_estship=" class="adminOrderLink">Boxed - {BOX_CNT}</a>
+	<a href="./ad_openorders.php?action=addlimiter&l_status=B&l_product={LIMIT_PRODUCT}&l_shipping={EXPEDITED_SHIPPING_PRIORITIES}&l_vendor=&l_startdate=&l_enddate=&l_estship=" class="adminOrderLink">(<strong>{BOX_CNT_EXP}</strong>)</a><br/>
+	<a href="./ad_openorders.php?action=addlimiter&l_status=H&l_product={LIMIT_PRODUCT}&l_shipping=&l_vendor=&l_startdate=&l_enddate=&l_estship=" class="adminOrderLink">On Hold - {HOLD_CNT}</a>
+	<a href="./ad_openorders.php?action=addlimiter&l_status=H&l_product={LIMIT_PRODUCT}&l_shipping={EXPEDITED_SHIPPING_PRIORITIES}&l_vendor=&l_startdate=&l_enddate=&l_estship=" class="adminOrderLink">(<strong>{HOLD_CNT_EXP}</strong>)</a><br/>
+	
+	<a href="./ad_openorders.php?action=addlimiter&l_status=D&l_product={LIMIT_PRODUCT}&l_shipping=&l_vendor=&l_startdate=&l_enddate=&l_estship=" class="adminOrderLink">For Offset - {OFFSET_CNT}</a>
+	<a href="./ad_openorders.php?action=addlimiter&l_status=D&l_product={LIMIT_PRODUCT}&l_shipping={EXPEDITED_SHIPPING_PRIORITIES}&l_vendor=&l_startdate=&l_enddate=&l_estship=" class="adminOrderLink">(<strong>{OFFSET_CNT_EXP}</strong>)</a><br/>
+	
+	<a href="./ad_openorders.php?action=addlimiter&l_status=E&l_product={LIMIT_PRODUCT}&l_shipping=&l_vendor=&l_startdate=&l_enddate=&l_estship=" class="adminOrderLink">Plated - {PLATED_CNT}</a>
+	<a href="./ad_openorders.php?action=addlimiter&l_status=E&l_product={LIMIT_PRODUCT}&l_shipping={EXPEDITED_SHIPPING_PRIORITIES}&l_vendor=&l_startdate=&l_enddate=&l_estship=" class="adminOrderLink">(<strong>{PLATED_CNT_EXP}</strong>)</a><br/>
+	
+	<a href="./ad_openorders.php?action=addlimiter&l_status=A&l_product={LIMIT_PRODUCT}&l_shipping=&l_vendor=&l_startdate=&l_enddate=&l_estship=" class="adminOrderLink">{ARTPROBLEM_START}Artwork Problem - {ART_CNT}{ARTPROBLEM_END}</a><br/>
+	<a href="./ad_openorders.php?action=addlimiter&l_status=V&l_product={LIMIT_PRODUCT}&l_shipping=&l_vendor=&l_startdate=&l_enddate=&l_estship=" class="adminOrderLink">{VARDATA_START}Variable Data Error - {VARDATA_CNT}{VARDATA_END}</a>
+	</td>
+  </tr>
+</table>
+
+            </td>
+            <td valign="top" width="28%" class="Body" >
+			<!-- BEGIN CustomerServiceNotificationBL -->
+			<font class="AdminLabel">Customer Service</font><br/>
+              <img  src="./images/blackpixel.gif" height="1" width="190" alt="" /><br/>
+	<a href="./ad_cs_home.php?view=my" class="adminOrderLink">My CS Items - {MY_OPEN_CSITEMS}</a><br/>
+	<a href="./ad_cs_home.php?view=unassigned" class="adminOrderLink">Unassigned - {UNASSIGNED_OPEN_CSITEMS}</a><br/>
+	<a href="./ad_cs_home.php?view=others" class="adminOrderLink">Owned by Others - {OTHERS_OPEN_CSITEMS}</a><br/>
+	<a href="./ad_cs_home.php?view=phone" class="adminOrderLink">Phone Messages - {PHONE_OPEN_CSITEMS}</a><br/>
+	<a href="./ad_cs_home.php?view=help" class="adminOrderLink">Needs Assistance - {HELP_OPEN_CSITEMS}</a><br/><img  src="./images/transparent.gif" height="5" width="5" alt="" /><br/><a href="./ad_returnedpackages.php" class="adminOrderLink">Returned Packages - {RETURNED_PACKAGES_COUNT}<br/></a>
+	<!-- BEGIN UserFeedbackLinkBL -->
+<a href="./ad_customer_testimonials.php" class="adminOrderLink">User Feedback - {USER_COMMENTS_PENDING}</a><br/>
+<!-- END UserFeedbackLinkBL -->
+
+	<!-- BEGIN HideChatSearchBL -->
+<a href="./ad_chat_search.php" class="adminOrderLink">Active Chat Threads - {CHAT_COUNT}</a><br/>
+<!-- END HideChatSearchBL -->
+
+<!-- BEGIN DeadAccountsLinkBL -->
+<img  src="./images/transparent.gif" height="5" width="5" alt="" /><br/><a href="./ad_dead_accounts.php?PeriodType=TIMEFRAME&TimeFrame=TODAY" class="adminOrderLink">Dead Accounts</a><br/>
+<!-- END DeadAccountsLinkBL -->
+
+
+<!-- BEGIN MonthReportLinkBL -->
+<img  src="./images/transparent.gif" height="5" width="5" alt="" /><br/><a href="./ad_report_month.php" class="adminOrderLink">Month Report</a><br/>
+<!-- END MonthReportLinkBL -->
+<!-- BEGIN InvoicesLinkBL -->
+<img  src="./images/transparent.gif" height="5" width="5" alt="" /><br/><a href="./ad_billing_offline.php?" class="adminOrderLink">Corporate Invoicing</a><br/>
+<!-- END InvoicesLinkBL -->
+
+<br/>
+<!-- END CustomerServiceNotificationBL -->
+<!-- BEGIN HideNotificationBL -->
+<font class="AdminLabel">Notifications</font><br/>
+              <img  src="./images/blackpixel.gif" height="1" width="190" alt="" /><br/>
+	<a href="./ad_creditcard_errors.php" class="adminOrderLink">Credit Card Errors - {CREDIT_ERRORS}</a>
+	{MASSPAY_ERRORS}
+
+
+	<!-- END HideNotificationBL -->
+	{IMPORT_SHIPMENTS}
+<br/>
+<a href="./ad_shipments_export.php" class="BlueRedLink">Export Shipments</a>
+
+
+	</td>
+  </tr>
+</table>
+
+
+
+&nbsp;<br/>&nbsp;
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+            <td valign="top" width="43%" class="SmallBody" ><font class="AdminLabel">Orders To Print Today</font><br/>
+              <img src="./images/blackpixel.gif" height="1" width="270" alt="" /></td>
+            <td valign="top" width="42%" class="SmallBody" ><font class="AdminLabel">Orders To Ship Today</font> &nbsp;<br/>
+              <img src="./images/blackpixel.gif" height="1" width="270" alt="" /></td>
+  </tr>
+  <tr>
+            <td valign="top" width="43%" class="Body" >
+              <table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+                  <td class="SmallBody" valign="top" width="50%"><a href="./ad_openorders.php?action=addlimiter&l_status=N&l_product={LIMIT_PRODUCT}&l_shipping=&l_vendor=&l_startdate=&l_enddate=&l_estprint={CUTTOF_TIME}" class="adminOrderLink">New - {NEW_PPT}</a><br/>
+				  	<a href="./ad_openorders.php?action=addlimiter&l_status=P&l_product={LIMIT_PRODUCT}&l_shipping=&l_vendor=&l_startdate=&l_enddate=&l_estprint={CUTTOF_TIME}" class="adminOrderLink">Proofed - {PROOF_PPT}</a><br/>
+	<a href="./ad_openorders.php?action=addlimiter&l_status=Q&l_product={LIMIT_PRODUCT}&l_shipping=&l_vendor=&l_startdate=&l_enddate=&l_estprint={CUTTOF_TIME}" class="adminOrderLink">Queued - {QUEUED_PPT}</a>	</td>
+                  <td class="SmallBody" valign="top" width="50%"><a href="./ad_openorders.php?action=addlimiter&l_status=T&l_product={LIMIT_PRODUCT}&l_shipping=&l_vendor=&l_startdate=&l_enddate=&l_estprint={CUTTOF_TIME}" class="adminOrderLink">Printed - {PRINT_PPT}</a><br/><a href="./ad_openorders.php?action=addlimiter&l_status=B&l_product={LIMIT_PRODUCT}&l_shipping=&l_vendor=&l_startdate=&l_enddate=&l_estprint={CUTTOF_TIME}" class="adminOrderLink">Boxed - {BOXED_PPT}</a><br/>
+			    <a href="./ad_openorders.php?action=addlimiter&l_status=SHDALWV&l_product={LIMIT_PRODUCT}&l_shipping=&l_vendor=&l_startdate=&l_enddate=&l_estprint={CUTTOF_TIME}" class="adminOrderLink">Other - {OTHER_PPT}</a>  </tr>
+</table>            </td>
+            <td valign="middle" width="42%" class="Body" >
+              <table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+                  <td class="SmallBody" valign="top" width="50%"><a href="./ad_openorders.php?action=addlimiter&l_status=N&l_product={LIMIT_PRODUCT}&l_shipping=&l_vendor=&l_startdate=&l_enddate=&l_estship={CUTTOF_TIME}" class="adminOrderLink"><b>New - {NEW_PST}</b></a><br/>
+				  	<a href="./ad_openorders.php?action=addlimiter&l_status=P&l_product={LIMIT_PRODUCT}&l_shipping=&l_vendor=&l_startdate=&l_enddate=&l_estship={CUTTOF_TIME}" class="adminOrderLink"><b>Proofed - {PROOF_PST}</b></a>
+					<a href="./ad_openorders.php?action=addlimiter&l_status=P&l_product={LIMIT_PRODUCT}&l_shipping={EXPEDITED_SHIPPING_PRIORITIES}&l_vendor=&l_startdate=&l_enddate=&l_estship={CUTTOF_TIME}" class="adminOrderLink"><font style="font-size:13px">(<strong>{PROOF_PST_EXP}</strong>)</font></a>
+					<br/>
+	<a href="./ad_openorders.php?action=addlimiter&l_status=Q&l_product={LIMIT_PRODUCT}&l_shipping=&l_vendor=&l_startdate=&l_enddate=&l_estship={CUTTOF_TIME}" class="adminOrderLink"><b>Queued - {QUEUED_PST}</b></a>
+	<a href="./ad_openorders.php?action=addlimiter&l_status=Q&l_product={LIMIT_PRODUCT}&l_shipping={EXPEDITED_SHIPPING_PRIORITIES}&l_vendor=&l_startdate=&l_enddate=&l_estship={CUTTOF_TIME}" class="adminOrderLink"><font style="font-size:13px">(<strong>{QUEUED_PST_EXP}</strong>)</font></a>
+	<br />
+	 <a href="./ad_openorders.php?action=addlimiter&l_status=T&l_product={LIMIT_PRODUCT}&l_shipping=&l_vendor=&l_startdate=&l_enddate=&l_estship={CUTTOF_TIME}" class="adminOrderLink"><b>Printed - {PRINT_PST}</b></a>
+				  <a href="./ad_openorders.php?action=addlimiter&l_status=T&l_product={LIMIT_PRODUCT}&l_shipping={EXPEDITED_SHIPPING_PRIORITIES}&l_vendor=&l_startdate=&l_enddate=&l_estship={CUTTOF_TIME}" class="adminOrderLink"><font style="font-size:13px">(<strong>{PRINT_PST_EXP}</strong>)</font></a>
+	
+	</td>
+                  <td class="SmallBody" valign="top" width="50%">
+				 
+				  
+				  <a href="./ad_openorders.php?action=addlimiter&l_status=B&l_product={LIMIT_PRODUCT}&l_shipping=&l_vendor=&l_startdate=&l_enddate=&l_estship={CUTTOF_TIME}" class="adminOrderLink"><b>Boxed - {BOXED_PST}</b></a>
+				  <a href="./ad_openorders.php?action=addlimiter&l_status=B&l_product={LIMIT_PRODUCT}&l_shipping={EXPEDITED_SHIPPING_PRIORITIES}&l_vendor=&l_startdate=&l_enddate=&l_estship={CUTTOF_TIME}" class="adminOrderLink"><font style="font-size:13px">(<strong>{BOXED_PST_EXP}</strong>)</font></a>
+				  <br/>
+				  
+<a href="./ad_openorders.php?action=addlimiter&l_status=E&l_product={LIMIT_PRODUCT}&l_shipping=&l_vendor=&l_startdate=&l_enddate=&l_estship={CUTTOF_TIME}" class="adminOrderLink"><b>Plated - {PLATED_PST}</b></a>
+				  <a href="./ad_openorders.php?action=addlimiter&l_status=E&l_product={LIMIT_PRODUCT}&l_shipping={EXPEDITED_SHIPPING_PRIORITIES}&l_vendor=&l_startdate=&l_enddate=&l_estship={CUTTOF_TIME}" class="adminOrderLink"><font style="font-size:13px">(<strong>{PLATED_PST_EXP}</strong>)</font></a>
+				  <br />
+<a href="./ad_openorders.php?action=addlimiter&l_status=D&l_product={LIMIT_PRODUCT}&l_shipping=&l_vendor=&l_startdate=&l_enddate=&l_estship={CUTTOF_TIME}" class="adminOrderLink"><b>For Offset - {OFFSET_PST}</b></a>
+				  <a href="./ad_openorders.php?action=addlimiter&l_status=D&l_product={LIMIT_PRODUCT}&l_shipping={EXPEDITED_SHIPPING_PRIORITIES}&l_vendor=&l_startdate=&l_enddate=&l_estship={CUTTOF_TIME}" class="adminOrderLink"><font style="font-size:13px">(<strong>{OFFSET_PST_EXP}</strong>)</font></a>
+				  <br />
+				  
+			    <a href="./ad_openorders.php?action=addlimiter&l_status={ALLOPEN_STATUSES}&l_product={LIMIT_PRODUCT}&l_shipping=&l_vendor=&l_startdate=&l_enddate=&l_estship={CUTTOF_TIME}" class="adminOrderLink"><b>All Statuses - {ALL_PST}</b></a>  </tr>
+</table>            </td>
+  </tr>
+  <tr>
+            <td valign="bottom" width="43%" class="Body">
+			&nbsp;
+	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <!-- BEGIN ArrivalDatesCountBL1 -->
+    <td><font class="AdminLabel">Estimated Arrivals</font><br/>
+              <img src="./images/blackpixel.gif" height="1" width="170" alt="" /></td>
+			  <!-- END ArrivalDatesCountBL1 -->
+    <td><font class="AdminLabel">Special Cases</font><br/>
+              <img src="./images/blackpixel.gif" height="1" width="170" alt="" /></td>
+  </tr>
+</table>
+</td>
+            <td valign="bottom" width="42%" class="Body"><font class="AdminLabel">Urgent Orders</font> &nbsp;<br/>
+              <img src="./images/blackpixel.gif" height="1" width="270" alt="" /></td>
+  </tr>
+  <tr>
+            <td valign="top" width="43%" class="Body" >
+              <table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+  <!-- BEGIN ArrivalDatesCountBL2 -->
+    <td width="50%"><a href="./ad_openorders.php?action=addlimiter&l_status=&l_product={LIMIT_PRODUCT}&l_shipping=&l_vendor=&l_startdate=&l_enddate=&l_estarriv={TODAY_START_TIME}" class="adminOrderLink">Arriving Today - {ARRIVE_TODAY}</a><br/>
+	<a href="./ad_openorders.php?action=addlimiter&l_status=&l_product={LIMIT_PRODUCT}&l_shipping=&l_vendor=&l_startdate=&l_enddate=&l_estarriv={YESTERDAY_START_TIME}" class="adminOrderLink">Yesterday - {ARRIVE_YEST}</a><br/>
+	<a href="./ad_openorders.php?action=addlimiter&l_status=&l_product={LIMIT_PRODUCT}&l_shipping=&l_vendor=&l_startdate=&l_enddate=&l_estarriv={DAY_BEFORE_YESTERDAY_START_TIME}" class="adminOrderLink">On {2_DAYS_AGO_DAY} - {ARRIVE_2}</a><br/>
+	<a href="./ad_openorders.php?action=addlimiter&l_status=&l_product={LIMIT_PRODUCT}&l_shipping=&l_vendor=&l_startdate=&l_enddate=&l_estarriv={3_DAY_STARTTIME}" class="adminOrderLink">On {3_DAYS_AGO_DAY} - {ARRIVE_3}</a><br/>
+	<a href="./ad_openorders.php?action=addlimiter&l_status=&l_product={LIMIT_PRODUCT}&l_shipping=&l_vendor=&l_startdate=&l_enddate=&l_estarriv={4_DAY_STARTTIME}" class="adminOrderLink">On {4_DAYS_AGO_DAY} - {ARRIVE_4}</a><br/>
+<a href="./ad_openorders.php?action=addlimiter&l_status=&l_product={LIMIT_PRODUCT}&l_shipping=&l_vendor=&l_startdate=&l_enddate=&l_estarriv={5_DAY_STARTTIME}" class="adminOrderLink">On {5_DAYS_AGO_DAY} - {ARRIVE_5}</a><br/><img src="./images/transparent.gif" width="3" height="2" alt="" />
+</td>
+  <!-- END ArrivalDatesCountBL2 -->
+    <td valign="top"  width="50%"><a href="./ad_openorders.php?action=addlimiter&l_status={ALLOPEN_STATUSES}&l_product={LIMIT_PRODUCT}&l_shipping=&l_vendor=&l_startdate=&l_enddate=&l_estship=&l_reprint=Y" class="adminOrderLink">Reprints - {REPRINT_CNT}</a><br/>
+	<a href="./ad_openorders.php?action=addlimiter&l_status={ALLOPEN_STATUSES}&l_product={LIMIT_PRODUCT}&l_shipping=&l_vendor=&l_startdate=&l_enddate=&l_estship=&l_history=Defective" class="adminOrderLink">Was Defective - {DEFECTIVE_CNT}</a>
+    <br/>
+	<a href="./ad_openorders.php?action=addlimiter&l_status=C&l_product={LIMIT_PRODUCT}&l_shipping=&l_vendor=&l_startdate={7_DAY_STARTTIME}&l_enddate={TODAY_END_TIME}&l_estship=&l_history=" class="adminOrderLink">Canceled - {CANCELED_CNT}</a>
+    </td>
+  </tr>
+</table>           </td>
+            <td valign="top" width="42%" class="Body" >  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+                  <td class="SmallBody" valign="top" width="50%"><a href="./ad_openorders.php?action=addlimiter&l_status=N&l_product={LIMIT_PRODUCT}&l_shipping=&l_vendor=&l_startdate=&l_enddate=&l_estprint=&l_priority=U" class="adminOrderLink">New - {NEW_UGT}</a><br/>
+				  	<a href="./ad_openorders.php?action=addlimiter&l_status=P&l_product={LIMIT_PRODUCT}&l_shipping=&l_vendor=&l_startdate=&l_enddate=&l_estprint=&l_priority=U" class="adminOrderLink">Proofed - {PROOF_UGT}</a><br/>
+	<a href="./ad_openorders.php?action=addlimiter&l_status=Q&l_product={LIMIT_PRODUCT}&l_shipping=&l_vendor=&l_startdate=&l_enddate=&l_estprint=&l_priority=U" class="adminOrderLink">Queued - {QUEUED_UGT}</a>
+	<br />
+	<a href="./ad_openorders.php?action=addlimiter&l_status=T&l_product={LIMIT_PRODUCT}&l_shipping=&l_vendor=&l_startdate=&l_enddate=&l_estprint=&l_priority=U" class="adminOrderLink">Printed - {PRINT_UGT}</a></td>
+                  <td class="SmallBody" valign="top" width="50%">
+				  <a href="./ad_openorders.php?action=addlimiter&l_status=B&l_product={LIMIT_PRODUCT}&l_shipping=&l_vendor=&l_startdate=&l_enddate=&l_estprint=&l_priority=U" class="adminOrderLink">Boxed - {BOXED_UGT}</a><br />
+
+<a href="./ad_openorders.php?action=addlimiter&l_status=E&l_product={LIMIT_PRODUCT}&l_shipping=&l_vendor=&l_startdate=&l_enddate=&l_estprint=&l_priority=U" class="adminOrderLink">Plated - {PLATED_UGT}</a><br />
+<a href="./ad_openorders.php?action=addlimiter&l_status=D&l_product={LIMIT_PRODUCT}&l_shipping=&l_vendor=&l_startdate=&l_enddate=&l_estprint=&l_priority=U" class="adminOrderLink">For Offset - {OFFSET_UGT}</a><br />
+
+			    <a href="./ad_openorders.php?action=addlimiter&l_status=SHDALWV&l_product={LIMIT_PRODUCT}&l_shipping=&l_vendor=&l_startdate=&l_enddate=&l_estprint=&l_priority=U" class="adminOrderLink">Other - {OTHER_UGT}</a>  </tr>
+</table>              </td>
+  </tr>
+  <tr>
+            <td valign="top" width="43%" class="Body">&nbsp;<br/>
+              <img src="./images/light-gray-pixel.gif" height="1" width="270" alt="" /></td>
+            <td valign="top" width="42%" class="Body">&nbsp;<br/>
+              <img  src="./images/light-gray-pixel.gif" height="1" width="270" alt="" /><br/>&nbsp;</td>
+  </tr>
+
+</table>
+
+<br/><br/>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+            <td width="26%"><img src="./images/label-messagestasks.gif" border="0"  alt="" /></td>
+			 <td width="22%" class="ReallySmallBody"><input type="checkbox" name="tasksReminder" align="absmiddle" onClick="TasksShowEarlyReminders(this.checked, 'ad_home.php', '{FORM_SECURITY_CODE}')" {SHOW_FUTURE_TASKS} /> Show Future Reminders</td>
+             <td width="22%" align="center" class="SmallBody"><font class="ReallySmallBody">Tasks Per Page </font>&nbsp;&nbsp;<select name="taskPageCounts" class="AdminInput" onChange="changeTaskResultsPerPage(this.value)">{TASKS_PER_PAGE_DROPDOWN}</select></td>
+            <td width="30%" align="right"><input type="button" name="xx" value="Create a Task" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" onClick="MakeNewTask('', '', true);" />&nbsp;&nbsp;&nbsp;<input type="button" name="xx" value="Write a Message" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" onClick="SendInternalMessage('', '', true);" />
+            </td>
+</tr>
+</table>
+<img  src="./images/greypixel.gif" border="0" width="742" height="1" alt="" /><br/>
+<img  src="./images/transparent.gif" border="0" width="1" height="10" alt="" /><br/>
+<!-- BEGIN EmptyMessageBL -->
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<form name="msgform" action="ad_home.php" method="get" onSubmit="return CheckMessageForm();">
+<input type="hidden" name="threadids[]" value="" />
+<input type="hidden" name="action" value="closemessages" />
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+  <tr>
+    <td>
+
+<table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#999999">
+<tr>
+            <td>
+              <table width="100%" border="0" cellspacing="1" cellpadding="2">
+                <tr>
+                  <td width="10%" class="SmallBody" bgcolor="#E4A3A2"><font color="#000000">ID</font></td>
+                  <td width="17%" class="SmallBody" bgcolor="#E4A3A2"><font color="#000000">Last
+                    Message</font></td>
+                  <td width="14%" class="SmallBody" bgcolor="#E4A3A2"><font color="#000000">From</font></td>
+                  <td width="19%" class="SmallBody" bgcolor="#E4A3A2"><font color="#000000">Thread
+                    Start Date</font></td>
+                  <td width="6%" class="SmallBody" bgcolor="#E4A3A2"><font color="#000000">Msgs.</font></td>
+                  <td width="34%" class="SmallBody" bgcolor="#E4A3A2"><font color="#000000">Subject</font></td>
+                </tr>
+                <!-- BEGIN messagesBL -->
+                <tr bgcolor="{ROW_COLOR}">
+                  <td width="10%" class="Body"><a href="./ad_message_display.php?thread={ID}&returl=ad_home.php" class="BlueRedLinkRecord"><input type="checkbox" name="threadids[]" value="{ID}" /> {ID}</a></td>
+                  <td width="17%" class="SmallBody">{RECEIVED}</td>
+                  <td width="14%" class="SmallBody" >{FROM}</td>
+                  <td width="19%" class="SmallBody">{START}</td>
+                  <td width="6%" class="SmallBody">{COUNT}</td>
+                  <td width="33%" class="SmallBody">{SUBJECT}
+                  
+                  <!-- BEGIN subjectLinkBL -->
+					&nbsp;&nbsp; <a href='{LINKURL}{REFID}&message' class='BlueRedLinkRecord'>{LINKSUBJECT}{REFID}</a>
+				  <!-- END subjectLinkBL -->
+				                 
+                  </td>
+                </tr>
+                <!-- END messagesBL -->
+              </table>
+            </td>
+		</tr>
+		</table>
+		<img  src="./images/arrow-up-left.png" alt="" /> <input type="submit" name="xx" value="Close Message(s)" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" /><br/><br/>&nbsp;
+
+</td>
+  </tr>
+  </form>
+</table>
+
+
+
+
+<!-- END EmptyMessageBL -->
+
+{TASKS}
+
+<!-- BEGIN MultiPageBL -->
+<br/>
+<table width="100%" border="0" cellspacing="0" cellpadding="1" class="NavColor">
+  <tr>
+    <td>
+	<table width="100%" border="0" cellspacing="0" cellpadding="1" bgcolor="#ddeeff">
+  <tr>
+    <td>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="50%" class="SmallBody"><img  src="./images/transparent.gif" border="0" width="1" height="3" alt="" /><br/>
+                            <font color="#000000">&nbsp; Total of {TASK_RESULT_DESC} tasks.  <font class="ReallySmallBody" style="color:#000000">Displaying {TASK_START_RESULTS_DISP} - {TASK_END_RESULTS_DISP}</font></font><br/>
+                            <img src="./images/transparent.gif" border="0" width="2" height="3" alt="" /></td>
+<td width="50%" align="right" class="SmallBody"><font color="#000000">{TASK_NAVIGATE}</font></td>
+</tr>
+</table>
+	</td>
+  </tr>
+</table>
+	</td>
+  </tr>
+</table>
+&nbsp;
+ <!-- END MultiPageBL -->
+
+
+
+
+
+<br/>&nbsp;<br/>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td class="SmallBody"><a href="./ad_schedule.php" class="BlueRedLink"><strong>Schedule</strong></a></td>
+	<td align="right" class="SmallBody">Server Time: <b>{SERVER_TIME} PST</b></td>
+  </tr>
+</table><img  src="./images/transparent.gif" border="0" width="1" height="2" alt="" /><br/><img  src="./images/blackpixel.gif" height="1" width="760" alt="" /><br/><img src="./images/transparent.gif" border="0" width="1" height="6" alt="" /><table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+            <td width="32%" valign="top"><table width="100%" border="0" cellspacing="0" cellpadding="3">
+  <tr>
+    <td bgcolor="#EEEEEE" class="SmallBody" style="background-image: url(./images/admin/header-shipping.png); background-repeat: no-repeat;"><b>Today</b></td>
+  </tr>
+  <tr>
+    <td class="SmallBody">{EVENTS_TODAY}</td>
+  </tr>
+</table>
+</td>
+            <td width="2%">&nbsp;</td>
+            <td width="32%" valign="top">
+<table width="100%" border="0" cellspacing="0" cellpadding="3">
+  <tr>
+    <td bgcolor="#EEEEEE" class="SmallBody" style="background-image: url(./images/admin/header-shipping.png); background-repeat: no-repeat;"><b>Tomorrow</b></td>
+  </tr>
+  <tr>
+    <td class="SmallBody">{EVENTS_TOMORROW}</td>
+  </tr>
+</table></td>
+            <td width="2%">&nbsp;</td>
+			<td width="32%" valign="top"><table width="100%" border="0" cellspacing="0" cellpadding="3">
+  <tr>
+    <td bgcolor="#EEEEEE" class="SmallBody" style="background-image: url(./images/admin/header-shipping.png); background-repeat: no-repeat;"><b>{DAY_THREE_NAME}</b></td>
+  </tr>
+  <tr>
+    <td class="SmallBody">{EVENTS_DAY_THREE}</td>
+  </tr>
+</table></td>
+  </tr>
+</table>
+&nbsp;<br/><br/>
+
+{MAILING_BATCHES}
+<!-- BEGIN MemosCountBL -->
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="74%"><font class="AdminLabel">Sales Memo Counts</font></td>
+    <td width="26%" align="right" class="SmallBody"><font class="ReallySmallBody">Report Period:</font>&nbsp;&nbsp;<select name="memoDaysCounts" class="AdminInput" onChange="changeMemoResultsPerPage(this.value)">{SMC_DAYS_DROPDOWN}</select> Days</td>
+  </tr>
+  </table>
+
+  <img  src="./images/blackpixel.gif" height="1" width="760" alt="" /><br/><img src="./images/transparent.gif" height="3" width="3" alt="" />
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+
+  <!-- BEGIN MemoRowBL -->
+  <tr>
+    <td width="11%" class="SmallBody"><strong>{DAY_DESC}:</strong></td>
+    <td width="16%"><a href="javascript:MemoCounts('T', '{START_MEMO_TIME}', '{END_MEMO_TIME}');" class="adminOrderLink">Not Interested - {MEM_NOT_INT}</a></td>
+	<td width="16%"><a href="javascript:MemoCounts('S', '{START_MEMO_TIME}', '{END_MEMO_TIME}');" class="adminOrderLink">Left a Message - {MEM_MESG}</a></td>
+	<td width="10%"><a href="javascript:MemoCounts('W', '{START_MEMO_TIME}', '{END_MEMO_TIME}');" class="adminOrderLink">Warm - {MEM_WARM}</a></td>
+    <td width="14%"><a href="javascript:MemoCounts('P', '{START_MEMO_TIME}', '{END_MEMO_TIME}');" class="adminOrderLink">Looks Good - {MEM_LOOK_GOOD}</a></td>
+    <td width="16%"><a href="javascript:MemoCounts('V', '{START_MEMO_TIME}', '{END_MEMO_TIME}');" class="adminOrderLink">Very Interested - {MEM_VERY_INT}</a></td>
+    <td width="37%"><a href="javascript:MemoCounts('D', '{START_MEMO_TIME}', '{END_MEMO_TIME}');" class="adminOrderLink">Closed Deals - {MEM_CLOSED}</a></td>
+  </tr>
+  <!-- END MemoRowBL -->
+
+
+    <tr>
+    <td width="11%" bgcolor="#CCCCCC"><img src="./images/transparent.gif" width="1" height="1" alt="" /></td>
+    <td width="16%" bgcolor="#CCCCCC"><img src="./images/transparent.gif" width="1" height="1" alt="" /></td>
+	<td width="16%" bgcolor="#CCCCCC"><img src="./images/transparent.gif" width="1" height="1" alt="" /></td>
+	<td width="10%" bgcolor="#CCCCCC"><img src="./images/transparent.gif" width="1" height="1" alt="" /></td>
+    <td width="14%" bgcolor="#CCCCCC"><img src="./images/transparent.gif" width="1" height="1" alt="" /></td>
+    <td width="16%" bgcolor="#CCCCCC"><img src="./images/transparent.gif" width="1" height="1" alt="" /></td>
+    <td width="37%" bgcolor="#CCCCCC"><img src="./images/transparent.gif" width="1" height="1" alt="" /></td>
+  </tr>
+  <tr>
+    <td width="11%" class="SmallBody"><strong>Totals:</strong></td>
+    <td width="16%"><a href="javascript:MemoCounts('T', '{TOT_START_MEMO_TIME}', '{TOT_END_MEMO_TIME}');" class="adminOrderLink"><b>Not Interested - {TOT_MEM_NOT_INT}</b></a></td>
+	<td width="16%"><a href="javascript:MemoCounts('S', '{TOT_START_MEMO_TIME}', '{TOT_END_MEMO_TIME}');" class="adminOrderLink"><b>Left a Message - {TOT_MEM_MESG}</b></a></td>
+	<td width="10%"><a href="javascript:MemoCounts('W', '{TOT_START_MEMO_TIME}', '{TOT_END_MEMO_TIME}');" class="adminOrderLink"><b>Warm - {TOT_MEM_WARM}</b></a></td>
+    <td width="14%"><a href="javascript:MemoCounts('P', '{TOT_START_MEMO_TIME}', '{TOT_END_MEMO_TIME}');" class="adminOrderLink"><b>Looks Good - {TOT_MEM_LOOK_GOOD}</b></a></td>
+    <td width="16%"><a href="javascript:MemoCounts('V', '{TOT_START_MEMO_TIME}', '{TOT_END_MEMO_TIME}');" class="adminOrderLink"><b>Very Interested - {TOT_MEM_VERY_INT}</b></a></td>
+    <td width="37%"><a href="javascript:MemoCounts('D', '{TOT_START_MEMO_TIME}', '{TOT_END_MEMO_TIME}');" class="adminOrderLink"><b>Closed Deals - {TOT_MEM_CLOSED}</b></a></td>
+  </tr>
+
+</table>
+
+<br/>
+<br/>
+
+<!-- END MemosCountBL -->
+<br/>
+
+</td>
+</tr>
+</table>
+<table width="760" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="360" class="NavColor"><img src="./images/footer.gif" border="0" width="350" height="16" usemap="#footer" alt="" /></td>
+	<td width="400" align="right" class="NavColor"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+  </tr>
+</table>
+<font class="copyright"> </font>
+</div>
+&nbsp;
+<script type="text/javascript" src="./library/ImageMap-footer.js"></script>
+</body>
+</html>

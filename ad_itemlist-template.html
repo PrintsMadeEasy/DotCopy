@@ -1,0 +1,397 @@
+<html>
+<head>
+<title>Itemized Order</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+
+<script language="javascript">
+
+	//Make an array of the images we want to preload for the mouse-overs.
+	arImageSrc = new Array (
+		"./images/button-go-d.gif",
+		"./images/button-cancel-blue-d.gif",
+		"./images/button-update-blue-d.gif"
+	)
+
+	//Preload images.
+	arImageList = new Array ();
+	for (counter in arImageSrc) {
+		arImageList[counter] = new Image();
+		arImageList[counter].src = arImageSrc[counter];
+	}
+
+	function ProjectLink(ProjID){
+		window.opener.location = "./ad_project.php?projectorderid=" + ProjID;
+	}
+	function OrderLink(OrderID){
+		window.opener.location = "./ad_order.php?orderno=" + OrderID;
+	}
+
+	function SetGlobalDiscount(){
+
+		var DiscountInquiry = prompt("What discount would you like to apply to this order. ", "0");
+
+		if(DiscountInquiry){
+
+			if(parseFloat(DiscountInquiry) >= 0 && parseFloat(DiscountInquiry) <= 100 && DiscountInquiry.search(/^\d+(\.\d+)?$/) != -1){
+
+
+				for(var i=0; i< ProjectListArr.length; i++){
+					var ProjectDiscountPercent_obj = eval("document.forms['projectlist'].projdiscpercent_" + ProjectListArr[i]);
+					var ProjectDiscountTotals_obj = eval("document.forms['projectlist'].projdiscdollars_" + ProjectListArr[i]);
+					var ProjectCustomerSubtotal_val = eval("document.forms['projectlist'].projectsubtotal_" + ProjectListArr[i] + ".value");
+
+					ProjectDiscountPercent_obj.value = DiscountInquiry;
+
+					//Update the project discount in dollars
+					ProjectDiscountTotals_obj.value = RoundWithDecimals(parseFloat(RoundWithDecimals(parseFloat(DiscountInquiry)/100 * parseFloat(ProjectCustomerSubtotal_val))));;
+
+				}
+			}
+			else{
+				alert("The discount percentage is incorrect.");
+			}
+
+			UpdateDisplayTotal()
+		}
+
+	}
+
+	function UpdateDisplayTotal(){
+
+		var CustomerSubtotal = 0;
+		var CustomerDiscounts = 0;
+		var VendorSubtotal = 0;
+
+
+		for(var i=0; i< ProjectListArr.length; i++){
+			var ProjectCustomerSubtotal_val = eval("document.forms['projectlist'].projectsubtotal_" + ProjectListArr[i] + ".value");
+			var ProjectDiscountPercent_val = eval("document.forms['projectlist'].projdiscpercent_" + ProjectListArr[i] + ".value");
+			var ProjectVendorSubtotal_val = 0;
+
+			// There could be up to 6 vendors associated with a project.
+			for(var j=1; j<=6; j++){
+				if(document.getElementById("vendorsubtotal" + j + "_" + ProjectListArr[i]) != null)
+					ProjectVendorSubtotal_val += parseFloat(eval("document.forms['projectlist'].vendorsubtotal" + j + "_" + ProjectListArr[i] + ".value"));
+			}
+
+
+			CustomerSubtotal += parseFloat(ProjectCustomerSubtotal_val);
+			CustomerDiscounts += parseFloat(RoundWithDecimals(parseFloat(ProjectDiscountPercent_val)/100 * parseFloat(ProjectCustomerSubtotal_val)));
+			VendorSubtotal += parseFloat(ProjectVendorSubtotal_val);
+		}
+
+		var TotalGrand = RoundWithDecimals(CustomerSubtotal - CustomerDiscounts);
+
+		document.forms['totals'].customersubtotal.value = RoundWithDecimals(CustomerSubtotal);
+		document.forms['totals'].discountamount.value = RoundWithDecimals(CustomerDiscounts);
+		document.forms['totals'].grandtotal.value = TotalGrand;
+		document.forms['totals'].vendortotal.value = RoundWithDecimals(VendorSubtotal);
+
+		if(CustomerSubtotal == 0)
+			document.forms['totals'].discountpercent.value = 0;
+		else
+			document.forms['totals'].discountpercent.value =   RoundWithDecimals(100 * (1.00 - (TotalGrand / CustomerSubtotal)));
+
+
+
+
+	}
+
+	function CheckIfNumberInputIsValid(TheNumber){
+		if(TheNumber.search(/^\d+$/) == -1 && TheNumber.search(/^\d+\.\d{1,7}$/) == -1){
+			return false;
+		}
+		else{
+			return true;
+		}
+	}
+
+
+
+	function UpdateVendorSubtotal(ProjectID, VendorNum){
+
+		var ProjectVendor_Obj = eval("document.forms['projectlist'].vendorsubtotal" + VendorNum + "_" + ProjectID);
+		var ProjectVendor_val = eval("document.forms['projectlist'].vendorsubtotal" + VendorNum + "_" + ProjectID + ".value");
+
+		var OriginalVendorSubtotal = eval("document.forms['projectlist'].original_vendorsubtotal" + VendorNum + "_" + ProjectID + ".value");
+
+		if(!CheckIfNumberInputIsValid(ProjectVendor_val)){
+			//Since there is an error.  Reset the vendor Subotal to the original value
+			ProjectVendor_Obj.value = OriginalVendorSubtotal;
+
+			alert("Problem with Vendor total on Project #" + ProjectID);
+		}
+		else if(parseFloat(ProjectVendor_val) > 500){
+			//Since there is an error.  Reset the vendor Subotal to the original value
+			ProjectVendor_Obj.value = OriginalVendorSubtotal;
+
+			alert("The vendor price is too high.");
+		}
+		else{
+			ProjectVendor_Obj.value = RoundWithDecimals(ProjectVendor_val);
+		}
+		UpdateDisplayTotal();
+	}
+
+
+
+	function UpdateDiscountProjectTotal(ProjectID){
+
+		var ProjectDiscount_Obj = eval("document.forms['projectlist'].projdiscdollars_" + ProjectID);
+		var ProjectDiscount_val = eval("document.forms['projectlist'].projdiscdollars_" + ProjectID + ".value");
+
+		//Get the total price of the subtotal, so that we can ensure the discount does not exceed
+		var ThisSubtotal = eval("document.forms['projectlist'].projectsubtotal_" + ProjectID + ".value");
+
+		if(!CheckIfNumberInputIsValid(ProjectDiscount_val)){
+			//Since there is an error.  Reset the discount amount to the original number
+			ProjectDiscount_Obj.value = OriginalDicountsTotals[GetIndexNumberFromProjectID(ProjectID)];
+
+			alert("Problem with Project discount total on Project #" + ProjectID);
+		}
+		else if(parseFloat(ProjectDiscount_val) > ThisSubtotal){
+			//Since there is an error.  Reset the discount amount to the original number
+			ProjectDiscount_Obj.value = OriginalDicountsTotals[GetIndexNumberFromProjectID(ProjectID)];
+
+			alert("The discount can not be greater than the subtotal");
+		}
+		else{
+			ProjectDiscount_Obj.value = RoundWithDecimals(ProjectDiscount_val);
+
+			//Now change the discount percentage of this project
+			var DiscountPercentage = ProjectDiscount_val/ThisSubtotal;
+
+			//Get an object for the input box of the project discount percentage
+			var DiscountPercentProject_Obj = eval("document.forms['projectlist'].projdiscpercent_" + ProjectID);
+
+			// Allow up to 5 decimal places
+			DiscountPercentProject_Obj.value = Math.round(DiscountPercentage * 1000000) * 100 / 1000000
+		}
+
+		UpdateDisplayTotal();
+	}
+
+
+	function UpdateDiscountProjectPercent(ProjectID){
+
+		var ProjectDiscountPercent_Obj = eval("document.forms['projectlist'].projdiscpercent_" + ProjectID);
+		var ProjectDiscountPercent_val = eval("document.forms['projectlist'].projdiscpercent_" + ProjectID + ".value");
+
+		var ThisSubtotal = eval("document.forms['projectlist'].projectsubtotal_" + ProjectID + ".value");
+
+		if(ProjectDiscountPercent_val.search(/^\d+(\.\d+)?$/) == -1){
+			//Since there is an error.  Reset the discount amount to the original number
+			ProjectDiscountPercent_Obj.value = parseFloat(OriginalDicountsPercent[GetIndexNumberFromProjectID(ProjectID)]) * 100;
+
+			alert("Problem with Project discount percent on Project #" + ProjectID);
+		}
+		else if(parseFloat(ProjectDiscountPercent_val) > 100){
+			//Since there is an error.  Reset the discount amount to the original number
+			ProjectDiscountPercent_Obj.value = parseFloat(OriginalDicountsPercent[GetIndexNumberFromProjectID(ProjectID)]) * 100;
+
+			alert("The discount can not be greater than 100%.");
+		}
+		else{
+
+
+			//Get an object for the input box of the project discount total so that we can adust its price
+			var DiscountAmountProject_Obj = eval("document.forms['projectlist'].projdiscdollars_" + ProjectID);
+			DiscountAmountProject_Obj.value = RoundWithDecimals(parseFloat(ProjectDiscountPercent_val)/100 * ThisSubtotal);
+		}
+		UpdateDisplayTotal();
+	}
+
+
+	function SaveData(){
+		var ProjectStr = "";
+
+		for(j=0; j<ProjectListArr.length; j++){
+			//Make a pipe separated list
+			ProjectStr += ProjectListArr[j] + "|";
+		}
+
+		document.forms['projectlist'].projectids.value = ProjectStr;
+		document.forms['projectlist'].action = './ad_itemlist_save.php';
+		document.forms['projectlist'].submit();
+
+	}
+
+
+	function GetIndexNumberFromProjectID(ProjectIDIndex){
+		for(j=0; j<ProjectListArr.length; j++){
+			if(ProjectListArr[j] == ProjectIDIndex){
+				return j;
+			}
+		}
+	}
+
+
+	var ProjectListArr = {PROJECT_LIST_JS_ARR};
+	var OriginalDicountsTotals = {DISCOUNTS_TOTALS_ARR};
+	var OriginalDicountsPercent = {DISCOUNTS_PERCENT_ARR};
+
+</script>
+<script type="text/javascript" src="./library/product_options.js"></script>
+
+
+
+</head>
+
+<body bgcolor="#3366CC" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<img  src="./images/transparent.gif" border="0" width="1" height="10" alt="" /><br/>
+<div align="center">
+<table bgcolor="#EEEEEE" width="400" cellpadding="0" cellspacing="0" border="0">
+
+<tr>
+<td bgcolor="#CCCCCC" align="center" class="Body" style="background-image: url(./images/admin/header-shipping.png); background-repeat: no-repeat;"><b>Project List ... Order # <a href="javascript:OrderLink({ORDERNO});" class="BlueRedLink">{ORDERNO}</a></b></td>
+
+<tr>
+<tr>
+<td bgcolor="#666666" align="center" class="Body"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+
+<tr>
+<td align="center">
+
+<!-- BEGIN HideOrderTotalsBL -->
+
+<form name="totals">
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+&nbsp;
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+
+  <tr>
+            <td class="SmallBody" align="right" width="54%"><b>Customer Subtotal:&nbsp;</b> </td>
+            <td class="SmallBody" width="46%">$<input type="text" name="customersubtotal" value="" style="width:50; border-width:0; font-size:12px;" class="SmallInputBox" READONLY /></td>
+  </tr>
+   <tr>
+            <td class="SmallBody" align="right" width="54%"><b>Customer Discount:&nbsp;</b> </td>
+            <td class="SmallBody" width="46%">$<input type="text" name="discountamount" value="" style="width:50; border-width:0; font-size:12px;" class="SmallInputBox" READONLY /></td>
+  </tr>
+    <tr>
+            <td class="SmallBody" align="right" width="54%"><b>Grand Total:&nbsp;</b> </td>
+            <td class="SmallBody" width="46%">$<input type="text" name="grandtotal" value="" style="width:50; border-width:0; font-size:12px;" class="SmallInputBox" READONLY /></td>
+  </tr>
+    <tr>
+            <td class="SmallBody" align="right" width="54%"><b>Vendor Total:&nbsp;</b> </td>
+            <td class="SmallBody" width="46%">$<input type="text" name="vendortotal" value="" style="width:50; border-width:0; font-size:12px;" class="SmallInputBox" READONLY /></td>
+  </tr>
+
+</table>
+&nbsp;
+<table width="90%" border="0" cellspacing="0" cellpadding="1" bgcolor="#999999">
+  <tr>
+    <td><table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#DFE8EE">
+  <tr>
+      <td class="SmallBody" align="right">&nbsp;
+<!-- BEGIN HideGlobalDiscountLinkBL -->
+	  <a href="javascript:SetGlobalDiscount();" class="BlueRedLink">Set Global Discount</a>
+<!-- END HideGlobalDiscountLinkBL -->
+	  </td>
+    <td class="SmallBody" align="right">Total Discount: <input type="text" name="discountpercent" value="" style="width:40; border-width:0; font-size:12px; text-align:right; background-color:#DFE8EE;" class="SmallInputBox" READONLY />%&nbsp;</td>
+  </tr>
+</table></td>
+  </tr>
+</table></form>
+
+<!-- BEGIN HideUpdateCancelButtonsBL -->
+<input type="button" name="xx" value="Update" class="AdminButton" onmouseover="this.style.background='#ffeeaa';" onmouseout="this.style.background='#FFFFDD';" onclick="SaveData();" />
+<img src="./images/transparent.gif" border="0" width="15" height="1" alt="" />
+<input type="button" name="xx" value="Cancel" class="AdminButton" onmouseover="this.style.background='#ffeeaa';" onmouseout="this.style.background='#FFFFDD';" onclick="window.close();" />
+<!-- END HideUpdateCancelButtonsBL -->
+<font class="SmallBody">{LOCKED_MESSAGE}&nbsp;</font>
+<!-- END HideOrderTotalsBL -->
+
+<form name="projectlist" method="post">
+<input type="hidden" name="projectids" value="" />
+<input type="hidden" name="orderno" value="{ORDERNO}" />
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+<!-- BEGIN ProjectBL -->
+
+<table width="95%" border="0" cellspacing="0" cellpadding="1">
+  <tr>
+    <td bgcolor="#DDDDDD" class="SmallBody">
+	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+                  <td class="SmallBody" width="41%">&nbsp;<font color="#660000"><b>Project
+                    #</b></font> <a href="javascript:ProjectLink({PROJECTID});" class="BlueRedLink">P{PROJECTID}</a><br/>
+					&nbsp;{PROJECT_STATUS}
+					</td>
+                  <td class="ReallySmallBody" width="59%">{PRODUCT_NAME}<br/>{PROJECT_TABLE}</td>
+  </tr>
+</table>
+</td>
+  </tr>
+
+<!-- BEGIN HideProjectDetailsBL -->
+  <tr>
+    <td>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+
+
+
+<input type="hidden" name="projectsubtotal_{PROJECTID}" value="{C_SUB}" />
+  <tr>
+                    <td class="SmallBody" align="right" width="51%">Project Subtotal
+                      $<img  src="./images/transparent.gif" border="0" width="27" height="1" alt="" /><font class="ReallySmallBody"><font color="#000000">{C_SUB}</font></font><img  src="./images/transparent.gif" border="0" width="2" height="1" alt="" /><br/>
+                    Project Discount $<input type="text" name="projdiscdollars_{PROJECTID}" value="{D_DOL}" style="width:55; text-align:right;" class="SmallInputBox" onBlur="UpdateDiscountProjectTotal('{PROJECTID}');" {INPUT_LOCKED} />
+					<br/>Customer Discount %<input type="text" name="projdiscpercent_{PROJECTID}" value="{D_PER}" style="width:55; text-align:right;" class="SmallInputBox" onBlur="UpdateDiscountProjectPercent('{PROJECTID}');" {INPUT_LOCKED} maxlength="9" /></td>
+                    <td class="SmallBody" align="right" width="49%">
+                      <!-- BEGIN VendorSubBL -->
+                      <input type="hidden" name="original_vendorsubtotal{VENDORNUM}_{PROJECTID}" value="{V_SUB}" />
+					{VENDOR_NAME} $
+<input type="text" name="vendorsubtotal{VENDORNUM}_{PROJECTID}" value="{V_SUB}" style="width:55; text-align:right;" class="SmallInputBox" onBlur="UpdateVendorSubtotal('{PROJECTID}', '{VENDORNUM}');" {INPUT_LOCKED} />
+<br/>
+<!-- END VendorSubBL -->
+</td>
+  </tr>
+</table>
+	</td>
+  </tr>
+ <!-- END HideProjectDetailsBL -->
+</table>
+<table width="90%" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td><img src="./images/transparent.gif" border="0" width="1" height="7" alt="" /></td>
+</tr>
+<tr>
+<td bgcolor="#999999"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+</tr>
+<tr>
+<td><img src="./images/transparent.gif" border="0" width="1" height="7" alt="" /></td>
+</tr>
+</table>
+<!-- END ProjectBL -->
+</form>
+</td>
+</tr>
+
+
+<tr>
+<td><img src="images/header-editoptions-fade-bot.gif" width="400" alt="" /></td>
+</tr>
+</table>
+
+<table width="350" border="0" cellspacing="0" cellpadding="0">
+
+  <tr>
+
+    <td align="center">
+
+<img  src="./images/transparent.gif" border="0" width="1" height="5" alt="" /><br/>
+
+&nbsp;
+	</td>
+
+  </tr>
+</table>
+</div>
+
+<script>
+//Update the numbers on the screen
+UpdateDisplayTotal();
+</script>
+</body>
+</html>

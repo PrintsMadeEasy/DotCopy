@@ -1,0 +1,67 @@
+How to add a new Printing Portal Domain
+=======================================
+
+*) Do this during off hours because Apache may go offline temporarily.  
+	- The newer version of Apache 2.2 is not tied into the Cpanel auto-init.  Apache won't restart by itself after adding a new Account to Cpanel... but it will stop it!
+	- If you add a new domain during working hours, make sure to be logged into SSH (root) so that you can quickly restart Apache 2.2 after making changes in Cpanel.
+
+*) Pick a new IP Address out of /documents/PME_NAT_Translation.txt
+	- Keep track of the Private IP (behind the NAT firewall) and the public IP.
+	
+*) Possibly add entries with the Private IP's to /documents/ip_tables.txt
+	- Generally this is necessary to keep competitors (or Google bots) from itterating through sequential IP addresses on the main server.
+	- Only add to the IP Tables after a "reverse proxy" has been defined.
+
+*) Add add a new account in Cpanel
+	- https://www.printsmadeeasy.com:2087    (create a new account)
+		... MAKE SURE TO RESTART APACHE MANUALLY ASAP (from Shell as "root")
+			root> /usr/local/apache2_2/bin/apachectl restart
+	- Make sure that the domain name is not real... or it will cause DNS conflicts since actual Mail Server and domain is external (on a proxy).  For example... instead of "ThankYouCards.com" create a domain like "ThnkYouCrds.com"
+	- Write down the password.  If the website front-end is meant to be run though a reverse-proxy... the password is only needed to FTP files (cpanel won't be used).
+	- After the account has been created, be sure to disable "Shell Access" and "CGI Privilage".  [Cpanel Main >> Account Functions >> Modify an Account]
+	- Change the Site's IP Address to the Private NAT.... [Cpanel Main >> Account Functions >> Change Site's IP Address]
+		... MAKE SURE TO RESTART APACHE MANUALLY ASAP (from Shell as "root")
+			root> /usr/local/apache2_2/bin/apachectl restart
+	
+	
+*) Add new Domain entries into the class /classes/Domain.php
+	- Do a search through similar accounts and see where else things need to be changed.
+	- For the sandbox path... make sure to use the "Account Name" from Cpanel.
+	
+*) Add the domain key to /classes/Authenticate.php for the appropriate people.
+
+
+*) Create 3 logos for the new site.
+	- Very Small Icon:  Max Width of 50px PNG
+	- Nav Bar Image:  Max Width of 130px PNG
+	- Print Quality:  Max Width of 350px 
+	- Add the logos to /classes/DomainLogos.php
+	
+*) Create a directory writable by "nobody" for the web-server
+	- mkdir /home/accountname/public_html/previews
+	- chgrp nobody /home/accountname/public_html/previews
+	- chmod g+w /home/accountname/public_html/previews
+
+
+*) Edit the Apache configuration
+	- First make a copy of the file.
+		cp /usr/local/apache2_2/conf/extra/httpd-vhosts.conf /usr/local/apache2_2/conf/extra/httpd-vhosts.conf.bakxxx
+	- Add a new chunk to the bottom of the file for the new domain.  There is no need to make a new SSL certificate or change the Account Path.
+	- MAKE SURE that the domain you add matches the "Domain Alias" from Domain.php
+	- Put in the Private IP address for this domain.
+	- Save the new file and restart the Apache web server.  /usr/local/apache2_2/bin/apachectl restart
+
+
+*) Create new files for the log rotation at /etc/logrotate.d
+
+
+*) After all of the PHP scripts have been uploaded... Make sure to add a default shipping choice.  In the backend go to "Configure -> Shipping"
+	* Make sure to also set the new shipping choice as "Default" and as "Basic Choice" to make sure that it shows up in the delivery calculator.
+
+
+*) Update Secure Password File for developers
+
+*) Add a new "Project" within JIRA
+
+
+

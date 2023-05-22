@@ -1,0 +1,714 @@
+
+#--- Added Feb 23rd ---------
+ALTER TABLE balanceadjustments ADD COLUMN CustomerAdjustmentType char(1);
+
+UPDATE balanceadjustments SET CustomerAdjustmentType = "C" WHERE VendorID=0 AND CustomerAdjustment > 0;
+UPDATE balanceadjustments SET CustomerAdjustmentType = "R" WHERE VendorID=0 AND CustomerAdjustment < 0;
+
+
+
+#--- March 2nd ---------
+CREATE INDEX projecthistory_Date ON projecthistory (Date);
+
+
+#-- March 4th ----
+ALTER TABLE balanceadjustments CHANGE COLUMN DateCreated DateCreated DATETIME;
+
+
+#--- March 9th ----
+ALTER TABLE contentitems ADD COLUMN MetaTitle varchar(250);
+ALTER TABLE contentitems ADD COLUMN MetaDescription varchar(250);
+
+
+#--- March 16th
+
+CREATE TABLE IF NOT EXISTS lostpasswordattempts (
+  ID int(11) NOT NULL AUTO_INCREMENT,
+  DomainID int(11),
+  IPaddress varchar(20),
+  Email varchar(60),
+  Date datetime,
+  GoodOrBad char(1),
+  PRIMARY KEY  (ID),
+  
+  INDEX lostpasswordattempts_Date (Date)
+);
+
+
+
+
+#---- March 16th.  You forgot to make the ID an autoincrement.
+ALTER TABLE emailnotifydomains CHANGE COLUMN ID ID int(11) NOT NULL AUTO_INCREMENT;
+
+
+
+
+#--- March 22nd
+ALTER TABLE orders ADD COLUMN FirstTimeCustomer char(1);
+
+
+#--- March 30
+ALTER TABLE orders ADD COLUMN ReferralDate DATETIME;
+CREATE INDEX orders_ReferralDate ON orders (ReferralDate);
+
+
+#-- April 2nd ----
+ALTER TABLE users ADD COLUMN PasswordUpdateRequired char(1);
+UPDATE users SET PasswordUpdateRequired = "N";
+
+#-- April 6th ---
+
+CREATE INDEX shipments_DateShipped ON shipments (DateShipped);
+
+
+
+#--- April 7th ---
+
+CREATE TABLE IF NOT EXISTS costperclicklog (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   TrackingCode varchar(255),
+   TrackCodeForConvRate varchar(255),
+   MinOrdersToMeasureConversion int(7),
+   BreakEvenDays int(7),
+   ConversionRate varchar(10),
+   CustomerWorthAverage varchar(10),
+   CustomerWorthAverageAdjusted varchar(10),
+   CustomerWorthShortTerm varchar(10),
+   TrackCodeShortTermWorth varchar(255),
+   CustomerWorthMediumTerm varchar(10),
+   TrackCodeMediumTermWorth varchar(255),
+   CustomerWorthLongTerm varchar(10),
+   TrackCodeLongTermWorth varchar(255),
+   CpcPerfectEstimate varchar(10),
+   DomainID int(11),
+   Date DATETIME,
+   PRIMARY KEY (ID),
+   
+   INDEX costperclicklog_Date (Date),
+   INDEX costperclicklog_TrackingCode (TrackingCode)
+   );
+   
+   
+CREATE TABLE IF NOT EXISTS googleapiupdates (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   AdGroupID int(11),
+   Date DATETIME,
+   PRIMARY KEY (ID),
+   
+   INDEX googleapiupdates_Date (Date)
+   );
+
+
+#-- April 27th
+
+ CREATE TABLE IF NOT EXISTS customertestimonials (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   DomainID int(11),
+   Status char(1),
+   CreatedByUserID int(11),
+   EditedByUserID int(11),
+   TestimonialOriginal mediumtext,
+   TestimonialModified mediumtext,
+   FirstName varchar(50),
+   LastNameInitial char(1),
+   City varchar(50),
+   State varchar(50),
+   DateLastEdited DATETIME,
+   DateCreated DATETIME,
+   PRIMARY KEY (ID),
+   
+   INDEX customertestimonials_DateCreated (DateCreated)
+   );
+   
+   
+#-- April 30th
+ALTER TABLE customertestimonials DROP column State;
+ALTER TABLE customertestimonials DROP column LastNameInitial;
+
+
+#-- May 5th 
+CREATE INDEX customertestimonials_Status ON customertestimonials (Status);
+
+#-- May 6th 
+ALTER TABLE customertestimonials ADD column Email varchar(70);
+
+
+
+
+
+#-- May 8th
+
+CREATE database session_db;
+
+# The Real password should be found by looking at the text file pointed to in the class SessionHandler.php
+GRANT SELECT,INSERT,UPDATE,DELETE
+ON session_db.*
+TO session_user@'localhost'
+IDENTIFIED BY 'password';
+
+use session_db;
+
+CREATE TABLE IF NOT EXISTS sessions (
+  ID int(11) NOT NULL AUTO_INCREMENT,
+  SessionID varchar(255),
+  DomainID int(11),
+  LastAccess DATETIME,
+  SessionData mediumtext,
+  PRIMARY KEY  (ID),
+  
+  INDEX sessions_SessionID (SessionID),
+  INDEX sessions_LastAccess (LastAccess)
+);
+
+
+
+ALTER TABLE salesreps CHANGE column W9TIN W9TIN varchar(12);
+
+
+
+ALTER TABLE salesbannerlog ADD COLUMN Referer varchar(255);
+
+
+CREATE TABLE IF NOT EXISTS emailsdiscoverysessions (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   Email varchar(70),
+   DomainID int(11),
+   DiscoveryDate DATETIME,
+   PRIMARY KEY (ID),
+   
+   INDEX emailsdiscoverysessions_Email (Email),
+   INDEX emailsdiscoverysessions_DiscoveryDate (DiscoveryDate)
+   );
+
+
+#-- Aug 5th 
+CREATE INDEX visitorsessiondetails_IPaddress ON visitorsessiondetails (IPaddress);
+
+
+
+
+
+#--- Aug 10th -----
+
+
+CREATE TABLE IF NOT EXISTS maxmindlocationids (
+  StartIP int(11) UNSIGNED,
+  EndIP int(11) UNSIGNED,
+  Counter int(11),
+  LocationID int(8),
+  PRIMARY KEY  (StartIP),
+  
+  INDEX maxmindlocationids_Counter (Counter)
+);
+
+CREATE TABLE IF NOT EXISTS maxmindlocationdetails (
+  ID int(11) NOT NULL AUTO_INCREMENT,
+  LocationID int(8),
+  Country char(2),
+  Region char(2),
+  City varchar(255),
+  PostalCode varchar(6),
+  Latitude float,
+  Longitude float,
+  MetroCode int(11),
+  AreaCode int(3),
+  PRIMARY KEY  (ID),
+  
+  INDEX maxmindlocationdetails_LocationID (LocationID)
+);
+
+CREATE TABLE IF NOT EXISTS maxmindisps (
+  StartIP int(11) UNSIGNED,
+  EndIP int(11) UNSIGNED,
+  Counter int(11),
+  ISPname varchar(50),
+  PRIMARY KEY  (StartIP),
+  
+  INDEX maxmindisps_Counter (Counter)
+);
+
+
+ALTER TABLE visitorsessiondetails ADD COLUMN LocationID int(8);
+ALTER TABLE visitorsessiondetails ADD COLUMN ISPname varchar(50);
+CREATE INDEX visitorsessiondetails_LocationID ON visitorsessiondetails (LocationID);
+
+ALTER TABLE orders ADD COLUMN LocationID int(8);
+CREATE INDEX orders_LocationID ON orders (LocationID);
+
+ALTER TABLE bannerlog ADD COLUMN LocationID int(8);
+ALTER TABLE bannerlog ADD COLUMN ISPname varchar(50);
+CREATE INDEX bannerlog_LocationID ON bannerlog (LocationID);
+
+ALTER TABLE bannerlog CHANGE UserAgent UserAgent varchar(255);
+ALTER TABLE orders ADD COLUMN ISPname varchar(50);
+
+
+
+
+#--- Added Aug 31st, 2009
+ALTER TABLE orders ADD COLUMN RegenTrackingCode varchar(150);
+
+
+#--- Added Sept. 11th
+ CREATE TABLE IF NOT EXISTS emailnewsletterrequest (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   DomainID int(11),
+   Email varchar(70),
+   IPaddress varchar(20),
+   BannerTrackingCode varchar(70),
+   DateSubmitted DATETIME,
+   
+   PRIMARY KEY (ID),
+   INDEX emailnewsletterrequest_Email (Email),
+   INDEX emailnewsletterrequest_DateSubmitted (DateSubmitted)
+   );
+ 
+ 
+ CREATE INDEX users_DateCreated ON users (DateCreated);
+ 
+ 
+ 
+ #--- Added Oct 6th
+CREATE TABLE IF NOT EXISTS emailunsubscribe (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   EmailAddress varchar(70),
+   Date DATETIME,
+   DomainID int(11),
+   PRIMARY KEY (ID),
+   
+   INDEX emailunsubscribe_EmailAddress (EmailAddress)
+   );
+
+
+ALTER TABLE products ADD COLUMN TemplatePreviewSidesDisplay char(1);
+UPDATE products SET TemplatePreviewSidesDisplay = "M";
+ 
+
+
+#-- Added  Oct 18th 
+
+ALTER TABLE emailunsubscribe ADD column AffilliatUnsubscibeStatus char(1);
+UPDATE emailunsubscribe SET AffilliatUnsubscibeStatus = "W";
+
+
+#-- Added Oct 25th 
+ALTER TABLE orders ADD COLUMN AffiliateSource varchar(50);
+ALTER TABLE orders ADD COLUMN AffiliateIdentifier varchar(50);
+
+
+#-- Added Oct 25th
+ALTER TABLE products ADD COLUMN TemplatePreviewSweetSpot char(1);
+UPDATE products SET TemplatePreviewSweetSpot = "Y";
+
+
+#-- Added Nov 21st
+ALTER TABLE products ADD COLUMN TempPrevBackLandscapeJPG mediumblob;
+ALTER TABLE products ADD COLUMN TempPrevBackPortraitJPG mediumblob;
+ALTER TABLE products ADD COLUMN TempPrevBackLandscapeOverlayX int(4);
+ALTER TABLE products ADD COLUMN TempPrevBackLandscapeOverlayY int(4);
+ALTER TABLE products ADD COLUMN TempPrevBackPortraitOverlayX int(4);
+ALTER TABLE products ADD COLUMN TempPrevBackPortraitOverlayY int(4);
+ALTER TABLE products ADD COLUMN TempPrevBackLandscapeFileSize int(7);
+ALTER TABLE products ADD COLUMN TempPrevBackPortraitFileSize int(7);
+ALTER TABLE products ADD COLUMN TempPrevBackLandscapeJpgWidth int(4);
+ALTER TABLE products ADD COLUMN TempPrevBackLandscapeJpgHeight int(4);
+ALTER TABLE products ADD COLUMN TempPrevBackPortraitJpgWidth int(4);
+ALTER TABLE products ADD COLUMN TempPrevBackPortraitJpgHeight int(4);
+UPDATE products SET TempPrevBackLandscapeOverlayX = 0;
+UPDATE products SET TempPrevBackLandscapeOverlayY = 0;
+UPDATE products SET TempPrevBackPortraitOverlayX = 0;
+UPDATE products SET TempPrevBackPortraitOverlayY = 0;
+UPDATE products SET TempPrevBackLandscapeFileSize = 0;
+UPDATE products SET TempPrevBackPortraitFileSize = 0;
+
+
+#--- Added Nov 22nd
+ALTER TABLE products CHANGE TempPrevBackLandscapeOverlayX TempPrevBackLandscapeOverlayX char(5);
+ALTER TABLE products CHANGE TempPrevBackLandscapeOverlayY TempPrevBackLandscapeOverlayY char(5);
+ALTER TABLE products CHANGE TempPrevBackPortraitOverlayX TempPrevBackPortraitOverlayX char(5);
+ALTER TABLE products CHANGE TempPrevBackPortraitOverlayY TempPrevBackPortraitOverlayY char(5);
+
+
+
+#--- Added Dec 15th 
+
+CREATE TABLE IF NOT EXISTS templatelinks (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   OneTemplateID int(11),
+   OneTemplateArea char(1),
+   OneProductID int(11),
+   TwoTemplateID int(11),
+   TwoTemplateArea char(1),
+   TwoProductID int(11),
+   LinkDate DATETIME,
+   LinkByUserID int(11),
+   PRIMARY KEY (ID),
+   
+   INDEX templateproductlinks_OneTemplateID (OneTemplateID),
+   INDEX templateproductlinks_OneTemplateArea (OneTemplateArea),
+   INDEX templateproductlinks_TwoTemplateID (TwoTemplateID),
+   INDEX templateproductlinks_TwoTemplateArea (TwoTemplateArea)
+   );
+
+
+#--- Added Jan 2nd
+CREATE INDEX orders_ThirdPartyInvoiceID ON orders (ThirdPartyInvoiceID);
+
+
+#-- Added Jan 6th
+CREATE TABLE IF NOT EXISTS merchantmailers (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   CompanySearch char(30),
+   Company varchar(100),
+   Attention varchar(100),
+   Address1 varchar(100),
+   Address2 varchar(100),
+   City varchar(100),
+   State varchar(50),
+   Zip varchar(10),
+   SicCode varchar(10),
+   IndustryName varchar(50),
+   AccessCount int(3),
+   DateAdded DATETIME,
+   FirstAccessed DATETIME,
+   PRIMARY KEY (ID),
+   
+   INDEX merchantmailers_CompanySearch (CompanySearch),
+   INDEX merchantmailers_DateAdded (DateAdded),
+   INDEX merchantmailers_FirstAccessed (FirstAccessed)
+   );
+
+
+
+#--- Added Jan 10th
+
+CREATE TABLE IF NOT EXISTS ipaddresswrongaccess (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   IPaddress varchar(20),
+   AccessType char(5),
+   Date DATETIME,
+
+   PRIMARY KEY (ID),
+   INDEX ipaddresswrongaccess_IPaddress (IPaddress)
+   );
+   
+   
+
+CREATE INDEX domainemailconfig_DomainID ON domainemailconfig (DomainID);
+
+
+
+
+
+
+
+
+#--- Added March 8th, 2010
+ALTER TABLE products CHANGE TemplatePreviewScale TemplatePreviewScale char(10);
+
+
+
+#-- Added March 16th
+CREATE INDEX users_Name ON users (Name);
+CREATE INDEX users_Company ON users (Company);
+
+
+
+#-- April 22nd 
+ALTER TABLE pdfprofilecmykblocks ADD COLUMN SideNumber int(3);
+UPDATE pdfprofilecmykblocks SET SideNumber=0;
+ALTER TABLE visitorsessiondetails ENGINE = Innodb;
+ALTER TABLE visitorlog ENGINE = Innodb;
+
+
+
+#-- May 22nd 
+CREATE INDEX couponactivation_UserID ON couponactivation (UserID);
+
+
+
+
+
+#-- July 2nd
+
+CREATE TABLE IF NOT EXISTS chatthread (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   DomainID int(11),
+   CsrUserID int(11),
+   Status char(1),
+   ChatType char(1),
+   AllowPleaseWait char(1),
+   Subject char(1),
+   ClosedReason char(1),
+   OrderLinkSource char(1),
+   CustomerIpAddress varchar(25),
+   CustomerUserID int(11),
+   SessionID varchar(255),
+   PreviousSessionID varchar(255),
+   StartSessionID varchar(255),
+   OrderID int(11),
+   AttachmentsCount int(3),
+   TotalCsrMessages int(5),
+   TotalCustomerMessages int(5),
+   StartDate DATETIME,
+   FirstCsrMsg DATETIME,
+   FirstCustomerMsg DATETIME,
+   LastCustomerMsg DATETIME,
+   LastCsrMsg DATETIME,
+   ClosedDate DATETIME,
+
+   PRIMARY KEY (ID),
+   INDEX chatthread_SessionID (SessionID),
+   INDEX chatthread_Status (Status),
+   INDEX chatthread_PreviousSessionID (PreviousSessionID),
+   INDEX chatthread_CsrUserID (CsrUserID),
+   INDEX chatthread_CustomerUserID (CustomerUserID),
+   INDEX chatthread_StartDate (StartDate),
+   INDEX chatthread_OrderID (OrderID)
+   );
+   
+   
+CREATE TABLE IF NOT EXISTS chatopeninstances (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   ChatThreadID int(11),
+   LastCustomerPing DATETIME,
+   LastCsrPing DATETIME,
+
+   PRIMARY KEY (ID)
+   );
+   
+   
+CREATE TABLE IF NOT EXISTS chatcsrstatus (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   UserID int(11),
+   Status char(1),
+   OpenChatThreads int(4),
+   OpenThreadsLimit int(4),
+
+   PRIMARY KEY (ID),
+   INDEX chatcsrstatus_UserID (UserID)
+   );
+   
+   
+CREATE TABLE IF NOT EXISTS chatcsrfavorites (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   UserID int(11),
+   DomainID int(11),
+   CannedMessage mediumtext,
+   Snippet varchar(255),
+
+   PRIMARY KEY (ID),
+   INDEX chatcsrfavorites_UserID (UserID)
+   );
+   
+CREATE TABLE IF NOT EXISTS chatcsrpleasewait (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   UserID int(11),
+   DomainID int(11),
+   Message mediumtext,
+
+   PRIMARY KEY (ID),
+   INDEX chatcsrpleasewait_UserID (UserID)
+   );
+   
+   
+   
+CREATE TABLE IF NOT EXISTS chatcsrsetup (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   UserID int(11),
+   DomainID int(11),
+   IsPhotoUploaded char(1),
+   GreetingMessage varchar(255),
+   SignOffMessage varchar(255),
+   CsrPenName varchar(255),
+   ChatTypes varchar(255),
+   CsrPhoto mediumblob,
+   DateModified TIMESTAMP,
+
+   PRIMARY KEY (ID),
+   INDEX chatcsrsetup_UserID (UserID)
+   );
+   
+   
+CREATE TABLE IF NOT EXISTS chatmessages (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   ChatThreadID int(11),
+   CsrUserID int(11),
+   PersonType char(1),
+   ReceiptAck tinyint(1),
+   FileAttachmentID int(11),
+   ForCsrOnly tinyint(1),
+   PleaseWaitMessageID int(11),
+   Date DATETIME,
+   Message mediumtext,
+
+   PRIMARY KEY (ID),
+   INDEX chatmessages_ChatThreadID (ChatThreadID)
+   );
+ 
+ 
+CREATE TABLE IF NOT EXISTS chatattachmentspointer (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   ChatThreadID int(11),
+   BinaryTableName varchar(100),
+   BinaryTableID int(11),
+
+   PRIMARY KEY (ID),
+   INDEX chatattachmentspointer_ChatThreadID (ChatThreadID)
+   );
+   
+CREATE TABLE IF NOT EXISTS chatattachments_1 (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   BinaryData longblob,
+   FileName varchar(70),
+   FileType varchar(50),
+   FileSize int(11),
+
+   PRIMARY KEY (ID)
+   );
+
+
+INSERT INTO tablerotations (RootTableName,TableNameWithSuffix) VALUES ("chatattachments", "chatattachments_1");
+
+
+
+#-- Added 7-3
+
+Alter TABLE chatthread ADD column CustomerIsTyping tinyint(1);
+Alter TABLE chatthread ADD column CsrIsTyping tinyint(1);
+update chatthread set CustomerIsTyping = 0;
+update chatthread set CsrIsTyping = 0;
+
+
+#-- Added 4th of July
+Alter TABLE chatopeninstances ADD COLUMN LastOpenedByCsr DATETIME;
+CREATE INDEX chatopeninstances_ChatThreadID ON chatopeninstances (ChatThreadID);
+ALTER TABLE chatopeninstances ADD COLUMN FirstPingByCsrFlag tinyint(1);
+UPDATE chatopeninstances SET FirstPingByCsrFlag = 0;
+
+
+
+
+
+
+
+#-- July 21st ---
+ALTER TABLE users ADD COLUMN LoyaltyProgram char(1);
+ALTER TABLE users ADD COLUMN LoyaltyHiddenAtReg char(1);
+update users SET LoyaltyProgram = "N";
+update users SET LoyaltyHiddenAtReg = "Y";
+
+ALTER TABLE charges ADD COLUMN LoyaltyChargeID int(11);
+CREATE INDEX charges_LoyaltyChargeID ON charges (LoyaltyChargeID);
+
+
+  
+CREATE TABLE IF NOT EXISTS loyaltymissedcharges (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   UserID int(11),
+   DomainID int(11),
+   ChargeAmount varchar(10),
+   MissedReason char(1),
+   MissedReasonDesc varchar(255),
+   Date DATETIME,
+
+   PRIMARY KEY (ID),
+   
+   INDEX loyaltymissedcharges_UserID (UserID),
+   INDEX loyaltymissedcharges_Date (Date)
+   );
+   
+   
+CREATE TABLE IF NOT EXISTS loyaltycharges (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   UserID int(11),
+   DomainID int(11),
+   RefundChargeLink int(11),
+   ChargeAmount varchar(10),
+   RefundAmount varchar(10),
+   CardType varchar(30),
+   CardNumber varchar(30),
+   MonthExpiration varchar(30),
+   YearExpiration varchar(30),
+   BillingName varchar(30),
+   BillingCompany varchar(30),
+   BillingAddress varchar(70),
+   BillingAddressTwo varchar(30),
+   BillingCity varchar(30),
+   BillingState varchar(30),
+   BillingZip varchar(30),
+   BillingCountry char(2),
+   Note varchar(255),
+   Date DATETIME,
+
+   PRIMARY KEY (ID),
+   
+   INDEX loyaltycharges_UserID (UserID),
+   INDEX loyaltycharges_RefundChargeLink (RefundChargeLink),
+   INDEX loyaltycharges_Date (Date)
+   );
+   
+CREATE TABLE IF NOT EXISTS loyaltysavings (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   OrderID int(11),
+   Date DATETIME,
+   ShippingDiscount varchar(10),
+   SubtotalDiscount varchar(10),
+
+   PRIMARY KEY (ID),
+   
+   INDEX loyaltysavings_OrderID (OrderID)
+   );
+
+
+
+
+
+#-- Added August 2nd
+
+ALTER TABLE users ADD COLUMN CopyrightHiddenAtReg char(1);
+update users set CopyrightHiddenAtReg = 'Y' WHERE CopyrightTemplates = 'N';
+update users set CopyrightHiddenAtReg = 'N' WHERE CopyrightTemplates = 'Y';
+
+
+
+#--- Added Sept 24
+ALTER TABLE orders ADD COLUMN SessionID varchar(32);
+ALTER TABLE products ADD COLUMN ArtworkIsEditable char(1);
+UPDATE products SET ArtworkIsEditable = "Y";
+
+
+#--- Added April 7th ---  Boy... that is a long time since the last modification.  The boss might not think I have been busy ;-)
+ALTER TABLE templatekeywords CHANGE COLUMN TempKw TempKw varchar(35);
+
+
+#-- Added April 10th
+drop table usershippingaddresses;
+
+CREATE TABLE IF NOT EXISTS usershippingaddresses (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   UserID int(11),
+   IsDefault char(1),
+   RequestSignature char(32),
+   Name varchar(30),
+   Company varchar(30),
+   Address varchar(70),
+   AddressTwo varchar(30),
+   City varchar(30),
+   State varchar(30),
+   Zip varchar(30),
+   Country char(2),
+   ResidentialFlag char(1),
+   Phone varchar(30),
+   
+   PRIMARY KEY  (ID),
+   INDEX usershippingaddresses_UserID (UserID)
+);
+
+
+#-- Added April 13th 
+ALTER TABLE orders ADD COLUMN ShippingInstructions varchar(255);
+
+
+
+

@@ -1,0 +1,561 @@
+<html>
+<head>
+<title>Shipping Calculator</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+
+<script language="javascript">
+
+	
+	// Color of Domains which are selected.
+	var selectedDomainRowColor = '#e3D8DF';
+	var selectedDomainHoverColor = '#e6dbe2';
+	
+	// Color of Rows not selected.
+	var notSelectedDomainRowColor = '#D2D8DF';
+	var notSelectedDomainHoverColor = '#D7e2e2';
+
+	if (!Array.prototype.indexOf){  
+		Array.prototype.indexOf = function(elt /*, from*/)  {    
+			var len = this.length;   
+			var from = Number(arguments[1]) || 0;
+			from = (from < 0) ? Math.ceil(from) : Math.floor(from);    
+			if (from < 0) 
+				from += len;   
+			for (; from < len; from++)    {      
+				if (from in this && this[from] === elt)
+					return from; 
+			}    
+			return -1;  
+		};
+	}
+
+	function hlRow(e, domainID)
+	{
+		e.style.backgroundColor='#eeeeff';
+		
+		if(document.getElementById("hiddencheckbox_" + domainID).value == "checked"){
+			e.style.backgroundColor=selectedDomainHoverColor;
+		}
+		else{
+			e.style.backgroundColor=notSelectedDomainHoverColor;
+		}
+		
+
+	}
+	function dhlRow(e, domainID)
+	{
+	
+		if(document.getElementById("hiddencheckbox_" + domainID).value == "checked"){
+			e.style.backgroundColor=selectedDomainRowColor;
+		}
+		else{
+			e.style.backgroundColor=notSelectedDomainRowColor;
+		}
+
+	}
+	
+	function initializeRowColors(){
+		var checkBoxArr = document.all.domainSelect;
+		
+		for(var i=0; i<checkBoxArr.length; i++){
+			
+			var domainID = checkBoxArr[i].value
+			
+			if(document.getElementById("hiddencheckbox_" + domainID).value == "checked"){
+				document.getElementById("rowBackground_" + domainID).style.backgroundColor=selectedDomainRowColor;
+			}
+			else{
+				document.getElementById("rowBackground_" + domainID).style.backgroundColor=notSelectedDomainRowColor;
+			}
+		}
+	}
+	
+	function toggleDomainSelect(domainID){
+		var checkBoxArr = document.all.domainSelect;
+		
+		for(var i=0; i<checkBoxArr.length; i++){
+			
+			if(checkBoxArr[i].value == domainID){
+			
+				if(document.getElementById("hiddencheckbox_" + domainID).value == "checked"){
+					checkBoxArr[i].checked = false;
+					document.getElementById("hiddencheckbox_" + domainID).value = "";
+				}
+				else{
+					checkBoxArr[i].checked = true;
+					document.getElementById("hiddencheckbox_" + domainID).value = "checked";
+				}
+				break;
+			}
+		}
+		
+		// so that the row changes color as soon as someone clicks... you don't have to wait for MouseOut
+		initializeRowColors();
+		
+		top.displayNumberOfDomainsSelected();
+		
+		if({VIEW_EXTENDED_JS_FLAG}){
+			top.displayDomainTotals();
+			showDomainComparisons();
+		}
+
+	}
+	
+	function checkAll(){
+		var checkBoxArr = document.all.domainSelect;
+		
+		for(var i=0; i<checkBoxArr.length; i++){
+			checkBoxArr[i].checked = true;
+			var domainID = checkBoxArr[i].value
+			document.getElementById("hiddencheckbox_" + domainID).value = "checked";
+		}
+		
+		initializeRowColors();
+		top.displayNumberOfDomainsSelected();
+		
+		if({VIEW_EXTENDED_JS_FLAG}){
+			top.displayDomainTotals();
+			showDomainComparisons();
+		}
+	}
+	function checkNone(){
+		var checkBoxArr = document.all.domainSelect;
+		
+		for(var i=0; i<checkBoxArr.length; i++){
+			checkBoxArr[i].checked = false;
+			var domainID = checkBoxArr[i].value
+			document.getElementById("hiddencheckbox_" + domainID).value = "";
+		}
+
+		initializeRowColors();
+		top.displayNumberOfDomainsSelected();
+		
+		if({VIEW_EXTENDED_JS_FLAG}){
+			top.displayDomainTotals();
+			showDomainComparisons();
+		}
+	}
+	
+	function getNumberDomainsSelected(){
+	
+		var counter = 0;
+		var checkBoxArr = document.all.domainSelect;
+		
+		for(var i=0; i<checkBoxArr.length; i++){
+			if(checkBoxArr[i].checked)
+				counter++;
+		}
+		
+		return counter;
+	}
+	
+	function getSelectedDomainIDs(){
+	
+		var retArr = new Array();
+		var checkBoxArr = document.all.domainSelect;
+		
+		for(var i=0; i<checkBoxArr.length; i++){
+			if(checkBoxArr[i].checked)
+				retArr[retArr.length] = checkBoxArr[i].value;
+		}
+		
+		return retArr;
+	}
+	
+	function getTotalNumberOfDomains(){
+	
+		var counter = 0;
+		var checkBoxArr = document.all.domainSelect;
+		
+		for(var i=0; i<checkBoxArr.length; i++){
+			counter++;
+		}
+		
+		return counter;
+	}
+	
+	function getTotalDomainTotals(amountType){
+	
+		var retAmnt = 0;
+		
+		var checkBoxArr = document.all.domainSelect;
+	
+		for(var i=0; i<checkBoxArr.length; i++){
+			
+			if(!checkBoxArr[i].checked)
+				continue;
+				
+			var domainID = checkBoxArr[i].value
+	
+			if(amountType == "projectCount")
+				retAmnt += parseInt(document.getElementById("totals_"+domainID+"_projectCount").value);
+			else if(amountType == "orderCount")
+				retAmnt += parseInt(document.getElementById("totals_"+domainID+"_orderCount").value);
+			else if(amountType == "revenue")
+				retAmnt += parseInt(document.getElementById("totals_"+domainID+"_revenue").value);
+			else if(amountType == "subTotalProfit")
+				retAmnt += parseInt(document.getElementById("totals_"+domainID+"_subTprofit").value);
+			else if(amountType == "newCustomers")
+				retAmnt += parseInt(document.getElementById("totals_"+domainID+"_newCustomers").value);
+			else if(amountType == "adjustmentBalance")
+				retAmnt += parseInt(document.getElementById("totals_"+domainID+"_adjustBalance").value);
+			else
+				alert("Error in function getTotalRevenuesFromSelectedDomains. The report type has not been defined.");
+
+		}
+		return retAmnt;
+	}
+	
+	var startDay = {START_REPORT_DAY};
+	var startMonth = {START_REPORT_MONTH};
+	var startYear = {START_REPORT_YEAR};
+	var endDay = {END_REPORT_DAY};
+	var endMonth = {END_REPORT_MONTH};
+	var endYear = {END_REPORT_YEAR};
+		
+	
+	function visitMonthReport(){
+		top.location='./ad_report_month.php';
+	}
+	function visitMarketingReport(){
+
+		top.location='./ad_marketing_report.php?view=orders&PeriodType=DATERANGE&DateRangeStartMonth='+startMonth+'&DateRangeStartDay='+startDay+'&DateRangeStartYear='+startYear+'&DateRangeEndMonth='+endMonth+'&DateRangeEndDay='+endDay+'&DateRangeEndYear='+endYear+'';
+	}
+	
+	
+	function SelectPeriodTypeTimeFrame( isTimeFrameFlag )
+	{
+		document.all.TimeFrame.disabled = !isTimeFrameFlag;
+		document.all.DateRangeStartDay.disabled = isTimeFrameFlag;
+		document.all.DateRangeStartMonth.disabled = isTimeFrameFlag;
+		document.all.DateRangeStartYear.disabled = isTimeFrameFlag;
+		document.all.DateRangeEndDay.disabled = isTimeFrameFlag;
+		document.all.DateRangeEndMonth.disabled = isTimeFrameFlag;
+		document.all.DateRangeEndYear.disabled = isTimeFrameFlag;
+		
+		setBackgroundColor(isTimeFrameFlag);
+	}
+
+	function InitializeTimeFields()
+	{
+		var periodTimeFrame = {PERIODISTIMEFRAME};
+		document.all.TimeFrame.disabled = !periodTimeFrame;
+		document.all.DateRangeStartDay.disabled = periodTimeFrame;
+		document.all.DateRangeStartMonth.disabled = periodTimeFrame;
+		document.all.DateRangeStartYear.disabled = periodTimeFrame;
+		document.all.DateRangeEndDay.disabled = periodTimeFrame;
+		document.all.DateRangeEndMonth.disabled = periodTimeFrame;
+		document.all.DateRangeEndYear.disabled = periodTimeFrame;
+		
+		setBackgroundColor(periodTimeFrame);
+	}
+	
+	function setBackgroundColor(timeFrameSelectFlag){
+	
+		var regularColor = "#88A6BD";
+		var disabledColor = "#D2D8DF";
+	
+		if(timeFrameSelectFlag){
+			var timeFrameBackground = regularColor;
+			var dateRangeSelectBackground = disabledColor;
+		}
+		else {
+			var timeFrameBackground = disabledColor;
+			var dateRangeSelectBackground = regularColor;
+		}
+		
+		document.all.TimeFrame.style.backgroundColor = timeFrameBackground;
+		document.all.DateRangeStartDay.style.backgroundColor = dateRangeSelectBackground;
+		document.all.DateRangeStartMonth.style.backgroundColor = dateRangeSelectBackground;
+		document.all.DateRangeStartYear.style.backgroundColor = dateRangeSelectBackground;
+		document.all.DateRangeEndDay.style.backgroundColor = dateRangeSelectBackground;
+		document.all.DateRangeEndMonth.style.backgroundColor = dateRangeSelectBackground;
+		document.all.DateRangeEndYear.style.backgroundColor = dateRangeSelectBackground;
+	}
+	
+	function formSubmit(){
+
+		// If we are clicking "Go" after we switched back to the TimeFrame drop down.
+		if(GetRadioButtonValue("document.forms['ReportOptions'].PeriodType") == "TIMEFRAME"){
+			top.window.changeDomainTimeFrame(document.forms['ReportOptions'].TimeFrame.value);
+			return false;
+		}
+
+		var startDay = parseInt(document.all.DateRangeStartDay.value);
+		var startMonth = parseInt(document.all.DateRangeStartMonth.value);
+		var startYear = parseInt(document.all.DateRangeStartYear.value);
+		var endDay = parseInt(document.all.DateRangeEndDay.value);
+		var endMonth = parseInt(document.all.DateRangeEndMonth.value);
+		var endYear = parseInt(document.all.DateRangeEndYear.value);
+	
+		if(endYear < startYear){
+			alert("Date Range is Invalid (Year Value)");
+			return false;
+		}
+		
+		if(endYear == startYear){
+			if(endMonth < startMonth){
+				alert("Date Range is Invalid (Month Value)");
+				return false;
+			}
+			
+			if(endMonth == startMonth){
+				if(endDay < startDay){
+					alert("Date Range is Invalid (Day Value)" );
+					return false;
+				}
+			}
+		}
+	
+		top.window.changeDomainDateRange(startDay, startMonth, startYear, endDay, endMonth, endYear);
+		
+		return false;
+	}
+	
+	function showDomainComparisons(){
+	
+		// Don't show any domain comparisons if only 1 domain has been selected.
+		if(getNumberDomainsSelected() <= 1){
+
+			var checkBoxArr = document.all.domainSelect;
+		
+			for(var i=0; i<checkBoxArr.length; i++){
+				var domainID = checkBoxArr[i].value;
+				document.getElementById("domainCompare_" + domainID).innerHTML = "";
+				document.getElementById("domainCustomersPercent_" + domainID).innerHTML = "";
+				
+			}
+		
+			return;
+		}
+		
+		var selectedDomainIDsArr = getSelectedDomainIDs();
+
+		var checkBoxArr = document.all.domainSelect;
+	
+		var allDomainRevenues = getTotalDomainTotals("revenue");
+		var allDomainCustomers = getTotalDomainTotals("newCustomers");
+		var allDomainProfits = getTotalDomainTotals("subTotalProfit");
+		var allAdjustmentBalances = getTotalDomainTotals("adjustmentBalance");
+	
+		for(var i=0; i<checkBoxArr.length; i++){
+			var domainID = checkBoxArr[i].value;
+			
+			if(selectedDomainIDsArr.indexOf(domainID.toString()) == -1){
+				document.getElementById("domainCompare_" + domainID).innerHTML = "";
+				document.getElementById("domainCustomersPercent_" + domainID).innerHTML = "";
+			}
+			else{
+				var thisDomainRevenue = parseInt(document.getElementById("totals_"+domainID+"_revenue").value);
+				var thisDomainProfit = parseInt(document.getElementById("totals_"+domainID+"_subTprofit").value);
+				var thisDomainAdjustments = parseInt(document.getElementById("totals_"+domainID+"_adjustBalance").value);
+				var thisDomainCustomers = parseInt(document.getElementById("totals_"+domainID+"_newCustomers").value);
+			
+				if(allDomainRevenues > 0)
+					var revenuePercentDisplay = Math.round(thisDomainRevenue / allDomainRevenues * 100);
+				else
+					var revenuePercentDisplay = 0;
+			
+				if(allDomainCustomers > 0){
+					var customerPercentDisplay = Math.round(thisDomainCustomers / allDomainCustomers * 100);
+				}
+				else{
+					var customerPercentDisplay = 0;
+				}
+					
+				// Profits can be negative, even though some domains have positive profits
+				if(allDomainProfits != 0){
+				
+					if(allDomainProfits < 0 && thisDomainProfit > 0){
+						var profitPercentDisplay = Math.round((thisDomainProfit + Math.abs(allDomainProfits)) / allDomainProfits * 100);
+					}
+					else if(allDomainProfits < 0 && thisDomainProfit < 0){
+						var profitPercentDisplay = Math.round(thisDomainProfit / allDomainProfits * 100) * -1;
+					}
+					else{
+						var profitPercentDisplay = Math.round(thisDomainProfit / allDomainProfits * 100);
+					}
+				}
+				else{
+					var profitPercentDisplay = 0;
+				}
+				
+				if(profitPercentDisplay == -100)
+					profitPercentDisplay = 100;
+					
+				
+				// Figure out Adjustment Percentages.
+				if(allAdjustmentBalances != 0){
+				
+					if(allAdjustmentBalances < 0 && thisDomainAdjustments > 0){
+						var adjustmentPercentDisplay = Math.round((thisDomainAdjustments + Math.abs(allAdjustmentBalances)) / allAdjustmentBalances * 100);
+					}
+					else if(allAdjustmentBalances < 0 && thisDomainAdjustments < 0){
+						var adjustmentPercentDisplay = Math.round(thisDomainAdjustments / allAdjustmentBalances * 100) * -1;
+					}
+					else{
+						var adjustmentPercentDisplay = Math.round(thisDomainAdjustments / allAdjustmentBalances * 100);
+					}
+				}
+				else{
+					var adjustmentPercentDisplay = 0;
+				}
+				
+				if(adjustmentPercentDisplay == -100)
+					adjustmentPercentDisplay = 100;
+					
+				
+				document.getElementById("domainCustomersPercent_" + domainID).innerHTML =  " &nbsp;&nbsp;&nbsp;(" + customerPercentDisplay + "%)";
+				document.getElementById("domainCompare_" + domainID).innerHTML =  adjustmentPercentDisplay + "% adjustments<br/>" + revenuePercentDisplay + "% revenue&nbsp;&nbsp;&nbsp;" + profitPercentDisplay + "% profit";
+			}
+			
+		}
+	
+	}
+	
+	</script>
+
+<script type="text/javascript" src="library/admin_library.js"></script>
+<link rel="stylesheet" type="text/css" href="library/calendar/themes/winter.css"/>
+<script type="text/javascript" src="library/calendar/src/utils.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar.js"></script>
+<script type="text/javascript" src="library/calendar/lang/calendar-en.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar-setup.js"></script>
+<script type="text/javascript" src="library/formatDate.js"></script>
+
+
+</head>
+
+<body bgcolor="#D2D8DF" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="initializeRowColors(); top.displayNumberOfDomainsSelected(); {DISPLAY_TOTALS_EXTENDED_VIEW}">
+
+<!-- BEGIN TimeFrameBL -->
+<table width="100%" border="0" cellspacing="0" cellpadding="2" bgcolor="#D4D6D8">
+  <tr>
+  <td class="SmallBody">
+  <script>
+	// Used to Hide the the DHTML window.
+	function hideTip(divNameString){
+		var innertDiv = document.getElementById(divNameString);
+		innertDiv.style.position = "absolute";
+		innertDiv.style.display = "none";
+	}
+	
+	// Makes DHTML window visible.
+	function showTip(divNameString){
+	
+		document.getElementById(divNameString).style.display = 'block';
+		
+	}
+  </script>
+<div><div id="helpDiv_domainTotals" align="left" style='width:530px; margin-left:25px; margin-top:10px; font-family:Arial, Helvetica, sans-serif; font-size:11px; color:#555555; background-image: url(./images/tool_tips_back.png);  border:solid; border-color:#660000; border-width:1px; padding:6; filter:progid:DXImageTransform.Microsoft.dropShadow(Color=#999999,offX=3,offY=3)' >
+			<strong>Revenues</strong><br/>Revenues include Shipping, Subtotals, and Sales Tax.  Balance Adjustments are also included within revenues, although refund adjustments cause "revenues" to decrease.
+			<br/>
+<br/>
+<strong>Subtotal Profit</strong><br/>
+
+Subtotal Profits are calculated by subtracting the Vendor Prices from the Customer Prices.  Three percent of revenue is also subtracted to estimate merchant processing fees.  Shipping &amp; Handling Profit, and Sales Commissions.  Customer Discounts including coupons and manual percentage adjustments are factored in.  If there are more positive balance adjustments than negative ones (i.e. refunds), the profit will increase.
+</div>
+</div>
+<script>
+	hideTip("helpDiv_domainTotals");
+</script>
+  &nbsp;&nbsp;<img src="./images/admin/question-up.png" onMouseOver="this.src='./images/admin/question-down.png'; showTip('helpDiv_domainTotals'); this.style.cursor ='hand';" onMouseOut="this.src='./images/admin/question-up.png';  hideTip('helpDiv_domainTotals');" border="0"  align="absmiddle" alt="" />
+<img  src="./images/transparent.gif" width="25" height="4" alt="" /><a href="javascript:visitMonthReport();" class="BlueRedLink" style="font-size:10px;">Month Report</a><br/><img  src="./images/transparent.gif" width="4" height="4" alt="" /><br/><img src="./images/transparent.gif" width="45" height="4" alt="" /><a href="javascript:visitMarketingReport();" class="BlueRedLink" style="font-size:10px;">Marketing Report</a></td>
+    <td align="left" class="SmallBody"><img  src="./images/transparent.gif" width="4" height="4" alt="" /><br/>
+<form style="display:inline" name="ReportOptions" onSubmit="return formSubmit();">
+
+<input type="radio" name="PeriodType" class="SmallBody" value="TIMEFRAME" onClick="SelectPeriodTypeTimeFrame( true );" {PERIODTYPETIMEFRAME} />	
+	<select onChange='top.window.changeDomainTimeFrame(this.value)' class="dashboardInput" name="TimeFrame">
+	{TIMEFRAME_SEL}
+	</select><img src="./images/transparent.gif" width="35" height="1" /><img alt='Calendar' align='absmiddle' src='./images/calendar5.gif' border='0' id='calendarDateRange'  onmouseover="this.style.cursor='pointer'" onMouseOut="this.style.cursor='default'" />
+	<br/><img  src="./images/transparent.gif" width="4" height="8" alt="" /><br/>
+	
+ <input type="radio" name="PeriodType"  class="SmallBody" value="DATERANGE" onClick="SelectPeriodTypeTimeFrame( false );" {PERIODTYPEDATERANGE} />	
+
+{DATERANGESELS}
+<input type="hidden" name="calendarProxyField" value="" id="calendarField" onChange="calendarDateRangeChanged(this.value)" />&nbsp;&nbsp;<input type="submit" value="Go" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" />
+</form>
+  </tr>
+</table>
+
+<script type="text/javascript">InitializeTimeFields()</script>
+<script>
+	function calendarDateRangeChanged(newDateForRange){
+	
+		var calendarDate = new Date(Date.parse(newDateForRange));
+		
+		SelectPeriodTypeTimeFrame( false );
+		
+		document.forms["ReportOptions"].DateRangeStartYear.value = calendarDate.getFullYear();
+		document.forms["ReportOptions"].DateRangeEndYear.value = calendarDate.getFullYear();
+		document.forms["ReportOptions"].DateRangeStartMonth.value =  (calendarDate.getMonth() + 1);
+		document.forms["ReportOptions"].DateRangeEndMonth.value =  (calendarDate.getMonth() + 1);
+		document.forms["ReportOptions"].DateRangeStartDay.value =  (calendarDate.getDate());
+		document.forms["ReportOptions"].DateRangeEndDay.value =  (calendarDate.getDate());
+		
+		SetRadioButtonValue("document.forms['ReportOptions'].PeriodType", "DATERANGE");
+		
+		// Now select the Ending date value and highlight it.  So that the user just needs to use their number pad and the enter key to start the report.
+		document.forms["ReportOptions"].DateRangeEndDay.focus();
+		
+		document.forms["ReportOptions"].DateRangeEndDay.select();
+	}
+	
+	function calendarDateSelected(){
+		alert("calendar Selected");
+	}
+		
+		
+
+
+		var cal = new Zapatec.Calendar.setup({
+
+		inputField     :    "calendarField",     // id of the input field
+		singleClick    :    true,     // require two clicks to submit
+		ifFormat       :    '%a, %e %b %Y %H:%M:%S',     //  of the input field
+		timeFormat     : 	"12",
+		ampm           :    false,
+		showsTime      :    false,     // show time as well as date
+		button         :    "calendarDateRange",  // trigger button
+		timeInterval   :    10,
+		floating	   : 	true,
+		position	   : 	[135, 63],
+		date	       :	new Date("{START_REPORT_DATE_STRING}")
+		});
+		
+
+		
+
+</script>
+<!-- END TimeFrameBL -->
+
+<table width="100%" border="0" cellspacing="0" cellpadding="1" bgcolor="#B7C0CC">
+  <tr>
+    <td>
+<table width="100%" border="0" cellspacing="1" cellpadding="2">
+<form name="domainSelectForm">
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+
+<!-- BEGIN DomainLogosBL -->
+
+  <tr id="rowBackground_{DOMAIN_ID}" bgcolor="#D2D8DF"  onmouseover="hlRow(this, '{DOMAIN_ID}')" onMouseOut="dhlRow(this, '{DOMAIN_ID}')" onClick="toggleDomainSelect('{DOMAIN_ID}')">
+    <td width="10" ><input type="checkbox" name="domainSelect" value="{DOMAIN_ID}" {DOMAIN_CHECKED} /><input type="hidden" id="hiddencheckbox_{DOMAIN_ID}" name="hiddencheckbox_{DOMAIN_ID}" value="{DOMAIN_CHECKED}" /></td>
+	<td width="150" ><img src="./domain_logos/{DOMAIN_LOGO}" alt="" /></td>
+	<td width="200" bgcolor="#D2D8DF" class="ReallySmallBody">{TOP_DOMAIN_NOTIFY}<a href="javascript:window.top.ShowDomainInNewWindow('{DOMAIN_URL}')" class="BlueRedLink" style="font-size:10px;">{DOMAIN_KEY}</a>{NEW_CUST_COUNT}<div id="domainCustomersPercent_{DOMAIN_ID}" style="display:inline"></div><div id="domainCompare_{DOMAIN_ID}"></div></td>
+	{EXTRA_COLUMN}
+  </tr>
+<!-- END DomainLogosBL -->
+</form>
+</table>
+
+	</td>
+  </tr>
+</table>
+
+
+
+
+</body>
+</html>

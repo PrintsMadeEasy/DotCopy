@@ -1,0 +1,53 @@
+<html>
+<body>
+<pre>
+<h1>Erstellungsprotokoll</h1>
+<h3>
+--------------------Konfiguration: MyService - Win32 Release--------------------
+</h3>
+<h3>Befehlszeilen</h3>
+Creating command line "rc.exe /l 0x409 /fo"Release/NTService.res" /d "NDEBUG" /d "_AFXDLL" "C:\inet\dot\Cplus\NTService_XMLMailSender\NTService.rc"" 
+Erstellen der temporären Datei  "C:\DOCUME~1\CHRIST~1\LOCALS~1\Temp\RSP4AC.tmp" mit Inhalten
+[
+/nologo /MD /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_AFXDLL" /D "_MBCS" /Fp"Release/MyService.pch" /Yu"stdafx.h" /Fo"Release/" /Fd"Release/" /FD /c 
+"C:\inet\dot\Cplus\NTService_XMLMailSender\NTService.cpp"
+]
+Creating command line "cl.exe @C:\DOCUME~1\CHRIST~1\LOCALS~1\Temp\RSP4AC.tmp" 
+Erstellen der temporären Datei  "C:\DOCUME~1\CHRIST~1\LOCALS~1\Temp\RSP4AD.tmp" mit Inhalten
+[
+wsock32.lib zlib.lib /nologo /subsystem:console /incremental:no /pdb:"Release/A-Mail.pdb" /machine:I386 /out:"Release/A-Mail.exe" 
+.\Release\DKIM.obj
+.\Release\EmailSender.obj
+.\Release\main.obj
+.\Release\md5.obj
+.\Release\MyService.obj
+.\Release\NTService.obj
+.\Release\Pop3Thread.obj
+.\Release\SMTPMine.obj
+.\Release\SMTPServerThread.obj
+.\Release\Stdafx.obj
+.\Release\NTService.res
+]
+Erstellen der Befehlzeile "link.exe @C:\DOCUME~1\CHRIST~1\LOCALS~1\Temp\RSP4AD.tmp"
+Erstellen der temporären Datei  "C:\DOCUME~1\CHRIST~1\LOCALS~1\Temp\RSP4AE.bat" mit Inhalten
+[
+@echo off
+mc messages
+]
+Erstellen der Befehlzeile "C:\DOCUME~1\CHRIST~1\LOCALS~1\Temp\RSP4AE.bat"
+Ressourcen werden kompiliert...
+Kompilierung läuft...
+NTService.cpp
+Linker-Vorgang läuft...
+LINK : warning LNK4098: Standardbibliothek "LIBC" steht in Konflikt mit anderen Bibliotheken; /NODEFAULT:Bibliothek verwenden
+<h3>Ausgabefenster</h3>
+Build event message file (see Q199405)
+MC: Compiling messages.mc
+
+
+
+<h3>Ergebnisse</h3>
+A-Mail.exe - 0 Fehler, 1 Warnung(en)
+</pre>
+</body>
+</html>

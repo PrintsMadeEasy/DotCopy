@@ -1,0 +1,77 @@
+# Allows "FancyIndexing" so that people who bookmark the website can see the PME icon.
+Options -Indexes
+
+# Make sure that some Directory Names are not case sensitive
+# For more information on Mod Rewrite visit... http://www.ilovejackdaniels.com/mod_rewrite_cheat_sheet.pdf
+RewriteEngine on
+
+# For any directory or sub directory... list all of the posible letter combinations and redirect to the chosen destination.
+# ------ The last command must contain the letter "L" in the 3rd parameter... letting Apache know that their are no more rules to check.
+
+
+# Make a blank directory request run index.html... which will get incercepted by the ModRewrite rule above.
+RewriteRule ^$ /index.html [NC]
+
+
+# The S is optional for "printsmadeeasy.com/greeting(s)"
+RewriteRule ^greeting[sS]?\s*$ /greeting-cards.html [NC]
+RewriteRule ^greetingcard[sS]?\s*$ /Greetings [NC,R]
+RewriteRule ^greeting[sS]?/\s*$ /Greetings [NC,R]
+RewriteRule ^greetingcard[sS]?/\s*$ /Greetings [NC,R]
+
+RewriteRule ^birthdays?\s*$ /birthday-parties.html [NC]
+RewriteRule ^birthdays?/\s*$ /Birthdays [NC,R]
+
+RewriteRule ^birthannouncements?\s*$ /birth-announcements.html [NC]
+RewriteRule ^birthannouncements?/\s*$ /BirthAnnouncements [NC,R]
+
+RewriteRule ^savethedate\s*$ /save-the-date.html [NC]
+RewriteRule ^savethedate/\s*$ /SaveTheDate [NC,R]
+
+
+RewriteRule ^realty\s*$ /realtyPostcards.html [NC]
+RewriteRule ^realty/\s*$ /realty [NC,R]
+
+
+RewriteRule ^free\s*$ /log.php?from=m-PR-free&dest=free-business-cards.html [NC]
+RewriteRule ^free/\s*$ /free [NC,R]
+
+RewriteRule ^MyGym\s*$ /partners-MyGym.html [NC]
+
+# Anytime anyone accessed a subdirectory /pens.... assume they are putting their phone number afterwards and redirect them to a promtional page for that Product ID.
+RewriteRule ^pens/(.*)$ /promo.php?pr=91&ph=$1 [NC,R]
+
+
+
+
+
+# For the Content System
+RewriteRule ^ci/templates/(.*)$ /content_view.php?contentType=template&contentID=$1 [NC]
+RewriteRule ^ci/(.*)$ /content_view.php?contentType=item&contentID=$1 [NC]
+RewriteRule ^cc/(.*)$ /content_view.php?contentType=category&contentID=$1 [NC]
+
+
+
+# For the Content System Images
+# Put in the "L"ast directive so the File Proxy doesn't try to get the JPG images instead.
+RewriteRule ^images/(.*)_CC\.jpg$ /content_image.php?contentType=category&id=$1 [NC,L]
+RewriteRule ^images/(.*)_CI\.jpg$ /content_image.php?contentType=item&id=$1 [NC,L]
+RewriteRule ^images/(.*)_CTB\.jpg$ /content_image.php?contentType=templateImageBig&id=$1 [NC,L]
+RewriteRule ^images/(.*)_CTS\.jpg$ /content_image.php?contentType=templateImageSmall&id=$1 [NC,L]
+
+
+
+# $2 will match the filename with the extention.   $4 matches any name/value pairs follwing a question mark, and then adds the name/value pairs to the file_proxy.php request.
+RewriteRule ^(((.*)\.(html|gif|png|jpeg|jpg|txt|swf|htm|css|gg|gz|tar|zip|mpeg|ico|js|mpg|xml))(\?.*)?)$ /file_proxy.php?fileName=$2&%{QUERY_STRING} [NC]
+
+
+
+
+#<FilesMatch "\.(html|gif|png|jpeg|jpg|swf|htm|css|gg|gz|tar|zip|mpeg|ico|js|mpg|xml)$">
+#Header unset Cache-Control
+#Header unset Pragma
+#Header set Cache-Control "max-age=604800"
+#</FilesMatch>
+
+# Send anything starting with "templates" into the the template dispatch PHP script... and send the remaing part of the URL as a parameter... so PHP can figure out what to do next.
+RewriteRule ^[tT][eE][mM][pP][lL][aA][tT][eE][sS]/(.*)$ /templates_dispatch.php?area=$1/ [NC,R,L]

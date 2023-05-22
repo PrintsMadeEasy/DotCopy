@@ -1,0 +1,1031 @@
+<html>
+<head>
+<title>Admin</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<script language="javascript">
+
+	//Make an array of the images we want to preload for the mouse-overs.
+	arImageSrc = new Array (
+		"./images/button-go-d.gif",
+		"./images/button-viewartwork-d.gif",
+		"./images/button-edit-d.gif",
+		"./images/button-copy-d.gif",
+		"./images/button-delete-d.gif",
+		"./images/button-createtemplate-d.gif"
+
+	)
+
+	//Preload images.
+	arImageList = new Array ();
+	for (counter in arImageSrc) {
+		arImageList[counter] = new Image();
+		arImageList[counter].src = arImageSrc[counter];
+	}
+	
+	function SearchReplace(){
+		var searchTerm = document.getElementById("searchTermSource").value;
+		var replaceTerm = document.getElementById("replaceKeywordsInput").value;
+		
+		var searchTermNoSpaced = searchTerm.replace(/\s*/, "");
+		var replaceTermNoSpaced = replaceTerm.replace(/\s*/, "");
+		
+		if(searchTermNoSpaced == "" && replaceTermNoSpaced != ""){
+			alert("You can not search for NOTHING and replace it with SOMETHING.\n\nHowever, you can search and replace NOTHING for NOTHING\nin order to re-generate image previews.");
+			return;
+		}
+		
+		if(searchTermNoSpaced == "" && replaceTermNoSpaced == ""){
+			if(confirm("You are going to do a SEARCH / REPLACE for NOTHING / NOTHING.\nThis won't change the artwork, but it will re-generate image previews.\n\nThis could take a while. Are you sure?")){
+				document.getElementById("replacetermHidden").value = replaceTerm;
+				document.forms["searchReplaceForm"].submit();
+			}
+			return;
+		}
+		
+		if(confirm("Are you sure you want to do an replacement?\n\nTHIS OPERATION CAN NOT BE UN-DONE!\n\nSearch For\n============================\n" + (searchTerm == "" ? "nothing" : searchTerm) + "\n\nReplace With\n============================\n" + (replaceTerm == "" ? "nothing" : replaceTerm))){
+			document.getElementById("replacetermHidden").value = replaceTerm;
+			document.forms["searchReplaceForm"].submit();
+		}
+	}
+	
+	function highlightReplacementTerm(){
+		document.getElementById("replaceKeywordsInput").style.backgroundColor = '#FFdddd';
+		
+	}
+	
+	function updateProductLinksDesc(templateID, productCount){
+		document.getElementById("prodLnkDesc_" + templateID).innerHTML = "Product Links " + productCount;
+	}
+
+	var currentTemlateLinkIdOpen = 0;
+	function closeCurrentTemplateLinkWindow(){
+	
+		if(currentTemlateLinkIdOpen == 0)
+			return;
+			
+		document.getElementById('tempLinksOuter_' + currentTemlateLinkIdOpen).style.visibility = "hidden";
+		document.getElementById('tempLinksOuter_' + currentTemlateLinkIdOpen).style.display = "none";
+		document.getElementById('tempLinksInner_' + currentTemlateLinkIdOpen).innerHTML = "";
+		document.getElementById('commandsCell_' + currentTemlateLinkIdOpen).style.backgroundColor = "#FFFFFF";
+		
+		currentTemlateLinkIdOpen = 0;
+	}
+	
+	
+	function editLinks(templateArea, templateID){
+	
+		closeCurrentTemplateLinkWindow();
+		closeCurrentTextFieldWindow();
+		
+		currentTemlateLinkIdOpen = templateID;
+		
+		document.getElementById('tempLinksOuter_' + templateID).style.visibility = "visible";
+		document.getElementById('tempLinksOuter_' + templateID).style.display = "block";
+		document.getElementById('commandsCell_' + templateID).style.backgroundColor = "#ccddff";
+		
+		var dateObj = new Date();
+		var iframeSrce = "ad_templates_link.php?templateArea=" + templateArea + "&templateID=" + templateID + "&nocache=" + dateObj.getTime();
+		var closeButtonHTML = '<input type="button" name="X" value="X" class="AdminButton" onMouseOver="this.style.background=\'#ffeeaa\';" onMouseOut="this.style.background=\'#FFFFDD\';" onClick="closeCurrentTemplateLinkWindow();" />';
+		var popUpHtmlSrc = '<table cellpadding="0" cellspacing="0" border="0" width=100%><tr><td align="right" bgcolor="#999999">'+closeButtonHTML+'&nbsp;</td></tr></table>';
+		popUpHtmlSrc += '<iframe id="templateLinksFrame" width="100%" style="height:400px" src="'+iframeSrce+'"></iframe>';
+		document.getElementById('tempLinksInner_' + templateID).innerHTML = popUpHtmlSrc;
+	}
+	
+	
+	
+
+	var currentTextFieldTemplateIdOpen = 0;
+	function closeCurrentTextFieldWindow(){
+		
+		if(currentTextFieldTemplateIdOpen == 0)
+			return;
+			
+		document.getElementById('textFieldsOuter_' + currentTextFieldTemplateIdOpen).style.visibility = "hidden";
+		document.getElementById('textFieldsOuter_' + currentTextFieldTemplateIdOpen).style.display = "none";
+		document.getElementById('textFieldsInner_' + currentTextFieldTemplateIdOpen).innerHTML = "";
+		document.getElementById('commandsCell_' + currentTextFieldTemplateIdOpen).style.backgroundColor = "#FFFFFF";
+		
+		currentTextFieldTemplateIdOpen = 0;
+	
+	}
+	function editTextFields(templateArea, templateID){
+	
+		closeCurrentTextFieldWindow();
+		closeCurrentTemplateLinkWindow();
+		
+		currentTextFieldTemplateIdOpen = templateID;
+		
+		document.getElementById('textFieldsOuter_' + templateID).style.visibility = "visible";
+		document.getElementById('textFieldsOuter_' + templateID).style.display = "block";
+		document.getElementById('commandsCell_' + templateID).style.backgroundColor = "#ccddff";
+		
+		var dateObj = new Date();
+		var iframeSrce = "ad_templates_textFields.php?templateArea=" + templateArea + "&templateID=" + templateID + "&nocache=" + dateObj.getTime();
+		var popUpHtmlSrc = '<iframe id="textFiledsFrame" width="100%" style="height:400px" src="'+iframeSrce+'"></iframe>';
+		document.getElementById('textFieldsInner_' + templateID).innerHTML = popUpHtmlSrc;
+	}
+	
+
+	
+	function ViewPDFTemplate(ProjectID, View){
+
+		var address = "./pdf_launch.php?forward=ad_display_pdf.php%3Fprojectrecord=" + ProjectID + "%26pdfprofile=Proof%26viewtype=" + View;
+		newWindow5 = window.open(address, "subtemplate", "height=500,width=770,directories=no,location=no,menubar=no,scrollbars=yes,status=no,toolbar=no,resizable=yes");
+
+		newWindow5.focus();
+	}
+
+	function ViewArtWorkTemplate(ProjectID, View){
+
+		var address = "./clipboard.php?projectid=" +  ProjectID + "&view=" + View;
+		newWindow5 = window.open(address, "subtemplate", "height=650,width=770,directories=no,location=no,menubar=no,scrollbars=yes,status=no,toolbar=no,resizable=yes");
+
+		newWindow5.focus();
+	}
+	function DeleteTemplate(ID, View){
+		if(confirm("Do you really want to delete this template?\n\n")){
+
+			var SubmitURL = "./ad_templates.php?form_sc={FORM_SECURITY_CODE}&returl={CURRENT_URL_ENCODED}&action=deletetemplate&templateid=" + ID + "&templateview=" + View;
+			document.location = SubmitURL;
+		}
+	}
+	function EditArtWorkTemplate(TemplateID, View){
+			document.location = "./ad_templates_artwork.php?categorytemplate={CATEGORYTEMPLATESELECTED}&templateid=" + TemplateID + "&productidforreturn={PRODUCTID}&editorview=" + View + "&searchkeywords={SEARCH_WORDS_ENCODED}&offset={OFFSET}";
+	}
+	function CopyArtWorkTemplate(TemplateID, View){
+			document.location = "./ad_templates_artwork.php?categorytemplate={CATEGORYTEMPLATESELECTED}&productidforreturn={PRODUCTID}&editorview={TEMPLATEVIEW}&copytemplate=" + TemplateID + "&&searchkeywords={SEARCH_WORDS_ENCODED}&offset={OFFSET}";
+	}
+	
+	var onlyClickOrderCountsOnce = false;
+	function ShowOrderCounts(){
+		if(onlyClickOrderCountsOnce)
+			return;
+		onlyClickOrderCountsOnce = true;
+		document.location = "{CURRENT_URL}&showOrderCounts=yes";
+	}
+	
+	function AddCategoryJS(){
+
+		if(document.AddCategory.categoryname.value == ""){
+			alert("Specify a Category Name First");
+		}
+		else{
+			document.forms["AddCategory"].submit();
+		}
+
+	}
+	function MoveTemplates(){
+		document.templates.action = "./ad_templates.php";
+		document.templates.templatecommand.value = "movetemplatestocategory";
+		document.templates.submit();
+	}
+
+	function AddMultiKeywords(){
+
+		var NewKeywords = prompt("Enter the keywords that you would like to add separated by spaces.", "");
+
+		if(NewKeywords != null && NewKeywords != ""){
+
+			document.templates.action = "./ad_templates.php";
+			document.templates.templatecommand.value = "addmultikeywords";
+			document.templates.thekeywords.value = NewKeywords;
+			document.templates.submit();
+		}
+	}
+	function DeleteMultiKeywords(){
+
+		var RemoveKeywords = prompt("Enter the keywords that you would like to delete separated by spaces.", "");
+
+		if(RemoveKeywords != null && RemoveKeywords != ""){
+
+			document.templates.action = "./ad_templates.php";
+			document.templates.templatecommand.value = "deletemultikeywords";
+			document.templates.thekeywords.value = RemoveKeywords;
+			document.templates.submit();
+		}
+	}
+
+	function CopyToEngine(){
+		document.templates.action = "./ad_templates_copy.php";
+		document.templates.templatecommand.value = 'CopyCategoryToEngine';
+		document.templates.submit();
+	}
+	function CopyToCategory(CategoryID){
+
+		if(CategoryID == "0")
+			return;
+
+		if(confirm("Do you want to copy artworks from the Search Engine to the Category that you selected?")){
+			document.templates.action = "./ad_templates_copy.php";
+			document.templates.templatecommand.value = 'CopyEngineToCategory';
+			document.templates.categoryid.value = CategoryID;
+
+			document.templates.submit();
+		}
+	}
+	
+	function CopyToDomain(DomainID){
+		if(DomainID == "0")
+			return;
+			
+		document.templates.action = "./ad_templates_copy.php";
+		document.templates.templatecommand.value = 'CopyEngineToDomain';
+		document.templates.domainid.value = DomainID;
+
+		document.templates.submit();
+	}
+	function ReOrderTemplate(OrderCommand){
+
+		var OrderArr = OrderCommand.split("|");
+		var MoveTemplateID = OrderArr[0];
+		var MoveToPosition = OrderArr[1];
+
+		var MoveCommandURL = "{CURRENT_URL}&movetemplate=yes&templateid=" + MoveTemplateID + "&moveto=" + MoveToPosition;
+
+		document.location = MoveCommandURL;
+	}
+	function makeNewWindow3(address){
+		newWindow = window.open(address, "sub", "height=620,width=584,directories=no,location=no,menubar=no,scrollbars=yes,status=no,toolbar=no,resizable=no");
+		newWindow.moveTo((self.screenLeft + self.screen.width/4),(self.screenTop + self.screen.height/4));
+		newWindow.focus();
+	}
+	function makeNewWindowKeyword(address){
+		newWindow = window.open(address, "tempalteKeywords", "height=800,width=800,directories=yes,location=yes,menubar=yes,scrollbars=yes,status=yes,toolbar=yes,resizable=yes");
+		newWindow.moveTo((self.screenLeft + 30),(self.screenTop + 30));
+		newWindow.focus();
+	}
+	function UTempSort(TempID){
+		var TemplateSort = eval("document.forms.templates.templatesort_" + TempID + ".value");
+
+		var SubmitURL = "./ad_templates.php?templatecommand=updatesearchenginesort&form_sc={FORM_SECURITY_CODE}&returl={CURRENT_URL_ENCODED}&tempsort=" + TemplateSort + "&templateid=" + TempID;
+		document.location = SubmitURL;
+	}
+	function SaveKeywords(TempID){
+		document.adwords.keywords.value = eval("document.forms.templates.keywords_" + TempID + ".value");
+		document.adwords.templateid.value = TempID;
+		document.adwords.submit();
+
+	}
+	function SelectAllTemplates(){
+
+		ElementList = document.templates.elements;
+
+		for(var i=0; i < ElementList.length; i++){
+			if(ElementList[i].type == "checkbox"){
+				ElementList[i].checked=true;
+				HighlightCheckboxColumn(true, ElementList[i].value);
+			}
+			else if(ElementList[i].name.search(/hiddencheckbox/) != -1){
+				ElementList[i].value="true";
+			}
+		}
+	}
+	function ClearAllTemplates(){
+
+		ElementList = document.templates.elements;
+
+		for(var i=0; i < ElementList.length; i++){
+			if(ElementList[i].type == "checkbox"){
+				ElementList[i].checked=false;
+				HighlightCheckboxColumn(false, ElementList[i].value);
+			}
+			else if(ElementList[i].name.search(/hiddencheckbox/) != -1){
+				ElementList[i].value="false";
+			}
+		}
+	}
+	function HighlightCheckboxColumn(ThisBool, ThisTempID){
+
+		var TDBack = eval("document.getElementById(\"searchTD_" + ThisTempID + "\")");
+
+		if (ThisBool) {
+			TDBack.style.backgroundColor = "#ccddFF";
+		}
+		else {
+			TDBack.style.backgroundColor = "#FFFFFF";
+		}
+	}
+
+	function ClickONCheckBoxCell(ThisTempID){
+
+		var HiddenInputObj = GetHiddenInputObj(ThisTempID);
+
+		if(HiddenInputObj.value == "true"){
+			HiddenInputObj.value = "false";
+		}
+		else if(HiddenInputObj.value == "false"){
+			HiddenInputObj.value = "true";
+		}
+
+		var CheckBxObjct = GetCheckBoxObj(ThisTempID);
+
+		if(HiddenInputObj.value == "true"){
+			HighlightCheckboxColumn(true, ThisTempID);
+			CheckBxObjct.checked = true;
+		}
+		else{
+			HighlightCheckboxColumn(false, ThisTempID);
+			CheckBxObjct.checked = false;
+		}
+
+
+
+	}
+
+	//The hidden input needs to be used as a backup... to concurrently hold the value of the CheckBox.  The reason is that when a TD has an onClick event it interfers with the checkbox value... when you click directly on it.
+	function GetHiddenInputObj(ThisTempID){
+		var HiddenInputField = eval("document.forms['templates'].hiddencheckbox_" + ThisTempID);
+		return HiddenInputField;
+	}
+
+	//Returns the CheckBox DOM object with the corresponding Template ID
+	function GetCheckBoxObj(ThisTempID){
+		var ElementList = document.templates.elements;
+
+		for(var i=0; i < ElementList.length; i++){
+			if(ElementList[i].type == "checkbox"){
+				if(ElementList[i].value == ThisTempID){
+					return ElementList[i];
+				}
+			}
+		}
+	}
+	function hl(e)
+	{
+		e.style.color='#FF0000';
+		e.style.textDecoration='underline';
+	}
+	function dl(e)
+	{
+		e.style.color='black';
+		e.style.textDecoration='none';
+	}
+	function hltd(e)
+	{
+		e.style.cursor='hand';
+		e.style.background='#FFFFDD';
+	}
+	function dlte(e)
+	{
+		e.style.background='#FFFFFF';
+		e.style.cursor='default';
+	}
+
+	function LinkToKeywordsS(KW){
+		makeNewWindowKeyword("./ad_templates.php?productid={PRODUCTID}&templateview=template_searchengine&searchtype=specific&searchkeywords=" + KW);
+	}
+	function LinkToKeywordsB(KW){
+		makeNewWindowKeyword("./ad_templates.php?productid={PRODUCTID}&templateview=template_searchengine&searchtype=broad&searchkeywords=" + KW);
+	}
+
+	function SelectPeriodTypeTimeFrame( state )
+	{
+		document.all.TimeFrame.disabled = !state;
+		document.all.DateRangeStartDay.disabled = state;
+		document.all.DateRangeStartMonth.disabled = state;
+		document.all.DateRangeStartYear.disabled = state;
+		document.all.DateRangeEndDay.disabled = state;
+		document.all.DateRangeEndMonth.disabled = state;
+		document.all.DateRangeEndYear.disabled = state;
+	}
+
+	function InitializeTimeFields()
+	{
+		var periodTimeFrame = {PERIODISTIMEFRAME};
+		document.all.TimeFrame.disabled = !periodTimeFrame;
+		document.all.DateRangeStartDay.disabled = periodTimeFrame;
+		document.all.DateRangeStartMonth.disabled = periodTimeFrame;
+		document.all.DateRangeStartYear.disabled = periodTimeFrame;
+		document.all.DateRangeEndDay.disabled = periodTimeFrame;
+		document.all.DateRangeEndMonth.disabled = periodTimeFrame;
+		document.all.DateRangeEndYear.disabled = periodTimeFrame;
+	}
+
+
+	function CheckReportOptions(){
+		var Error = "";
+
+		var ReqNum = document.forms["ReportOptions"].numrequests.value;
+		var ReqMatchS = document.forms["ReportOptions"].nummatchess.value;
+		var ReqMatchB = document.forms["ReportOptions"].nummatchesb.value;
+
+		if(ReqMatchB.search(/^\d+$/) == -1 || ReqMatchS.search(/^\d+$/) == -1 || ReqNum.search(/^\d+$/) == -1){
+			alert("Problem with search criteria");
+			return false;
+		}
+		else{
+			return true;
+		}
+	}
+
+	function HighlighTemplatesByKeyword(){
+
+		var SubSearchType = document.forms["subsearch"].TypeOfSearch.value;
+		var SubSearchKeyword = document.forms["subsearch"].subkeyword.value;
+
+		if(SubSearchKeyword != ""){
+
+			for(var i=0; i<document.forms["templates"].elements.length; i++){
+				var FormInput = document.forms["templates"].elements[i];
+
+				//Check if we are on the text area
+				if(FormInput.name.search(/keywords_/) != -1){
+
+					if(SubSearchType == "having"){
+						if(eval("FormInput.value.search(/" + SubSearchKeyword + "/)") != -1){
+							FormInput.style.backgroundColor = "#FF9999";
+						}
+						else{
+							FormInput.style.backgroundColor = "#F3EEEE";
+						}
+					}
+					else if(SubSearchType == "missing"){
+						if(eval("FormInput.value.search(/" + SubSearchKeyword + "/)") == -1){
+							FormInput.style.backgroundColor = "#9999FF";
+						}
+						else{
+							FormInput.style.backgroundColor = "#F3EEEE";
+						}
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+</script>
+<link rel="stylesheet" type="text/css" href="library/calendar/themes/winter.css"/>
+<script type="text/javascript" src="library/calendar/src/utils.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar.js"></script>
+<script type="text/javascript" src="library/calendar/lang/calendar-en.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar-setup.js"></script>
+<script type="text/javascript" src="library/formatDate.js"></script>
+</head>
+<body bgcolor="#FFFFFF" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="">
+<div align="center">
+{HEADER}
+&nbsp;
+<table width="760" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td class="Body">
+<!-- Inner Body  -->
+
+
+
+<!--  --------------------------------------   -->
+
+
+<!-- BEGIN categoryBL -->
+<img src="./images/transparent.gif" border="0" width="1" height="8" alt="" /><table width="100%" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td class="NavColor"><img src="./images/transparent.gif" border="0" width="1" height="2" alt="" /></td>
+</tr>
+</table>
+<ul>
+<!-- BEGIN productBL -->
+<li><a class="BlueRedLink" href="./ad_templates.php?productid={PRODUCTID}&templateview=template_category">{PRODUCTNAME}</a><br/>&nbsp;</li>
+<!-- END productBL -->
+</ul>
+<!-- END categoryBL -->
+
+
+<!--  --------------------------------------   -->
+
+
+<!-- BEGIN productDisplayBL -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td class="SmallBody" width="50%"><font class="SmallBody"><a class="BlueRedLink" href="./ad_templates.php?">Product:</a></font> <b>{PRODUCTNAME}</b></td>
+    <td class="SmallBody" width="50%" align="right">{NAV_BAR_HTML}</td>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td class="NavColor"><img src="./images/transparent.gif" border="0" width="1" height="2" alt="" /></td>
+</tr>
+</table>
+
+<!-- BEGIN TemplateCategoriesBL -->
+&nbsp;
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<form name="AddCategory" action="./ad_templates.php" method="GET">
+<input type="hidden" name="templateview" value="{TEMPLATEVIEW}" />
+<input type="hidden" name="productid" value="{PRODUCTID}" />
+<input type="hidden" name="action" value="addproductcategory" />
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+  <tr>
+  <td>
+  <!-- BEGIN ShowOrderCounts_CategoriesBL -->
+  <input type="button" name="Generate" value="Show Order Counts (may take a while)" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" onClick="ShowOrderCounts();" />
+  <!-- END ShowOrderCounts_CategoriesBL -->
+  </td>
+    <td align="right" class="Body"> <!-- BEGIN AddCategoryField --><input type="text" name="categoryname" value="" size="12" maxlength="30" />&nbsp;<a href="javascript:AddCategoryJS()" class="blueredlink">Add Category</a><!-- END AddCategoryField --></td>
+  </tr>
+ </form>
+</table>
+
+<table width="100%" cellpadding="2" cellspacing="1" border="0">
+
+<tr>
+<td valign="bottom">
+<table cellpadding="2" cellspacing="0" border="0">
+<tr>
+<!-- BEGIN templateDisplayBL -->
+<td align="center">{MOVECATUP}&nbsp;{MOVECATDOWN}<br/><table cellpadding="1" cellspacing="0" border="0"><tr><td bgcolor="{BGCOLOR}" nowrap class="ReallySmallBody">&nbsp;<a href="./ad_templates.php?productid={PRODUCTID}&categorytemplate={CATEGORYTEMPLATEID}&templateview=template_category"><font color="#000000" style="text-decoration:none;">{TEMPLATECATEGORY}</font></a>&nbsp;</td></tr></table></td>
+<td><img src="./images/transparent.gif" border="0" width="2" height="1" alt="" /></td>
+<!-- END templateDisplayBL -->
+</tr>
+</table>
+</td>
+
+</tr>
+
+</table>
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td bgcolor="#CCCCCC"><img src="./images/transparent.gif" border="0" width="1" height="2" alt="" /></td>
+</tr>
+</table>
+<img  src="./images/transparent.gif" border="0" width="1" height="10" alt="" /><br/>
+<div align="right">
+<!-- BEGIN NewTemplateButtonBL -->
+<a href="./ad_templates_artwork.php?productid={PRODUCTID}&productidforreturn={PRODUCTID}&categorytemplate={CATEGORYTEMPLATESELECTED}&editorview={TEMPLATEVIEW}"><img src="./images/button-createtemplate-u.gif" onMouseOver="this.src='./images/button-createtemplate-d.gif';" onMouseOut="this.src='./images/button-createtemplate-u.gif';" border="0" align="absmiddle"  width="146" height="25" alt="" /></a>
+<!-- END NewTemplateButtonBL -->
+</div>
+
+<!-- BEGIN noResultsBL -->
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td bgcolor="#333333">
+<table width="100%" cellpadding="2" cellspacing="1" border="0">
+<form name="templates" action="#" method="post">
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+<input type="hidden" name="productid" value="{PRODUCTID}" />
+<input type="hidden" name="returl" value="{CURRENT_URL}" />
+<input type="hidden" name="fromcategory" value="{CATEGORYTEMPLATESELECTED}" />
+<input type="hidden" name="templatecommand" value="" />
+<input type="hidden" name="thekeywords" value="" />
+
+<tr>
+                  <td bgcolor="#CCCCCC" class="Body" width="7%">ID</td>
+                  <td bgcolor="#CCCCCC" class="Body" width="13%">Preview</td>
+                  <td bgcolor="#CCCCCC" class="Body" width="12%">Dimensions</td>
+                  <td bgcolor="#CCCCCC" class="Body" width="9%">Order</td>
+                  <td bgcolor="#CCCCCC" class="SmallBody"  colspan="2"><img src="./images/transparent.gif" border="0" width="9" height="1" alt="" /><img src="./images/arrow-down-left-black.gif" border="0" width="46" height="17" alt="" />Move to: {MOVECATEGORY} <a href="javascript:MoveTemplates()" class="BlueRedLink" >Category</a> or copy to <a href="javascript:CopyToEngine()" class="BlueRedLink">Search Engine</a></td>
+</tr>
+
+<!-- BEGIN artworkTemplateBL -->
+
+<tr>
+                  <td bgcolor="#FFFFFF"  class="SmallBody" width="7%">{TEMPID}</td>
+                  <td bgcolor="#EEEEEE"  class="Body" width="13%" align="center"><a href="javascript:EditArtWorkTemplate({TEMPID}, 'template_category')"><img src="{THUMB_PHOTO}" border="0" alt="" /></a></td>
+                  <td bgcolor="#FFFFFF"  class="Body" width="12%">{DIMESIONS}</td>
+                  <td bgcolor="#FFFFFF"  class="Body" width="9%">&nbsp;&nbsp;<select name="order" onChange="ReOrderTemplate(this.value)">{ORDER_DROPDOWN}</select></td>
+				  <td bgcolor="#FFFFFF"  class="Body" width="5%" align="center" id="searchTD_{TEMPID}" onClick="ClickONCheckBoxCell({TEMPID});"><input type="checkbox" name="movethis[]" value="{TEMPID}" /><input type="hidden" name="hiddencheckbox_{TEMPID}" value="false" /></td>
+                  <td bgcolor="#FFFFFF"  class="SmallBody" width="44%" id="commandsCell_{TEMPID}" nowrap>
+				  <a href="javascript:ViewArtWorkTemplate({TEMPID}, 'template_category')" class="BlueRedLink">Clipboard</a>&nbsp;&nbsp;
+				  <a href="javascript:ViewPDFTemplate({TEMPID}, 'template_category')" class="BlueRedLink">PDF</a>&nbsp;&nbsp;
+				  <a href="javascript:EditArtWorkTemplate({TEMPID}, 'template_category')" class="BlueRedLink">Edit Artwork</a> &nbsp;&nbsp;
+				  <a href="javascript:CopyArtWorkTemplate({TEMPID}, 'template_category')" class="BlueRedLink">Copy Template</a> &nbsp;&nbsp;
+				  <a href="javascript:DeleteTemplate({TEMPID}, 'template_category');" class="BlueRedLink">Delete</a>
+				  <br/><img  src="./images/transparent.gif" border="0" width="1" height="5" alt="" /><br/>
+				    <a href="javascript:makeNewWindow3('./draw_artwork_edit_manual.php?projectrecord={TEMPID}&viewtype=template_category');" class="BlueRedLink">Manual Edit</a>
+					&nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:editTextFields('C', '{TEMPID}');" class="BlueRedLink">Fields</a>
+					&nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:editLinks('C', '{TEMPID}');" class="BlueRedLink"><div id="prodLnkDesc_{TEMPID}" style="display:inline;">Product Links {PROD_LINKS}</div></a>
+					<img src="./images/transparent.gif" border="0" width="35" height="1" alt="" />{ORDER_DESC}
+					
+	<div id="textFieldsOuter_{TEMPID}" style="position:relative; visibility:hidden; display:none;">
+	<div id="textFieldsInner_{TEMPID}" align="left" style='width:570px; position:absolute; top:-27px; left:-200px; border:solid; border-color:#660000; border-width:3px; padding:0; z-index:10001;' >
+	Loading ...
+	</div>
+	</div>	
+	
+	<div id="tempLinksOuter_{TEMPID}" style="position:relative; visibility:hidden; display:none;">
+	<div id="tempLinksInner_{TEMPID}" align="left" style='width:570px; position:absolute; top:-27px; left:-200px; border:solid; border-color:#660000; border-width:3px; padding:0; z-index:10001;' >
+	Loading ...
+	</div>
+	</div>			
+                    </td>
+</tr>
+<!-- END artworkTemplateBL -->
+</form>
+</table>
+</td>
+</tr>
+</table>
+
+<!-- END noResultsBL -->
+
+<!-- END TemplateCategoriesBL -->
+
+<!-- BEGIN SearchEngineBL -->
+<img src="./images/transparent.gif" border="0" width="9" height="9" alt="" />
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="73%"><table width="100%" border="0" cellspacing="0" cellpadding="2" bgcolor="#AA99CC">
+  <tr>
+    <td>
+<table width="100%" border="0" cellspacing="0" cellpadding="4" bgcolor="#EEEEEE">
+<form name="skeywords" method="get" action="./ad_templates.php">
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+<input type="hidden" name="templateview" value="template_searchengine" />
+<input type="hidden" name="productid" value="{PRODUCTID}" />
+  <tr>
+                          <td class="SmallBody" width="84%">Search for templates:&nbsp;&nbsp;
+<input type="text" name="searchkeywords" id="searchkeywords" value="{SEARCH_WORDS}" style="font-face:arial; font-size:12px; width:240;" />&nbsp;&nbsp;<input type="submit" name="Generate" value="Search" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" />
+
+<!-- BEGIN SearchReplaceArtworkBl -->
+
+<br>
+<input type="text" name="replaceTermkeywords" id="replaceKeywordsInput" value="" style="font-face:arial; font-size:12px; width:140;" onKeyUp="highlightReplacementTerm();" /> 
+<input type="button" name="Replace" value="Replace" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" onClick="SearchReplace();" />
+<!-- END SearchReplaceArtworkBl -->
+</td>
+	                      <td class="SmallBody" width="16%">
+<input type="radio" name="searchtype" value="broad" {SEARCHTYPE_BROAD} /> Broad<br/><input type="radio" name="searchtype" value="specific" {SEARCHTYPE_SPECIFIC} /> Specific<br>
+<input type="radio" name="searchtype" value="artwork" {SEARCHTYPE_ARTWORK} /> Artwork
+</td>
+  </tr>
+ </form>
+ <form name="searchReplaceForm" method="post" action="./ad_templates.php">
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+<input type="hidden" name="templateview" value="template_searchengine" />
+<input type="hidden" name="productid" value="{PRODUCTID}" />
+<input type="hidden" name="searchkeywords" id="searchTermSource" value="{SEARCH_WORDS}" />
+<input type="hidden" name="returl" value="{CURRENT_URL}" />
+<input type="hidden" name="replaceterm" id="replacetermHidden" value="" />
+<input type="hidden" name="action" value="SearchReplaceArtwork" />
+</form>
+</table>
+	</td>
+  </tr>
+</table></td>
+    <td width="27%" class="SmallBody" align="center">Total of {NUMBER_TEMPLATES} templates.</td>
+  </tr>
+</table><img  src="./images/transparent.gif" border="0" width="9" height="4" alt="" /><br/>
+<font class="SmallBody"><font color="#CC0000"><b>*</b></font> <b>Do NOT add suffixes to keywords that end with &quot;s&quot;, &quot;ies&quot;, &quot;es&quot;, &quot;ed&quot;  or &quot;ing&quot; ...</b> <font class="ReallySmallBody">(There are some exceptions such as &quot;plumbing&quot; and &quot;shopping&quot;)</font> </font><br/><img src="./images/transparent.gif" border="0" width="9" height="5" alt="" /><!-- BEGIN noSearchEngineResultsBL -->
+
+<br>
+  <!-- BEGIN ShowOrderCounts_SearchEngineBL -->
+  <input type="button" name="Generate" value="Show Order Counts (may take a while)" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" onClick="ShowOrderCounts();" />
+  <!-- END ShowOrderCounts_SearchEngineBL -->
+  <br>&nbsp;<br>
+
+
+<!-- BEGIN MultiPageSearchEngineBL -->
+	<table width="100%" border="0" cellspacing="0" cellpadding="1" class="NavColor">
+  <tr>
+    <td>
+	<table width="100%" border="0" cellspacing="0" cellpadding="1" bgcolor="#ddeeff" style="background-image: url(./images/search_results_back.png); background-repeat: no-repeat;">
+  <tr>
+    <td>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+                        <td width="54%" class="SmallBody"><img  src="./images/transparent.gif" border="0" width="1" height="3" alt="" /><br/>
+                          &nbsp;&nbsp;<font color="#000000">Total of {RESULT_DESC} templates. Displaying {RESULTS_PER_PAGE} per page.</font><br/><img src="./images/transparent.gif" border="0" width="2" height="3" alt="" /></td>
+                        <td width="46%" align="right" class="SmallBody"><font color="#000000">{NAVIGATE}</font>&nbsp;&nbsp;</td>
+</tr>
+</table>
+	</td>
+  </tr>
+</table>
+	</td>
+  </tr>
+</table>
+&nbsp;
+<!-- END MultiPageSearchEngineBL -->
+
+
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td bgcolor="#333333">
+<table width="100%" cellpadding="2" cellspacing="1" border="0">
+<form name="templates" action="#" method="post">
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+<input type="hidden" name="productid" value="{PRODUCTID}" />
+<input type="hidden" name="returl" value="{CURRENT_URL}" />
+<input type="hidden" name="fromcategory" value="{CATEGORYTEMPLATESELECTED}" />
+<input type="hidden" name="templatecommand" value="" />
+<input type="hidden" name="thekeywords" value="" />
+<input type="hidden" name="categoryid" value="" />
+<input type="hidden" name="domainid" value="" />
+<tr>
+                    <td bgcolor="#CCCCCC" class="Body" width="7%">ID</td>
+                    <td bgcolor="#CCCCCC" class="Body" width="11%">Preview</td>
+                    <td bgcolor="#CCCCCC" class="Body" width="33%">Keywords</td>
+
+                  <td bgcolor="#CCCCCC" class="SmallBody"  colspan="2"><img src="./images/transparent.gif" border="0" width="9" height="1" alt="" /><img src="./images/arrow-down-left-black.gif" border="0" width="46" height="17" alt="" />  <input type="button" name="Generate" value="Add Keywords" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" onClick="AddMultiKeywords();" /> <input type="button" name="Generate" value="Remove Keywords" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" onClick="DeleteMultiKeywords();" /></td>
+</tr>
+
+<!-- BEGIN artworkSearchRowsBL -->
+
+<tr>
+                    <td bgcolor="#FFFFFF"  class="Body" width="7%" align="center">{TEMPID}<br/><input type="text" name="templatesort_{TEMPID}" value="{SORT}" size="1" maxlength="1" style="font-face:arial; font-size:12px;" />&nbsp;<a href="javascript:UTempSort({TEMPID});" class="BlueRedLink"><b>S</b></a></td>
+                    <td bgcolor="#EEEEEE"  class="Body" width="11%" align="center"><a href="javascript:EditArtWorkTemplate({TEMPID}, 'template_searchengine')"><img src="{THUMB_PHOTO}" border="0" alt="" /></a></td>
+                    <td bgcolor="#FFFFFF"  class="Body" width="33%">
+					<div align="right">
+					<a href="javascript:SaveKeywords({TEMPID});" class="BlueRedLink">Save</a>&nbsp;
+					</div>
+					<textarea name="keywords_{TEMPID}" style="width:240px; height:50px; background-color:#F3EEEE; font-size:11px; font-face:arial;" wrap="VIRTUAL">{KEYWORDS}</textarea></td>
+				    <td id="searchTD_{TEMPID}"  class="Body" width="4%" align="center" style="background-color:#FFFFFF" onClick="ClickONCheckBoxCell({TEMPID});">
+                      <input type="checkbox" name="movethis[]" value="{TEMPID}" /><input type="hidden" name="hiddencheckbox_{TEMPID}" value="false" />
+                    </td>
+                    <td bgcolor="#FFFFFF"  class="SmallBody" width="45%" id="commandsCell_{TEMPID}" nowrap>&nbsp;&nbsp;
+                      <a href="javascript:ViewArtWorkTemplate({TEMPID}, 'template_searchengine')" class="BlueRedLink">Clipboard</a>&nbsp;&nbsp;
+					  <a href="javascript:ViewPDFTemplate({TEMPID}, 'template_searchengine')" class="BlueRedLink">PDF</a>&nbsp;&nbsp;
+					  <a href="javascript:EditArtWorkTemplate({TEMPID}, 'template_searchengine')" class="BlueRedLink">Edit
+                      Artwork</a>&nbsp;&nbsp; <a href="javascript:CopyArtWorkTemplate({TEMPID}, 'template_searchengine')" class="BlueRedLink">Copy
+                      Template</a>&nbsp;&nbsp; <a href="javascript:DeleteTemplate({TEMPID}, 'template_searchengine');" class="BlueRedLink">Delete</a>
+                      <br/><img  src="./images/transparent.gif" border="0" width="1" height="5" alt="" /><br/>
+    
+					  &nbsp;&nbsp;&nbsp;<a href="javascript:makeNewWindow3('./draw_artwork_edit_manual.php?projectrecord={TEMPID}&viewtype=template_searchengine');" class="BlueRedLink">Manual Edit</a>
+					  &nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:editTextFields('S', '{TEMPID}');" class="BlueRedLink">Fields</a>
+					  &nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:editLinks('S', '{TEMPID}');" class="BlueRedLink"><div id="prodLnkDesc_{TEMPID}" style="display:inline;">Product Links {PROD_LINKS}</div></a>
+<img src="./images/transparent.gif" border="0" width="35" height="1" alt="" />{ORDER_DESC}
+
+	<div id="textFieldsOuter_{TEMPID}" style="position:relative; visibility:hidden; display:none;">
+	<div id="textFieldsInner_{TEMPID}" align="left" style='width:570px; position:absolute; top:-27px; left:-200px; border:solid; border-color:#660000; border-width:3px; padding:0; z-index:10001;' >
+	Loading ...
+	</div>
+	</div>	
+	
+	<div id="tempLinksOuter_{TEMPID}" style="position:relative; visibility:hidden; display:none;">
+	<div id="tempLinksInner_{TEMPID}" align="left" style='width:570px; position:absolute; top:-27px; left:-200px; border:solid; border-color:#660000; border-width:3px; padding:0; z-index:10001;' >
+	Loading ...
+	</div>
+	</div>	
+                    </td>
+</tr>
+<!-- END artworkSearchRowsBL -->
+</form>
+</table>
+</td>
+</tr>
+</table>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td align="right"><!-- BEGIN DomainDropDownBL --><select class="admininput" name="domaincopyto" onChange="CopyToDomain(this.value)">{DOMAIN_DROPDOWN}</select>&nbsp;&nbsp;<!-- END DomainDropDownBL --><select class="admininput" name="categorymoveto" onChange="CopyToCategory(this.value)">{CATEGORY_DROPDOWN}</select>&nbsp;&nbsp;<img src="./images/arrow-up-split.gif" border="0" align="absmiddle" alt="" />&nbsp;&nbsp;<a href="javascript:SelectAllTemplates();" class="BlueRedLink">Select All</a> &nbsp;&nbsp;<a href="javascript:ClearAllTemplates();" class="BlueRedLink">Clear All</a><img src="./images/transparent.gif" border="0" width="207" height="1" alt="" /></td>
+  </tr>
+</table>
+
+<br/>
+
+<!-- BEGIN SubSearchBL -->
+<table width="100%" border="0" cellspacing="0" cellpadding="1" bgcolor="#FF9999">
+<form name="subsearch" onSubmit="return HighlighTemplatesByKeyword()">
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+  <tr>
+    <td><table width="100%" border="0" cellspacing="0" cellpadding="1" bgcolor="#F3EEEE">
+  <tr>
+    <td class="Body">&nbsp;&nbsp;Highlight templates &nbsp;&nbsp;<select name="TypeOfSearch" class="admindropdown"><option value="having">Having</option><option value="missing">Missing</option></select> &nbsp;&nbsp;the keyword &nbsp;&nbsp;<input type="text" class="admindropdown" name="subkeyword" value="" size="20" />&nbsp;&nbsp;<input type="button" name="subk" value=" Search " class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" onClick="HighlighTemplatesByKeyword();" /></td>
+  </tr>
+</table></td>
+  </tr>
+  </form>
+</table>
+<!-- END SubSearchBL -->
+
+<!-- BEGIN SecondMultiPageSearchEngineBL -->
+&nbsp;<br/>&nbsp;
+	<table width="100%" border="0" cellspacing="0" cellpadding="1" class="NavColor">
+  <tr>
+    <td>
+	<table width="100%" border="0" cellspacing="0" cellpadding="1" bgcolor="#ddeeff" style="background-image: url(./images/search_results_back.png); background-repeat: no-repeat;">
+  <tr>
+    <td>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+                        <td width="55%" class="SmallBody"><img  src="./images/transparent.gif" border="0" width="1" height="3" alt="" /><br/>
+                          <font color="#000000">&nbsp;&nbsp;Total of {RESULT_DESC} templates.  Displaying {RESULTS_PER_PAGE} per page.</font><br/><img src="./images/transparent.gif" border="0" width="2" height="3" alt="" /></td>
+                        <td width="45%" align="right" class="SmallBody"><font color="#000000">{NAVIGATE}</font>&nbsp;&nbsp;</td>
+</tr>
+</table>
+	</td>
+  </tr>
+</table>
+	</td>
+  </tr>
+</table><!-- END SecondMultiPageSearchEngineBL -->
+
+<!-- END noSearchEngineResultsBL -->
+<!-- END SearchEngineBL -->
+
+<!-- BEGIN KeywordsBL -->
+<br/><br/>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td class="Body" valign="top">{COLUMN1}</td>
+    <td class="Body" valign="top">{COLUMN2}</td>
+    <td class="Body" valign="top">{COLUMN3}</td>
+    <td class="Body" valign="top">{COLUMN4}</td>
+    <td class="Body" valign="top">{COLUMN5}</td>
+    <td class="Body" valign="top">{COLUMN6}</td>
+</tr>
+</table>
+
+<!-- END KeywordsBL -->
+
+
+<!-- BEGIN RequestsBL -->
+
+
+				<FORM name="ReportOptions" method="get" onSubmit="return CheckReportOptions();">
+				<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+				<input type="hidden" name="productid" value="{PRODUCTID}" />
+				<input type="hidden" name="templateview" value="template_requests" />
+
+
+
+	<b>Search Criteria</b>
+
+
+					<TABLE width="100%" border="0" cellspacing="0" cellpadding="2" bgcolor="#999999">
+						<TR>
+							<TD>
+								<TABLE width="100%" border="0" cellspacing="2" cellpadding="0" bgcolor="#EEEEEE" >
+									<TR>
+
+                    <TD class="SmallBodyBold" width="20%">&nbsp;&nbsp;Time Period:</TD>
+
+                    <TD class="SmallBodyBlack" width="80%">
+                      <input type="radio" name="PeriodType" class="SmallBody" value="TIMEFRAME" onClick="SelectPeriodTypeTimeFrame( true );"
+											{PERIODTYPETIMEFRAME} />
+											{TIMEFRAMESELS}
+										</TD>
+									</TR>
+									<TR>
+
+                    <TD class="SmallBodyBold" width="20%"> </TD>
+
+                    <TD class="SmallBodyBlack" width="80%" >
+                      <input type="radio" name="PeriodType"  class="SmallBody" value="DATERANGE" onClick="SelectPeriodTypeTimeFrame( false );"
+											{PERIODTYPEDATERANGE} />
+											{DATERANGESELS}
+
+
+										</TD>
+									</TR>
+
+<tr>
+<td colspan="2" bgcolor="#999999"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+</tr>
+<TR>
+
+                    <TD class="SmallBodyBold" width="20%"><br/>&nbsp;&nbsp;Quantity
+                      Limiters:</TD>
+
+                    <TD class="SmallBodyBlack" width="80%">
+                      <br/>
+					 <table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+                          <td class="SmallBodyBlack" width="69%"> Having &nbsp;<font class="Body"><b>requests</b>
+                            </font>
+                            <select name='compare_requests' class="AdminDropDown">
+											{OPTIONS_REQUESTS}
+											</select> to <img src="./images/transparent.gif" border="0" width="38" height="1" alt="" /><input type="text" name="numrequests" value="{NUM_REQ}" size="2" class="SmallInputBox" />
+
+											&nbsp; <br/>
+											and &nbsp;<font class="Body"><b>specific matches</b> </font>
+
+											<select name='compare_matches_s' class="AdminDropDown">
+										{OPTIONS_MATCHES_S}
+											</select> to <input type="text" name="nummatchess" value="{NUM_MAT_S}" size="2" class="SmallInputBox" />
+
+											&nbsp; <br/>
+											and &nbsp;<font class="Body"><b>broad matches</b> </font>
+
+											<select name='compare_matches_b' class="AdminDropDown">
+											{OPTIONS_MATCHES_B}
+											</select> to <img src="./images/transparent.gif" border="0" width="14" height="1" alt="" /><input type="text" name="nummatchesb" value="{NUM_MAT_B}" size="2" class="SmallInputBox" />
+</td>
+                          <td class="SmallBodyBold" width="31%">Keywords (broad)<br/><input type="text" class="admindropdown" name="searchkeywords" value="{SEARCH_WORDS}" size="27" /></td>
+  </tr>
+</table>
+										</TD>
+									</TR>
+
+
+								</TABLE>
+							</TD>
+						</TR>
+					</TABLE>
+				<TABLE width="100%" border="0" cellspacing="0" cellpadding="0">
+					<TR>
+						<TD colspan="2"><img src="./images/transparent.gif" border="0" width="1" height="4" alt="" /></TD>
+					</TR>
+
+				</TABLE>
+				<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td align="right"><input type="submit" value="Refresh" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';"  /></td>
+  </tr>
+</table>
+			</FORM>
+
+
+	<!-- BEGIN TemplateRequestsNoResults -->
+Total of {SEARCH_NUMBER} searches within this period.
+<br/><img src="./images/transparent.gif" border="0" width="1" height="5" alt="" /><!-- BEGIN MultiPageBL --><table width="100%" border="0" cellspacing="0" cellpadding="1" class="NavColor">
+  <tr>
+    <td>
+	<table width="100%" border="0" cellspacing="0" cellpadding="1" bgcolor="#ddeeff">
+  <tr>
+    <td>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="50%" class="SmallBody"><img  src="./images/transparent.gif" border="0" width="1" height="3" alt="" /><br/><font color="#000000">&nbsp;&nbsp;Total of {RESULT_DESC} phrases.</font><br/><img src="./images/transparent.gif" border="0" width="2" height="3" alt="" /></td>
+<td width="50%" align="right" class="SmallBody"><font color="#000000">{NAVIGATE}</font></td>
+</tr>
+</table>
+	</td>
+  </tr>
+</table>
+	</td>
+  </tr>
+</table>
+&nbsp;
+ <!-- END MultiPageBL -->
+<table width="740" border="0" cellspacing="0" cellpadding="0" bgcolor="#999999">
+  <tr>
+    <td align="center"><table width="100%" border="0" cellspacing="1" cellpadding="3">
+  <tr>
+                  <td class="Body" bgcolor="#CCCCCC" width="50%">Phrase</td>
+                  <td class="Body" bgcolor="#CCCCCC" width="16%">Requests</td>
+                  <td class="Body" bgcolor="#CCCCCC" width="18%">Matches (specific)</td>
+                  <td class="Body" bgcolor="#CCCCCC" width="16%">Matches (broad)</td>
+  </tr>
+  </table>
+  <table width="738" border="0" cellspacing="0" cellpadding="3">
+<!-- BEGIN TemplateRequestsBL -->
+  <tr onMouseOver="hl(this)" onMouseOut="dl(this)">
+                  <td bgcolor="#FFFFFF" width="50%" face="arial" style="font-face:arial; font-size:12px;">{PHRASE_HTML}</td>
+                  <td bgcolor="#FFFFFF" width="16%" face="arial" style="font-face:arial; font-size:13px;">{REQUESTS}</td>
+                  <td onMouseOver="hltd(this)" onMouseOut="dlte(this)" bgcolor="#FFFFFF" width="18%" face="arial"  style="font-face:arial; font-size:13px;" onClick="LinkToKeywordsS('{PHRASE_HTTP}');">{MATCHES_S}</td>
+                  <td  onmouseover="hltd(this)" onMouseOut="dlte(this)"  bgcolor="#FFFFFF" width="16%" face="arial"  style="font-face:arial; font-size:13px;" onClick="LinkToKeywordsB('{PHRASE_HTTP}');">{MATCHES_B}</td>
+  </tr>
+<!-- END TemplateRequestsBL -->
+</table><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+  </tr>
+</table>
+
+<br/>
+<!-- BEGIN SecondMultiPageBL -->
+	<table width="100%" border="0" cellspacing="0" cellpadding="1" class="NavColor">
+  <tr>
+    <td>
+	<table width="100%" border="0" cellspacing="0" cellpadding="1" bgcolor="#ddeeff">
+  <tr>
+    <td>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="50%" class="SmallBody"><img  src="./images/transparent.gif" border="0" width="1" height="3" alt="" /><br/><font color="#000000">&nbsp;&nbsp;Total of {RESULT_DESC} phrases.</font><br/><img src="./images/transparent.gif" border="0" width="2" height="3" alt="" /></td>
+<td width="50%" align="right" class="SmallBody"><font color="#000000">{NAVIGATE}</font></td>
+</tr>
+</table>
+	</td>
+  </tr>
+</table>
+	</td>
+  </tr>
+</table>
+<!-- END SecondMultiPageBL -->
+
+	<!-- END TemplateRequestsNoResults -->
+
+<script type="text/javascript">InitializeTimeFields()</script>
+
+<!-- END RequestsBL -->
+
+
+
+<!-- END productDisplayBL -->
+
+<br/><br/><br/><br/>
+
+<form name="adwords" method="get" action="./ad_templates.php">
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+<input type="hidden" name="templatecommand" value="template_changekeywords" />
+<input type="hidden" name="templateid" value="" />
+<input type="hidden" name="keywords" value="" />
+<input type="hidden" name="returl" value="{CURRENT_URL}" />
+</form>
+
+<!-- Inner Body  END -->
+</td>
+</tr>
+</table>
+<table width="760" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="360" class="NavColor"><img src="./images/footer.gif" border="0" width="350" height="16" usemap="#footer" alt="" /></td>
+	<td width="400" align="right" class="NavColor"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+  </tr>
+</table>
+<font class="copyright"> </font>
+</div>
+&nbsp;
+<script type="text/javascript" src="./library/ImageMap-footer.js"></script>
+</body>
+</html>

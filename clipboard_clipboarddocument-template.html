@@ -1,0 +1,140 @@
+<html>
+<head>
+<title>Untitled Document</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<style type="text/css">
+	.CellBackground	{ background-color:#eeeeee; font-size:12px; color:#333333;  font-family:Arial,Helvetica,sans-serif; }
+	.CellHighlight { background-color:#FFFFcc; font-size:12px; color:#333333;  font-family:Arial,Helvetica,sans-serif; }
+	
+	.CellTopBackground { background-color:#E0B680; font-size:12px; color:#333333;  font-family:Arial,Helvetica,sans-serif; }
+	
+	body {background-image: url("./images/clipboard-back.png"); background-repeat: repeat; background-attachment: fixed }
+</style>
+</head>
+
+
+
+<body bgcolor="#FFFFFF" text="#000000" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="">
+<table  border="0" cellspacing="0" cellpadding="0">
+<form name="textlayers">
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+<input type="hidden" name="textcheck" value="" />
+<input type="hidden" name="textcheck" value="" />
+  <tr>
+    <td bgcolor="#669966" width="8"><img src="./images/transparent.gif" width="12" height="1" alt="" /></td>
+	<td class="largebody">
+	
+<img src="./images/transparent.gif" width="8" height="1" alt="" /><font color="#336633" size="4"><b>Text</b></font><!-- BEGIN HideTextSelectAll --> &nbsp;&nbsp;&nbsp;&nbsp;<a href='javascript:top.Commands.ChangeAll("clipboard", "text", true);' class="blueredlink"><b>Select All</b></a>&nbsp;&nbsp;&nbsp;&nbsp;<a href='javascript:top.Commands.ChangeAll("clipboard", "text", false);' class="blueredlink"><b>Clear</b></a><!-- END HideTextSelectAll -->
+	
+	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td ><img src="./images/transparent.gif" width="1" height="5" alt="" /></td>
+	</tr>
+	</table>
+	
+	
+	<!-- BEGIN TextOuterTableBL -->
+	<table width="720" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="8"><img src="./images/transparent.gif" width="8" height="1" alt="" /></td>
+    <td width="50%" valign="top">
+	
+	
+<!-- BEGIN TextInnerTableBL -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td bgcolor="#000000">
+<table width="100%" border="0" cellspacing="1" cellpadding="3">
+  <tr >
+    <td  class="CellTopBackground"><input type="checkbox" name="textcheck" value="{LAYERID}" onclick="top.Commands.NewClick('clipboard', 'text', '{LAYERID}');" /> <img src="./images/transparent.gif" width="28" height="1" alt="" /><select name="textattdropdn" class="admindropdown" onChange="top.Commands.CopyAttribute(this.value)">{TEXT_ATTRIBUTES}</select></td>
+  </tr>
+  <tr onclick="top.Commands.ClickOnLayerBox('text', 'clipboard', '{LAYERID}');">
+    <td id="layerback{LAYERID}" class="CellBackground" style="cursor:hand">{TEXT_INFO}</td>
+  </tr>
+</table>
+	</td>
+  </tr>
+</table>
+<!-- END TextInnerTableBL -->
+
+
+	</td>
+    <td width="8"><img src="./images/transparent.gif" width="8" height="1" alt="" /></td>
+    <td width="50%" valign="top">
+{TEXT_COLUMN2}	
+</td>
+  </tr>
+</table>
+
+<img src="./images/transparent.gif" width="12" height="12" alt="" />
+
+<!-- END TextOuterTableBL -->
+<br/>&nbsp;
+      </td>
+  </tr>
+ </form>
+</table>
+
+<table  border="0" cellspacing="0" cellpadding="0">
+<form name="imagelayers">
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+<input type="hidden" name="imagecheck" value="" />
+<input type="hidden" name="imagecheck" value="" />
+  <tr>
+
+    <td bgcolor="#AB5313" width="8"><img src="./images/transparent.gif" width="12" height="1" alt="" /></td>
+	<td class="largebody">
+	
+<img src="./images/transparent.gif" width="8" height="1" alt="" /><font color="#663300" size="4"><b>Images</b></font><!-- BEGIN HideImageSelectAll --> &nbsp;&nbsp;&nbsp;&nbsp;<a href='javascript:top.Commands.ChangeAll("clipboard", "image", true);' class="blueredlink"><b>Select All</b></a>&nbsp;&nbsp;&nbsp;&nbsp;<a href='javascript:top.Commands.ChangeAll("clipboard", "image", false);' class="blueredlink"><b>Clear</b></a><!-- END HideImageSelectAll -->
+	
+	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td ><img src="./images/transparent.gif" width="1" height="5" alt="" /></td>
+	</tr>
+	</table>
+	
+	<!-- BEGIN ImageLayerBl -->
+	<table width="720" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="8"><img src="./images/transparent.gif" width="8" height="1" alt="" /></td>
+    <td valign="top">
+	
+	
+	
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td bgcolor="#000000">
+<table width="100%" border="0" cellspacing="1" cellpadding="3">
+  <tr>
+    <td class="CellTopBackground"><input type="checkbox" name="imagecheck" value="{LAYERID}" onclick="top.Commands.NewClick('clipboard', 'image', '{LAYERID}');" /> <img src="./images/transparent.gif" width="28" height="1" alt="" /><font color="#FFFFFF">{IMAGE_ATTRIBUTES}</font></td>
+  </tr>
+  <tr onclick="top.Commands.ClickOnLayerBox('image', 'clipboard', '{LAYERID}');">
+    <td id="layerback{LAYERID}" class="CellBackground"  style="cursor:hand"><img  src="{IMAGE_SRC}" alt="" /><br/><img src="./images/transparent.gif" width="8" height="8" alt="" /></td>
+  </tr>
+</table>
+	</td>
+  </tr>
+</table>
+</td>
+
+  </tr>
+
+</table>
+
+<img src="./images/transparent.gif" width="12" height="12" alt="" />
+
+	<!-- END ImageLayerBl -->
+
+
+
+
+
+
+	</td>
+  </tr>
+   </form>
+</table>
+
+</body>
+</html>

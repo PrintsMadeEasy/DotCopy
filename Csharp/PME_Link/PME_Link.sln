@@ -1,0 +1,27 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PME_Link", "PME_Link.csproj", "{167B9807-6E3A-480D-B157-F456E6EE329C}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "PME_Link_Setup", "..\PME_Link_Setup\PME_Link_Setup.vdproj", "{E9FA5DCA-CA24-42A0-8209-8F4DE51D0910}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+		Release = Release
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{167B9807-6E3A-480D-B157-F456E6EE329C}.Debug.ActiveCfg = Debug|.NET
+		{167B9807-6E3A-480D-B157-F456E6EE329C}.Debug.Build.0 = Debug|.NET
+		{167B9807-6E3A-480D-B157-F456E6EE329C}.Release.ActiveCfg = Release|.NET
+		{167B9807-6E3A-480D-B157-F456E6EE329C}.Release.Build.0 = Release|.NET
+		{E9FA5DCA-CA24-42A0-8209-8F4DE51D0910}.Debug.ActiveCfg = Debug
+		{E9FA5DCA-CA24-42A0-8209-8F4DE51D0910}.Release.ActiveCfg = Release
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal

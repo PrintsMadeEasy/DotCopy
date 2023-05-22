@@ -1,0 +1,244 @@
+<html>
+<head>
+<title>Proofs by User</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+
+<script language="javascript">
+
+	//Make an array of the images we want to preload for the mouse-overs.
+	arImageSrc = new Array (
+		"./images/button-go-d.gif",
+		"./images/button-closewindow-blue-d.gif",
+		"./images/button-sendmessage-blue-d.gif"
+	)
+
+	function BackToCustomerServiceReport(){
+
+		if(window.opener)
+			window.opener.location = "{CSREPORTURL}";
+		else
+			alert("The parent Window has been closed.  You may need to close this pop-up window and re-open it again.");
+
+	}
+
+
+	function ShowProofPage(ProjectID){
+
+		ShowIconOnClickedProject(ProjectID);
+
+		// just add proofingcheck=true to the proof URL to make it unique... so our "visited" color over the hyperlink will be a different color (only if we arrive at the page by going through this pop-up window.
+
+		if(window.opener)
+			window.opener.location = "./ad_proof_artwork.php?proofingcheck=true&projectid=" + ProjectID;
+		else
+			alert("The parent Window has been closed.  You may need to close this pop-up window and re-open it again.");
+
+	}
+
+	function CheckSelect(ProjectID, CheckedFlag){
+		ChangeBatchColor(ProjectID, CheckedFlag);
+	}
+
+
+
+var LastProjectClickedOn = null;
+function ShowIconOnClickedProject(projectID){
+
+	if(!document.getElementsByTagName)
+		return;
+
+	if(LastProjectClickedOn != null){
+		var lastProjectImageObj = document.getElementById("ICON" + LastProjectClickedOn);
+		lastProjectImageObj.src = "./images/transparent.gif";
+		lastProjectImageObj.width = 10;
+	}
+
+	LastProjectClickedOn = projectID;
+
+	var thisProjectImageObj = document.getElementById("ICON" + projectID);
+	thisProjectImageObj.src = "./images/arrow-right-red-blocky.png";
+	thisProjectImageObj.width = 20;
+
+
+	GatherChecksBoxes();
+
+}
+
+
+function GatherChecksBoxes(){
+
+	ChkBoxList = GetProjectCheckBoxList();
+
+	var textAreaString = "";
+	var checkCounter = 0;
+
+	for(var i=0; i < ChkBoxList.length; i++){
+
+		if(ChkBoxList[i].checked){
+			textAreaString += "A" + ChkBoxList[i].value + "\n";
+			checkCounter++;
+		}
+	}
+
+	if(checkCounter > 0)
+		document.all.totalcount.innerHTML = checkCounter + " checked";
+	else
+		document.all.totalcount.innerHTML = "";
+
+
+	document.forms["textblockForm"].projectlist.value = textAreaString;
+
+}
+
+
+//We have a hidden input on the HTML to keep a single check box from not forming an array
+function GetProjectCheckBoxList(){
+
+	var retArray = new Array();
+	ThisChkBoxList = document.forms["projectListForm"].chkbx;
+	for(var i=0; i < ThisChkBoxList.length; i++){
+		if(ThisChkBoxList[i].type == "checkbox"){
+			retArray.push(ThisChkBoxList[i]);
+		}
+	}
+	return retArray;
+}
+
+
+function ChangeBatchColor(projectID, HighlightFlag){
+
+	if(!document.getElementsByTagName)
+		return;
+
+	var tableData = document.getElementById("cell" + projectID);
+
+	if(HighlightFlag)
+		tableData.className = "isHighlighted";
+	else
+		tableData.className = "notHighlighted";
+}
+
+
+function LaunchBatchWindow(){
+
+
+	var projectListPiped = "";
+
+	ChkBoxList = GetProjectCheckBoxList();
+	var checkCounter = 0;
+	for(var i=0; i < ChkBoxList.length; i++){
+
+		if(ChkBoxList[i].checked){
+			projectListPiped += ChkBoxList[i].value + "|";
+			checkCounter++;
+		}
+	}
+
+	if(checkCounter == 0){
+		alert("You must select some projects before creating a batch window.");
+	}
+	else{
+		alert("If you are using the batch window to change statuses, make sure\nthat none of the projects have been 'Printed' or 'Boxed' yet.\nIf they are, you are best off to cancel them and issue reprint(s).");
+
+		var NewWindowAddress = "./ad_batchwindow_new.php?viewtype=admin&projectlist=" + projectListPiped;
+		newWindow = window.open(NewWindowAddress, "proofCheckBatch", "height=395,width=375,directories=no,location=no,menubar=no,scrollbars=yes,status=yes,toolbar=no,resizable=yes");
+		newWindow.focus();
+	}
+}
+
+
+
+</script>
+
+<style type="text/css">
+ .isHighlighted { background-color: #FFDDDD; }
+ .notHighlighted { background-color: #E3E3FF; }
+
+A.proofLink 	{ font-size:10px; color:#333333; font-family:Arial,Helvetica,sans-serif;  text-decoration:none}
+A.proofLink:visited { color: #990000; }
+A.proofLink:link { color: #333333; }
+A.proofLink:hover { color: #0000FF;  text-decoration:underline}
+
+</style>
+
+</head>
+
+<body bgcolor="#3366CC" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="" >
+<img  src="./images/transparent.gif" border="0" width="1" height="10" alt="" /><br/>
+<div align="center">
+<table bgcolor="#EEEEEE" width="230" cellpadding="0" cellspacing="0" border="0">
+
+<tr>
+<td bgcolor="#cccccc" class="SmallBody" align="center" style="background-image: url(./images/admin/header-shipping.png); background-repeat: no-repeat;"><img  src="./images/transparent.gif" border="0" width="1" height="3" alt="" /><br/><font color="#333333"><b>Proofs by {PROOFER_NAME}</b></font><br/><img src="./images/transparent.gif" border="0" width="1" height="3" alt="" /></td>
+
+<tr>
+<td align="center" class="Body"><img src="./images/transparent.gif" border="0" width="8" height="8" alt="" /><table width="95%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+            <td class="ReallySmallBody">Total of {PROOF_NUM} proofs between<br/>{START_DATE} <b>--</b> {END_DATE}<br/><br/><a href="javascript:BackToCustomerServiceReport();" class="blueredlink">Back to Customer Service Report</a><br/><br/>
+			Use this window to overlook another proofer.  You can generate a batch window to create a Single-File PDF (before fixing the problems) which can be emailed to the trainee for reviewing. <br/><br/>You may also want to change the status to 'Artwork Problem' for any projects that have not been 'Printed' or 'Boxed' yet.<br/><br/>Use the Text Area to copy artwork numbers.  You can paste them into an email along with a description of the issues.
+            </td>
+  </tr>
+</table>
+
+<!-- BEGIN NoResultsBL -->
+
+
+
+
+<table width="100%" border="0" cellspacing="8" cellpadding="3">
+<form name="projectListForm">
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+<input type="hidden" name="chkbx" value="" onclick="" />
+  <tr>
+              <td class="SmallBody" bgcolor="#CCCCEE" width="42%"><img src="./images/transparent.gif" height="10" width="10" align="absmiddle" alt="" /><b>Project
+                ID</b></td>
+              <td class="SmallBody" bgcolor="#CCCCEE" width="32%"><img src="./images/transparent.gif" height="10" width="10" align="absmiddle" alt="" /><b>Status</b></td>
+	          <td class="SmallBody" bgcolor="#CCCCEE" width="26%">&nbsp;<b>Select</b></td>
+  </tr>
+<!-- BEGIN ProjectsBL -->
+  <tr>
+              <td class="notHighlighted" width="42%"><img src="./images/transparent.gif" height="15" width="10" name="ICON{PROJECTID}" align="absmiddle" alt="" /><a href="javascript:ShowProofPage({PROJECTID})" class="proofLink">A{PROJECTID}</a></td>
+	          <td class="notHighlighted" width="32%"><font  class="ReallySmallBody">{STATUS}</font></td>
+			  <td class="notHighlighted" width="26%" id="cell{PROJECTID}"><img src="./images/transparent.gif" height="7" width="7" align="absmiddle" alt="" />
+                <input type="checkbox" name="chkbx" value="{PROJECTID}" onclick="CheckSelect(this.value, this.checked); GatherChecksBoxes();" /></td>
+  </tr>
+ <!-- END ProjectsBL -->
+ </form>
+</table>
+&nbsp;
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<form name="textblockForm">
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+  <tr>
+            <td width="2%"><img src="./images/transparent.gif" height="10" width="8" alt="" /></td>
+            <td width="57%">
+              <textarea name="projectlist" style="width:100px; height:70px; font-size:12;" wrap="VIRTUAL">
+
+</textarea></td>
+            <td width="41%" valign="top">
+			<div id="totalcount" class="Body">&nbsp;</div>&nbsp;<br/>
+              <input  class="AdminButton" onmouseover="this.style.background='#ffeeaa';" onmouseout="this.style.background='#FFFFDD';" type="button" name="BatchWindow" value="Batch" onclick="LaunchBatchWindow();" /></td>
+  </tr>
+  </form>
+</table>
+
+
+<!-- END NoResultsBL -->
+
+</td>
+</tr>
+
+
+<tr>
+<td><img src="images/header-editoptions-fade-bot.gif" width="230" alt="" /></td>
+</tr>
+</table>
+
+</div>
+
+
+</body>
+</html>

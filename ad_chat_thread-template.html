@@ -1,0 +1,588 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Chat: +++ {CHAT_TYPE} +++</title>
+
+<script type="text/javascript" src="./library/admin_library.js"></script>
+<script type="text/javascript" src="./library/api_dot.js"></script>
+<script type="text/javascript" src="./library/general_lib.js"></script>
+<script type="text/javascript" src="./library/api_chat.js"></script>
+<script type="text/javascript" src="./library/api_chat_for_admin.js"></script>
+<script type="text/javascript" src="./library/jquery-1.4.2.js" ></script>
+<script type="text/javascript" src="./library/ModalWindow.js"></script>
+
+
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="stylesheet" type="text/css" href="library/chat_modal.css" />
+
+<script type="text/javascript">
+var chatThreadId = "{CHAT_ID}";
+
+
+var subjectFieldFocussedFlag = false;
+
+
+function AssignToCsr(csrUserId){
+	document.location = "ad_chat_thread.php?action=reassign&form_sc={FORM_SECURITY_CODE}&chat_id={CHAT_ID}&csr_user_id=" + csrUserId;
+}
+
+
+
+function addHtmlToMessageWindowAdmin(htmlMessage){
+
+	var messageWindowDiv = document.getElementById("messageWindow");
+	messageWindowDiv.innerHTML += htmlMessage + "<img src='images/transparent.gif' height='7' width='1' />";
+
+	// Scroll to bottom.
+	messageWindowDiv.scrollTop = messageWindowDiv.scrollHeight;
+}
+
+function ShowTransferWindow(){
+	document.getElementById("transferContainerContent").style.display = "block";
+}
+function HideTransferWindow(){
+	document.getElementById("transferContainerContent").style.display = "none";
+}
+
+var lastCustomerID = -1;
+function displayCustomerInfo(){
+
+	if(lastCustomerID != chatLoaderObj.customerID){
+
+		if(chatLoaderObj.customerID == 0){
+			document.getElementById("customerDetails").innerHTML = "Unknown User";
+		}
+		else{
+			document.getElementById("customerDetails").innerHTML = "<iframe src='ad_chat_userinfo.php?chat_id={CHAT_ID}' style='width:150px; height:115px;'></iframe>";
+		}
+
+		lastCustomerID = chatLoaderObj.customerID;
+	}
+
+	var waitingDivObj = document.getElementById("customersWaitingInfo");
+	var customersWaitingHtml = "";
+	if(chatLoaderObj.chatStatus != "C"){
+		if(chatLoaderObj.customersWaiting == 1){
+			customersWaitingHtml = "1 Customer Waiting";
+			waitingDivObj.style.fontWeight = "bold";
+		}
+		else if(chatLoaderObj.customersWaiting > 1){
+			customersWaitingHtml = chatLoaderObj.customersWaiting + " Customers Waiting";
+			waitingDivObj.style.fontWeight = "bold";
+		}
+		else{
+			customersWaitingHtml = "Nobody Waiting to Chat";
+			waitingDivObj.style.fontWeight = "normal";
+		}
+	}
+
+	document.getElementById("customersWaitingInfo").innerHTML = customersWaitingHtml;
+
+}
+
+function showChatSubjectSelection(newSubjectChar){
+
+	document.getElementById("chatSubjectMenu").disabled = false;
+
+	// If the status is closed.  Try to close the "Unknown Subject" error (if it exists)
+	// Or but it back if they user toggles between Unknown/SomethingElse after the status is closed.
+	if(chatLoaderObj.chatStatus == "C"){
+		try{
+			if(newSubjectChar != "U"){
+				document.getElementById("subjectErrorDiv").style.display = "none";
+			}
+			else{
+				document.getElementById("subjectErrorDiv").style.display = "block";
+			}
+		}
+		catch(e){}
+		finally{}
+	}
+
+	// Don't try to focus the subject field if the user has it open.
+	if(subjectFieldFocussedFlag){
+		return;
+	}
+
+	var listMenuObj = document.getElementById("chatSubjectMenu");
+	var selectionFoundFlag = false;
+	for(var i=0; i<listMenuObj.options.length; i++){
+		if(listMenuObj.options[i].value == newSubjectChar){
+			listMenuObj.options[i].selected = true;
+			selectionFoundFlag = true;
+		}
+		else{
+			listMenuObj.options[i].selected = false;
+		}
+	}
+
+
+
+	if(!selectionFoundFlag){
+		alert("Error changing the chat subject.  The selection on the server was not found in the drop down list.");
+	}
+}
+function chatSubjectErrorEvent(errCode, errorMessage){
+	alert("The chat subject could not be changed.\n\n" + errorMessage);
+}
+
+var otherDomainKeysFromUser = eval({OTHER_DOMAIN_KEYS_JSON});
+
+
+var chatSubjectObj = new ChatSubjectChanger(chatThreadId);
+
+chatSubjectObj.attachLoadedEvent(showChatSubjectSelection);
+chatSubjectObj.attachErrorEvent(chatSubjectErrorEvent);
+
+
+
+function changeSubject(subjectChar){
+
+	document.getElementById("chatSubjectMenu").disabled = true;
+	chatSubjectObj.changeSubject(subjectChar);
+}
+
+var isCtrl = false;
+function keyUp(k)
+{
+	var keycode = document.all ? event.keyCode : k.which;
+	if((""+keycode) == "17")
+		isCtrl=false;
+}
+function keyDown(k){
+
+     var keycode = document.all ? event.keyCode : k.which;
+
+	if((""+keycode) == "17")
+		isCtrl=true;
+
+
+	if((""+keycode) == "13" && isCtrl == true) {
+		isCtrl=false;
+		SendCsrMessage();
+	}
+}
+
+function SendCsrMessage(){
+
+	var messageToSend = document.getElementById("newMessage").value;
+
+	for(var i=0; i<otherDomainKeysFromUser.length; i++){
+
+		var regExWithPeriodsEscaped = otherDomainKeysFromUser[i].replace(/\./, "\\.");
+
+		var domainRegex = new RegExp(regExWithPeriodsEscaped, "gi");
+		if(messageToSend.match(domainRegex)){
+			if(!confirm("You have included a domain name in your message which\ndoes not belong to this chat thread...\n\n====== "+otherDomainKeysFromUser[i]+" ======\n\nAre you sure that you want the user to see this?")){
+				return;
+			}
+		}
+	}
+	SendIt();
+}
+
+
+document.onkeydown = keyDown;
+if ( document.layers ) {
+ document.captureEvents(Event.KEYDOWN);
+}
+
+document.onkeyup = keyUp;
+if ( document.layers ) {
+ document.captureEvents(Event.KEYUP);
+}
+
+
+function downloadAttachment(fileId){
+	document.location = "ad_chat_thread.php?action=download&chat_id={CHAT_ID}&file_id=" + fileId;
+}
+
+function formatUnixTimeStamp(unixTimestamp) {
+
+	unixTimestamp = parseInt(unixTimestamp);
+	
+    var dt = new Date(unixTimestamp * 1000);
+
+    var hours = dt.getHours();
+    var minutes = dt.getMinutes();
+    var seconds = dt.getSeconds();
+	var amPm = "am";
+
+    // the above dt.get...() functions return a single digit
+    // so I prepend the zero here when needed
+    if (hours < 10) 
+     hours = '0' + hours;
+	 
+	if (hours > 12) {
+		hours -= 12;
+		amPm = "pm";
+	}
+
+    if (minutes < 10) 
+     minutes = '0' + minutes;
+
+    if (seconds < 10) 
+     seconds = '0' + seconds;
+
+    return (dt.getMonth() + 1) + "/" + dt.getDate() + "/" + dt.getYear() + " " + hours + ":" + minutes + ":" + seconds + " " + amPm;
+}  
+
+function chatLoaderCompleteEvent(){
+
+
+	displayCustomerInfo();
+
+	// Once we get a successful return from the server, clear the global variable which prevents duplicate messages from being injected into the chat window.
+	duplicateLoaderErrorEvent = 0;
+
+
+
+	var messageObjsArr = chatLoaderObj.getMessageObjs();
+
+	var newMessageReceivedFlag = false;
+
+	for(var i=0; i<messageObjsArr.length; i++){
+
+		var htmlMessage = "";
+
+		if(chatLoaderObj.customerID != 0 && chatLoaderObj.customerID != ""){
+			var customerLink = "&nbsp;&nbsp;&nbsp;&nbsp;<a href='javascript:Cust("+chatLoaderObj.customerID+");' class='CustomerLink'>"+htmlize(chatLoaderObj.customerName)+"</a>";
+		}
+		else{
+			var customerLink = "";
+		}
+
+
+		var attachmentHtml = "";
+		if(messageObjsArr[i].fileId != 0 && messageObjsArr[i].fileId != ""){
+
+			var fileSizeMegs = messageObjsArr[i].fileSize / 1024 / 1024;
+
+			if(fileSizeMegs < 0.5)
+				fileSizeMegs = Math.round(fileSizeMegs * 100) / 100;
+			else if(fileSizeMegs < 3)
+				fileSizeMegs = Math.round(fileSizeMegs * 10) / 10;
+			else
+				fileSizeMegs = Math.round(fileSizeMegs);
+
+			attachmentHtml = "<div class='fileAttachment'>File Attachment: <a href='javascript:downloadAttachment("+messageObjsArr[i].fileId+")'>"+formatServerMessage(messageObjsArr[i].fileName) + "</a> " + fileSizeMegs +" MB</div>";
+		}
+		
+		
+		// If the Chat Thread is closed, then we want to show time stamps
+		var timeStampDescription = "";
+		if(chatLoaderObj.chatStatus == "C"){			
+			timeStampDescription = " &nbsp;&nbsp; - &nbsp;&nbsp; " + formatUnixTimeStamp(messageObjsArr[i].unixDateStamp);
+		}
+
+
+		// PersonType "E"mployee or "C"ustomer
+		if(messageObjsArr[i].personType == "C"){
+			htmlMessage += "<div class='customerMessage'><span class='csrDescription'>Customer"+customerLink+ "</span><span class='dateDesc'>"+timeStampDescription+"</span><br />" + attachmentHtml + formatServerMessage(messageObjsArr[i].messageText) + "</div>";
+			newMessageReceivedFlag = true;
+		}
+		else if(messageObjsArr[i].personType == "E"){
+
+			var csrDisplayName = htmlize(messageObjsArr[i].csrPname);
+
+			if(messageObjsArr[i].csrPname != messageObjsArr[i].csrName)
+				csrDisplayName += " &nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;" + htmlize(messageObjsArr[i].csrName);
+
+			if(messageObjsArr[i].csrOnly){
+				htmlMessage += "<div class='csrPrivateMessage'><span class='meDescription'>FOR CSR's ONLY &nbsp;&nbsp;&nbsp;From: ("+ csrDisplayName +") " + "</span><span class='dateDesc'>"+timeStampDescription+"</span><br />" + attachmentHtml + formatServerMessage(messageObjsArr[i].messageText) + "</div>";
+			}
+			else{
+				htmlMessage += "<div class='csrMessage'><span class='meDescription'>"+csrDisplayName+") " + "</span><span class='dateDesc'>"+timeStampDescription+"</span><br />" + attachmentHtml + formatServerMessage(messageObjsArr[i].messageText) + "</div>";
+			}
+		}
+		else{
+			alert("Illegal Chat Person Type");
+		}
+
+		addHtmlToMessageWindowAdmin(htmlMessage);
+
+		totalMessagesDisplayed++;
+	}
+
+	showChatSubjectSelection(chatLoaderObj.chatSubject);
+
+	if(chatLoaderObj.customerIsTyping){
+
+		document.getElementById("otherIsTypingDiv").innerHTML = "Customer is Typing";
+
+		if(chatLoaderObj.csrIsTyping && chatLoaderObj.csrAssignedId != {DATA:UserID})
+			document.getElementById("otherIsTypingDiv").innerHTML += " &amp; CSR is Typing";
+	}
+	else{
+		if(chatLoaderObj.csrIsTyping)
+			document.getElementById("otherIsTypingDiv").innerHTML = " CSR is Typing";
+		else
+			document.getElementById("otherIsTypingDiv").innerHTML = "<img src='images/transparent.gif' width='90' height='1' /> &nbsp;";
+	}
+
+
+	// Play a sound if the user has chosen to hear them.
+	if(newMessageReceivedFlag){
+		if(document.getElementById("soundCheckbox").checked){
+
+			var flashMovieObject = getFlashMovieObject("soundMovie");
+
+			flashMovieObject.Play();
+		}
+	}
+
+	// When the server finishes respondong... if the chat thread status is "closed" then we should stop polling the server.
+	if(chatLoaderObj.chatStatus == "C"){
+		showChatSessionClosed();
+		stopPolling();
+		disableSendButton();
+		document.getElementById("closeChatButton").disabled = true;
+		document.getElementById("autoWaitMessages").style.display = "none";
+		document.getElementById("endButton").style.display = "none";
+		document.getElementById("uploadLink").style.display = "none";
+		document.getElementById("otherIsTypingDiv").style.display = "none";
+		document.getElementById("customersWaitingInfo").style.display = "none";
+
+		document.getElementById("transferLabel").innerHTML = "CSR Statuses";
+
+		if(chatLoaderObj.chatSubject == "U"){
+			addHtmlToMessageWindowAdmin("<span class='chatError' id='subjectErrorDiv'>You haven't set a subject for this chat thread. It is not imperative, but please choose the closest matching subject (which took a majority of your effort). Rather than leaving the subject set to 'Unknown', it is better to choose 'Other' (if there isn't a good match).<br><br>In the future, you may find it easier to set the subject during conversation.</span>");
+		}
+	}
+	else{
+		document.getElementById("uploadLink").style.display = "block";
+
+		enableSendButton();
+	}
+
+
+}
+
+// Set the
+function setInitialSoundPreference(){
+	if(getJavascriptCookie("IgnoreSound") != "yes"){
+		document.getElementById("soundCheckbox").checked = true;
+	}
+}
+function toggleSoundPreference(){
+	if(document.getElementById("soundCheckbox").checked){
+		setJavascriptCookie("IgnoreSound", "no", 2000);
+	}
+	else{
+		setJavascriptCookie("IgnoreSound", "yes", 2000);
+	}
+}
+
+function SendPrivate(){
+	var messageText = document.getElementById("newMessage").value;
+	chatSenderObj.sendMessage(messageText, true);
+	document.getElementById("newMessage").value = "";
+}
+
+</script>
+
+<script type="text/javascript" src="./library/chat_common.js"></script>
+<script type="text/javascript">
+
+function setPleaseWaitMessages(pleaseWaitFlag){
+	chatPleaseWaitObj.allowPleaseWaitMessages(pleaseWaitFlag);
+}
+
+function setPleaseWaitRadioButtons(){
+	if(chatLoaderObj.allowPleaseWait){
+		document.getElementById("pleaseWaitRatio_YES").checked = true;
+		document.getElementById("pleaseWaitRatio_NO").checked = false;
+	}
+	else{
+		document.getElementById("pleaseWaitRatio_NO").checked = true;
+		document.getElementById("pleaseWaitRatio_YES").checked = false;
+	}
+}
+
+
+function changePleaseWaitErrorEvent(errorCode, errorMessage){
+	addHtmlToMessageWindowAdmin("<span class='chatError'>" + errorMessage + "</span>");
+}
+function pleaseWaitMessageLoadedEvent(){
+	// Fire off a poll to the server so we can check if the radio button is set correctly.
+	chatLoaderObj.fetchMessagesFromServer();
+}
+var chatPleaseWaitObj = new ChatThreadPleaseWait(chatThreadId);
+chatPleaseWaitObj.attachLoadedEvent(pleaseWaitMessageLoadedEvent);
+chatPleaseWaitObj.attachErrorEvent(changePleaseWaitErrorEvent);
+
+
+// Attach another event to the "polling" get messages routine.  That will allow us to set the Radio buttons.
+chatLoaderObj.attachLoadedEvent(setPleaseWaitRadioButtons);
+
+
+function showChatSessionClosed(){
+	var closedMessage = "The chat session has ended. ";
+
+	// If the chat was closed due to a "ping" timeout, give additional details.
+	if(chatLoaderObj.closedReason == "C")
+		closedMessage += "<br /><br />You may have lost your internet connection.  The chat session has timed out for the customer.</a>";
+	else if(chatLoaderObj.closedReason == "U")
+		closedMessage += "<br /><br />The customer may have lost their internet connection.  The chat session timed has timed out.";
+	else if(chatLoaderObj.closedReason == "X")
+		closedMessage += "<br /><br />The customer closed their chat window.";
+
+	var htmlMessage = "<p><span class='infoText'>" + closedMessage + "</span></p>";
+
+	addHtmlToMessageWindowAdmin(htmlMessage);
+}
+
+function chatTerminatorCompleteEvent(){
+	// Fire off a poll to the server so we can check if the radio button is set correctly.
+	chatLoaderObj.fetchMessagesFromServer();
+}
+function chatTerminatorErrorEvent(statusCode, errorMessage){
+	addHtmlToMessageWindowAdmin("<span class='chatError'>" + errorMessage + "</span>");
+}
+
+chatTerminatorObj.attachLoadedEvent(chatTerminatorCompleteEvent);
+chatTerminatorObj.attachErrorEvent(chatTerminatorErrorEvent);
+
+function closeChatThread(){
+	if(confirm("Are you sure that you want to close this?")){
+		chatTerminatorObj.closeChatThread();
+	}
+}
+
+function notifyParentWindowOfExistence(){
+	if(self.opener){
+		try{
+		self.opener.chatWindowExistenceBroadcast({CHAT_ID}, self);
+		}
+		catch(e){}
+	}
+}
+
+setInterval( notifyParentWindowOfExistence, 500 );
+
+
+
+</script>
+
+<style>
+.chatError { color:#993300; font-weight:bold; }
+.fileAttachment { color:#000000; font-weight:normal; padding:2px; border:solid; border-color:#333333; border-width:1px; background-color:#DDDDDD;font-weight:bold; font-size:12px; margin-top:5px; margin-bottom:3px; width:50%; }
+.customerMessage { color:#006633; font-weight:normal; padding:5px; border:solid; border-color:#aac3aa; border-width:1px; background-color:#FFFFFF; margin-bottom: 0px; font-weight:bold }
+.csrPrivateMessage { color:#006633; font-weight:normal; padding:5px; border:solid; border-color:#88bb88; border-width:1px; background-color:#eef3FF; margin-bottom: 0px; font-weight:bold; margin-left:20px; margin-right:20px; }
+.csrMessage { color:#000099; font-weight:normal; padding:5px; border:solid; border-color:#bbbbc3; border-width:1px; background-color:#FFFFFF; margin-bottom: 0px;  }
+.infoText { color:#999999; font-style:italic; font-weight:normal; }
+.meDescription { color:#888888; font-weight:normal; font-size:10px; text-decoration:underline;  }
+.csrDescription { color:#888888; font-weight:normal; font-size:10px; text-decoration:underline;   }
+.CustomerLink { color:#669966; font-weight:normal; font-size:10px; text-decoration:underline; }
+.dateDesc { color:#88aaaa; font-weight:normal; font-size:10px; }
+A.autoWaitMsg { color:#333333; text-decoration:none; }
+A.autoWaitMsg:hover  { color:#003399; text-decoration:underline; }
+html, body {
+height: 100%;
+}
+
+</style>
+
+</head>
+
+<body bgcolor="#3366CC" topmargin="0" leftmargin="0" rightmargin="0" bottommargin="0">
+
+
+<div align="center" style="height:100%; background-color:#3366CC">
+
+
+
+<table bgcolor="#EEEEEE" width="100%" cellpadding="0" cellspacing="0" border="0">
+
+<tr>
+<td bgcolor="#FFFFFF" class="Body" align="center" style="background-image: url(./images/admin/header-shipping.png); background-repeat: repeat-y">
+<table width="100%" border="0" cellspacing="0" cellpadding="2">
+  <tr>
+  <td width="24%" nowrap="nowrap" align="left"><nobr>{DOMAIN_LOGO} <font style="font-size:10px; font-weight:bold;">{DOMAIN_NAME}</font></nobr></td>
+    <td width="21%">
+    <select name="chatSubject" id="chatSubjectMenu" onfocus="subjectFieldFocussedFlag = true;" onblur="subjectFieldFocussedFlag = false;" onchange="subjectFieldFocussedFlag = false; changeSubject(this.value);" style="font-family:Arial, Helvetica, sans-serif; font-size:11px;">{CHAT_SUBJECT_LIST}</select></td>
+    <td width="17%"><span id="uploadLink" style="display:none">
+    <a href="chat_fileupload_wrapper.php?chat_id={CHAT_ID}#load_me" class="modal" id="uploadBtn" title="File Uploader">Attachment</a></span></td>
+    <td width="20%" nowrap="nowrap"><nobr><span id="transferLink">
+    <a href="ad_chat_transfer.php?chatThread={CHAT_ID}#load_me" class="modal" id="transferChatBtn" title="Chat Transfer --- CSR's That Are Currently Online"><span id="transferLabel">Transfer</span></a></span></nobr></td>
+    <td width="4%"><a class="BlueRedLinkRecord" href="javascript:MakeNewTask('chat', {CHAT_ID}, false);">Task</a></td>
+    <td width="3%"><a class="BlueRedLinkRecord" href="javascript:SendInternalMessage('chat', {CHAT_ID}, true);">Msg</a></td>
+    <td width="11%" align="right">
+    <span id="endButton">
+    <input type="button" id="closeChatButton" name="Close Chat Thread" value="End" onclick="closeChatThread();" style="font-size:11px;" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" />&nbsp;
+    </span>
+    </td>
+  </tr>
+</table>
+
+
+
+
+</td></tr>
+</table>
+
+
+
+<div id="messageWindow" align="left" style="background-color:#EEEEEE; border:solid; border-color:#666666; border-width:2px; padding:5px; width:97%; height:65%; margin-bottom:5px; overflow:scroll; -ms-overflow-x: hidden; overflow-x: hidden;">
+</div>
+<table width="100%" border="0" cellspacing="0" cellpadding="2" style="background-image: url(./images/admin/header-shipping.png); background-repeat: repeat-y" bgcolor="#FFFFFF">
+  <tr>
+    <td align="left" width="37%" style="font-family:Arial, Helvetica, sans-serif; font-size:11px; white-space:nowrap;" nowrap="nowrap"><img src="images/transparent.gif" width="3" height="3" /><br /><nobr>&nbsp;Global Queue: <span id="customersWaitingInfo" style="font-family:Arial, Helvetica, sans-serif; font-size:11px; color:#003366; border:solid; border-color:#CCCCCC; background-color:#F3f3f3; border-width:1px; width:140px; height:15px; text-align:center; padding-left:6px; padding-right:6px;"><img src="images/transparent.gif" width="1" height="1" /></span></nobr><br /><img src="images/transparent.gif" width="3" height="3" /></td>
+    <td align="left" width="63%" style="font-family:Arial, Helvetica, sans-serif; font-size:11px; white-space:nowrap;" nowrap="nowrap"><img src="images/transparent.gif" width="3" height="3" /><br /><nobr>Activity: <span id="otherIsTypingDiv" style="font-family:Arial, Helvetica, sans-serif; font-size:11px; color:#993366; border:solid; border-color:#CCCCCC; background-color:#F3f3f3; border-width:1px; width:140px; height:15px; text-align:center; padding-left:6px; padding-right:6px;"><img src="images/transparent.gif" width="90" height="1" /> &nbsp;</span></nobr><br /><img src="images/transparent.gif" width="3" height="3" /></td>
+  </tr>
+</table>
+<div id="footer" style="background-color:#EEEEEE; padding:5px; padding-left:14px; padding-right:5px;">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td valign="top" align="left">
+<textarea id="newMessage" style="width:90%; height:70px;" onkeyup="keyUpOnMessageBox();"></textarea>
+<br /><img  src="./images/transparent.gif" border="0" width="1" height="6" alt="" />
+
+<table width="100%" border="0" cellspacing="0" cellpadding="3">
+  <tr>
+    <td align="left"><input id="sendButton" type="button" name="SendButton" value="Send (CTRL + Enter)" onClick="javascript:SendCsrMessage();" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" /> &nbsp;{DOMAIN_LOGO}<br /><img  src="./images/transparent.gif" border="0" width="1" height="6" alt="" /><br />
+<input id="sendButtonPrivate" type="button" name="SendButton" value="Send Private (only visible by CSR's)" onClick="javascript:SendPrivate();" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" /></td>
+    <td>
+       <div id="autoWaitMessages" class="SmallBody">
+    <input type="radio" name="pleaseWait" value="true" id="pleaseWaitRatio_YES" onclick="setPleaseWaitMessages(true);"  />
+          <a href='javascript:setPleaseWaitMessages(true);' class="autoWaitMsg">Allow auto &quot;Please Wait&quot;.</a><br />
+          <input type="radio" name="pleaseWait" value="false" id="pleaseWaitRatio_NO" onclick="setPleaseWaitMessages(false);"  />
+          <a href='javascript:setPleaseWaitMessages(false);' class="autoWaitMsg">Hault automatic messages.</a>
+          <br>
+          <input type="checkbox" name="playSound" value="yes" id="soundCheckbox" onchange="toggleSoundPreference();" /> Sound
+          <span id="soundSWF"><object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" id="soundMovie" codebase="https://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=8,0,0,0" width=1 height=1><param name="allowScriptAccess" value="always" /><param name="movie" value="chatDing.swf" /> <param name="quality" value="best" /> <param name="bgcolor" value="#FFFFFF" /> <embed src="chatDing.swf" name="soundMovie" quality="best" bgcolor="#FFFFFF" allowScriptAccess="always" width=1 height=1 type="application/x-shockwave-flash" pluginspage="https://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash"></embed></object></span>
+
+          <script type="text/javascript">
+		  setTimeout("setInitialSoundPreference();", 2500);
+		  </script>
+          </div>
+
+          </td>
+  </tr>
+</table>
+
+
+
+
+</td>
+    <td valign="top" align="right">
+<div id="customerDetails">
+Initializing...
+
+</div>
+
+</td>
+  </tr>
+
+
+</table>
+</div>
+<img src="images/header-editoptions-fade-bot.gif" width="100%" height="27" alt="" />
+<script type="text/javascript">
+pollServer();
+</script>
+<!-- END ChatThreadBL -->
+</div>
+</body>
+</html>

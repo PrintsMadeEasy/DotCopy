@@ -1,0 +1,225 @@
+/* Cascading Style Sheet */
+
+html {scrollbar-face-color: #9999bb; scrollbar-arrow-color: white; scrollbar-highlight-color: white; scrollbar-shadow-color: #9999CC; scrollbar-3dlight-color: black; }
+
+/* Keep Form Tags from adding line breaks */
+form { margin:0;padding:0;display:inline; }
+
+.Body		{ font-size:14px; color:#333333;  font-family:Arial,Helvetica,sans-serif; }
+.BrightBody	{ font-size:14px; color:#990000;  font-family:Arial,Helvetica,sans-serif; }
+.LargeBody	{ font-size:16px; color:#333333;  font-family:Arial,Helvetica,sans-serif; }
+.NavColor	{ color:#3366CC; background-color:#3366CC;}
+.SmallBody	{ font-size:12px; color:#666666;  font-family:Arial,Helvetica,sans-serif; }
+.SemiSmallBody	{ font-size:11px; color:#666666;  font-family:Arial,Helvetica,sans-serif; }
+.SmallBodyBlack { font-size:12px; font-family:Arial, Helvetica, sans-serif; }
+.SmallBodyBold	{ font-size:12px; font-family:Arial, Helvetica, sans-serif; font-weight: bold; color: #666666; }
+.ReallySmallBody { font-size:10px; color:#666666;  font-family:Arial,Helvetica,sans-serif; }
+
+.PriceChartRow { font-size:12px; color:#666666;  font-family:Arial,Helvetica,sans-serif; background-color:#FFFFFF; text-align:center; }
+
+.AdminLabel	{ font-size:14px; font-weight:bold; color:#990000;  font-family:Arial,Helvetica,sans-serif; }
+
+.dashboardInput	{ font-face: arial; background-color:#88A6BD; font: 14px; color:#ffffff; border: 1 solid #000000; }
+
+.LargeLink 	{ font-size:16px; font-weight:bold; color:#666633;  font-family:Arial,Helvetica,sans-serif; }
+.SmallLink 	{ font-size:12px; color:#666633;  font-family:Arial,Helvetica,sans-serif; }
+.BlueLink 	{ font-size:12px; color:#0000FF;  font-family:Arial,Helvetica,sans-serif; }
+.RedLink 	{ font-size:12px; color:#FF0000;  font-family:Arial,Helvetica,sans-serif; font-weight:bold; text-decoration:none;}
+
+.HomeMessage	{ font-size:13px; color:#333366;  font-family:Arial,Helvetica,sans-serif; }
+
+.copyright	{ font-size:14px; color:#444444;  font-family:Arial,Helvetica,sans-serif; font-weight:bold; }
+A.copyright	{ font-size:14px; color:#336699;  font-family:Arial,Helvetica,sans-serif; font-weight:bold; }
+A.copyright:visited { color: #336699; }
+A.copyright:link { color: #336699; }
+A.copyright:hover { color: #990000; }
+
+
+A.productLinkFooter	{ font-size:13px; color:#336699;  font-family:Arial,Helvetica,sans-serif; font-weight:bold; }
+A.productLinkFooter:visited { color: #336699; }
+A.productLinkFooter:link { color: #336699; }
+A.productLinkFooter:hover { color: #990000; }
+
+.Error	 	{ font-size:15px; color:#CC0000;  font-family:Arial, Helvetica, sans-serif; ; font-weight: bold}
+.OptionNames	{ font-size:15px; font-weight:bold; color:#993333;  font-family:Arial,Helvetica,sans-serif; }
+.SubSectionHeader	{ font-size:16px; font-weight:bold; color:#990000;  font-family:Arial,Helvetica,sans-serif; }
+.DescriptionLabel	{ font-size:20px; font-weight:bold; color:#333333;  font-family:Arial,Helvetica,sans-serif; }
+.TotalBox	{ font-size:16px; color:#333333;  font-family:Arial,Helvetica,sans-serif; border-width:0; width: 100px; text-align:right; background-color:#FFFFCC; }
+.TotalBoxGrey	{ font-size:16px; color:#333333;  font-family:Arial,Helvetica,sans-serif; border-width:0; width: 100px; text-align:right; background-color:#EEEEEE; }
+.WhiteBox	{ font-size:16px; color:#333333;  font-family:Arial,Helvetica,sans-serif; border-width:0; width: 200px; text-align:left; background-color:#FFFFFF; }
+.LighBlueBox	{ font-size:16px; color:#333333;  font-family:Arial,Helvetica,sans-serif; border-width:0; width: 200px; text-align:left; background-color:#EEF3FF; }
+.TotalWhiteBox	{ font-size:14px; color:#993333;  font-family:Arial,Helvetica,sans-serif; border-width:0; width: 100px; text-align:left; background-color:#FFFFFF; }
+
+.Step4TotalBox	{ font-size:14px; color:#993333;  font-family:Arial,Helvetica,sans-serif; border-width:0; width: 100px; text-align:left; background-color:#E7F7FF; }
+.Step4Box	{ font-size:12px; color:#333333;  font-family:Arial,Helvetica,sans-serif; border-width:0; width: 320px; text-align:left; background-color:#E7F7FF; }
+
+
+A.BlueRedLink 	{ font-size:12px; color:#0000FF;  font-family:Arial,Helvetica,sans-serif; }
+A.BlueRedLink:visited { color: #0000FF; }
+A.BlueRedLink:link { color: #0000FF; }
+A.BlueRedLink:hover { color: #FF0000; }
+
+
+A.BlueRedLinkRecord 	{ font-size:12px; font-family:Arial,Helvetica,sans-serif; }
+A.BlueRedLinkRecord:visited { color: #9900cc; }
+A.BlueRedLinkRecord:link { color: #0000FF; }
+A.BlueRedLinkRecord:hover { color: #FF0000; }
+
+A.BlueRedLinkRecSM 	{ font-size:10px; font-family:Arial,Helvetica,sans-serif; }
+A.BlueRedLinkRecSM:visited { color: #9900cc; }
+A.BlueRedLinkRecSM:link { color: #0000FF; }
+A.BlueRedLinkRecSM:hover { color: #FF0000; }
+
+
+A.NavBarDomLinkSM 	{ font-size:10px; font-family:Arial,Helvetica,sans-serif; }
+A.NavBarDomLinkSM:visited { color: #333366; }
+A.NavBarDomLinkSM:link { color: #333366; }
+A.NavBarDomLinkSM:hover { color: #FFFFFF; }
+
+
+A.BlueRedLinkLarge 	{ font-size:16px; color:#0066CC;  font-family:Arial,Helvetica,sans-serif; }
+A.BlueRedLinkLarge:visited { color: #0066CC; }
+A.BlueRedLinkLarge:link { color: #0066CC; }
+A.BlueRedLinkLarge:hover { color: #FF0000; }
+
+A.CustomerServiceLink 	{ font-size:12px; color:#0000CC;  font-family:Arial,Helvetica,sans-serif; }
+A.CustomerServiceLink:visited { color: #0000CC; }
+A.CustomerServiceLink:link { color: #0000CC; }
+
+
+A.footerlink 	{ font-size:12px; color:#FFFFFF;  font-family:Arial,Helvetica,sans-serif; text-decoration:none }
+A.footerlink:visited { color: #FFFFFF; }
+A.footerlink:link { color: #FFFFFF; }
+A.footerlink:hover { color: #99FFFF; }
+
+
+A.messageRevisionLink 	{ font-size:10px; color:#eeFFFF;  font-family:Arial,Helvetica,sans-serif; }
+A.messageRevisionLink:visited { color: #eeFFFF; }
+A.messageRevisionLink:link { color: #eeFFFF; }
+A.messageRevisionLink:hover { color: #ccFFFF; }
+
+A.ReorderLink 	{ font-size:12px; color:#666666;  font-family:Arial,Helvetica,sans-serif; }
+A.ReorderLink:visited { color: #666666; }
+A.ReorderLink:link { color: #666666; }
+A.ReorderLink:hover { color: #996666; }
+
+A.ProductLink 	{ font-size:16px; color:#3366FF;  font-weight:bold; font-family:Arial,Helvetica,sans-serif; text-decoration:none}
+A.ProductLink:visited { color: #3366FF; }
+A.ProductLink:link { color: #3366FF; }
+A.ProductLink:hover { color: #0000FF; }
+
+
+A.guarantee 	{ font-size:12px; color:#666666; font-family:Arial,Helvetica,sans-serif; text-decoration:none}
+A.guarantee:visited { color: #666666; }
+A.guarantee:link { color: #666666; }
+A.guarantee:hover { color: #666666; }
+
+A.Logout 	{ font-size:12px; color:#FFFFFF; font-family:Arial,Helvetica,sans-serif;}
+A.Logout:visited { color: #FFFFFF; }
+A.Logout:link { color: #FFFFFF; }
+A.Logout:hover { color: #CCCCFF; }
+
+
+A.adminOrderLink 	{ font-size:12px; color:#666666; font-family:Arial,Helvetica,sans-serif;  text-decoration:none}
+A.adminOrderLink:visited { color: #666666; }
+A.adminOrderLink:link { color: #666666; }
+A.adminOrderLink:hover { color: #0000FF;  text-decoration:underline}
+
+
+A.adminOrderLink2 	{ font-size:14px; color:#666666; font-family:Arial,Helvetica,sans-serif;  text-decoration:none}
+A.adminOrderLink2:visited { color: #990000; }
+A.adminOrderLink2:link { color: #333333; }
+A.adminOrderLink2:hover { color: #0000FF;  text-decoration:underline}
+
+
+
+.SmallProductLink 	{ font-size:12px; color:#3366FF;  font-family:Arial,Helvetica,sans-serif; text-decoration:none}
+.SmallProductLink a:visited { color: #3366FF; }
+.SmallProductLink a:hover { color: #0000FF; }
+
+
+.InputBox	{ font-size:14px; color:#000000;  font-family:Arial,Helvetica,sans-serif; border-width:1; border-color:#3366CC; border-style:solid; width: 200px; height: 20px; text-align:left; background-color:#EEEEEE; }
+.SmallInputBox	{ font-size:10px; color:#000000;  font-family:Arial,Helvetica,sans-serif; border-width:1; border-color:#3366CC; border-style:solid; width: 24px; text-align:left; background-color:#EEEEEE; }
+.SmallInputBox2	{ font-size:12px; color:#000000;  font-family:Arial,Helvetica,sans-serif; border-width:1; border-color:#3366CC; border-style:solid; width: 24px; text-align:left; background-color:#EEEEEE; }
+
+.SelectBox	{ font-size:14px; color:#000000;  font-family:Arial,Helvetica,sans-serif; border-width:1;  background-color:#EEEEEE; }
+.SelectBox2	{ font-size:14px; color:#000000;  font-family:Arial,Helvetica,sans-serif; border-width:1;  background-color:#FFFFFF; }
+
+.QuickEditField	{ font-size:14px; color:#000000;  font-family:Arial,Helvetica,sans-serif; border-width:1; border-color:#3366CC; border-style:solid; width: 300px; text-align:left; background-color:#FFFFFF; }
+
+.SelectOptionsTotal { font-size:14px; color:#000000;  font-family:Arial,Helvetica,sans-serif; border-width:0; width: 115px; text-align:left; background-color:#FFFFEE; }
+
+
+.AdminTaskComplete { color:#000000; font: 11px Verdana, Arial, Helvetica, sans-serif; font-weight: none; text-decoration: none; background: #FFDDDD; padding: 0px 0px; border: 2px solid; border-color: #EEEECC #999966 #999966 #EEEECC; } 
+.AdminInput { color:#000000; font: 11px Verdana, Arial, Helvetica, sans-serif; font-weight: none; text-decoration: none; background: #FFFFDD; border: 1 solid #999999; } 
+.AdminInputSmall { color:#000000; font: 9px Verdana, Arial, Helvetica, sans-serif; font-weight: none; text-decoration: none; background: #EEFFEE; padding: 0px 0px; border: 2px solid; border-color: #DDEEDD #009900 #009900 #DDEEDD; } 
+
+
+A.AdminTemplateLink 	{ font-size:10px; color:#000000;  font-family:Arial,Helvetica,sans-serif; }
+A.AdminTemplateLink:visited { color: #000000; }
+A.AdminTemplateLink:link { color: #000000; }
+A.AdminTemplateLink:hover { color: #ddddff; }
+
+
+A.AdminTemplateLeftNavLink 	{ font-size:10px; color:#000000;  font-family:Arial,Helvetica,sans-serif; }
+A.AdminTemplateLeftNavLink:visited { color: #000000; }
+A.AdminTemplateLeftNavLink:link { color: #000000; }
+A.AdminTemplateLeftNavLink:hover { color: #3333aa; }
+
+
+A.DullLink 	{ font-size:12px; color:#666666;  font-family:Arial,Helvetica,sans-serif; font-weight:normal;  text-decoration:none}
+A.DullLink:visited { color: #333333; }
+A.DullLink:link { color: #333333; }
+A.DullLink:hover { color: #0000FF; text-decoration:underline}
+
+
+.AdminTemplateInputBox	{ font-size:10px; color:#000000;  font-family:Arial,Helvetica,sans-serif; border-width:1; border-color:#333399; border-style:solid; text-align:left; background-color:#dddddd; color:#000000; }
+
+
+.SavedProjectsNote { color:#990000; width: 440px; font: 11px Verdana, Arial, Helvetica, sans-serif; font-weight: none; text-decoration: none; background: #FFFFFF; border: 1 solid #999999; }
+
+.AdminDropDown { color:#000000; font: 11px Verdana, Arial, Helvetica, sans-serif; font-weight: none; text-decoration: none; background: #FFFFFF; border: 1 solid #000000; } 
+
+.AdminButton { color: #000000; padding: 0px 0px; border: 2px solid; border-color: #EEEECC #999966 #999966 #EEEECC; background-color: #FFFFDD; font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px; cursor: hand; }
+
+.AdminButtonAlert { color: #000000; padding: 0px 0px; border: 2px solid; border-color: #ffeeee #996666 #996666 #ffeeee; background-color: #FFCCCC; font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 13px; cursor: hand; }
+
+
+.AdminWhiteInput { font-size:12px; color:#000000;  font-family:Arial,Helvetica,sans-serif; border-width:0; border-color:#66cc66; border-style:solid; text-align:left; background-color:#FFFFFF; }
+
+
+.Preview a {  background-color: #DDDDDD}
+.Preview a:hover { background-color: #FFFFCC}
+
+.hiddenDHTMLwindow { position:relative; margin: 0; margin-bottom:0px; padding: 0; }
+.hiddenDHTMLwindow span { position:absolute; left:0px; top:0px; margin:0;  }
+
+
+tr.TaskRowEven { background-color: #FFFFFF; }
+tr.TaskRowOdd  { background-color: #FFFFDF; }
+
+.AdminDaySelect	{ font-size:14px; color:#000000;  font-family:Arial,Helvetica,sans-serif; border-width:1; border-color:#3366CC; border-style:solid; width: 28px; text-align:left; background-color:#EEEEEE; }
+
+
+.breadCrumbContainer { background-color:#f6f6ff; border:solid; border-color:#87B9E2; border-width:1px; padding:2px; margin-bottom:15px; margin-left:5px; margin-right:5px; }
+
+A.breadCrumbLink 	{ font-size:12px; color:#6677FF; font-family:Arial,Helvetica,sans-serif;  text-decoration:none }
+A.breadCrumbLink:visited { color: #9933cc; }
+A.breadCrumbLink:link { color: #6677FF; }
+A.breadCrumbLink:hover { color: #3333ff;  text-decoration:underline }
+
+.breadCrumbSelected 	{ font-size:12px; color:#333366; font-family:Arial,Helvetica,sans-serif;  font-weight:bold; }
+
+
+.quote_feedback {
+	min-height:25px;
+	padding-left:30px;
+	padding-top:25px;
+	margin:10px 10px 10px 10px;
+	background:url('../images/u_c_comment_blockquote.png');
+	background-repeat:no-repeat;
+	font-family:Arial, sans-serif;
+	font-style:italic;
+	font-size:12px;
+	line-height:1.5em;
+}

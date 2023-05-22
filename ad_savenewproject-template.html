@@ -1,0 +1,93 @@
+<html>
+<head>
+<title>Save a New Project</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+
+<script language="javascript">
+
+	//Make an array of the images we want to preload for the mouse-overs.
+	arImageSrc = new Array (
+		"./images/button-go-d.gif",
+		"./images/button-closewindow-blue-d.gif",
+		"./images/button-sendmessage-blue-d.gif"
+	)
+
+	//Preload images.
+	arImageList = new Array ();
+	for (counter in arImageSrc) {
+		arImageList[counter] = new Image();
+		arImageList[counter].src = arImageSrc[counter];
+	}
+
+	function GenerateThubmnailAndSave(){
+
+		document.location = "./ad_savenewproject.php?action=save&projectid={PROJECTID}&notes={NOTES}&form_sc={FORM_SECURITY_CODE}";
+	}
+
+
+
+</script>
+
+</head>
+
+<body bgcolor="#3366CC" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="" >
+<img  src="./images/transparent.gif" border="0" width="1" height="10" alt="" /><br/>
+<div align="center">
+<table bgcolor="#EEEEEE" width="350" cellpadding="0" cellspacing="0" border="0">
+
+<tr>
+<td bgcolor="#999999" class="Body" align="center"><img  src="./images/transparent.gif" border="0" width="1" height="3" alt="" /><br/><font color="#FFFFFF"><b>Save this Artwork for the Customer</b></font><br/><img src="./images/transparent.gif" border="0" width="1" height="3" alt="" /></td>
+</tr>
+<tr>
+<td bgcolor="#666666" class="Body" align="center"><img src="./images/transparent.gif" border="0" width="1" height="2" alt="" /></td>
+</tr>
+<tr>
+<td class="Body" align="center">&nbsp;
+
+<!-- BEGIN FormBL -->
+<table width="100%" border="0" cellspacing="0" cellpadding="5">
+<form name="cat" action="./ad_savenewproject.php">
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+<input type="hidden" name="projectid" value="{PROJECTID}" />
+<input type="hidden" name="action" value="thumbnail" />
+  <tr>
+              <td class="SmallBody" align="left" width="81%">
+			  &nbsp;&nbsp;Enter the Saved Project Notes...<br/>
+&nbsp;&nbsp;<input type="text" name="notes" value="" class="AdminInput" maxlength="199" style="width:250px;" /> </td>
+              <td align="left" width="19%">
+                <input type="submit" name="xx" value="OK" class="AdminButton" onmouseover="this.style.background='#ffeeaa';" onmouseout="this.style.background='#FFFFDD';" /></td>
+  </tr>
+ </form>
+</table>
+<!-- END FormBL -->
+
+<!-- BEGIN GeneratingThumbnailBL -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td align="center" class="Body"><font color="#990000">Generating Thumbnail Image...<br/>
+Please be patient.</font></td>
+  </tr>
+</table>
+
+<script>
+setTimeout("GenerateThubmnailAndSave()", 1000);
+</script>
+
+<!-- END GeneratingThumbnailBL -->
+
+</td>
+</tr>
+
+
+<tr>
+<td><img src="images/header-editoptions-fade-bot.gif" width="350" alt="" /></td>
+</tr>
+</table>
+
+</div>
+
+
+</body>
+</html>

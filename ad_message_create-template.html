@@ -1,0 +1,171 @@
+<html>
+<head>
+<title>Create a New Thread</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+
+<script language="javascript">
+
+	//Make an array of the images we want to preload for the mouse-overs.
+	arImageSrc = new Array (
+		"./images/button-go-d.gif",
+		"./images/button-cancel-blue-d.gif",
+		"./images/button-sendmessage-blue-d.gif"
+	)
+
+	//Preload images.
+	arImageList = new Array ();
+	for (counter in arImageSrc) {
+		arImageList[counter] = new Image();
+		arImageList[counter].src = arImageSrc[counter];
+	}
+
+
+	function SubmitForm(){
+		if(document.forms[0].message.value==""){
+			alert("Please type a message before sending.");
+		}
+		else if(document.forms[0].subject.value==""){
+			alert("Please type a subject for the message before sending.");
+		}
+		else if(!CheckForSelectedAddress()){
+			alert("Select at least 1 recipient.")
+		}
+		else{
+			var ReciptientList = GetPipeDelinimatedListOfRecipients();
+
+			document.forms[0].to.value = ReciptientList;
+
+			document.forms[0].submit();
+		}
+	}
+
+	function CheckForSelectedAddress(){
+		AddressBoxObj = document.forms[0].recipients;
+
+		var found = false;
+		for(var i=0; i<AddressBoxObj.length; i++){
+			if(AddressBoxObj[i].selected == true){
+				found = true;
+			}
+		}
+		return found;
+	}
+	function GetPipeDelinimatedListOfRecipients(){
+		AddressBoxObj = document.forms[0].recipients;
+
+		var retStr = "";
+		for(var i=0; i<AddressBoxObj.length; i++){
+			if(AddressBoxObj[i].selected == true){
+				retStr += AddressBoxObj[i].value + "|";
+			}
+		}
+		return retStr;
+	}
+
+</script>
+
+</head>
+
+<body bgcolor="#3366CC" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="window.resizeTo(460,650);">
+<img  src="./images/transparent.gif" border="0" width="1" height="10" alt="" /><br/>
+<div align="center">
+<table bgcolor="#EEEEEE" width="430" cellpadding="0" cellspacing="0" border="0">
+
+          <TR>
+			<TD  align="center" height="20" bgcolor="#CCCCCC" style="background-image: url(./images/admin/header-shipping.png); background-repeat: no-repeat;" class="Body">
+				<FONT color="#000000"><B>Create a New Message</B>
+			</FONT></TD>
+		</TR>
+          <TR>
+			<TD bgcolor="#aaaaaa"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></TD>
+		</TR>
+		<tr>
+<td align="center">
+<table bgcolor="#EEEEEE" width="100%" cellpadding="0" cellspacing="0" border="0">
+<form name="report" method="post" action="./ad_message_save.php">
+<input type="hidden" name="attachedto" value="{ATTACHEDTO}" />
+<input type="hidden" name="refid" value="{REFID}" />
+<input type="hidden" name="windowtype" value="popup" />
+<input type="hidden" name="doNotRefresh" value="{DONT_REFRESH}" />
+<input type="hidden" name="to" value="" />
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+
+<tr>
+<td colspan="2"><img src="./images/transparent.gif" border="0" width="1" height="3" alt="" /></td>
+</tr>
+<tr>
+<td width="8">&nbsp;</td>
+<td width="330" class="Body">
+<img  src="./images/transparent.gif" border="0" width="1" height="5" alt="" /><br/>
+
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td class="Body">To:</td>
+    <td class="Body">
+<select multiple name="recipients" size="11" style="font-face:arial; font-size:14; width:340px; background-color:#FFFFCC">
+{TO_LIST}
+</select><br/><img src="./images/transparent.gif" border="0" width="1" height="5" alt="" /></td>
+  </tr>
+  <tr>
+    <td class="Body" nowrap>Subject:&nbsp;</td>
+    <td class="Body"><input type="text" name="subject" value="" class="InputBox" maxlength="190" style="background-color:#FFFFFF; width:340px;" /></td>
+  </tr>
+</table>
+
+
+ <table width="400" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td><img src="./images/transparent.gif" border="0" width="1" height="7" alt="" /></td>
+</tr>
+<tr>
+<td bgcolor="#999999"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+</tr>
+<tr>
+<td><img src="./images/transparent.gif" border="0" width="1" height="7" alt="" /></td>
+</tr>
+</table>
+
+
+<textarea name="message" style="width:400px; height:220px; font-size:12px;" wrap="VIRTUAL"></textarea>
+
+
+</td>
+</tr>
+<tr>
+<td colspan="2"><img src="./images/transparent.gif" border="0" width="1" height="5" alt="" /></td>
+</tr>
+</form>
+</table>
+</td>
+</tr>
+
+
+<tr>
+<td><img src="images/header-editoptions-fade-bot.gif" width="430" alt="" /></td>
+</tr>
+</table>
+
+<table width="350" border="0" cellspacing="0" cellpadding="0">
+
+  <tr>
+
+    <td align="center">
+
+<img  src="./images/transparent.gif" border="0" width="1" height="5" alt="" /><br/>
+<a onclick="SubmitForm();" ><img src="./images/button-sendmessage-blue-u.gif" onmouseover="this.src='./images/button-sendmessage-blue-d.gif';" onmouseout="this.src='./images/button-sendmessage-blue-u.gif';" border="0" width="116" height="25" align="absmiddle" alt="" /></a>  &nbsp;&nbsp;
+
+<a onclick="window.close();" ><img src="./images/button-cancel-blue-u.gif" onmouseover="this.src='./images/button-cancel-blue-d.gif';" onmouseout="this.src='./images/button-cancel-blue-u.gif';" border="0" width="76" height="25" align="absmiddle" alt="" /></a>
+<br/>
+&nbsp;
+	</td>
+
+  </tr>
+</table>
+</div>
+
+
+</body>
+</html>

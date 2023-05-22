@@ -1,0 +1,12 @@
+# Example:
+# ip=124.217.245.221;
+# email=spammer@spam.com;
+
+# .221 and .205 are used by Spammer borisjones@gmail.com every couple seconds. Malaysia.
+#ip=124.217.245.221;
+#ip=124.217.245.205;
+
+email=.hinet.net;
+email=@yahoo.com.tw;
+
+EOF

@@ -1,0 +1,108 @@
+<html>
+<head>
+<title>Reply To Thread</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+
+<script language="javascript">
+
+
+	function SubmitForm(){
+		if(document.forms['msgForm'].message.value==""){
+			alert("Please type a message before sending.");
+			document.forms['msgForm'].message.focus();
+		}
+		else{
+			document.forms['msgForm'].submit();
+		}
+	}
+
+
+
+</script>
+<script type="text/javascript" src="./library/admin_library.js"></script>
+</head>
+
+<body bgcolor="#3366CC" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="window.resizeTo(480,550); document.forms['msgForm'].message.focus();" >
+<img  src="./images/transparent.gif" border="0" width="1" height="10" alt="" /><br/>
+<div align="center">
+<table bgcolor="#EEEEEE" width="430" cellpadding="0" cellspacing="0" border="0">
+
+          <TR>
+			<TD  align="center" height="20" bgcolor="#CCCCCC" style="background-image: url(./images/admin/header-shipping.png); background-repeat: no-repeat;" class="Body">
+				<FONT color="#000000"><B>Add a Message</B>
+			</FONT></TD>
+		</TR>
+<td align="center">
+<table bgcolor="#EEEEEE" width="100%" cellpadding="0" cellspacing="0" border="0">
+<form name="msgForm" method="post" action="./ad_message_save.php">
+<input type="hidden" name="replyto" value="{THREADID}" />
+<input type="hidden" name="unreadmessages" value="{UNREADMESSAGES}" />
+<input type="hidden" name="windowtype" value="popup" />
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+
+<tr>
+<td colspan="3"><img src="./images/transparent.gif" border="0" width="1" height="3" alt="" /></td>
+</tr>
+<tr>
+<td width="1%">&nbsp;</td>
+<td width="98%" class="Body" align="center">
+<img  src="./images/transparent.gif" border="0" width="1" height="5" alt="" /><br/>
+
+<font class="Body"><b>Subject</b> - {SUBECT} <br/><img  src="./images/transparent.gif" border="0" width="1" height="5" alt="" /><br/>{PEOPLE_IN_THREAD}</font>
+<br/><img src="./images/transparent.gif" border="0" width="1" height="3" alt="" /><table width="330" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td><img src="./images/transparent.gif" border="0" width="1" height="7" alt="" /></td>
+</tr>
+<tr>
+<td bgcolor="#999999"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+</tr>
+<tr>
+<td><img src="./images/transparent.gif" border="0" width="1" height="7" alt="" /></td>
+</tr>
+</table>
+
+<input type="button" name="xx" value="Send Message" class="AdminButton" onmouseover="this.style.background='#ffeeaa';" onmouseout="this.style.background='#FFFFDD';" onclick="SubmitForm();" />
+<img src="./images/transparent.gif" border="0" width="15" height="1" alt="" />
+<input type="button" name="xx" value="Cancel" class="AdminButton" onmouseover="this.style.background='#ffeeaa';" onmouseout="this.style.background='#FFFFDD';" onclick="window.close();" />
+
+ <table width="380" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td><img src="./images/transparent.gif" border="0" width="1" height="7" alt="" /></td>
+</tr>
+<tr>
+<td bgcolor="#999999"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+</tr>
+<tr>
+<td><img src="./images/transparent.gif" border="0" width="1" height="7" alt="" /></td>
+</tr>
+</table>
+
+
+<textarea name="message" style="width:400px; height:220px; font-size:12px;" wrap="VIRTUAL"></textarea>
+<br/>&nbsp;
+{MESSAGE_THREAD}
+
+</td>
+<td width="1%">&nbsp;</td>
+</tr>
+<tr>
+<td colspan="3"><img src="./images/transparent.gif" border="0" width="1" height="5" alt="" /></td>
+</tr>
+</form>
+</table>
+</td>
+</tr>
+
+
+<tr>
+<td><img src="images/header-editoptions-fade-bot.gif" width="430" alt="" /></td>
+</tr>
+</table>
+
+</div>
+
+
+</body>
+</html>

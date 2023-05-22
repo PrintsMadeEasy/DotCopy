@@ -1,0 +1,210 @@
+<html>
+<head>
+<title>Admin</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<script language="javascript">
+
+	//Make an array of the images we want to preload for the mouse-overs.
+	arImageSrc = new Array (
+		"./images/button-go-d.gif",
+		"./images/button-go-grey-u.gif",
+		"./images/button-hasbeenshipped-u.gif"
+
+	)
+
+	//Preload images.
+	arImageList = new Array ();
+	for (counter in arImageSrc) {
+		arImageList[counter] = new Image();
+		arImageList[counter].src = arImageSrc[counter];
+	}
+
+	function makeNewWindow(address){
+		newWindow = window.open(address, "sub", "height=360,width=375,directories=no,location=no,menubar=no,scrollbars=no,status=no,toolbar=no,resizable=no");
+		newWindow.focus();
+	}
+	function SearchMessages(){
+		var StartMonth = parseInt(document.messages.startmonth.value);
+		var EndMonth = parseInt(document.messages.endmonth.value);
+		var StartYear = parseInt(document.messages.startyear.value);
+		var EndYear = parseInt(document.messages.endyear.value);
+		var Keywords = document.messages.keywords.value;
+
+		//Trim Whitespaces of of keywords
+		Keywords = Keywords.replace(/^\s+/, "");
+		Keywords = Keywords.replace(/\s+$/, "");
+		document.messages.keywords.value = Keywords;
+
+		if(Keywords.length < 3 && Keywords.length != 0){
+			alert("If you choose to search for messages by keywords you must have at least 1 word with a minimum of 3 characters.");
+			return false;
+		}
+
+		if(StartYear > EndYear){
+			alert("Year values are not in range.");
+			return false;
+		}
+		else if(StartYear == EndYear){
+			if(StartMonth > EndMonth){
+				alert("Month values are not in range.");
+				return false;
+			}
+			else{
+				document.messages.submit();
+			}
+		}
+		else{
+			document.messages.submit();
+		}
+	}
+
+		function changeThreadResultsPerPage(amount){
+		document.location = "./ad_messages.php?action=changeThreadPageResults&form_sc={FORM_SECURITY_CODE}&threadCounts=" + amount;
+	}
+
+</script>
+<script type="text/javascript" src="./library/admin_library.js"></script>
+<link rel="stylesheet" type="text/css" href="library/calendar/themes/winter.css"/>
+<script type="text/javascript" src="library/calendar/src/utils.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar.js"></script>
+<script type="text/javascript" src="library/calendar/lang/calendar-en.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar-setup.js"></script>
+<script type="text/javascript" src="library/formatDate.js"></script>
+</head>
+<body bgcolor="#FFFFFF" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="">
+<div align="center">
+{HEADER}
+&nbsp;
+<table width="760" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td class="Body">
+<!-- Inner Body  -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="50%"><img src="./images/label-searchformessages.gif" border="0"  alt="" /></td>
+    <td width="50%" align="right"><a href="javascript:SendInternalMessage('', '', false);"><img src="./images/button-createnewthread-u.gif" onmouseover="this.src='./images/button-createnewthread-d.gif';" onmouseout="this.src='./images/button-createnewthread-u.gif';" border="0" width="193" height="25" align="absmiddle" alt="" /></a>
+</td>
+</tr>
+</table>
+<table width="100%" border="0" cellspacing="0" cellpadding="1" bgcolor="#666666">
+<tr>
+<td>
+              <table width="100%" border="0" cellspacing="0" cellpadding="4" bgcolor="#CCCCCC">
+                <form name="messages" onsubmit="return SearchMessages();" action="./ad_messages.php" method="GET">
+                <input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+                  <tr>
+                    <td width="23%" align="left" class="Body">Keyword(s)<br/>
+                      <input type="text" name="keywords" value="{KEYWORDS}" class="InputBox" style="width:165px;" />
+                    </td>
+                    <td width="60%" class="Body">
+                      <table cellpadding="0" cellspacing="0" border="0">
+					<tr>
+					<td align="center" class="Body">Threads Starting Between</td>
+					</tr>
+					<tr>
+					<td bgcolor="#666666" class="Body"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+					</tr>
+					<tr>
+					<td class="Body"><img src="./images/transparent.gif" border="0" width="1" height="3" alt="" /></td>
+					</tr>
+					<tr>
+					<td align="center" class="Body"><nobr> {START_MONTH} {START_YEAR} AND   {END_MONTH} {END_YEAR}</nobr>
+			         &nbsp;&nbsp;Per Page <select name="ThreadsPageCounts" class="AdminInput" onChange="changeThreadResultsPerPage(this.value)">{THREADS_PER_PAGE_DROPDOWN}</select>
+					</td>
+					</tr>
+					</table>
+					</td>
+                    <td width="10%" align="left" class="Body">&nbsp;<br/>
+                      <a onclick="SearchMessages();"><img src="./images/button-go-grey-u.gif" onmouseover="this.src='./images/button-go-grey-d.gif';" onmouseout="this.src='./images/button-go-grey-u.gif';" border="0"  align="absmiddle" alt="" /></a>
+                    </td>
+                  </tr>
+                </form>
+              </table>
+</td>
+</tr>
+</table>
+
+
+<img  src="./images/transparent.gif" border="0" width="1" height="10" alt="" /><br/>
+<!-- BEGIN EmptyMessageBL -->
+
+<!-- BEGIN MultiPageBL -->
+<table width="100%" border="0" cellspacing="0" cellpadding="1" class="NavColor">
+  <tr>
+    <td>
+	<table width="100%" border="0" cellspacing="0" cellpadding="1" bgcolor="#ddeeff">
+  <tr>
+    <td>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="50%" class="SmallBody"><img  src="./images/transparent.gif" border="0" width="1" height="3" alt="" /><br/>
+	<font color="#000000">&nbsp; Total of {THREAD_RESULT_DESC} Threads.  <font class="ReallySmallBody" style="color:#000000">Displaying {THREAD_START_RESULTS_DISP} - {THREAD_END_RESULTS_DISP}</font></font><br/>
+	<img src="./images/transparent.gif" border="0" width="2" height="3" alt="" /></td>
+<td width="50%" align="right" class="SmallBody"><font color="#000000">{THREAD_NAVIGATE}</font></td>
+</tr>
+</table>
+	</td>
+  </tr>
+</table>
+	</td>
+  </tr>
+</table>
+<br/>
+ <!-- END MultiPageBL -->
+
+<!-- BEGIN messagesBL -->
+
+
+        <table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#EEEEFF">
+          <tr>
+            <td width="28%" class="Body"><b>Thread ID:</b> <a class="BlueRedLinkRecord" href="./ad_message_display.php?thread={ID}&keywords={KEYWORDS}%20">{ID}</a></td>
+            <td width="46%" class="Body"><b>Thread Start Date:</b> {START}</td>
+            <td width="26%" class="Body"><b>Message Count:</b> {COUNT}</td>
+          </tr>
+        </table>
+
+<b>Subject:</b> {SUBJECT}
+
+<!-- BEGIN subjectLinkBL -->
+&nbsp;&nbsp; <a href='{LINKURL}{REFID}&message' class='BlueRedLinkRecord'>{LINKSUBJECT}{REFID}</a>
+<!-- END subjectLinkBL -->
+
+{SUMMARY}
+<br/><img  src="./images/transparent.gif" border="0" width="1" height="15" alt="" /><br/>
+<img  src="./images/greypixel.gif" border="0" width="742" height="1" alt="" /><br/>
+<img  src="./images/transparent.gif" border="0" width="1" height="15" alt="" /><br/>
+<!-- END messagesBL -->
+<!-- END EmptyMessageBL -->
+
+
+
+
+
+
+
+
+
+
+<br/>&nbsp;<br/>
+<br/>&nbsp;<br/>
+
+
+<br/>&nbsp;
+<!-- Inner Body  END -->
+</td>
+</tr>
+</table>
+<table width="760" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="360" class="NavColor"><img src="./images/footer.gif" border="0" width="350" height="16" usemap="#footer" alt="" /></td>
+	<td width="400" align="right" class="NavColor"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+  </tr>
+</table>
+<font class="copyright"> </font>
+</div>
+&nbsp;
+<script type="text/javascript" src="./library/ImageMap-footer.js"></script>
+</body>
+</html>

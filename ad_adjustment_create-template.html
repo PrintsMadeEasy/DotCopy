@@ -1,0 +1,382 @@
+<html>
+<head>
+<title>Create Adjusment/Refund</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+
+<script language="javascript">
+
+	//Make an array of the images we want to preload for the mouse-overs.
+	arImageSrc = new Array (
+		"./images/button-go-d.gif",
+		"./images/button-cancel-blue-d.gif",
+		"./images/button-createtask-d.gif"
+	)
+
+	//Preload images.
+	arImageList = new Array ();
+	for (counter in arImageSrc) {
+		arImageList[counter] = new Image();
+		arImageList[counter].src = arImageSrc[counter];
+	}
+
+
+
+
+
+	function UpdateCustomerByChange(){
+		var ChangeObj = document.forms["customerform"].customerchange;
+
+		if(!CheckPriceFormat(ChangeObj.value)){
+			if(ChangeObj.value != ""){
+				alert("Problem with price format.");
+			}
+
+			ResetCustomerAdusments();
+		}
+		else{
+			var CustomerPriceChange = RoundWithDecimals(ChangeObj.value);
+			ChangeObj.value = CustomerPriceChange;
+
+			var BalanceObj = document.forms["customerform"].customerbalance;
+
+			var NewCustomerBalance = RoundWithDecimals(parseFloat(OriginalCustomerBalance) + parseFloat(CustomerPriceChange));
+
+			// If the order has not been completed yet, then we can not create a negative adjustment greater than any previous balance adjustments.
+			if(orderHasBeenCompletedFlag){
+	
+				if(NewCustomerBalance < 0){
+					alert("The customer balance can not be less than 0");
+					BalanceObj.value = "0.00";
+					ChangeObj.value = "-" + OriginalCustomerBalance;
+				}
+				else{
+					BalanceObj.value = NewCustomerBalance;
+				}
+			}
+			else{
+			
+				var NewCustomerBalanceAdjustementTotals = RoundWithDecimals(parseFloat(CustomerBalanceAdjustmentTotals) + parseFloat(CustomerPriceChange));
+
+				if(NewCustomerBalanceAdjustementTotals < 0){
+					alert("The order has not been completed yet.\nYou can not refund more than the sum of previous Balance Adjustments on this order.\nIf you want to change the Customer's Grand Total you still have time to put a discount on the order.\n\nThe Adjustment Amount is being reset to the max refund available at this time.");
+					BalanceObj.value = RoundWithDecimals(OriginalCustomerBalance - CustomerBalanceAdjustmentTotals);
+					ChangeObj.value = "-" + CustomerBalanceAdjustmentTotals;
+				}
+				else{
+					BalanceObj.value = NewCustomerBalance;
+				}
+			}
+		}
+	}
+
+
+	function UpdateVendorBalance(ThisVendorID){
+		VendorBalanceObj = eval("document.forms['vendoradjustments'].vendoradjust" + ThisVendorID);
+
+		if(!CheckPriceFormat(VendorBalanceObj.value)){
+			if(VendorBalanceObj.value != ""){
+				alert("Problem with price format.");
+			}
+			VendorBalanceObj.value = "";
+		}
+		else{
+			var NewVendorBalance = RoundWithDecimals(VendorBalanceObj.value);
+			VendorBalanceObj.value = NewVendorBalance;
+		}
+	}
+
+
+
+	function UpdateCustomerByBalance(){
+
+		var BalanceObj = document.forms["customerform"].customerbalance;
+
+		if(!CheckPriceFormat(BalanceObj.value)){
+			if(BalanceObj.value != ""){
+				alert("Problem with price format.");
+			}
+
+			ResetCustomerAdusments();
+
+		}
+		else{
+
+			var NewCustomerBalance = RoundWithDecimals(BalanceObj.value);
+			BalanceObj.value = NewCustomerBalance;
+			
+			var CustomerBalanceChange = RoundWithDecimals(parseFloat(NewCustomerBalance) - parseFloat(OriginalCustomerBalance));
+
+			var ChangeObj = document.forms["customerform"].customerchange;
+
+			if(orderHasBeenCompletedFlag){
+	
+				if(NewCustomerBalance < 0){
+					alert("The customer balance can not be less than 0");
+					BalanceObj.value = "0.00";
+					ChangeObj.value = "-" + OriginalCustomerBalance;
+				}
+				else{
+					
+					ChangeObj.value = CustomerBalanceChange;
+				}
+			}
+			else{
+
+				var NewCustomerBalanceAdjustementTotals = RoundWithDecimals(parseFloat(CustomerBalanceAdjustmentTotals) + parseFloat(CustomerBalanceChange));
+
+				if(NewCustomerBalanceAdjustementTotals < 0){
+					alert("The order has not been completed yet.\nYou can not refund more than the sum of previous Balance Adjustments on this order.\nIf you want to change the Customer's Grand Total you still have time to put a discount on the order.\n\nThe Adjustment Amount is being reset to the max refund available at this time.");
+					
+					BalanceObj.value = RoundWithDecimals(OriginalCustomerBalance - CustomerBalanceAdjustmentTotals);
+					ChangeObj.value = "-" + CustomerBalanceAdjustmentTotals;
+
+				}
+				else{
+					ChangeObj.value = CustomerBalanceChange;
+				}
+			}
+
+		}
+	}
+
+
+	function ResetCustomerAdusments(){
+		var BalanceObj = document.forms["customerform"].customerbalance;
+		var ChangeObj = document.forms["customerform"].customerchange;
+
+		BalanceObj.value = "";
+		ChangeObj.value = "";
+	}
+
+
+	//Price format can be like  ....  12.23  OR 2  OR 2.3  OR 4.53   OR  -23.34  OR -3  OR -3.6
+	//Returns false if anything else
+	function CheckPriceFormat(PriceVal){
+		var retFlag = true;
+		if(PriceVal.search(/^-?\d+$/) == -1 && PriceVal.search(/^-?\d+\.\d+$/) == -1 && PriceVal.search(/^-?\d+\.\d+$/) == -1){
+			retFlag = false;
+		}
+		return retFlag;
+	}
+
+
+	function RoundWithDecimals(n) {
+
+  		var s = "" + Math.round(n * 100) / 100;
+  		var i = s.indexOf('.');
+
+  		if (i < 0){
+  			return s + ".00";
+  		}
+
+  		var t = s.substring(0, i + 1) + s.substring(i + 1, i + 3);
+
+  		if (i + 2 == s.length){
+  			t += "0";
+  		}
+
+		t = parseFloat(t);
+  		return t;
+	}
+
+	function UpdateCustomerAdjustment(){
+
+		var CustomerVal = document.forms["customerform"].customerchange.value;
+
+		var AdjstReason = GetReasonForAdustment();
+		if(AdjstReason == ""){
+			alert("You must type in a reason for the adjustment.\n\nTry again.");
+			return false;
+		}
+
+		if(CustomerVal.search(/^(([+|-]?\d+\.\d+)|(0))$/) == -1){
+			alert("Problem with adjustment.");
+		}
+		else if(CustomerVal < 0.0001 && CustomerVal > -0.0001){
+			alert("Balance adjustments can not be zero.");
+		}
+		else{
+			document.forms["AdjustmentForm"].customer_adjstmnt.value = CustomerVal;
+			document.forms["AdjustmentForm"].reason.value = AdjstReason;
+			document.forms["AdjustmentForm"].submit();
+		}
+	}
+	function UpdateVendorAdjustment(ThisVendorID){
+
+		VendorBalanceObj = eval("document.forms['vendoradjustments'].vendoradjust" + ThisVendorID);
+		OriginalVendorBalanceObj = eval("document.forms['vendoradjustments'].originalvendorbalance" + ThisVendorID);
+
+		var VendorBalanceVal = parseFloat(VendorBalanceObj.value);
+		var OriginalVendorBalanceVal = parseFloat(OriginalVendorBalanceObj.value);
+
+		var VendorAdjustmentVal = RoundWithDecimals(VendorBalanceVal - OriginalVendorBalanceVal);
+
+		if(VendorAdjustmentVal < 0.0001 && VendorAdjustmentVal > -0.0001){
+			alert("Balance adjustments can not be zero.");
+			return false;
+		}
+
+		var AdjstReason = GetReasonForAdustment();
+
+		if(AdjstReason == ""){
+			alert("You must type in a reason for the adjustment.\n\nTry again.");
+			return false;
+		}
+
+
+		document.forms["AdjustmentForm"].vendor_adjstmnt.value = VendorAdjustmentVal;
+		document.forms["AdjustmentForm"].reason.value = AdjstReason;
+		document.forms["AdjustmentForm"].vendorid.value = ThisVendorID;
+		document.forms["AdjustmentForm"].submit();
+
+	}
+	function GetReasonForAdustment(){
+
+		var TheReason = "";
+		TheReason = prompt("What is the reason for the adjustment?", "");
+		if(TheReason == null){
+			TheReason = "";
+		}
+
+		return TheReason;
+
+	}
+
+
+	var OriginalCustomerBalance = {ORIG_CUST_BALANCE_NOCOMMA};
+	var CustomerBalanceAdjustmentTotals = {CUSTOMER_ADJUSTMENT_TOTALS_NOCOMMA};
+	var orderHasBeenCompletedFlag = {ORDER_IS_COMPLETE_FLAG_JS};
+
+	{RELOAD_PARENT}
+
+</script>
+
+</head>
+
+<body bgcolor="#3366CC" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="" > <!-- Close this window in 60 seconds -->
+<img  src="./images/transparent.gif" border="0" width="1" height="10" alt="" /><br/>
+<div align="center">
+<table bgcolor="#EEEEEE" width="420" cellpadding="0" cellspacing="0" border="0">
+
+<tr>
+<td align="center" class="Body" bgcolor="#CCCCCC"><b>Create a Price Adjustment</b></td>
+
+<tr>
+<td align="center">
+<table bgcolor="#EEEEEE" width="96%" cellpadding="0" cellspacing="0" border="0">
+
+<tr>
+
+<td class="Body">
+<img src="./images/transparent.gif" border="0" width="1" height="5" alt="" />
+<br/>
+<font class="OptionNames"><b>Customer Adjustment</b></font>
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td><img src="./images/transparent.gif" border="0" width="1" height="2" alt="" /></td>
+</tr>
+<tr>
+<td bgcolor="#999999"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+</tr>
+<tr>
+<td><img src="./images/transparent.gif" border="0" width="1" height="2" alt="" /></td>
+</tr>
+</table>
+
+<form name="customerform">
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+
+  <tr>
+    <td class="SmallBody" width="33%"><b>Current Balance</b></td>
+    <td class="SmallBody" width="30%"><b>Price Change</b></td>
+	<td class="SmallBody" width="22%"><b>New Balance</b></td>
+    <td class="SmallBody" width="15%">&nbsp;</td>
+  </tr>
+   <tr>
+    <td class="SmallBody" width="33%">${ORIG_CUST_BALANCE}</td>
+    <td class="SmallBody" width="30%">$<input  onBlur="UpdateCustomerByChange();" type="text" name="customerchange" value="" style="width:50px; border-width:1; font-size:10px; color:#666666" /></td>
+    <td class="SmallBody" width="22%">$<input  onBlur="UpdateCustomerByBalance();" type="text" name="customerbalance" value="" style="width:50px; border-width:1; font-size:10px; color:#666666" /></td>
+    <td class="SmallBody" width="15%" align="right"><input type="button" name="xx" value="Update" class="AdminButton" onmouseover="this.style.background='#ffeeaa';" onmouseout="this.style.background='#FFFFDD';" onclick="UpdateCustomerAdjustment();" /></td>
+  </tr>
+ 
+</table>
+ </form>
+
+<br/><br/>
+<font class="OptionNames"><b>Vendor Adjustment</b></font>
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td><img src="./images/transparent.gif" border="0" width="1" height="2" alt="" /></td>
+</tr>
+<tr>
+<td bgcolor="#999999"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+</tr>
+<tr>
+<td><img src="./images/transparent.gif" border="0" width="1" height="2" alt="" /></td>
+</tr>
+</table>
+  <form name="vendoradjustments">
+  <input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+                    <td class="SmallBody" width="33%"><b>Company</b></td>
+                    <td class="SmallBody" width="30%"><b>Current Balance</b></td>
+                    <td class="SmallBody" width="22%"><b>New Balance</b></td>
+                    <td class="SmallBody" width="15%">&nbsp;</td>
+  </tr>
+
+  <!-- BEGIN VendorAdjusmentsBL -->
+  <tr>
+<td colspan="4"><img src="./images/transparent.gif" border="0" width="1" height="5" alt="" /></td>
+</tr>
+   <tr>
+                    <td class="SmallBody" width="33%">{VENDOR_NAME}</td>
+                    <td class="SmallBody" width="30%">$<input type="text" class="SmallInputBox2" style="border-width:0; width: 50px;" name="originalvendorbalance{VENDOR_ID}" value="{VENDOR_BALANCE}" READONLY /></td>
+                    <td class="SmallBody" width="22%">$
+                      <input  onBlur="UpdateVendorBalance({VENDOR_ID});" type="text" name="vendoradjust{VENDOR_ID}" value="" style="width:50px; border-width:1; font-size:10px; color:#666666" /></td>
+                    <td class="SmallBody" width="15%" align="right">
+                      <input type="button" name="xx" value="Update" class="AdminButton" onmouseover="this.style.background='#ffeeaa';" onmouseout="this.style.background='#FFFFDD';" onclick="UpdateVendorAdjustment({VENDOR_ID});" /></td>
+  </tr>
+
+   <!-- END VendorAdjusmentsBL -->
+ 
+</table>
+ </form>
+&nbsp;<br/>
+
+
+
+</td>
+</tr>
+<tr>
+<td ><img src="./images/transparent.gif" border="0" width="1" height="5" alt="" /></td>
+</tr>
+</table>
+</td>
+</tr>
+
+
+<tr>
+<td><img src="images/header-editoptions-fade-bot.gif" width="420" alt="" /></td>
+</tr>
+</table>
+
+<form name="AdjustmentForm" action="./ad_adjustment_create.php">
+<input type="hidden" name="action" value="priceadjustment" />
+<input type="hidden" name="customer_adjstmnt" value="" />
+<input type="hidden" name="vendor_adjstmnt" value="" />
+<input type="hidden" name="vendorid" value="" />
+<input type="hidden" name="reason" value="" />
+<input type="hidden" name="orderno" value="{ORDERID}" />
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+<input type="hidden" name="returl" value="./ad_adjustment_create.php?orderno={ORDERID}" />
+</form>
+
+</div>
+
+
+</body>
+</html>

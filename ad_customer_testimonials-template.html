@@ -1,0 +1,219 @@
+<html>
+<head>
+<title>Admin</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<script language="javascript">
+
+	//Make an array of the images we want to preload for the mouse-overs.
+	arImageSrc = new Array (
+		"./images/button-go-d.gif",
+		"./images/arrow-button-right-up-d.png"
+
+	)
+
+	//Preload images.
+	arImageList = new Array ();
+	for (counter in arImageSrc) {
+		arImageList[counter] = new Image();
+		arImageList[counter].src = arImageSrc[counter];
+	}
+
+
+
+	function createNewTestimonial(){
+		var address = "./ad_customer_testimonial_edit.php?viewType=new";
+		newWindow = window.open(address, "testimonial", "height=530,width=610,directories=no,location=no,menubar=no,scrollbars=no,status=no,toolbar=no,resizable=no");
+		newWindow.focus();
+	}
+	function editTestimonial(testimonialID){
+		var address = "./ad_customer_testimonial_edit.php?viewType=edit&testimonialID=" + testimonialID;
+		newWindow = window.open(address, "testimonial", "height=530,width=610,directories=no,location=no,menubar=no,scrollbars=no,status=no,toolbar=no,resizable=no");
+		newWindow.focus();
+	}
+	
+	function changeStatus(testimonialID, newStatus){
+		document.location = "./ad_customer_testimonials.php?action=changeStatus&form_sc={FORM_SECURITY_CODE}&testimonialID="+testimonialID+"&newStatus=" + newStatus;
+	}
+	function moveToCs(testimonialID){
+		if(confirm("Are you sure you want to move this to Customer Service?"))
+			document.location = "./ad_customer_testimonials.php?action=moveToCs&form_sc={FORM_SECURITY_CODE}&testimonialID=" + testimonialID;
+	}
+
+
+</script>
+<script type="text/javascript" src="./library/admin_library.js"></script>
+<link rel="stylesheet" type="text/css" href="library/calendar/themes/winter.css"/>
+<script type="text/javascript" src="library/calendar/src/utils.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar.js"></script>
+<script type="text/javascript" src="library/calendar/lang/calendar-en.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar-setup.js"></script>
+<script type="text/javascript" src="library/formatDate.js"></script>
+</head>
+<body bgcolor="#FFFFFF" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="">
+<div align="center">
+{HEADER}
+&nbsp;
+<table width="760" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td class="Body">
+<!-- Inner Body  -->
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+	<tr>
+		<td><strong>Search Customer Testimonials</strong></td>
+		<td align="right"><a href="javascript:createNewTestimonial();" class="BlueRedLink">Create a New Testimonial</a></td>
+	</tr>
+</table>
+
+
+<table width="100%" border="0" cellspacing="0" cellpadding="1" bgcolor="#666666">
+<tr>
+<td>
+              <table width="100%" border="0" cellspacing="0" cellpadding="4" bgcolor="#CCCCCC">
+                <form name="searchForm" action="ad_customer_testimonials.php" method="GET" onsubmit="">
+
+                  <tr>
+                    <td align="left" class="Body" width="28%">Search Text<br/>
+                      <input type="text" name="searchText" value="{SEARCH_TEXT}" class="InputBox" style="width:170px; font-size:12px;" maxlength="60" />
+                    </td>
+                    <td align="left" class="Body" width="26%">Search Name<br/>
+                    <input type="text" name="searchName" value="{SEARCH_NAME}" class="InputBox" style="width:150px; font-size:12px;" maxlength="60" /></td>
+
+                    <td align="left" class="Body" width="18%">Status<br/>
+                    <select name="searchStatus">
+					{SEARCH_STATUS_LIST}
+					</select></td>
+					
+                    <td align="left" class="Body" width="28%">&nbsp;<br/>
+                    <input type="image" name="gobutton" src="./images/button-go-grey-u.gif" onmouseover="this.src='./images/button-go-grey-d.gif';" onmouseout="this.src='./images/button-go-grey-u.gif';" border="0"  align="absmiddle" /></td>
+                  </tr>
+                </form>
+              </table>
+</td>
+</tr>
+</table>
+
+
+&nbsp;<br/>
+&nbsp;<br/>
+&nbsp;
+
+<!-- BEGIN EmptyTestimonialsBL -->
+
+
+
+ <!-- BEGIN MultiPageBL -->
+<table width="100%" border="0" cellspacing="0" cellpadding="1" class="NavColor">
+  <tr>
+    <td>
+	<table width="100%" border="0" cellspacing="0" cellpadding="1" bgcolor="#ddeeff">
+  <tr>
+    <td>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="50%" class="SmallBody"><img  src="./images/transparent.gif" border="0" width="1" height="3" alt="" /><br/><font color="#000000">Total of {RESULT_DESC} results.</font><br/><img src="./images/transparent.gif" border="0" width="2" height="3" alt="" /></td>
+<td width="50%" align="right" class="SmallBody"><font color="#000000">{NAVIGATE}</font></td>
+</tr>
+</table>
+	</td>
+  </tr>
+</table>
+	</td>
+  </tr>
+</table>
+ <!-- END MultiPageBL -->
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+
+<!-- BEGIN testimonialBL -->
+  <tr>
+	<td class="SmallBody" valign="top">
+	&nbsp;
+<table width="100%" border="0" cellspacing="0" cellpadding="1" style="border:solid; border-width:1px; border-color:#cccccc;">
+	<tr>
+		<td width="30%" bgcolor="#EEEEEE" class="SmallBody">Created: {CREATED_DATE}</td>
+		<td width="42%" bgcolor="#EEEEEE" class="SmallBody">Last Edited: {EDITED_DATE}&nbsp;&nbsp;&nbsp;<i>{EDITED_BY}</i></td>
+		<td width="19%" bgcolor="#EEEEEE" class="SmallBody"><select name="status" onChange="changeStatus({TESTIMONIAL_ID}, this.value);" class="SmallBody">
+								{STATUS_LIST}
+								</select></td>
+		<td width="9%" bgcolor="#EEEEEE" align="center" class="SmallBody"><a href="javascript:editTestimonial({TESTIMONIAL_ID});" class="BlueRedLink">Edit</a></td>
+	</tr>
+</table>
+&nbsp;
+<table width="60%" border="0" cellspacing="0" cellpadding="0" bgcolor="#CCCCCC">
+	<tr>
+		<td><table width="100%" border="0" cellspacing="1" cellpadding="2">
+	<tr>
+		<td bgcolor="#EEEEFF" class="SmallBody">{CUTOMER_NAME}</td>
+		<td bgcolor="#EEEEFF" class="SmallBody">{CITY}</td>
+		<td bgcolor="#EEEEFF" class="SmallBody" align="right"><a href="javascript:moveToCs({TESTIMONIAL_ID})" class="BlueRedLink">Move to CS</a></td>
+	</tr>
+</table></td>
+	</tr>
+</table>
+
+
+
+
+<br/>
+
+
+	{TESTIMONIAL}
+<br/><br/>
+<br/><br/>
+
+
+&nbsp;
+</td>
+  </tr>
+<!-- END testimonialBL -->
+</table>
+
+<!-- BEGIN SecondMultiPageBL -->
+	<table width="100%" border="0" cellspacing="0" cellpadding="1" class="NavColor">
+  <tr>
+    <td>
+	<table width="100%" border="0" cellspacing="0" cellpadding="1" bgcolor="#ddeeff">
+  <tr>
+    <td>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="50%" class="SmallBody"><img  src="./images/transparent.gif" border="0" width="1" height="3" alt="" /><br/><font color="#000000">Total of {RESULT_DESC} results.</font><br/><img src="./images/transparent.gif" border="0" width="2" height="3" alt="" /></td>
+<td width="50%" align="right" class="SmallBody"><font color="#000000">{NAVIGATE}</font></td>
+</tr>
+</table>
+	</td>
+  </tr>
+</table>
+	</td>
+  </tr>
+</table>
+<!-- END SecondMultiPageBL -->
+
+<!-- END EmptyTestimonialsBL -->
+
+
+&nbsp;<br/>&nbsp;<br/>
+<br/>
+<br/>
+<br/>
+
+
+<!-- Inner Body  END -->
+</td>
+</tr>
+</table>
+<table width="760" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="360" class="NavColor"><img src="./images/footer.gif" border="0" width="350" height="16" usemap="#footer" alt="" /></td>
+	<td width="400" align="right" class="NavColor"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+  </tr>
+</table>
+<font class="copyright"> </font>
+</div>
+&nbsp;
+<script type="text/javascript" src="./library/ImageMap-footer.js"></script>
+</body>
+</html>

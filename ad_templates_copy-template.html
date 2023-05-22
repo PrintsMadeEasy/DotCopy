@@ -1,0 +1,94 @@
+<html>
+<head>
+<title>Admin</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<script language="javascript">
+
+	function transferProduct(transferProductId){
+		document.getElementById("destinationProductId").value = transferProductId;
+		document.forms["DomainCopyForm"].submit();
+	}
+
+</script>
+<script type="text/javascript" src="./library/admin_library.js"></script>
+<link rel="stylesheet" type="text/css" href="library/calendar/themes/winter.css"/>
+<script type="text/javascript" src="library/calendar/src/utils.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar.js"></script>
+<script type="text/javascript" src="library/calendar/lang/calendar-en.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar-setup.js"></script>
+<script type="text/javascript" src="library/formatDate.js"></script>
+</head>
+<body bgcolor="#FFFFFF" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="">
+<div align="center">
+{HEADER}
+&nbsp;
+<table width="760" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td class="Body">
+<!-- Inner Body  -->
+
+
+
+
+<br/>&nbsp;<br/>
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#CCCCCC">
+  <tr>
+    <td class="Body"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+  </tr>
+</table>
+&nbsp;
+<br>
+
+Attempting to transfer {TEMPLATE_COUNT} tempate(s) to  {DOMAIN_TRANSFER_KEY}.<br>
+<!-- BEGIN NoProductsAvailableWithMatchingDim -->
+
+<br>
+No products exist on this domain which ... <br>
+1) Support their own template collection.<br>
+
+2) Have matching artwork dimensions to the source product. {PRODUCT_WIDTH}&quot; x {PRODUCT_HEIGHT}&quot; 
+
+<!-- END NoProductsAvailableWithMatchingDim -->
+
+<!-- BEGIN SelectProductForTransferBL -->
+<br>
+The following product(s) have matching artwork dimensions to the source product.  <br>
+Click on a product to complete the transfer.<br>
+<br>
+<!-- BEGIN ProductBL -->
+<a href="javascript:transferProduct({PRODUCT_ID});">{PRODUCT_NAME}</a>
+<!-- END ProductBL -->
+
+<!-- END SelectProductForTransferBL -->
+		<br/><br/><br/><br>
+<br>
+<br>
+
+<form action="ad_templates_copy.php" name="DomainCopyForm" method="post">
+<input type="hidden" name="domainid" value="{DOMAIN_TRANSFER_ID}" />
+<input type="hidden" name="destination_product_id" id="destinationProductId" value="0" />
+<input type="hidden" name="templatecommand" value="FinishDomainTransfer" />
+<input type="hidden" name="tempalte_id_pipe_list" value="{TEMPLATE_ID_PIPE_SEPARATED}" />
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+<input type="hidden" name="returl" value="{RETURN_URL}" />
+</form>
+
+<!-- Inner Body  END -->
+</td>
+</tr>
+</table>
+<table width="760" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="360" class="NavColor"><img src="./images/footer.gif" border="0" width="350" height="16" usemap="#footer" alt="" /></td>
+	<td width="400" align="right" class="NavColor"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+  </tr>
+</table>
+<font class="copyright"> </font>
+</div>
+&nbsp;
+<script type="text/javascript" src="./library/ImageMap-footer.js"></script>
+</body>
+</html>

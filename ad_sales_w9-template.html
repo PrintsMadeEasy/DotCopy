@@ -1,0 +1,181 @@
+<html>
+<head>
+<title>W-9 Form for {SALESREP_NAME}</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+
+<script language="javascript">
+
+
+	function SaveData(){
+		var W9form = document.forms["w9form"];
+
+		var ErrorMessage = "";
+		if(W9form.W9Name.value == "")
+			ErrorMessage += "Name can not be left blank.\n";
+		if(W9form.W9Address.value == "")
+			ErrorMessage += "Address can not be left blank.\n";
+		if(W9form.W9City.value == "")
+			ErrorMessage += "City can not be left blank.\n";
+		if(W9form.W9State.value == "")
+			ErrorMessage += "State can not be left blank.\n";
+		if(W9form.W9Zip.value == "")
+			ErrorMessage += "Zip can not be left blank.\n";
+		if(W9form.W9TIN.value == "")
+			ErrorMessage += "TIN can not be left blank.\n";
+		if(W9form.W9DateSigned.value.search(/^\d{2}\/\d{2}\/\d{2}$/) == -1)
+			ErrorMessage += "Date Signed is not in the proper format.\n";
+
+		if(W9form.W9TIN.value.search(/^\d+-\d+-\d+$/) == -1  &&
+			W9form.W9TIN.value.search(/^\d+-\d+$/) == -1 &&
+			W9form.W9TIN.value.search(/^\d+\s\d+$/) == -1 &&
+			W9form.W9TIN.value.search(/^\d+\s\d+\s\d+$/) == -1 &&
+			W9form.W9TIN.value.search(/^\d+$/) == -1
+			)
+			ErrorMessage += "TIN value is not in the correct format.\n";
+
+		if(GetRadioButtonValue(document.forms[0].W9BusinessType) == "O" && W9form.W9BusinessTypeOther.value == "")
+			ErrorMessage += "If the Business Type is Other then you need to give a business description.\n";
+
+		if(ErrorMessage != ""){
+			alert(ErrorMessage);
+			return false;
+		}
+
+
+		return true;
+
+
+	}
+
+	function DisableOtherBusinessType(Flag){
+		var W9formBusOtherObj = document.forms["w9form"].W9BusinessTypeOther;
+
+		if(Flag){
+			W9formBusOtherObj.value = "";
+			W9formBusOtherObj.disabled = true;
+		}
+		else
+			W9formBusOtherObj.disabled = false;
+	}
+
+
+</script>
+<script type="text/javascript" src="./library/admin_library.js"></script>
+
+</head>
+
+<body bgcolor="#3366CC" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="DisableOtherBusinessType(true)" >
+<img  src="./images/transparent.gif" border="0" width="1" height="10" alt="" /><br/>
+<div align="center">
+<table bgcolor="#EEEEEE" width="400" cellpadding="0" cellspacing="0" border="0">
+<form name="w9form" method="get" action="./ad_sales_w9.php" onsubmit="return SaveData();">
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+<input type="hidden" name="salesuserid" value="{SALES_USERID}" />
+<input type="hidden" name="action" value="save" />
+<tr>
+<td bgcolor="#999999" class="Body" align="center"><img  src="./images/transparent.gif" border="0" width="1" height="3" alt="" /><br/><font color="#FFFFFF"><b>W-9 Form for {SALESREP_NAME}</b></font><br/><img src="./images/transparent.gif" border="0" width="1" height="3" alt="" /></td>
+
+<tr>
+<td align="center">
+<table width="100%" border="0" cellspacing="10" cellpadding="1">
+  <tr>
+            <td class="SmallBody">
+
+			<b>Name</b><br/>
+                <input  style="font-face:arial; font-size:11px;" type="text" name="W9Name" value="" size='30' maxlength="30" />
+                <br/>
+                <img  src="./images/transparent.gif" width="1" height="8" alt="" /><br/>
+                <b>Business Name</b> &nbsp;&nbsp;&nbsp; <font class="ReallySmallBody">(Optional...
+                If different than name)</font><br/>
+                <input  style="font-face:arial; font-size:11px;" type="text" name="W9Company" value="" size='30' maxlength="30" />
+                <br/>
+                <img  src="./images/transparent.gif" width="1" height="8" alt="" /><br/><b>Business Type</b><br/>
+
+			<input type="radio" name="W9BusinessType" value="I" onclick="DisableOtherBusinessType(true);" checked /> Individual &nbsp;&nbsp;
+			<input type="radio" name="W9BusinessType" value="C" onclick="DisableOtherBusinessType(true);" />  Corporation &nbsp;&nbsp;
+				<input type="radio" name="W9BusinessType" value="P" onclick="DisableOtherBusinessType(true);" />  Partnership &nbsp;&nbsp;
+				<input type="radio" name="W9BusinessType" value="O" onclick="DisableOtherBusinessType(false);" />  Other &nbsp;&nbsp;
+			<br/>
+			if Other ... <input  style="font-face:arial; font-size:11px;" type="text" name="W9BusinessTypeOther" value="" size='10' maxlength="15" />
+
+			<br/><img  src="./images/transparent.gif" width="1" height="8" alt="" /><br/>
+
+			<b>Exempt From Backup Withholding</b><br/>
+
+			<input type="checkbox" name="W9Exempt" value="yes" />
+			<br/>
+                <img  src="./images/transparent.gif" width="1" height="8" alt="" /><br/>
+
+				<b>Address</b><br/>
+                <input  style="font-face:arial; font-size:11px;" type="text" name="W9Address" value="" size='30' maxlength="30" />
+                <br/>
+                <img  src="./images/transparent.gif" width="1" height="8" alt="" /><br/>
+				<b>City</b><br/>
+                <input  style="font-face:arial; font-size:11px;" type="text" name="W9City" value="" size='30' maxlength="30" />
+                <br/>
+                <img  src="./images/transparent.gif" width="1" height="8" alt="" /><br/>
+				<b>State / Zip</b><br/>
+                <input  style="font-face:arial; font-size:11px;" type="text" name="W9State" value="" size='3' maxlength="2" />
+				&nbsp;&nbsp;&nbsp;
+                <input  style="font-face:arial; font-size:11px;" type="text" name="W9Zip" value="" size='7' maxlength="5" />
+                <br/>
+                <img  src="./images/transparent.gif" width="1" height="8" alt="" /><br/>
+
+						<b>Account Numbers </b>  (optional)<br/>
+                <input  style="font-face:arial; font-size:11px;" type="text" name="W9AccountNumbers" value="" size='30' maxlength="30" />
+                <br/>
+
+
+
+                <img  src="./images/transparent.gif" width="1" height="8" alt="" /><br/><b>Taxpayer Identification Number Type</b><br/>
+
+
+			<input type="radio" name="W9TINtype" value="S" checked /> Social Security Number &nbsp;&nbsp;
+			<input type="radio" name="W9TINtype" value="E" />  Employer Identification Number &nbsp;&nbsp;
+            <br/>
+                <img  src="./images/transparent.gif" width="1" height="8" alt="" /><br/>
+
+						<b>TIN Number </b><br/>
+                <input  style="font-face:arial; font-size:11px;" type="text" name="W9TIN" value="" size='12' maxlength="12" />
+           <br/>
+                <img  src="./images/transparent.gif" width="1" height="8" alt="" /><br/>
+
+						<b>Date Application Signed </b> &nbsp;&nbsp;mm/dd/yy<br/>
+                <input  style="font-face:arial; font-size:11px;" type="text" name="W9DateSigned" value="" size='12' maxlength="12" />
+
+<br/>
+<img  src="./images/transparent.gif" width="1" height="8" alt="" /><br/>
+				<b>Comments</b>  (optional)<br/>
+                <input  style="font-face:arial; font-size:11px;" type="text" name="W9Coments" value="" size='60' maxlength="255" />
+                <br/>
+                <img  src="./images/transparent.gif" width="1" height="8" alt="" /><br/>
+					</td>
+
+  </tr>
+  <tr>
+            <td class="SmallBody" align="center"><input type="submit" name="xx" value="Update" class="AdminButton" onmouseover="this.style.background='#ffeeaa';" onmouseout="this.style.background='#FFFFDD';" />
+<img src="./images/transparent.gif" border="0" width="15" height="1" alt="" />
+<input type="button" name="xx" value="Cancel" class="AdminButton" onmouseover="this.style.background='#ffeeaa';" onmouseout="this.style.background='#FFFFDD';" onclick="window.close();" /></td>
+
+  </tr>
+
+
+</table>
+ </td>
+</tr>
+
+
+<tr>
+<td><img src="images/header-editoptions-fade-bot.gif" width="400" alt="" /></td>
+</tr>
+</form>
+</table>
+
+
+</div>
+
+
+</body>
+</html>

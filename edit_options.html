@@ -1,0 +1,610 @@
+<html>
+<head>
+<title>Edit Options</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+
+<script type="text/javascript" src="./library/api_dot.js"></script>
+<script type="text/javascript" src="./library/general_lib.js"></script>
+<script language="javascript">
+
+	function Card_Stock_Details(){
+		newWindow3 = window.open("./card_stock.html", "sub3", "height=380,width=484,directories=no,location=no,menubar=no,scrollbars=yes,status=no,toolbar=no,resizable=no");
+		newWindow3.focus();
+	}
+
+	var updateOptionsOnceFlag = false;
+	function SaveChanges(){
+
+		if(updateOptionsOnceFlag)
+			return;
+		else
+			updateOptionsOnceFlag = true;
+
+		var projectObj = projL.getProjectObj("{VAR:ProjectID}");
+
+		document.getElementById("optionDiv").innerHTML = "<div align='center'><font color='#000099'><br/><br/><br/>... Updating ...</font></div>";
+
+		// After communication finishes to the server. The success/failure will trigger update options event
+		projectObj.updateOptionsAndQuantity();
+
+	}
+
+
+
+
+	var convertProductOnceFlag = false;
+	function ConvertToProduct(newProductID){
+
+		if(convertProductOnceFlag)
+			return;
+		else
+			convertProductOnceFlag = true;
+
+		var projectObj = projL.getProjectObj("{VAR:ProjectID}");
+
+		document.getElementById("optionDiv").innerHTML = "<div align='center'><font color='#000099'><br/><br/><br/>... Converting Product ...</font></div>";
+
+		// After communication finishes to the server. The success/failure will trigger the product conversion event
+		projectObj.convertToAnotherProductID(newProductID);
+
+	}
+
+
+
+	// This event is called after the Product Conversion completes (error or success)
+	function productConversionEvent(projectID, successFlag, errMessage)
+	{
+		if(successFlag)
+		{
+			var projectObj = projL.getProjectObj("{VAR:ProjectID}");
+
+			// Find out if converting the Product requires us to update the thumbnail image.
+			// If not, we can just refresh the parent window and close the pop-up window.
+			if(projectObj.artworkThumbnailNeedsUpdate())
+			{
+				UpdateThumbnailImage();
+			}
+			else
+			{
+				// Refresh the background window and close the pop-up.
+				RefreshParentWindow();
+				self.close();
+			}
+
+		}
+		else
+		{
+			document.getElementById("optionDiv").innerHTML = "<br/><br/><font color='#660000'>Product Conversion Failed:<br/><br/>"+errMessage+"</font>";
+		}
+	}
+
+
+
+	function UpdateThumbnailImage(){
+
+
+		var projectObj = projL.getProjectObj("{VAR:ProjectID}");
+
+
+		var updateArtworkFlashHTML = "<div align='center'>";
+		updateArtworkFlashHTML += '<OBJECT classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="https://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=7,0,19,0" width="352" height="177" id="GeneratingArtwork" align="middle">';
+		updateArtworkFlashHTML += '<param name="allowScriptAccess" value="sameDomain" />';
+		updateArtworkFlashHTML += '<param name="movie" value="./UpdateArtworkSmall.swf" />';
+		updateArtworkFlashHTML += '<param name="quality" value="high" />';
+		updateArtworkFlashHTML += '<param name="bgcolor" value="#ffffff" />';
+		updateArtworkFlashHTML += '<embed src="./UpdateArtworkSmall.swf" quality="high" bgcolor="#ffffff" width="352" height="177" name="GeneratingArtwork" align="middle" allowScriptAccess="sameDomain" type="application/x-shockwave-flash" pluginspage="https://www.macromedia.com/go/getflashplayer" /></embed>';
+		updateArtworkFlashHTML += '</OBJECT></div>';
+
+		document.getElementById("optionDiv").innerHTML = updateArtworkFlashHTML;
+
+
+		projectObj.updateThumbnailImage();
+
+	}
+
+
+	function updateSubtotal()
+	{
+		var projectObj = projL.getProjectObj("{VAR:ProjectID}");
+
+		document.getElementById("subtotalDiv").innerHTML = "$" + addCommas(projectObj.getSubtotal());
+	}
+
+
+
+	// Everytime the user picks another quantity choice this will store the setting in the Project Object and update the subtotal.  It does not save the value to the server.
+	function changeQuantity(newQuantity){
+
+		var projectObj = projL.getProjectObj("{VAR:ProjectID}");
+
+		projectObj.setQuantity(newQuantity);
+
+		updateSubtotal();
+	}
+
+
+
+	// Every time the user Selects another Option from the radio buttons, this will store the setting in the Project Object and update the subtotal.  It does not save the value to the server.
+	var artworkSidesAlreadyWarned = false;
+	var currentArtworkSidesSavedInDB = null;
+
+	function SelectChoice(optionName, choiceName){
+
+		var projectObj = projL.getProjectObj("{VAR:ProjectID}");
+		var prodObj = projectObj.getProductObj();
+
+		// If the user has Double-Sided selected... and they change to single-sided, show them a warning message.
+		// But only show them one time, in case they switch back and forth to check out the price differences.
+		if(prodObj.doesOptionAffectNumOfArtworkSides(optionName) && !artworkSidesAlreadyWarned)
+		{
+			var selectedChoiceName = projectObj.getChoiceSelected(optionName);
+
+			// The number of artwork sides currently saved on the Project.
+			var currentNumberOfSides = prodObj.choiceChangesNumberOfArtworkSidesTo(optionName, selectedChoiceName);
+
+			// The very first time we come across the option that changes the number of sides, record it.  Otherwise the user may be switching radio buttons and updating the Project Object without saving to the DB.
+			if(currentArtworkSidesSavedInDB == null)
+				currentArtworkSidesSavedInDB = currentNumberOfSides;
+
+			// The number of artwork sides that we will have if the options are updated.
+			var newNumberOfSides = prodObj.choiceChangesNumberOfArtworkSidesTo(optionName, choiceName);
+
+			if(newNumberOfSides < currentArtworkSidesSavedInDB)
+			{
+				alert("Changing from " + selectedChoiceName + " to " + choiceName + " may cause you to lose part of your artwork.\n\"Make a Copy\" and \"Save\" your artwork to be cautious.");
+				artworkSidesAlreadyWarned = true;
+			}
+
+
+		}
+
+		projectObj.setOptionChoice(optionName, choiceName);
+
+		updateSubtotal();
+	}
+
+
+
+	// Event called in case there is an error download the Project details.
+	function projectLoadingErrorEvent(errCode, errDesc)
+	{
+		document.getElementById("optionDiv").innerHTML = "<font color='#990000'><b>Error:</b><br/><i>" + errCode + "</i> - " + errDesc + "</font>";
+	}
+
+
+
+	function resizePopUpWindow()
+	{
+
+		// Figure out how many line breaks there are within the HTML body.
+		// That will give us a rough idea how tall the pop-up window should be.
+
+		var bodyHTML = document.getElementById("optionDiv").innerHTML;
+
+		var regExObj = new RegExp('<br/?>','ig');
+		var brArr = bodyHTML.match(regExObj);
+		if(brArr)
+			var lineBreakCount = brArr.length;
+		else
+			var lineBreakCount = 0;
+
+		// the base height, as if the options were empty.
+		var windowHeight = 220;
+
+		// On average, there are about 18.6 pixels per line break.
+		windowHeight += (lineBreakCount * 19);
+
+		windowHeight = Math.round(windowHeight);
+
+		// Set max height.
+		if(windowHeight > 700)
+			windowHeight = 700;
+
+		window.resizeTo(470,windowHeight);
+	}
+
+
+
+	// Build all of the HTML and form inputs for the Quantity & Options.
+	function displayProjectDetails()
+	{
+
+		var projectObj = projL.getProjectObj("{VAR:ProjectID}");
+		var prodObj = projectObj.getProductObj();
+
+		// After communication finishes to the server. The success/failure will trigger these events to be called
+		projectObj.attachUpdateProjectOptionsEvent(updateOptionsEvent, this);
+		projectObj.attachThumbnailUpdateEvent(updateThumbnailImageEvent, this);
+		projectObj.attachProductConversionEvent(productConversionEvent, this);
+
+		// Header
+		var outPut = '<form name="options" style="display:inline;"><table width="100%" cellpadding="2" cellspacing="0" border="0" bgcolor="#8888aa">';
+		 outPut +='<tr><td align="center"><table width="100%" cellpadding="4" cellspacing="0" border="0" bgcolor="#FFFFEE">';
+		 outPut +='<tr><td align="center"><table width="100%" cellpadding="6" cellspacing="0" border="0">';
+		 outPut +='<tr><td valign="top" class="Body">';
+
+
+
+
+		//Out put the Quantity Selection
+		if(prodObj.isVariableData())
+		{
+			outPut += '<font color="#660000"><b>Quantity - ' + projectObj.getQuantity() + '</b></font><br/>';
+			outPut += 'You can not change the quantity through this window.  <br/>';
+			outPut += 'Each line in your Data File will increase the quantity by 1.  <br/>';
+			outPut += 'The more you order the more you save.<br/>&nbsp;<br/>';
+		}
+		else
+		{
+			outPut += '<font color="#660000"><b>How many would you like to order?</b></font><br/>';
+
+
+			// Build the drop-down menu for quantity choices
+			outPut += '<select name="Quantity" onChange="changeQuantity(this.value);" style="font-size:12px; face:arial">';
+
+			var quantityChoicesArr = prodObj.getQuantityChoicesArr();
+
+			for(var i=0; i<quantityChoicesArr.length; i++){
+
+				var quantityChoice = quantityChoicesArr[i];
+
+				var quantitySelected = "";
+				if(projectObj.getQuantity() == quantityChoice)
+					quantitySelected = "selected='selected'";
+
+				outPut += "<option value='"+quantityChoice+"' "+quantitySelected+">" + addCommas(quantityChoice) + "</option>";
+			}
+
+			outPut += '</select><br/><br/>';
+		}
+
+
+
+		var optionNamesArr = prodObj.getOptionNames();
+
+		for(var i=0; i<optionNamesArr.length; i++)
+		{
+
+			var optionName = optionNamesArr[i];
+
+			// Skip Empty Options. Baybe the administrator forgot to add choices after creating the Option. There is no point in displaying just an option name.
+			if(prodObj.checkIfOptionIsEmpty(optionName) || prodObj.checkIfOptionHasSingleChoice(optionName))
+				continue;
+
+
+			var selectedChoiceName = projectObj.getChoiceSelected(optionName);
+
+
+			// If choice is hidden on the selected Option, then dont display any of the option choices.
+			if(prodObj.isChoiceIsHidden(optionName, selectedChoiceName) && !{DATA:UserIsAdmin})
+				continue;
+
+
+			// Figure out if the Option Description should be converted for HTML special characters.
+			if(prodObj.isOptionDescriptionHTMLformat(optionName))
+				outPut +=  prodObj.getOptionDescription(optionName) + "<br/>";
+			else
+				outPut += "<b><font color='#660000'>" +  htmlize(prodObj.getOptionDescription(optionName)) + "</font></b><br/>";
+
+
+			// Set the Class Name for Choices
+			outPut += "<font class='SmallBody'>";
+
+			// If this is an Admin Option, and the user is not an option... then just show them a text description (without the other choices).
+			if(prodObj.isOptionForAdministrators(optionName) && !{DATA:UserIsAdmin})
+			{
+				if(prodObj.isChoiceDescriptionHTMLformat(optionName, selectedChoiceName))
+					outPut += prodObj.getChoiceDescription(optionName, selectedChoiceName) + "<br/><br/>";
+				else
+					outPut += htmlize(prodObj.getChoiceDescription(optionName, selectedChoiceName)) + "<br/><br/>";
+			}
+			else
+			{
+				// Now build a group of radio buttons for each choice belonging to this option.
+				var choicesArr = prodObj.getChoiceNamesForOption(optionName);
+				
+				for(var x=0; x < choicesArr.length; x++){
+
+					// If a Choice is hidden... then don't let users selected it from the list.
+					if(prodObj.isChoiceIsHidden(optionName, choicesArr[x]) && !{DATA:UserIsAdmin})
+						continue;
+
+					var choiceChecked = "";
+					if(selectedChoiceName == choicesArr[x])
+						choiceChecked = "checked='checked'";
+
+					outPut += "<input type='radio' name='option_" + i + "' " + choiceChecked + " value='"+x+"' onclick='SelectChoice(\""+optionName+"\",\""+choicesArr[x]+"\")' /> ";
+					
+					var choiceDescription = prodObj.getChoiceDescription(optionName, choicesArr[x]);
+
+					if(prodObj.isChoiceDescriptionHTMLformat(optionName, choicesArr[x]))
+						outPut += choiceDescription;
+					else
+						outPut += htmlize(choiceDescription);
+						
+					// If there are only 2 choices... then put both radio buttons on the same line.
+					if(choicesArr.length == 2 && x ==0 && choiceDescription.length < 25)
+						outPut += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+					else
+						outPut += "<br/>";
+				}
+
+				outPut += "<br/>";
+			}
+
+			outPut += "</font>";
+
+		}
+
+
+
+
+		// Now show any Product Switches
+		var productSwitchObj = prodObj.getProductSwitcherObj();
+		var groupHeadsProductArr = productSwitchObj.getProductIDsForGroupsHeads();
+		for(var i = 0; i < groupHeadsProductArr.length; i++)
+		{
+
+			outPut += "<b><font color='#660000'>" +  productSwitchObj.getSwitchTitle(groupHeadsProductArr[i]) + "</font></b><br/>";
+
+			// Get the description for this Group Head.
+			var groupHeadDesc = productSwitchObj.getDescriptionForHTML(groupHeadsProductArr[i]);
+
+			// The Link subject that will be a hyperlink to change the product.
+			var linkSubject = htmlize(productSwitchObj.getLinkSubject(groupHeadsProductArr[i]));
+
+			// This will either replace the link subject within the Switch Description, or it will fill the Variable linkUnderDesc with a link.
+			// In case no Link Subjects are used, or the link subject is not found within the HTML, then keep an HTML line for links to be listed underneath the descirption (separated by commas).
+			groupHeadDesc = substituteProductSwitchLinkInDesc(groupHeadsProductArr[i], linkSubject, groupHeadDesc);
+			var linksListedUnderDesc = getProductSwitchLinkIfNotInDesc(groupHeadsProductArr[i], linkSubject, groupHeadDesc);
+
+
+			// Get a list of Product IDs (belonging to this Group head) that should have their links combined into the Group Head description.
+			var productIDsWithLinksInGroupHeadDesc = productSwitchObj.getProductIDsWithLinksInsideOfGroupHeads(groupHeadsProductArr[i]);
+			for(var j =0; j< productIDsWithLinksInGroupHeadDesc.length; j++)
+			{
+
+				// The hyperlink subject for this product Switch.
+				var subProductLinkSubj = htmlize(productSwitchObj.getLinkSubject(productIDsWithLinksInGroupHeadDesc[j]));
+
+				// This will either replace the link subject within the Switch Description, or it will fill the Variable linkUnderDesc with a link.
+				groupHeadDesc = substituteProductSwitchLinkInDesc(productIDsWithLinksInGroupHeadDesc[j], subProductLinkSubj, groupHeadDesc);
+				var linkUnderDesc = getProductSwitchLinkIfNotInDesc(productIDsWithLinksInGroupHeadDesc[j], subProductLinkSubj, groupHeadDesc);
+
+				// Separate multiple links underneath the description by a comma and a space..
+				if(linksListedUnderDesc != "" && linkUnderDesc != "")
+					linksListedUnderDesc += ",&nbsp;&nbsp;&nbsp;&nbsp;";
+
+				linksListedUnderDesc += linkUnderDesc;
+
+			}
+
+			outPut += outputProductSwitchDescriptionAndLink(groupHeadDesc, linksListedUnderDesc);
+
+
+
+			// Now get a list of Product IDs (belonging to this Group Head) ... but have their own description and links inside.
+			// This is a good way to have "Click here" as a common link subject for all products switches... even though they are all part of the same group head.
+			var productIDsBelowGroupHead = productSwitchObj.getProductIDsWithoutLinksInsideOfGroupHeads(groupHeadsProductArr[i]);
+			for(var j =0;  j < productIDsBelowGroupHead.length; j++)
+			{
+				// Get the description for the Sub-Product Switch
+				var productDesc = productSwitchObj.getDescriptionForHTML(productIDsBelowGroupHead[j]);
+
+				var subProductLinkSubj = htmlize(productSwitchObj.getLinkSubject(productIDsBelowGroupHead[j]));
+
+				// This will either replace the link subject within the Switch Description, or it will fill the Variable linkUnderDesc with a link.
+				productDesc = substituteProductSwitchLinkInDesc(productIDsBelowGroupHead[j], subProductLinkSubj, productDesc);
+				var linkUnderDesc = getProductSwitchLinkIfNotInDesc(productIDsBelowGroupHead[j], subProductLinkSubj, productDesc);
+
+				outPut += outputProductSwitchDescriptionAndLink(productDesc, linkUnderDesc);
+
+			}
+		}
+
+
+		// Now get a list of Product IDs for product Switching that are not part of a group.
+		var productIDsNotInGroup = productSwitchObj.getProductIDsNotInGroup();
+		for(var j = 0; j < productIDsNotInGroup.length; j++)
+		{
+			outPut += "<b><font color='#660000'>" +  productSwitchObj.getSwitchTitle(productIDsNotInGroup[j]) + "</font></b><br/>";
+
+			// Get the description for this Product Switch
+			var productDesc = productSwitchObj.getDescriptionForHTML(productIDsNotInGroup[j]);
+
+			var productLinkSubj = htmlize(productSwitchObj.getLinkSubject(productIDsNotInGroup[j]));
+
+			// This will either replace the link subject within the Switch Description, or it will fill the Variable linkUnderDesc with a link.
+			productDesc = substituteProductSwitchLinkInDesc(productIDsNotInGroup[j], productLinkSubj, productDesc);
+			linkUnderDesc = getProductSwitchLinkIfNotInDesc(productIDsNotInGroup[j], productLinkSubj, productDesc);
+
+
+			outPut += outputProductSwitchDescriptionAndLink(productDesc, linkUnderDesc);
+		}
+
+
+
+
+
+
+		// Footer
+		 outPut += '</td></tr></table></td>';
+		 outPut +='</tr></table></td></tr><tr><td>';
+		 outPut +='<table width="100%" cellpadding="0" cellspacing="0" border="0">';
+		 outPut +='<tr><td width="50%" align="right">&nbsp;</td>';
+		 outPut +='<td width="50%" align="right" class="Body">';
+		 outPut +='<!-- BEGIN PRICE_TOTAL -->';
+		 outPut +='<table cellpadding="2" cellspacing="0" border="0" ><tr><td class="Body" nowrap>New Subtotal:&nbsp;&nbsp;</td><td bgcolor="#CCCCCC"><div style="width:80px; background-color:#FFFFCC; font-family:arial; font-size:14px;" id="subtotalDiv">&nbsp;</div></td><td>&nbsp;&nbsp;</td></tr></table>';
+		 outPut +='<!-- END PRICE_TOTAL -->';
+		 outPut +='</td></tr></table></td></tr></table></form>';
+
+		document.getElementById("optionDiv").innerHTML = outPut;
+
+		// Display the subtotal as soon as the HTML has been outputed.
+		updateSubtotal();
+
+		resizePopUpWindow();
+	}
+
+
+	// Creates extra link breaks if the description or bottom links are not empty.
+	function outputProductSwitchDescriptionAndLink(productDesc, linksListedUnderDesc){
+
+		var retHTML = productDesc;
+
+		// The group Description could be empty... so dont make a line break if there was nothing there.
+		if(productDesc != "")
+			retHTML += "<br/>";
+
+		retHTML += linksListedUnderDesc;
+
+		// Sampe with the Links under the desription.  Dont make an extra link break if the line itself is blank.
+		if(linksListedUnderDesc != "")
+			retHTML += "<br/>";
+
+		retHTML += "<br/>";
+
+		return retHTML;
+
+	}
+
+	// Will Make a hyperlink for the Product Switch by locating the Link Subject within the description.
+	// If the Link is not found... then it will just return the description without the hyperlink subsituted.
+	function substituteProductSwitchLinkInDesc(productSwitchID, linkSubject, switchDescription){
+
+		return switchDescription.replace(RegExp(encodeRE(linkSubject),'ig'), "<a class='BlueRedLink' href='javascript:ConvertToProduct("+productSwitchID+")'>" + linkSubject + "</a>");
+
+	}
+
+	// Works Similar to substituteProductSwitchLinkInDesc.  In case the link Subject is not found within the Description...
+	// ... then it will just return the link by itself.
+	// If the the link subject is found within the description, then this will return a blank string.
+	function getProductSwitchLinkIfNotInDesc(productSwitchID, linkSubject, switchDescription){
+
+		if(switchDescription.match(RegExp(encodeRE(linkSubject),'ig')))
+			return "";
+		else
+			return "<a class='BlueRedLink' href='javascript:ConvertToProduct("+productSwitchID+")'>" + linkSubject + "</a>";
+
+	}
+
+
+
+
+
+
+	// This event is called after the Quantity and Options are updated (or fail to update).
+	function updateOptionsEvent(projectID, successFlag, errMessage)
+	{
+		if(successFlag)
+		{
+			var projectObj = projL.getProjectObj("{VAR:ProjectID}");
+
+			// Find out if updating the options requires us to update the thumbnail image.
+			// If not, we can just refresh the parent window and close the pop-up window.
+			if(projectObj.artworkThumbnailNeedsUpdate())
+			{
+				UpdateThumbnailImage();
+			}
+			else
+			{
+				// Refresh the background window and close the pop-up.
+				RefreshParentWindow();
+				self.close();
+			}
+
+		}
+		else
+		{
+			document.getElementById("optionDiv").innerHTML = "<br><br><font color='#660000'>Update Failed:<br><br>"+errMessage+"</font>";
+		}
+	}
+
+
+
+
+
+	// This event is called after the Thumbnail Image has finished generating (or fails to generate).
+	function updateThumbnailImageEvent(projectID, successFlag, errMessage)
+	{
+		if(successFlag)
+		{
+			var projectObj = projL.getProjectObj("{VAR:ProjectID}");
+
+			// Refresh the background window and close the pop-up.
+			RefreshParentWindow();
+			self.close();
+		}
+		else
+		{
+
+			document.getElementById("optionDiv").innerHTML = "<br/><br/><font color='#660000'>Thumbnail Image Update Failed:<br/><br/>"+errMessage+"</font>";
+
+			RefreshParentWindow();
+
+			// Let the error message be displayed for about 3 seconds before the pop-up window closes.
+			window.setTimeout(function() { self.close(); }, 3000);
+		}
+	}
+
+
+
+
+
+
+	// Setup Global Objects that will be used to download the Project and Product Objects from the Server API.
+	var prL = new ProductLoader();
+	var projL = new ProjectLoader();
+
+
+	// Dont load the project until the HTML has finished downloading.
+	function loadProject()
+	{
+		var loadProjectIDarr = new Array();
+		loadProjectIDarr.push("{VAR:ProjectID}");
+		projL.attachProjectsLoadedEvent(displayProjectDetails, this);
+		projL.attachLoaderErrorEvent(projectLoadingErrorEvent, this);
+
+		projL.loadProjects(loadProjectIDarr, "{VAR:ProjectView}");
+	}
+
+
+</script>
+
+
+</head>
+
+<body bgcolor="#EEEEEE" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="loadProject()" >
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td align="center"><img  src="./images/transparent.gif" border="0" width="1" height="15" alt="" /><br/><OBJECT classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"
+ codebase="https://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=7,0,19,0"
+ WIDTH=421 HEIGHT=47>
+ <param name="movie" VALUE="./editoptions_commands.swf" /> <param name="quality" value="high" /> <param NAME=bgcolor VALUE=#FFFFFF /> <EMBED src="./editoptions_commands.swf" quality=high bgcolor=#FFFFFF  WIDTH=421 HEIGHT=47 TYPE="application/x-shockwave-flash" PLUGINSPAGE="https://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash"></EMBED>
+</OBJECT></td>
+</tr>
+<tr>
+
+ <td class="Body" align="center">
+ <table width="95%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td><img src="./images/transparent.gif" border="0" width="1" height="24" alt="" /></td>
+</tr>
+<tr>
+<td>
+<div id="optionDiv">
+<font color="#990000">Loading ...</font>
+</div>
+</td>
+</tr>
+</table>
+ </td>
+
+</tr>
+</table>
+
+</body>
+&nbsp;<br/>
+</html>

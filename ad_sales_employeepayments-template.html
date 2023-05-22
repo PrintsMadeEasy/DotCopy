@@ -1,0 +1,109 @@
+<html>
+<head>
+<title>Employee Sales Rep Payments</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+
+<script language="javascript">
+
+	//Make an array of the images we want to preload for the mouse-overs.
+	arImageSrc = new Array (
+		"./images/button-go-d.gif",
+		"./images/button-closewindow-blue-d.gif",
+		"./images/button-sendmessage-blue-d.gif"
+	)
+
+	
+	function PaySalesPerson(SalesPaymentID, PaymentAmount, SalesPersonName){
+		if(confirm("Please confirm that you have recorded a payment for...\n" + SalesPersonName + "\nIn the amount of: " + PaymentAmount)){
+			document.location = "./ad_sales_employeepayments.php?form_sc={FORM_SECURITY_CODE}&action=confirmpayment&paymentid=" + SalesPaymentID;
+		}
+	}
+
+
+</script>
+
+</head>
+
+<body bgcolor="#3366CC" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="" >
+<img  src="./images/transparent.gif" border="0" width="1" height="10" alt="" /><br/>
+<div align="center">
+<table bgcolor="#EEEEEE" width="400" cellpadding="0" cellspacing="0" border="0">
+
+<tr>
+<td bgcolor="#999999" class="Body" align="center"><img  src="./images/transparent.gif" border="0" width="1" height="3" alt="" /><br/>
+        <font color="#FFFFFF"><b>Enter Payments For Employee Sales Reps</b></font><br/>
+        <img src="./images/transparent.gif" border="0" width="1" height="3" alt="" /></td>
+
+<tr>
+<td align="center" class="Body">
+<br/>
+
+<!-- BEGIN EmptyPaymentsBL -->
+<div align="center">
+<br/><br/>
+There are no payments to be entered.
+<br/><br/><br/><br/>
+</div>
+<!-- END EmptyPaymentsBL -->
+
+<!-- BEGIN AllPaymentsBL -->
+<table width="95%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+            <td class="SmallBody"> It is possible that multiple payments could 
+              be listed for the same person.<br/>&nbsp;</td>
+  </tr>
+</table>
+
+
+
+<table width="100%" border="0" cellspacing="8" cellpadding="3">
+  <tr>
+            <td class="SmallBody" bgcolor="#CCCCEE" width="59%">&nbsp;<b>Employee 
+              Name</b></td>
+	        <td class="SmallBody" bgcolor="#CCCCEE" width="41%" align="right"><b>Payment 
+              Amount</b>&nbsp;</td>
+
+  </tr>
+<!-- BEGIN PaymentBL -->
+  <tr>
+            <td class="SmallBody" bgcolor="#DDDDFF" width="59%">&nbsp;<a href="javascript:PaySalesPerson({PAYMENT_ID}, '${AMOUNT}', '{EMPLOYEE_NAME_SLASHES}')" class="blueredlink">{EMPLOYEE_NAME}</a></td>
+	        <td class="SmallBody" bgcolor="#DDDDFF" width="41%" align="right">&nbsp;${AMOUNT}</td>
+
+  </tr>
+ <!-- END PaymentBL -->
+</table>
+
+<!-- END AllPaymentsBL -->
+
+</td>
+</tr>
+
+
+<tr>
+<td><img src="images/header-editoptions-fade-bot.gif" width="400" alt="" /></td>
+</tr>
+</table>
+
+<table width="350" border="0" cellspacing="0" cellpadding="0">
+
+  <tr>
+
+    <td align="center">
+
+<img  src="./images/transparent.gif" border="0" width="1" height="5" alt="" /><br/>
+<a onclick="self.close();" ><img src="./images/button-closewindow-blue-u.gif" onmouseover="this.src='./images/button-closewindow-blue-d.gif';" onmouseout="this.src='./images/button-closewindow-blue-u.gif';" border="0"  align="absmiddle" alt="" /></a>  &nbsp;&nbsp;
+
+
+<br/>
+&nbsp;
+	</td>
+
+  </tr>
+</table>
+</div>
+
+
+</body>
+</html>

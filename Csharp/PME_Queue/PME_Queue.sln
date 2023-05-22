@@ -1,0 +1,27 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PME_Queue", "PME_Queue.csproj", "{DD7781D9-F65C-4853-A488-6FA47BB8F3AA}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "PME_Queue_Setup", "..\PME_Queue_Setup\PME_Queue_Setup.vdproj", "{D74F482C-07E4-407A-B8EE-7A7F196378C7}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+		Release = Release
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{DD7781D9-F65C-4853-A488-6FA47BB8F3AA}.Debug.ActiveCfg = Debug|.NET
+		{DD7781D9-F65C-4853-A488-6FA47BB8F3AA}.Debug.Build.0 = Debug|.NET
+		{DD7781D9-F65C-4853-A488-6FA47BB8F3AA}.Release.ActiveCfg = Release|.NET
+		{DD7781D9-F65C-4853-A488-6FA47BB8F3AA}.Release.Build.0 = Release|.NET
+		{D74F482C-07E4-407A-B8EE-7A7F196378C7}.Debug.ActiveCfg = Debug
+		{D74F482C-07E4-407A-B8EE-7A7F196378C7}.Release.ActiveCfg = Release
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal

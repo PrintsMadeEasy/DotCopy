@@ -1,0 +1,1352 @@
+<html>
+<head>
+<title>Admin</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<script language="javascript">
+
+	//Make an array of the images we want to preload for the mouse-overs.
+	arImageSrc = new Array (
+		"./images/button-go-d.gif",
+		"./images/button-go-grey-u.gif",
+		"./images/button-hasbeenshipped-u.gif"
+
+	)
+
+	//Preload images.
+	arImageList = new Array ();
+	for (counter in arImageSrc) {
+		arImageList[counter] = new Image();
+		arImageList[counter].src = arImageSrc[counter];
+	}
+
+	function SelectPeriodTypeTimeFrame( state )
+	{
+		document.all.TimeFrame.disabled = !state;
+		document.all.DateRangeStartDay.disabled = state;
+		document.all.DateRangeStartMonth.disabled = state;
+		document.all.DateRangeStartYear.disabled = state;
+		document.all.DateRangeEndDay.disabled = state;
+		document.all.DateRangeEndMonth.disabled = state;
+		document.all.DateRangeEndYear.disabled = state;
+	}
+
+	function InitializeTimeFields()
+	{
+		var periodTimeFrame = {PERIODISTIMEFRAME};
+		document.all.TimeFrame.disabled = !periodTimeFrame;
+		document.all.DateRangeStartDay.disabled = periodTimeFrame;
+		document.all.DateRangeStartMonth.disabled = periodTimeFrame;
+		document.all.DateRangeStartYear.disabled = periodTimeFrame;
+		document.all.DateRangeEndDay.disabled = periodTimeFrame;
+		document.all.DateRangeEndMonth.disabled = periodTimeFrame;
+		document.all.DateRangeEndYear.disabled = periodTimeFrame;
+	}
+
+	function ChangeMarketingView(ViewType){
+		document.forms["ReportOptions"].view.value = ViewType;
+		SubmitFormOnce();
+	}
+
+	function ShowAbuse(bannerName){
+
+		var abuseURL = "./ad_banner_abuse.php?starttime={STARTTIMESTAMP}&endtime={ENDTIMESTAMP}&bannername=" + escape(bannerName);
+		newWindow = window.open(abuseURL, "bannerabuse", "height=395,width=435,directories=no,location=no,menubar=no,scrollbars=yes,status=no,toolbar=no,resizable=no");
+		newWindow.focus();
+	}
+	
+	
+	
+	function ShowKeywords(bannerName){
+
+		var abuseURL = "./ad_marketing_bannerkeywords.php?starttime={STARTTIMESTAMP}&endtime={ENDTIMESTAMP}&bannername=" + escape(bannerName);
+		newWindow = window.open(abuseURL, "bannerkeywords", "height=495,width=645,directories=no,location=no,menubar=no,scrollbars=yes,status=no,toolbar=no,resizable=yes");
+		newWindow.focus();
+	}
+	
+	function ShowOrdersFromBanners(bannerName){
+		var abuseURL = "./ad_marketing_bannerorders.php?starttime={STARTTIMESTAMP}&endtime={ENDTIMESTAMP}&bannername=" + escape(bannerName);
+		newWindow = window.open(abuseURL, "ordersbybanner", "height=620,width=270,directories=no,location=no,menubar=no,scrollbars=yes,status=yes,toolbar=no,resizable=yes");
+		newWindow.focus();
+	}
+	
+	function EstimateCustomerWorthBannerClicks(){
+		
+		var newCustomersThroughThisBanner = parseInt('{CUST_WORTH_NEW_CUSTOMER_COUNT_FROM_BANNER}');
+		var combinedProfitThroughThisBanner = parseFloat('{CUST_WORTH_PROFIT_FROM_BANNER}');
+		var clicksThroughThisBanner = parseInt('{CUST_WORTH_BANNER_TRACKING_COUNT}');
+		var totalCustomerSpendSubtotals = parseInt('{TOTAL_CUSTOMER_SPEND_NO_COMMA}');
+		
+		var estimatedMerchantFees = totalCustomerSpendSubtotals * 0.03;
+		combinedProfitThroughThisBanner -= estimatedMerchantFees;
+		
+		var esimatedCPC = document.forms["EsimateCPCform"].estimateCPC.value;
+
+		if(esimatedCPC.search(/^\d+(\.\d{1,2})?$/) == -1){
+			alert("Fix the CPC value first.");
+		}
+		else{
+		
+			var esimatedCPCcharges = Math.round(clicksThroughThisBanner * esimatedCPC);
+			var esimatedCustomerAquistionCost = Math.round(esimatedCPCcharges / newCustomersThroughThisBanner);
+			var estimatedProfitFromCustomers = Math.round(combinedProfitThroughThisBanner - clicksThroughThisBanner * esimatedCPC );
+			var estimatedProfitPerCustomer = Math.round(estimatedProfitFromCustomers / newCustomersThroughThisBanner);
+		
+			alert("Estimated CPC Charges: $" + esimatedCPCcharges + "\n\nEstimated Customer Aquisition Cost\n(considering {CUST_WORTH_NEW_CUSTOMER_COUNT_FROM_BANNER} new customers from this banner name)\n$" + esimatedCustomerAquistionCost + "\n\nEstimated Profit Spanning Entire Period \n(Includes discounts, banner clicks, and 3% for merchant fees).  Does not include possible Sales Commissions).\n$" + estimatedProfitFromCustomers + "\n\nApproximate Profit-per-Customer Spanning Entire Period (including CPC charges) \n$" +  estimatedProfitPerCustomer );
+		}
+
+
+	}
+	
+	function EstimateBannerClicks(){
+		var esimatedCPC = document.forms["EsimateCPCform"].estimateCPC.value;
+		var totalBannerClicks = parseInt('{TOTAL_BANNER_CLICKS}');
+		var totalProfits = parseFloat('{TOTAL_PROFITS_NO_COMMA}');
+		var totalSalesCommissions = parseFloat('{SALES_COMMISSIONS_NO_COMMA}');
+		var newCustomerCountThroughBanners = parseInt('{TOTAL_NEW_CUSTOMER_BANNERS}');
+		var totalSubtotals = parseInt('{TOTAL_SUBTOTALS_NO_COMMA}');
+		
+		var estimatedMerchantFees = totalSubtotals * 0.03;
+		
+		
+		if(esimatedCPC.search(/^\d+(\.\d{1,2})?$/) == -1){
+			alert("Fix the CPC value first.");
+		}
+		else{
+		
+			var esimatedCPCcharges = Math.round(totalBannerClicks * esimatedCPC);
+			var esimatedCostPerCustomer = Math.round(esimatedCPCcharges / newCustomerCountThroughBanners);
+		
+			alert("Estimated CPC Charges: $" + esimatedCPCcharges + "\n\nEstimated Profit\n(includes discounts, sales commissions., ad clicks, and 3% for merchant fees).\n$" + Math.round(totalProfits - totalBannerClicks * esimatedCPC - totalSalesCommissions - estimatedMerchantFees ) + "\n\nApproximate Customer Aquisition Cost\n(considering {TOTAL_NEW_CUSTOMER_BANNERS} new customers from Banner Clicks)\n$" +  esimatedCostPerCustomer );
+		}
+	}
+	
+	
+
+	function hl(e)
+	{
+		e.style.color='#990000';
+		e.style.textDecoration='underline';
+	}
+	function dl(e)
+	{
+		e.style.color='black';
+		e.style.textDecoration='none';
+	}
+	
+	
+	
+	var CustomerBannerNameOriginal = "{BANNER_CLICK_BANNER_SEARCH}";
+	function CustWorthChangeBannerName(bannerName){
+		
+		// Change the color if the original does not match what the user entered (before refreshing the page)
+		if(CustomerBannerNameOriginal != bannerName)
+			document.forms["CustomerWorthForm"].bannername.style.backgroundColor = "#FFCCCC";
+		else
+			document.forms["CustomerWorthForm"].bannername.style.backgroundColor = "#FFFFFF";
+			
+		if(bannerName == "")
+			bannerName = "*";
+				
+		document.forms["ReportOptions"].bannerClicksTrackingCodeSearch.value = bannerName;
+	}
+	
+	
+	
+	var CustomerCouponCodeOriginal = "{CUSTOMERWORTH_COUPON}";
+	function CustWorthChangeCouponCode(couponCode){
+
+		// Change the color if the original does not match what the user entered (before refreshing the page)
+		if(CustomerCouponCodeOriginal != couponCode)
+			document.forms["CustomerWorthForm"].couponname.style.backgroundColor = "#FFCCCC";
+		else
+			document.forms["CustomerWorthForm"].couponname.style.backgroundColor = "#FFFFFF";
+		
+			
+		document.forms["ReportOptions"].custWorthCouponCode.value = couponCode;
+	}
+	
+	
+	
+	var CustomerArtworkSearchOriginal = "{CUSTOMERWORTH_ARTWORK}";
+	function CustWorthChangeArtworkSearch(artworkKeywords){
+	
+
+		// Change the color if the original does not match what the user entered (before refreshing the page)
+		if(CustomerArtworkSearchOriginal != artworkKeywords)
+			document.forms["CustomerWorthForm"].artworksearch.style.backgroundColor = "#FFCCCC";
+		else
+			document.forms["CustomerWorthForm"].artworksearch.style.backgroundColor = "#FFFFFF";
+
+		document.forms["ReportOptions"].custWorthArtworkSearch.value = artworkKeywords;
+	}
+	
+	
+	var IPindicatorOriginal = "{IP_INDICATOR}";
+	function IPindicatorChange(newIPAdd){
+		// Change the color if the original does not match what the user entered (before refreshing the page)
+		if(CustomerArtworkSearchOriginal != newIPAdd)
+			document.forms["bannerRefineForm"].ipindicator.style.backgroundColor = "#FFCCCC";
+		else
+			document.forms["bannerRefineForm"].ipindicator.style.backgroundColor = "#FFFFFF";
+
+		document.forms["ReportOptions"].ipindicator.value = newIPAdd;
+	}
+	
+
+
+	var bannerTrackingOriginal = "{BANNER_CLICK_BANNER_SEARCH}";
+	function BannerTrackingSearchChange(newTrackingCode){
+		// Change the color if the original does not match what the user entered (before refreshing the page)
+		if(bannerTrackingOriginal != newTrackingCode)
+			document.forms["bannerRefineForm"].bannerClicksTrackingCodeSearch.style.backgroundColor = "#FFCCCC";
+		else
+			document.forms["bannerRefineForm"].bannerClicksTrackingCodeSearch.style.backgroundColor = "#FFFFFF";
+
+		if(newTrackingCode == "")
+			newTrackingCode = "*";
+
+		document.forms["ReportOptions"].bannerClicksTrackingCodeSearch.value = newTrackingCode;
+	}
+	
+	
+	function ChangeUnknownOrigns(radioButtonVal){
+	
+		document.forms["ReportOptions"].displayUnknownOrigins.value = radioButtonVal;
+	}
+	
+
+	
+
+
+	var EndPerYearChge = "{REPORTPERIOD_END_YEAR}";
+	function EndPeriodYearChange(newYear){
+
+		// Change the color if the original does not match what the user entered (before refreshing the page)
+		if(EndPerYearChge != newYear)
+			document.forms["CustomerWorthForm"].DatePeriodEndYear.style.backgroundColor = "#FFCCCC";
+		else
+			document.forms["CustomerWorthForm"].DatePeriodEndYear.style.backgroundColor = "#FFFFFF";
+	
+	
+		document.forms["ReportOptions"].DatePeriodEndYear.value = newYear;
+	}
+	
+	
+	var EndPerMonthChge = "{REPORTPERIOD_END_MONTH}";
+	function EndPeriodMonthChange(newMonth){
+	
+		// Change the color if the original does not match what the user entered (before refreshing the page)
+		if(EndPerMonthChge != newMonth)
+			document.forms["CustomerWorthForm"].DatePeriodEndMonth.style.backgroundColor = "#FFCCCC";
+		else
+			document.forms["CustomerWorthForm"].DatePeriodEndMonth.style.backgroundColor = "#FFFFFF";
+			
+		document.forms["ReportOptions"].DatePeriodEndMonth.value = newMonth;
+	}
+	
+	
+	
+	var EndPerDayChge = "{REPORTPERIOD_END_DAY}";
+	function EndPeriodDayChange(newDay){
+	
+
+		// Change the color if the original does not match what the user entered (before refreshing the page)
+		if(EndPerDayChge != newDay)
+			document.forms["CustomerWorthForm"].DatePeriodEndDay.style.backgroundColor = "#FFCCCC";
+		else
+			document.forms["CustomerWorthForm"].DatePeriodEndDay.style.backgroundColor = "#FFFFFF";
+			
+
+		document.forms["ReportOptions"].DatePeriodEndDay.value = newDay;
+	}
+	
+	var CustNameChge = "{CUSTOMERWORTH_NAMESEARCH}";
+	function CustWorthChangeCustomerName(custName){
+	
+
+		// Change the color if the original does not match what the user entered (before refreshing the page)
+		if(CustNameChge != custName)
+			document.forms["CustomerWorthForm"].customerName.style.backgroundColor = "#FFCCCC";
+		else
+			document.forms["CustomerWorthForm"].customerName.style.backgroundColor = "#FFFFFF";
+			
+
+		document.forms["ReportOptions"].custWorthCustomerName.value = custName;
+	}
+	
+	function ShowOrdersWorthFromBanners(bannerName){
+		document.forms["ReportOptions"].bannerClicksTrackingCodeSearch.value = bannerName;
+		document.forms["ReportOptions"].view.value = "customerworth";
+		SubmitFormOnce();
+	}
+	
+	
+	
+	function RefineCustomerWorth(){
+		SubmitFormOnce();
+		return false;
+	}
+	
+	// Since the pages can take a long time to generate... make sure that users can only click 1 time.
+	var submitFormOnce = false;
+	function SubmitFormOnce(){
+
+		if(!submitFormOnce){
+			submitFormOnce = true;
+			document.ReportOptions.submit();
+		}
+		
+		return false;
+	}
+	
+	function DeadAccounts(){
+		var deadAccountsURL = "./ad_marketing_userlist.php?starttime={STARTTIMESTAMP}&endtime={ENDTIMESTAMP}&ReportType=DeadAccounts";
+		newWindow = window.open(deadAccountsURL, "deadAccounts", "height=620,width=270,directories=no,location=no,menubar=no,scrollbars=yes,status=yes,toolbar=no,resizable=yes");
+		newWindow.focus();
+	
+	}
+	
+	
+	
+	function ShowAdjustments(){
+		var deadAccountsURL = "./ad_balance_adjustments.php?starttime={STARTTIMESTAMP}&endtime={ENDTIMESTAMP}";
+		newWindow = window.open(deadAccountsURL, "balanceadjustments", "height=500,width=760,directories=no,location=no,menubar=no,scrollbars=yes,status=yes,toolbar=no,resizable=yes");
+		newWindow.focus();
+	}
+	
+		
+
+	function fixYearDropDownIfReportCachedOnAllForms(){
+
+
+		var startYearRangeObj = document.forms["ReportOptions"].DateRangeStartYear;
+		var endYearRangeObj = document.forms["ReportOptions"].DateRangeEndYear;
+
+		fixYearDropDownIfReportCached(startYearRangeObj);
+		fixYearDropDownIfReportCached(endYearRangeObj);
+		
+	}
+	
+	function checkBannerClickCSVreport(){
+		var reportSpanDays = document.forms["CSRbanerClicks"].reportSpanDays.value;
+		var reportSpacingIncrementDays = document.forms["CSRbanerClicks"].reportSpacingIncrementDays.value;
+		
+
+		if(!reportSpanDays.toString().match(/^\d+$/) || reportSpanDays == 0 ){
+			alert("The Report Span Days must be a positive number.");
+			return false;
+		}
+		
+		if(!reportSpacingIncrementDays.toString().match(/^\d+$/) || reportSpacingIncrementDays == 0 ){
+			alert("The Spacing Increment Days must be a positive number.");
+			return false;
+		}
+		
+		return true;
+	}
+
+</script>
+<script type="text/javascript" src="library/admin_library.js"></script>
+
+<link rel="stylesheet" type="text/css" href="library/calendar/themes/winter.css"/>
+<script type="text/javascript" src="library/calendar/src/utils.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar.js"></script>
+<script type="text/javascript" src="library/calendar/lang/calendar-en.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar-setup.js"></script>
+<script type="text/javascript" src="library/formatDate.js"></script>
+</head>
+<body bgcolor="#FFFFFF" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="">
+<div align="center">
+{HEADER}
+&nbsp;
+<table width="760" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td class="Body">
+<!-- Inner Body  -->
+
+				<FORM name="ReportOptions" method="get" onSubmit="return SubmitFormOnce();">
+				<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+				<input type="hidden" name="view" value="{VIEW_TYPE}" />
+				<input type="hidden" name="DatePeriodEndMonth" value="{REPORTPERIOD_END_MONTH}" />
+				<input type="hidden" name="DatePeriodEndDay" value="{REPORTPERIOD_END_DAY}" />
+				<input type="hidden" name="DatePeriodEndYear" value="{REPORTPERIOD_END_YEAR}" />
+
+				<input type="hidden" name="custWorthCouponCode" value="{CUSTOMERWORTH_COUPON}" />
+				<input type="hidden" name="custWorthArtworkSearch" value="{CUSTOMERWORTH_ARTWORK}" />
+				<input type="hidden" name="custWorthCustomerName" value="{CUSTOMERWORTH_NAMESEARCH}" />
+				<input type="hidden" name="ipindicator" value="{IP_INDICATOR}" />
+				<input type="hidden" name="bannerClicksTrackingCodeSearch" value="{BANNER_CLICK_BANNER_SEARCH}" />
+				<input type="hidden" name="displayUnknownOrigins" value="{DISPLAY_UNKNOWN_ORIGNS}" />
+				<input type="hidden" name="doNotCacheReport" value="" />
+				<input type="hidden" name="calendarProxyField" value="" id="calendarField" onChange="calendarDateRangeChanged(this.value)" />
+				
+				
+					<TABLE width="100%" border="0" cellspacing="0" cellpadding="2" bgcolor="#999999">
+						<TR>
+							<TD>
+								<TABLE width="100%" border="0" cellspacing="2" cellpadding="0" bgcolor="#EEEEEE" >
+									<TR>
+
+
+
+                    <TD class="SmallBodyBlack" width="68%">
+                      <input type="radio" name="PeriodType" class="SmallBody" value="TIMEFRAME" onClick="SelectPeriodTypeTimeFrame( true );"
+											{PERIODTYPETIMEFRAME} />
+											{TIMEFRAMESELS}<img src="./images/transparent.gif" border="0" width="30" height="1" /><img alt='Calendar' align='absmiddle' src='./images/calendar5.gif' border='0' id='calendarDateRange'  onmouseover="this.style.cursor='pointer'" onMouseOut="this.style.cursor='default'" />
+										</TD>
+
+                    <TD class="SmallBodyBold" width="18%">
+					<select class="AdminDropDown" name="productlimit" style="font-size:9px">
+	{PRODUCT_DROPDOWN}
+	</select></TD>
+									</TR>
+									<TR>
+
+            
+
+                    <TD class="SmallBodyBlack" width="68%" >
+                      <input type="radio" name="PeriodType"  class="SmallBody" value="DATERANGE" onClick="SelectPeriodTypeTimeFrame( false );"
+											{PERIODTYPEDATERANGE} />
+											{DATERANGESELS}
+											
+											
+										</TD>
+
+                    <TD class="SmallBodyBold" width="18%">&nbsp;&nbsp;</TD>
+									</TR>
+									<TR>
+								</TABLE>
+							</TD>
+						</TR>
+					</TABLE>
+				<TABLE width="100%" border="0" cellspacing="0" cellpadding="0">
+					<TR>
+						<TD colspan="2"><img src="./images/transparent.gif" border="0" width="1" height="4" alt="" /></TD>
+					</TR>
+					<TR>
+						<TD width="59%"><!-- ReportCacheNoticePlaceHolder -->&nbsp;</TD>
+						<TD width="41%" align="center">
+							<input type="submit" value="Refresh" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" />
+						</TD>
+					</TR>
+				</TABLE>
+			</FORM>
+						<span class="Error">&nbsp;{MESSAGE}</span>
+
+<!-- BEGIN ReportBody -->
+<br/>
+
+<!-- BEGIN ArtworkBL -->
+
+{NAV_BAR_HTML}
+
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td bgcolor="#3366CC"><img src="./images/transparent.gif" border="0" width="2" height="4" alt="" /></td>
+</tr>
+</table>
+<!-- BEGIN VIEW_BannersBL -->
+&nbsp;
+<table width="80%" border="0" cellspacing="0" cellpadding="1" bgcolor="#999933">
+<form name="bannerRefineForm">
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+  <tr>
+    <td><table width="100%" border="0" cellspacing="0" cellpadding="3" bgcolor="#EEEFE2">
+  <tr>
+    <td class="SmallBody"><strong>Tracking Code Search:</strong> <br/>Use pipe symbols <strong>|</strong> to separate multiple tracking searches.  Use asterisks <strong>*</strong> for wildcards. Separate tracking codes that you would like to exclude with pound symbols. <b>#</b> <br/>For Example:  This search phrase would show you all Google and Yahoo tracking codes, but won't include postcards or business cards. &nbsp;&nbsp;&nbsp;<font color="#996600">g-* | y-* #  *-pc-* # *-bc-*</font><br/>
+      <input type="text" style="width:400px; font-family:Arial, Helvetica, sans-serif; font-size:14px; background-color:#FFFFFF"  name="bannerClicksTrackingCodeSearch" value="{BANNER_CLICK_BANNER_SEARCH}" size="60" onKeyup="javascript:BannerTrackingSearchChange(this.value)" onChange="javascript:BannerTrackingSearchChange(this.value)" /><br/><br/>
+	
+	<strong>IP Fraud Indicator</strong>: Separate multiple addresses with a pipe symbol. &quot;|&quot;<br/><input type="text" style="width:400px; font-family:Arial, Helvetica, sans-serif; font-size:10px; background-color:#FFFFFF" onKeyup="javascript:IPindicatorChange(this.value)" onChange="javascript:IPindicatorChange(this.value)" name="ipindicator" value="{IP_INDICATOR}" size="60" />
+	<!--
+	<br/><br/>
+	<strong>Display Unknown Origins?</strong>
+	<br/>
+	Banner Click Origins were not recorded before Dec 1, 2006.  Not all browsers support Referral tracking.  This is a descent way to weed out probing scripts by Google Bots that deliver false clicks.<br/>
+	Yes <input type="radio" name="displayUnknownOrigins" value="yes" {UNKOWN_ORIGINS_CHECKED_YES} onclick="ChangeUnknownOrigns('yes')" /> &nbsp;&nbsp;&nbsp;&nbsp;No <input type="radio" name="displayUnknownOrigins" value="no" {UNKOWN_ORIGINS_CHECKED_NO} onclick="ChangeUnknownOrigns('no')" />
+	-->
+	</td>
+  </tr>
+</table>
+</td>
+  </tr>
+  </form>
+</table>
+
+
+<!-- BEGIN EmptyBannerClicks -->
+					<br/><b>Banner Clicks</b> &nbsp;&nbsp;<font class="SmallBody"> &nbsp;&nbsp;&nbsp;&nbsp;(Not Product Sensitive)</font>
+<table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#999999">
+  <tr>
+    <td>
+<table width="100%" border="0" cellspacing="1" cellpadding="3">
+  <tr bgcolor="#EEEEF9">
+                  <td class="SmallBody" width="30%">Banner Name</td>
+                  <td class="SmallBody" width="10%">Clicks</td>
+				  <td class="SmallBody" width="10%">Visitors</td>
+				  <td class="SmallBody" width="10%">Avg. Clicks/ Person</td>
+				  <td class="SmallBody" width="8%">Avg. Clicks/ Purchase</td>
+	              <td class="SmallBody" width="8%">Purchases</td>
+				  <td class="SmallBody" width="8%"><font class="SmallBody" style="color:#666666">Eventual Purchases<br><font class="ReallySmallBody">(From Click Date Range)</font></font></td>
+	              <td class="SmallBody" width="8%"><font class="SmallBody" style="color:#666666">Same-Day Purchases<br><font class="ReallySmallBody">(New Customers)</font></font></td>
+				  <td class="SmallBody" width="8%">New Cust.</td>
+				  <td class="SmallBody" width="1%">Abuse</td>
+				  <td class="SmallBody" width="1%">Words</td>
+  </tr>
+<!-- BEGIN CTbl -->
+  <tr bgcolor="#EEEEEE" onMouseOver="hl(this)" onMouseOut="dl(this)">
+                  <td class="Body" width="30%">{CT_NAME}</td>
+                  <td class="Body" width="10%">{CT_CLICK}</td>
+				  <td class="Body" width="10%">{CT_VISITORS}</td>
+	              <td class="Body" width="10%">{CT_CLICKSPERSON}</td>
+				  <td class="Body" width="8%">{CT_CLICKSPURCHASE}</td>
+                  <td class="Body" width="8%">{CT_ORDERS_LINK_START}{CT_PURCHASE}{CT_ORDERS_LINK_END}&nbsp;({CT_PERCENT}%)</td>
+				  <td class="Body" width="8%"><font class="SmallBody" style="color:#666666">{CT_DELAY_PURCHASE}&nbsp;({CT_DELAY_PURCHASE_PERCENT}%)</font></td>
+				  <td class="Body" width="8%"><font class="SmallBody" style="color:#666666">{CT_SAMEDAY_NEW_CUST_PURCHASE}&nbsp;({CT_SAMEDAY_NEW_CUST_PERCENT}%)</font></td>
+				  <td class="Body" width="8%">{CT_NEW_ORDERS_LINK_START}{CT_NEW_PURCHASE}{CT_NEW_ORDERS_LINK_END}&nbsp;({CT_PERCENT_NEW}%)</td>
+
+	              <td class="Body" width="1%" align="center"><a href="javascript:ShowAbuse('{CT_NAME}');" class="BlueRedLink">A</a></td>
+				  <td class="Body" width="1%" align="center"><a href="javascript:ShowKeywords('{CT_NAME}');" class="BlueRedLink">KW</a></td>
+  </tr>
+ <!-- END CTbl -->
+</table>
+
+	</td>
+  </tr>
+</table><img  src="./images/transparent.gif" border="0" width="1" height="3" alt="" /><br/><font class="ReallySmallBody"><font color="#666666"><font color="#990000">*</font> &quot;Eventual Purchases&quot; may not be accurate if the report is cached.  The value may continue to grow with time.<br/>
+        </font></font>
+<img  src="./images/transparent.gif" border="0" width="1" height="3" alt="" /><br/><font class="ReallySmallBody"><font color="#666666"><font color="#990000">*</font> &quot;Eventual Purchases&quot; can not be trusted until September 16th, 2009.<br/>
+        </font></font><br/>
+		<br>
+<br>
+<br>
+
+<form name="CSRbanerClicks" action="ad_report_bannerClicks_CSV.php" target="BannerClicksCSVReport" method="get" onSubmit="return checkBannerClickCSVreport();">
+<input type="hidden" name="trackingCodeSearch" value="{BANNER_CLICK_BANNER_SEARCH}">
+<font class="SmallBody"><strong>Time-Sliced CSV Report</strong></font> 
+<table width="100%" border="0" cellspacing="0" cellpadding="4" style="border:solid; border-color:#3399CC; border-width:1px; background-color:#eef0FF">
+	<tr>
+		<td class="SmallBody">Start: {START_CSV_MONTH_OPTIONS} {START_CSV_DAY_OPTIONS} {START_CSV_YEAR_OPTIONS}, &nbsp;&nbsp;&nbsp; Report Duration (Days): <input type="text" name="reportSpanDays" value="{REPORT_DAYS_SPAN}" class="SmallBody" size="2" maxlength="2">, &nbsp;&nbsp;&nbsp; Spacing Increments (Days): <input type="text" name="reportSpacingIncrementDays" value="{REPORT_DAYS_SPACING}" class="SmallBody" size="2" maxlength="3"></td>
+		<td align="right"><input type="submit" name="xxx"  value="Create" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" /></td>
+	</tr>
+</table>
+
+</form>
+<!-- END EmptyBannerClicks -->
+
+&nbsp;<br/>
+<!-- END VIEW_BannersBL -->
+<!-- BEGIN VIEW_OrdersBL -->
+<br/>
+<b>Orders</b>
+<table width="100%" border="0" cellspacing="0" cellpadding="1" bgcolor="#6699cc">
+  <tr>
+    <td><table width="100%" border="0" cellspacing="0" cellpadding="3" bgcolor="#99CCFF">
+  <tr>
+    <td><table width="100%" border="0" cellspacing="0" cellpadding="5" bgcolor="#FFFFFF">
+  <tr>
+    <td class="Body">
+	<font class="ReallySmallBody"><font color="#999999"><font color="#990000">*</font> Re-prints are not counted.</font></font><br/><br/>
+Total Orders: {TOTAL_ORDERS}
+<br/><br/>
+Total Projects: {TOTAL_PROJECTS}
+<br/><br/>
+
+<!-- BEGIN ProductNotSensitiveBL1 -->
+Total Orders through banners: {TOTAL_BANNERS}&nbsp;&nbsp;<br/><img  src="./images/transparent.gif" border="0" width="1" height="5" alt="" /><br/>
+Total Orders from through banners (New Customers): {TOTAL_NEW_CUSTOMER_BANNERS}&nbsp;&nbsp;&nbsp;&nbsp;
+
+<font class="SmallBody">(Same Day Purchases): {SAME_DAY_FIRST_TIME_NEW_CUSTOMER_BANNERS}</font>
+
+<br/><img  src="./images/transparent.gif" border="0" width="1" height="5" alt="" /><br/>
+Total Orders from through banners (Repeat Customers): {TOTAL_REPEAT_CUSTOMER_BANNERS}
+<br/>
+<br/>
+Total Orders without banners: {TOTAL_NO_BANNERS}<br/>
+<br/>
+
+
+Number of Orders from repeat customers: {REPEAT_CUSTOMER_ORDERS}<br/>
+<font class="ReallySmallBody"><font color="#999999">If a NEW customer places 3 orders within this period.  Only 2 &quot;Orders from repeat customers&quot; will be counted.<br/>
+If a customer placed an order before the start time of this report and then places 2 more orders within this period, 2 repeat orders will be counted.
+</font><br/></font><br/>
+Number of Orders from new customers: {NEW_CUSTOMER_ORDERS}<br/><br/>
+
+Percentage of Orders coming from repeat customers: {REPEAT_ORDER_PERCENT}%
+<br/><br/>
+<table width="100%" border="0" cellspacing="1" cellpadding="0">
+  <tr>
+    <td valign="top">{REORDER_PERIOD_TABLE}</td>
+	<td valign="top">{TIME_UNTIL_FIRST_REORDER_TABLE}</td>
+  </tr>
+</table>
+
+
+<br/><br/>
+
+{CUSTOMER_ASSISTANCE_CHARGES}
+<br/><br/>
+
+<font class="ReallySmallBody"><font color="#999999"><font color="#990000">*</font> Re-prints ARE counted (only in this figured below).</font></font>
+{SHIPPING_METHODS_TABLE}
+<br/>
+<!-- END ProductNotSensitiveBL1 -->
+
+	</td>
+  </tr>
+</table></td>
+  </tr>
+</table></td>
+  </tr>
+</table>
+
+<br/>
+<br/>
+<b>Re-prints &amp; Adjustments</b>
+<table width="100%" border="0" cellspacing="0" cellpadding="1" bgcolor="#6699cc">
+  <tr>
+    <td><table width="100%" border="0" cellspacing="0" cellpadding="3" bgcolor="#99CCFF">
+  <tr>
+    <td><table width="100%" border="0" cellspacing="0" cellpadding="5" bgcolor="#FFFFFF">
+  <tr>
+    <td class="Body">
+Total Orders: {REPRINT_ORDER_TOTAL}<br/><br/>
+Total Projects: {REPRINT_PROJECT_TOTAL}<br/><br/>
+{REPRINT_REASONS_TABLE}
+<br/><br/><br/>
+Total Customer Adjustments: {TOTAL_CUSTOMER_ADJUSTMENTS}<br/>
+<font class="ReallySmallBody"><font color="#999999">Negative values means we are refunding to the customer.</font></font>
+<br/><br/>
+
+Total Vendor Adjustments: {TOTAL_VENDOR_ADJUSTMENTS}<br/>
+<font class="ReallySmallBody"><font color="#999999">Negative values means we are saving money.</font></font>
+<br/><br/>
+
+
+Order Adjustments Combined: <a href="javascript:ShowAdjustments();">{ORDER_ADJUSTMENTS_INCOME}</a><br/>
+<font class="ReallySmallBody"><font color="#999999">Negative values means we are losing money.</font></font>
+<br/>
+
+
+
+
+<!-- BEGIN CopyrightChargesBL -->
+<br>
+
+Copyright Charges: {COPYRIGHT_BALANCE_TOTALS}<img  src="./images/transparent.gif" border="0" width="50" height="5" alt="" /><font class="SmallBody">Charges: {COPYRIGHT_CHARGES_TOTAL}&nbsp;&nbsp;&nbsp;Refunds: {COPYRIGHT_REFUND_TOTALS}&nbsp;&nbsp;&nbsp;</font><br/>
+<br>
+Copyright Customers
+<table width="100%" border="1" cellspacing="0" cellpadding="2" class="SmallBody">
+  <tr>
+    <td bgcolor="#EEEEEE">New Customers</td>
+    <td bgcolor="#EEEEEE">Total Canceled</td>
+    <td bgcolor="#F6f6f6" class="ReallySmallBody">Canceled within 1 Day</td>
+    <td bgcolor="#F6f6f6" class="ReallySmallBody">1 Week</td>
+    <td bgcolor="#F6f6f6" class="ReallySmallBody">1 Month</td>
+    <td bgcolor="#F6f6f6" class="ReallySmallBody">6 Months</td>
+    <td bgcolor="#F6f6f6" class="ReallySmallBody">&gt; 6 Months</td>
+  </tr>
+  <tr>
+    <td>{NEW_COPYRIGHT_MEMBERS}</td>
+    <td>{CANCELED_COPYRIGHT_MEMBERS}</td>
+    <td class="ReallySmallBody">{CANCELED_COPYRIGHT_1DAY}</td>
+    <td class="ReallySmallBody">{CANCELED_COPYRIGHT_1WEEK}</td>
+    <td class="ReallySmallBody">{CANCELED_COPYRIGHT_1MONTH}</td>
+    <td class="ReallySmallBody">{CANCELED_COPYRIGHT_6MONTH}</td>
+    <td class="ReallySmallBody">{CANCELED_COPYRIGHT_G6MONTH}</td>
+  </tr>
+</table>
+
+
+
+<!-- END CopyrightChargesBL -->
+
+
+
+
+<!-- BEGIN LoyaltyChargesBL -->
+<br>
+
+Loyalty Charges: {LOYALTY_BALANCE_TOTALS}<img  src="./images/transparent.gif" border="0" width="50" height="5" alt="" /><font class="SmallBody">Charges: {LOYALTY_CHARGES_TOTAL}&nbsp;&nbsp;&nbsp;Refunds: {LOYALTY_REFUND_TOTALS}&nbsp;&nbsp;&nbsp;</font><br/>
+<br>
+Loyalty Discounts: {LOYALTY_DISCOUNT_TOTALS}<img  src="./images/transparent.gif" border="0" width="50" height="5" alt="" /><font class="SmallBody">Shipping: {LOYALTY_DISCOUNTS_SHIPPING}&nbsp;&nbsp;&nbsp;Subtotals: {LOYALTY_DISCOUNTS_SUBTOTAL}&nbsp;&nbsp;&nbsp;</font><br/>
+<br>
+Loyalty Members
+<table width="100%" border="1" cellspacing="0" cellpadding="2" class="SmallBody">
+  <tr>
+    <td bgcolor="#EEEEEE">New Members</td>
+    <td bgcolor="#EEEEEE">Repeat Members</td>
+    <td bgcolor="#EEEEEE">Total Canceled</td>
+    <td bgcolor="#F6f6f6" class="ReallySmallBody">Canceled within 1 Day</td>
+    <td bgcolor="#F6f6f6" class="ReallySmallBody">1 Week</td>
+    <td bgcolor="#F6f6f6" class="ReallySmallBody">1 Month</td>
+    <td bgcolor="#F6f6f6" class="ReallySmallBody">6 Months</td>
+    <td bgcolor="#F6f6f6" class="ReallySmallBody">&gt; 6 Months</td>
+  </tr>
+  <tr>
+    <td>{NEW_LOYALTY_MEMBERS}</td>
+    <td>{REPEAT_LOYALTY_MEMBERS}</td>
+    <td>{CANCELED_LOYALTY_MEMBERS}</td>
+    <td class="ReallySmallBody">{CANCELED_LOYALTY_1DAY}</td>
+    <td class="ReallySmallBody">{CANCELED_LOYALTY_1WEEK}</td>
+    <td class="ReallySmallBody">{CANCELED_LOYALTY_1MONTH}</td>
+    <td class="ReallySmallBody">{CANCELED_LOYALTY_6MONTH}</td>
+    <td class="ReallySmallBody">{CANCELED_LOYALTY_G6MONTH}</td>
+  </tr>
+</table>
+
+
+
+<font class="ReallySmallBody"><font color="#999999">It is possible to have a customer counted as both new &amp; repeat if the time span is long enough.<br>
+&quot;Canceled Members&quot; are counted if a refund was issued within the report period (therefore these numbers will not change over time).  <br>
+</font></font>
+<!-- END LoyaltyChargesBL -->
+
+	</td>
+  </tr>
+</table></td>
+  </tr>
+</table></td>
+  </tr>
+</table>
+<br/>
+<br/>
+<!-- BEGIN CustomerInfoBL -->
+<b>Customers</b>
+<table width="100%" border="0" cellspacing="0" cellpadding="1" bgcolor="#6699cc">
+  <tr>
+    <td><table width="100%" border="0" cellspacing="0" cellpadding="3" bgcolor="#99CCFF">
+  <tr>
+    <td><table width="100%" border="0" cellspacing="0" cellpadding="5" bgcolor="#FFFFFF">
+  <tr>
+    <td class="Body">
+	Total Customers: {TOTAL_CUSTOMERS}<br/>
+<font class="ReallySmallBody"><font color="#999999">The amount of customers within the period.  Reprints may count twoard a customer.</font><br/></font><br/>
+Total Customers (belonging to Sales Reps): {SALESREP_CUSTOMERS}<br/>
+<font class="ReallySmallBody"><font color="#999999">Total number of customers during this period belonging to sales reps (even if they have expired).</font><br/></font><br/>
+First-Time Customers: {FIRSTTIME_CUSTOMERS}<br/>
+<font class="ReallySmallBody"><font color="#999999">If a NEW customer places multiple orders within this period, then they will count as 1 new customer.  Includes first-time customers belonging to Sales Reps too.</font><br/>
+</font><br/>
+Repeat Customers: {REPEAT_CUSTOMERS} &nbsp;&nbsp;&nbsp;&nbsp; - ({REPEAT_CUSTOMER_PERCENT}%)<br/>
+<font class="ReallySmallBody"><font color="#999999">If a NEW customer places 2 or more orders within this period then he will count as a repeat customer.<br/>If a customer placed an order before the start time of this report and then places another order within this period, 1 repeat customer will be counted.<br/>
+                          Re-print orders will not count towards a repeat customer.</font><br/>
+                          </font><br/>
+First-Time Customers (though a Banner): {FIRSTTIME_CUSTOMERS_BANNERS}<br/>
+<font class="ReallySmallBody"><font color="#999999">Will be counted if a new customer has a record in the banner log and does not belong to a sales rep.<br/>
+It is possible that the user may order through a banner click without a sales rep on the first order and then later become linked to them. <br/>
+In this case they will not count in this statistic (unless the future order from the Sales Rep is outside of the &quot;date range&quot;).</font><br/>
+</font><br/>
+First-Time Customers (belonging to Sales Reps): {FIRSTTIME_SALESREP_CUSTOMERS}<br/>
+<font class="ReallySmallBody"><font color="#999999">
+It is possible that a &quot;house customer&quot; could later be linked to a Sales Rep.<br/>
+In this case, they may show up in this statistic even though there first order wasn't necessarily the cause of a the Sales Rep.</font> <font color="#999999">(Providing that both orders are within the &quot;date range&quot;.)</font><br/>
+</font><br/>
+First-Time Customers using a Coupon: {FIRSTTIME_COUPON_CUSTOMERS}<br/>
+<font class="ReallySmallBody"><font color="#999999">Customers that use a coupon for their first order. (coupons belonging to sales reps don't count).<br/>
+It is possible for the customer to use a coupon and also have a record in the banner log. In this case they will show up in both statistics.</font><br/>
+</font><br/>
+First-Time Nomad Customers: {NOMAD_CUSTOMERS}<br/>
+<font class="ReallySmallBody"><font color="#999999">Looks for NEW customers without a banner log record, they don't belong to a Sales Rep, and they haven't used a coupon.<br/>
+This is could be a &quot;word of mouth&quot; indicator.<br/>
+It may also include customers that have permanent cookies disabled (and don't complete their purchase within a single session).<br/>
+It may also include customers that find the website from a second computer.</font><br/>
+</font><br/>
+
+New Accounts: {NEW_ACCOUNTS}<br/>
+<font class="ReallySmallBody"><font color="#999999">Amount of new accounts, regardless if they place an order or not.</font></font><br/><br/>
+
+Same Day Account Purcahse: {SAME_DAY_ACCOUNT_PURCAHSES}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ratio to New Accounts: {SAME_DAY_ACCOUNT_PURCAHSE_RATIO}%<br/>
+<font class="ReallySmallBody"><font color="#999999">In order for a same-day-account-purcahse to happen, the user must place their first order on the same day that their account was created.  The ratio is built against the total New Accounts for the day.</font></font><br/><br/>
+
+Delayed Purcahses From Account Creation: {DELAYED_ACCOUNT_PURCAHSES}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ratio to New Accounts: {DELAYED_ACCOUNT_PURCAHSES_RATIO}%<br/>
+<font class="ReallySmallBody"><font color="#999999">The farther back you run a report, the more likely this number will increase (because it gives users more time to place an order). It counts anyone that placed an order at least 1 day after the account creation.</font></font><br/><br/>
+
+Dead Accounts: <a href="javascript:DeadAccounts();" class="BlueRedLink">{DEAD_ACCOUNTS}</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ratio to New Accounts: {DEAD_ACCOUNT_RATIO}%<br/>
+<font class="ReallySmallBody"><font color="#999999">Amount of new accounts who's owners have not placed an order (until present time).  
+<br/>
+Generating the report in the past will give more of a chance to the owners for placing  orders.</font></font><br/>
+</font>
+
+
+	</td>
+  </tr>
+</table></td>
+  </tr>
+</table></td>
+  </tr>
+</table>
+<br/><br/>
+<!-- END CustomerInfoBL -->
+<b>Financial</b>
+<table width="100%" border="0" cellspacing="0" cellpadding="1" bgcolor="#6699cc">
+  <tr>
+    <td><table width="100%" border="0" cellspacing="0" cellpadding="3" bgcolor="#99CCFF">
+  <tr>
+    <td><table width="100%" border="0" cellspacing="0" cellpadding="5" bgcolor="#FFFFFF">
+  <tr>
+    <td class="Body">
+	
+	
+
+	
+	<font class="ReallySmallBody"><font color="#999999"><font color="#990000">*</font> None of these figures include S&amp;H or tax.</font></font><br/>
+	<font class="ReallySmallBody"><font color="#999999"><font color="#990000">*</font> Re-prints are not counted.</font></font><br/>
+	<font class="ReallySmallBody"><font color="#999999"><font color="#990000">*</font> Balance Adjustments not included.</font></font><br/>
+<br/>
+                          Total Subtotals: {TOTAL_SUBTOTALS} &nbsp;&nbsp;&nbsp;<font class="ReallySmallBody">(Discounts already included.  Sales commissions are not.)</font><br/>
+                          <br/>
+                          Total Profits: ${TOTAL_PROFITS} <br/>
+                          <br/>
+Total Discounts: ${TOTAL_DISCOUNTS}
+<br/><br/>
+Average Project Subtotal: {AVERAGE_SUBTOTAL}
+<br/><br/>
+Average Profit per Project: {AVERAGE_PROFIT}
+
+<br/><br/>
+
+
+	<!-- BEGIN ProductNotSensitiveBL2 -->
+	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="59%" class="Body">Sales Commissions: ${SALES_COMMISSIONS} &nbsp;&nbsp;&nbsp;<font class="ReallySmallBody">(Only includes completed orders)</font>
+<br/>
+<br/>Average First-time Customer Order Total: {FIRST_TIME_ORDER_TOTAL}
+<br/>
+<br/>
+Average First-time Customer Order Income: {FIRST_TIME_ORDER_PROFIT}
+<br/><br/>
+Average Repeat Customer Order Total: {REPEAT_ORDER_TOTAL}
+<br/><br/>
+Average Repeat Customer Order Income: {REPEAT_ORDER_PROFIT}
+<br/></td>
+    <td width="41%" class="Body">
+	<table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#CCCCCC">
+  <tr>
+    <td><table width="100%" border="0" cellspacing="1" cellpadding="2">
+  <tr>
+    <td class="Body" colspan="3" bgcolor="#eeeeee" align="center">Estimate Click Charges</td>
+  </tr>
+  <form name="EsimateCPCform" onSubmit="EstimateBannerClicks(); return false;">
+  <input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+   <tr>
+    <td nwrapwidth="34%" bgcolor="#FFFFFF" class="SmallBody"><nobr>Banner Clicks: 
+      {TOTAL_BANNER_CLICKS}</nobr></td>
+	 <td width="33%" bgcolor="#FFFFFF" class="SmallBody">Average CPC:<br/>
+	   $<input type="text" name="estimateCPC" value="0.00" style="background-color:#FFFFFF; border-color:#999999; width:50px; font-size:10px; font-family:Arial, Helvetica, sans-serif;" maxlength="6" /></td>
+	   <td width="33%" bgcolor="#FFFFFF" class="SmallBody"><input type="submit" name="xxx" value="Estimate" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" /></td>
+  </tr>
+  </form>
+</table></td>
+  </tr>
+</table>
+
+
+
+	</td>
+  </tr>
+</table>
+
+
+
+<!-- END ProductNotSensitiveBL2 -->
+	</td>
+  </tr>
+</table></td>
+  </tr>
+</table></td>
+  </tr>
+</table>
+
+
+
+<br/><br/>
+<!-- END VIEW_OrdersBL -->
+<!-- BEGIN VIEW_DemogBL -->
+<br/>
+<b>Demographics</b> &nbsp;&nbsp;&nbsp;&nbsp;(Not Product Sensitive)
+<table width="100%" border="0" cellspacing="0" cellpadding="1" bgcolor="#6699cc">
+  <tr>
+    <td><table width="100%" border="0" cellspacing="0" cellpadding="3" bgcolor="#99CCFF">
+  <tr>
+    <td><table width="100%" border="0" cellspacing="0" cellpadding="5" bgcolor="#FFFFFF">
+  <tr>
+    <td class="Body">
+<font class="ReallySmallBody"><font color="#999999"><font color="#990000">*</font> Re-prints ARE counted in this report.</font></font>
+{DEMOG_STATES_TABLE}
+	</td>
+  </tr>
+</table></td>
+  </tr>
+</table></td>
+  </tr>
+</table>
+
+<br/><br/>
+<!-- END VIEW_DemogBL -->
+
+
+
+<!-- BEGIN VIEW_Cancelations -->
+<br/>
+<b>Cancelations</b> &nbsp;&nbsp;&nbsp;&nbsp;(Not Product Sensitive)
+<table width="100%" border="0" cellspacing="0" cellpadding="1" bgcolor="#6699cc">
+  <tr>
+    <td><table width="100%" border="0" cellspacing="0" cellpadding="3" bgcolor="#99CCFF">
+  <tr>
+    <td><table width="100%" border="0" cellspacing="0" cellpadding="5" bgcolor="#FFFFFF">
+  <tr>
+    <td class="Body">
+
+<!-- BEGIN EmptyOrderCancelationsBL -->	
+<font class="ReallySmallBody"><font color="#999999"><font color="#990000">*</font> Orders from first-time customers are shown in bold.</font></font><br>
+<font class="ReallySmallBody"><font color="#999999"><font color="#990000">*</font> Only displaying orders which have ALL projects canceled within.</font></font>
+<br>
+<br>
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+	<tr>
+		<td bgcolor="#CDD3E2">
+
+<table width="100%" border="0" cellspacing="1" cellpadding="1">
+	<tr>
+		<td bgcolor="#DDDDDD" class="Body">Order ID</td>
+		<td bgcolor="#DDDDDD" class="Body">Order Hash</td>
+		<td bgcolor="#DDDDDD" class="Body">Order Value</td>
+		<td bgcolor="#DDDDDD" class="Body">Order Date</td>
+		<td bgcolor="#DDDDDD" class="Body">Company / Name</td>
+	</tr>
+<!-- BEGIN OrdersRowBL -->	
+	<tr>
+		<td bgcolor="#FFFFFF" class="SmallBody"><a href="javascript:OrderInNewWindow({ORDER_ID});">{ROW_BOLD_START}{ORDER_ID}{ROW_BOLD_END}</a></td>
+		<td bgcolor="#FFFFFF" class="SmallBody">{ROW_BOLD_START}{ORDER_HASH}{ROW_BOLD_END}</td>
+		<td bgcolor="#FFFFFF" class="SmallBody">{ROW_BOLD_START}{ORDER_VALUE}{ROW_BOLD_END}</td>
+		<td bgcolor="#FFFFFF" class="SmallBody">{ROW_BOLD_START}{ORDER_DATE}{ROW_BOLD_END}</td>
+		<td bgcolor="#FFFFFF" class="SmallBody">{ROW_BOLD_START}{COMPANY_OR_NAME}{ROW_BOLD_END}</td>
+	</tr>
+<!-- END OrdersRowBL -->	
+</table>
+</td>
+	</tr>
+</table>
+<!-- END EmptyOrderCancelationsBL -->
+
+
+
+	</td>
+  </tr>
+</table></td>
+  </tr>
+</table></td>
+  </tr>
+</table>
+
+<br/><br/>
+<!-- END VIEW_Cancelations -->
+
+
+<!-- BEGIN VIEW_QuestionsBL -->
+<br/>
+<b>Hear About</b> &nbsp;&nbsp;&nbsp;&nbsp;(Not Product Sensitive)
+<table width="50%" border="0" cellspacing="0" cellpadding="0" bgcolor="#999999">
+  <tr>
+    <td>
+              <table width="100%" border="0" cellspacing="1" cellpadding="3">
+
+                <!-- BEGIN HAbl -->
+                <tr bgcolor="#EEEEEE">
+                  <td class="Body" width="42%">{HA_NAME}</td>
+                  <td class="Body" width="19%">{HA_TOTAL}</td>
+                </tr>
+                <!-- END HAbl -->
+              </table>
+
+	</td>
+  </tr>
+</table>
+<br/>
+<br/>
+<b><u>Copyright Templates Account Settings</u></b> (new accounts) <br/>
+Yes: {COPYRIGHT_TEMPLATE_YES} &nbsp;<font class="SmallBody">{COPYRIGHT_TEMPLATE_YES_PERCENT}</font><br/>
+No: {COPYRIGHT_TEMPLATE_NO}<br/>
+Hidden: {COPYRIGHT_TEMPLATE_HIDDEN} &nbsp;<font class="SmallBody">{COPYRIGHT_HIDDEN_PERCENT}</font><br/>
+
+<br/>
+<br/>
+<b><u>Recieve Newsletters Account Settings</u></b> (new accounts)<br/>
+Yes: {NEWSLETTERS_YES} &nbsp;<font class="SmallBody">{NEWSLETTERS_YES_PERCENT}</font><br/>
+No: {NEWSLETTERS_NO}<br/>
+
+<br/>
+<br/>
+<b><u>Super Savings</u></b><br/>
+Yes: {LOYALTY_YES} &nbsp;<font class="SmallBody">{LOYALTY_YES_PERCENT}</font><br/>
+No: {LOYALTY_NO}<br/>
+Hidden: {LOYALTY_HIDDEN} &nbsp;<font class="SmallBody">{LOYALTY_HIDDEN_PERCENT}</font><br/>
+
+
+<br/>
+<br/>
+<b><u>Sign Up for VIP Emails</u></b><br/>
+<table width="50%" border="0" cellspacing="0" cellpadding="0" bgcolor="#999999">
+  <tr>
+    <td>
+              <table width="100%" border="0" cellspacing="1" cellpadding="3">
+
+                <!-- BEGIN NewsLetterSignUpBL -->
+                <tr bgcolor="#EEEEEE">
+                  <td class="Body" width="42%">{NL_BANNER_CODE}</td>
+                  <td class="Body" width="19%">{NL_COUNT}</td>
+                </tr>
+                <!-- END NewsLetterSignUpBL -->
+              </table>
+
+	</td>
+  </tr>
+</table>
+<!-- END VIEW_QuestionsBL -->
+
+<!-- BEGIN VIEW_CustomerWorthBL -->
+<br/>
+<b>What a Customer is Worth.</b> 
+<table width="100%" border="0" cellspacing="0" cellpadding="1" bgcolor="#6699cc">
+  <tr>
+    <td><table width="100%" border="0" cellspacing="0" cellpadding="3" bgcolor="#99CCFF">
+  <tr>
+    <td><table width="100%" border="0" cellspacing="0" cellpadding="5" bgcolor="#FFFFFF">
+  <tr>
+    <td class="Body">
+	<font class="ReallySmallBody"><font color="#999999"><font color="#990000">*</font> None of these figures include S&amp;H or tax.</font></font><br/>
+	<font class="ReallySmallBody"><font color="#999999"><font color="#990000">*</font> Discounts Included.</font></font><br/>
+	<font class="ReallySmallBody"><font color="#999999"><font color="#990000">*</font> Re-prints ARE counted.</font></font><br/>
+	<font class="ReallySmallBody"><font color="#999999"><font color="#990000">*</font> Sales Commissions not Included.</font></font><br/><br/>
+
+<table width="100%" border="0" cellspacing="0" cellpadding="1" bgcolor="#999933">
+<form name="CustomerWorthForm" onSubmit="return RefineCustomerWorth()">
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+  <tr>
+    <td>
+	<table width="100%" border="0" cellspacing="0" cellpadding="3" bgcolor="#F0EADD">
+	<tr>
+	<td>
+	<table width="100%" border="0" cellspacing="0" cellpadding="0" >
+  <tr>
+
+	<td width="60%" class="SmallBody" >Ending Customer Worth Period<br/>
+	  {MONTH_PERIOD_END} {DAY_PERIOD_END} {YEAR_PERIOD_END}</td>
+	  <td width="40%" class="SmallBody">Company or Customer Name<br/>
+	    <input type="text" name="customerName" class="AdminInput" style="width:210px; background-color:#FFFFFF" onKeyup="javascript:CustWorthChangeCustomerName(this.value)" onChange="javascript:CustWorthChangeCustomerName(this.value)"   value="{CUSTOMERWORTH_NAMESEARCH}" /></td>
+
+  </tr>
+  </table><img src="./images/transparent.gif" border="0" width="1" height="9" alt="" /><table width="100%" border="0" cellspacing="0" cellpadding="0" >
+  <tr>
+ 	<td width="38%" class="SmallBody" valign="bottom">Banner-Click Tracking (exact)<br/>
+ 	  <font color="#cc0000">*</font><font class="ReallySmallBody">Any order within &quot;new&quot; period.<br/>Use pipe symbols <strong>|</strong> to separate multiple tracking searches.  Use asterisks <strong>*</strong> for wildcards.<br/>Separate tracking codes that you would like to exclude with pound symbols. # </font><br/>
+	  <input type="text" name="bannername" class="AdminInput" style="width:200px; background-color:#FFFFFF" onKeyup="javascript:CustWorthChangeBannerName(this.value)" onChange="javascript:CustWorthChangeBannerName(this.value)"   value="{BANNER_CLICK_BANNER_SEARCH}" />	<br/>
+	<strong>Include Unknown Origins?</strong>
+	<br/>
+	<font class="ReallySmallBody">Banner Click Origins not recorded before 12/1/2006.  <br/>Not all browsers support Referral tracking. </font><br/>
+	Yes <input type="radio" name="displayUnknownOrigins" value="yes" {UNKOWN_ORIGINS_CHECKED_YES} onClick="ChangeUnknownOrigns('yes')" /> &nbsp;&nbsp;&nbsp;&nbsp;No <input type="radio" name="displayUnknownOrigins" value="no" {UNKOWN_ORIGINS_CHECKED_NO} onClick="ChangeUnknownOrigns('no')" /></td>
+	<td width="25%" class="SmallBody" valign="top">Coupon Code<br/>
+	  <font color="#cc0000">*</font><font class="ReallySmallBody">Any order within &quot;new&quot; period.</font><br/>
+	  <input type="text" class="AdminInput" name="couponname" style="width:90px; background-color:#FFFFFF" onKeyup="javascript:CustWorthChangeCouponCode(this.value)" onChange="javascript:CustWorthChangeCouponCode(this.value)" value="{CUSTOMERWORTH_COUPON}" /></td>
+	<td width="34%" class="SmallBody" valign="top">Artwork Search (within first order). &nbsp;&nbsp;&nbsp;<br/>
+	  <font color="#cc0000">*</font><font class="ReallySmallBody"><nobr>This could take a while if the date range is big.</font><br/>
+	  <input type="text" class="AdminInput" name="artworksearch" style="width:210px; background-color:#FFFFFF" onKeyup="javascript:CustWorthChangeArtworkSearch(this.value)" onChange="javascript:CustWorthChangeArtworkSearch(this.value)"  value="{CUSTOMERWORTH_ARTWORK}" /></td>
+	  <td width="3%" valign="bottom"><input type="submit" name="xxx"  value="Refine" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" /></td>
+  </tr>
+</table></td></tr></table></td>
+  </tr>
+  </form>
+</table>
+<br/><br/>
+
+<!-- BEGIN CustomerWorthHideBL -->
+
+
+<!-- BEGIN CustomerWorthAllProducts -->
+During the period between {START_TIMERANGE_DESC} and {END_TIMERANGE_DESC} we got a total of {NEW_CUSTOMER_COUNT} new customers.
+
+<br/>
+<br/>
+By the ending period {ENDING_PERIOD_DESC}, those new customers spent a total of {TOTAL_CUSTOMER_SPEND} with an estimated profit of {ESTIMATED_PROFIT}.<br/>
+<strong>Average Customer Revenue:</strong> {AVERAGE_CUSTOMER_REVENUE}<br/>
+<strong>Approximate Customer Worth:</strong> {APPROX_CUSTOMER_WORTH}<br/>
+<br/>
+<font class="SmallBody">
+<strong>Average First-Time Customer Revenue:</strong> {AVERAGE_FIRST_CUSTOMER_REVENUE}<br/>
+<strong>Approximate First-Time Worth:</strong> {APPROX_FIRST_CUSTOMER_WORTH}<br/>
+<strong>Repeat Customers:</strong> {REPEAT_CUSTOMERS_FROM_CUST_WORTH}<br/>
+</font>
+<br/>
+
+<br/>
+<font class="SmallBody"><font color="#660000"><strong>Customer Counts by Worth Ranges</strong></font></font><br/>
+
+<table width="250" border="0" cellspacing="0" cellpadding="1" bgcolor="#999999">
+  <tr>
+    <td><table width="100%" border="0" cellspacing="1" cellpadding="2">
+  <tr>
+    <td bgcolor="#C1D7E6" class="SmallBody"><strong>Approx. Worth</strong></td>
+	 <td bgcolor="#C1D7E6" class="SmallBody"><strong>Customer Count</strong></td>
+  </tr>
+  <tr>
+    <td bgcolor="#EFEFEF" class="SmallBody">$0 - $20</strong></td>
+	 <td bgcolor="#EFEFEF" class="SmallBody">{CUST_W_0_20}</td>
+  </tr>
+    <tr>
+    <td bgcolor="#EFEFEF" class="SmallBody">$20 - $50</strong></td>
+	 <td bgcolor="#EFEFEF" class="SmallBody">{CUST_W_20_50}</td>
+  </tr>
+    <tr>
+    <td bgcolor="#EFEFEF" class="SmallBody">$50 - $100</strong></td>
+	 <td bgcolor="#EFEFEF" class="SmallBody">{CUST_W_50_100}</td>
+  </tr>
+    <tr>
+    <td bgcolor="#EFEFEF" class="SmallBody">$100 - $200</strong></td>
+	 <td bgcolor="#EFEFEF" class="SmallBody">{CUST_W_100_200}</td>
+  </tr>
+  <tr>
+    <td bgcolor="#EFEFEF" class="SmallBody">$200 - $500</strong></td>
+	 <td bgcolor="#EFEFEF" class="SmallBody">{CUST_W_200_500}</td>
+  </tr>
+  <tr>
+    <td bgcolor="#EFEFEF" class="SmallBody">$500 - $1000</strong></td>
+	 <td bgcolor="#EFEFEF" class="SmallBody">{CUST_W_500_1000}</td>
+  </tr>
+  <tr>
+    <td bgcolor="#EFEFEF" class="SmallBody">$1000 - $3000</strong></td>
+	 <td bgcolor="#EFEFEF" class="SmallBody">{CUST_W_1000_3000}</td>
+  </tr>
+  <tr>
+    <td bgcolor="#EFEFEF" class="SmallBody">Greater than $3000</strong></td>
+	 <td bgcolor="#EFEFEF" class="SmallBody">{CUST_W_3000_UP}</td>
+  </tr>
+</table>
+</td>
+  </tr>
+</table>
+
+<br/>
+<br/>
+<font class="SmallBody"><font color="#660000"><strong>Number of Orders Placed by these Customers</strong></font></font><br/>
+
+<table width="250" border="0" cellspacing="0" cellpadding="1" bgcolor="#999999">
+  <tr>
+    <td><table width="100%" border="0" cellspacing="1" cellpadding="2">
+  <tr>
+    <td bgcolor="#C1D7E6" class="SmallBody"><strong>Orders Placed</strong></td>
+	 <td bgcolor="#C1D7E6" class="SmallBody"><strong>Customer Count</strong></td>
+  </tr>
+  <tr>
+    <td bgcolor="#EFEFEF" class="SmallBody">1</td>
+	 <td bgcolor="#EFEFEF" class="SmallBody">{CUST_O_1}</td>
+  </tr>
+    <tr>
+    <td bgcolor="#EFEFEF" class="SmallBody">2</td>
+	 <td bgcolor="#EFEFEF" class="SmallBody">{CUST_O_2}</td>
+  </tr>
+    <tr>
+    <td bgcolor="#EFEFEF" class="SmallBody">3</td>
+	 <td bgcolor="#EFEFEF" class="SmallBody">{CUST_O_3}</td>
+  </tr>
+    <tr>
+    <td bgcolor="#EFEFEF" class="SmallBody">4 - 5 </td>
+	 <td bgcolor="#EFEFEF" class="SmallBody">{CUST_O_4_5}</td>
+  </tr>
+  <tr>
+    <td bgcolor="#EFEFEF" class="SmallBody">6 - 10 </td>
+	 <td bgcolor="#EFEFEF" class="SmallBody">{CUST_O_6_10}</td>
+  </tr>
+  <tr>
+    <td bgcolor="#EFEFEF" class="SmallBody">11 - 20 </td>
+	 <td bgcolor="#EFEFEF" class="SmallBody">{CUST_O_11_20}</td>
+  </tr>
+  <tr>
+    <td bgcolor="#EFEFEF" class="SmallBody">21 - 50 </td>
+	 <td bgcolor="#EFEFEF" class="SmallBody">{CUST_O_21_50}</td>
+  </tr>
+  <tr>
+    <td bgcolor="#EFEFEF" class="SmallBody">More than 50 </td>
+	 <td bgcolor="#EFEFEF" class="SmallBody">{CUST_O_50_UP}</td>
+  </tr>
+</table>
+</td>
+  </tr>
+</table>
+
+
+
+<br/><br/>
+<!-- END CustomerWorthAllProducts -->
+
+
+
+<!-- BEGIN CustomerSingleProduct -->
+<font class="SmallBody"><font color="#660000"><strong>New Customer Counts</strong></font></font><br/>
+During the period between {START_TIMERANGE_DESC} and {END_TIMERANGE_DESC} there were {NEW_CUSTOMER_COUNT_SOLO_PRODUCT} new customers that purchased {PRODUCT_NAME} exclusively on their first order. There were  {NEW_CUSTOMER_COUNT_MIXED_PRODUCT} new customers that had {PRODUCT_NAME} included with their first order, but mixed with other products.    Between both, there were {NEW_CUSTOMER_COUNT_COMBINED} new customers who purchased {PRODUCT_NAME} on there first order. <br/>
+<br/>
+<font class="SmallBody"><font color="#660000"><strong>{PRODUCT_NAME} Exclusive on First Order</strong></font></font><br/>
+<!-- BEGIN ExclusiveProductBL -->
+The {NEW_CUSTOMER_COUNT_SOLO_PRODUCT} new customers who bought {PRODUCT_NAME} exclusively on their first order spent a total of {TOTAL_CUSTOMER_SPEND_SOLO} with this company up until the ending period  {ENDING_PERIOD_DESC}, with an estimated profit of {ESTIMATED_PROFIT_SOLO}.  These same customers spent a total of {TOTAL_CUSTOMER_SPEND_SOLO_PRODUCT_SPECIFIC} exclusively on {PRODUCT_NAME} bringing in an estimated profit of {ESTIMATED_PROFIT_SOLO_PRODUCT_SPECIFIC}.<br/>
+<strong>Average Customer Revenue (mixed):</strong> {AVERAGE_CUSTOMER_REVENUE_SOLO_PRODUCT}<br/>
+<strong>Approximate Customer Worth (mixed):</strong> {APPROX_CUSTOMER_WORTH_SOLO_PRODUCT}<br/><img  src="./images/transparent.gif" border="0" width="1" height="7" alt="" /><br/>
+<strong>Average Customer Revenue (exclusive):</strong> {AVERAGE_CUSTOMER_REVENUE_SOLO_PRODUCT_SPECIFIC}<br/>
+<strong>Approximate Customer Worth (exclusive):</strong> {APPROX_CUSTOMER_WORTH_SOLO_PRODUCT_SPECIFIC}
+<!-- END ExclusiveProductBL -->
+<br/>
+<br/>
+<font class="SmallBody"><font color="#660000"><strong>{PRODUCT_NAME} Mixed with Other Products on First Order</strong></font></font><br/>
+<!-- BEGIN MixedProductBL -->
+By the ending period {ENDING_PERIOD_DESC}, the {NEW_CUSTOMER_COUNT_MIXED_PRODUCT} new customers with mixed products on their first order spent a total of {TOTAL_CUSTOMER_SPEND_MIXED} with an estimated profit of {ESTIMATED_PROFIT_MIXED}.  These same customers spent a total of {TOTAL_CUSTOMER_SPEND_MIXED_PRODUCT_SPECIFIC} exclusively on {PRODUCT_NAME} bringing in an estimated profit of {ESTIMATED_PROFIT_MIXED_PRODUCT_SPECIFIC}<br/>
+<strong>Average Customer Revenue (mixed):</strong> {AVERAGE_CUSTOMER_REVENUE_MIXED_PRODUCT}<br/>
+<strong>Approximate Customer Worth (mixed):</strong> {APPROX_CUSTOMER_WORTH_MIXED_PRODUCT}
+<!-- END MixedProductBL -->
+<br/>
+<br/>
+<br/>
+<font class="SmallBody"><font color="#660000"><strong>COMBINED - {PRODUCT_NAME} were Purchased on First Order</strong></font></font><br/>
+There were {NEW_CUSTOMER_COUNT_COMBINED} new customers who purchased {PRODUCT_NAME} on their first order. By the ending period {ENDING_PERIOD_DESC} they had spent a total of {TOTAL_CUSTOMER_SPEND_COMBINED} at this company with an estimated profit of {ESTIMATED_PROFIT_COMBINED}.  These same customers spent a total of {TOTAL_CUSTOMER_SPEND_COMBINED_PRODUCT_SPECIFIC} exclusively on {PRODUCT_NAME} bringing in an estimated profit of {ESTIMATED_PROFIT_COMBINED_PRODUCT_SPECIFIC}.<br/>
+<strong>Average Customer Revenue (mixed):</strong> {AVERAGE_CUSTOMER_REVENUE_COMBINED_PRODUCT}<br/>
+<strong>Approximate Customer Worth (mixed):</strong> {APPROX_CUSTOMER_WORTH_COMBINED_PRODUCT}
+<br/>
+<br/>
+
+<!-- END CustomerSingleProduct -->
+
+<!-- BEGIN BannerAnalysisBL -->
+<br/>
+<br/>
+
+<font class="SmallBody"><font color="#660000"><strong>Banner Click Analysis</strong></font></font><br/>
+The banner name <font color="#663399"><strong>{BANNER_CLICK_BANNER_SEARCH}</strong></font> was clicked on {CUST_WORTH_BANNER_TRACKING_COUNT} times between {START_TIMERANGE_DESC} and {END_TIMERANGE_DESC}. <br/>
+<br/>
+
+<table width="50%" border="0" cellspacing="0" cellpadding="0" bgcolor="#CCCCCC">
+  <tr>
+    <td><table width="100%" border="0" cellspacing="1" cellpadding="2">
+  <tr>
+    <td class="Body" colspan="3" bgcolor="#eeeeee" align="center">Estimate Click Charges &amp; Customer Profit </td>
+  </tr>
+  <form name="EsimateCPCform" onSubmit="EstimateCustomerWorthBannerClicks(); return false;">
+  <input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+   <tr>
+    <td nwrapwidth="34%" bgcolor="#FFFFFF" class="SmallBody"><nobr>Banner Clicks: 
+      {CUST_WORTH_BANNER_TRACKING_COUNT}</nobr></td>
+	 <td width="33%" bgcolor="#FFFFFF" class="SmallBody">Average CPC:<br/>
+	   $<input type="text" name="estimateCPC" value="0.00" style="background-color:#FFFFFF; border-color:#999999; width:50px; font-size:10px; font-family:Arial, Helvetica, sans-serif;" maxlength="6" /></td>
+	   <td width="33%" bgcolor="#FFFFFF" class="SmallBody"><input type="submit" name="xxx" value="Estimate" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" /></td>
+  </tr>
+  </form>
+</table></td>
+  </tr>
+</table>
+ 
+<br/>
+<!-- END BannerAnalysisBL -->
+
+
+
+
+<!-- END CustomerWorthHideBL -->
+<br/>
+<br/>
+
+	</td>
+  </tr>
+</table></td>
+  </tr>
+</table></td>
+  </tr>
+</table>
+
+<br/><br/>
+<!-- END VIEW_CustomerWorthBL -->
+
+
+
+
+	&nbsp;<br/>&nbsp;
+<!-- END ReportBody -->
+
+
+<!-- Form for Sumbitting UserIDs to the PopUp window. -->
+<form name="NewAndRepeatCustomerForm" action="./ad_marketing_userlist.php" target="_blank" method="post">
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+<input type="hidden" name="userlist" value="" />
+<input type="hidden" name="PageTitle" value="Time Until Repeat Orders" />
+<input type="hidden" name="CustomMessage" value="Undefined" />
+<input type="hidden" name="ReportType" value="UserIDarr" />
+</form>
+
+
+
+<!-- Inner Body  END -->
+</td>
+</tr>
+</table>
+<table width="760" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="360" class="NavColor"><img src="./images/footer.gif" border="0" width="350" height="16" usemap="#footer" alt="" /></td>
+	<td width="400" align="right" class="NavColor"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+  </tr>
+</table>
+<font class="copyright"> </font>
+</div>
+&nbsp;
+<script type="text/javascript" src="./library/ImageMap-footer.js"></script>
+<script type="text/javascript">InitializeTimeFields()</script>
+<script>
+	function calendarDateRangeChanged(newDateForRange){
+	
+		var calendarDate = new Date(Date.parse(newDateForRange));
+		
+		SelectPeriodTypeTimeFrame( false );
+		
+		document.forms["ReportOptions"].DateRangeStartYear.value = calendarDate.getFullYear();
+		document.forms["ReportOptions"].DateRangeEndYear.value = calendarDate.getFullYear();
+		document.forms["ReportOptions"].DateRangeStartMonth.value =  (calendarDate.getMonth() + 1);
+		document.forms["ReportOptions"].DateRangeEndMonth.value =  (calendarDate.getMonth() + 1);
+		document.forms["ReportOptions"].DateRangeStartDay.value =  (calendarDate.getDate());
+		document.forms["ReportOptions"].DateRangeEndDay.value =  (calendarDate.getDate());
+		
+		SetRadioButtonValue("document.forms['ReportOptions'].PeriodType", "DATERANGE");
+		
+		// Now select the Ending date value and highlight it.  So that the user just needs to use their number pad and the enter key to start the report.
+		document.forms["ReportOptions"].DateRangeEndDay.focus();
+		
+		document.forms["ReportOptions"].DateRangeEndDay.select();
+	}
+	
+	function calendarDateSelected(){
+		alert("calendar Selected");
+	}
+		
+		
+
+
+		var cal = new Zapatec.Calendar.setup({
+
+		inputField     :    "calendarField",     // id of the input field
+		singleClick    :    true,     // require two clicks to submit
+		ifFormat       :    '%a, %e %b %Y %H:%M:%S',     //  of the input field
+		timeFormat     : 	"12",
+		ampm           :    false,
+		showsTime      :    false,     // show time as well as date
+		button         :    "calendarDateRange",  // trigger button
+		timeInterval   :    10,
+		floating	   : 	true,
+		position	   : 	[190, 140],
+		date	       :	new Date("{START_REPORT_DATE_STRING}")
+		});
+		
+
+		
+
+</script>
+</body>
+<script>
+fixYearDropDownIfReportCachedOnAllForms();
+</script>
+</html>

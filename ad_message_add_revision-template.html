@@ -1,0 +1,89 @@
+<html>
+<head>
+<title>Revise a message</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+
+<script language="javascript">
+
+	//Make an array of the images we want to preload for the mouse-overs.
+	arImageSrc = new Array (
+		"./images/button-cancel-blue-d.gif",
+		"./images/button-sendmessage-blue-d.gif"
+	)
+
+	//Preload images.
+	arImageList = new Array ();
+	for (counter in arImageSrc) {
+		arImageList[counter] = new Image();
+		arImageList[counter].src = arImageSrc[counter];
+	}
+
+	function SubmitForm(){
+		if(document.forms["ReviseFrm"].revisedmessage.value==""){
+			alert("Please type a message before saving the revision.");
+		}
+		else{
+			document.forms["ReviseFrm"].submit();
+		}
+	}
+	
+</script>
+</head>
+
+<!-- BEGIN messageRevisionBL -->
+
+<body bgcolor="#3366CC" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="document.forms['ReviseFrm'].revisedmessage.focus();" >
+<img  src="./images/transparent.gif" border="0" width="1" height="10" alt="" /><br/>
+<div align="center">
+<table bgcolor="#EEEEEE" width="350" cellpadding="0" cellspacing="0" border="0">
+<form name="ReviseFrm" method="post" action="./ad_message_save_revision.php">
+<input type="hidden" name="messageid" value="{MESSAGE_ID}" />
+<input type="hidden" name="threadid" value="{THREAD_ID}" />
+<input type="hidden" name="doNotRefresh" value="{DONT_REFRESH}" />
+<input type="hidden" name="windowtype" value="popup" />
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+<tr>
+<td bgcolor="#CCCCCC" align="center" class="Body" style="background-image: url(./images/admin/header-shipping.png); background-repeat: no-repeat;"><b>Revise Message</b></td>
+<tr>
+<td align="center">
+<table bgcolor="#EEEEEE" width="350" cellpadding="0" cellspacing="0" border="0">
+
+<tr>
+<td colspan="2"><img src="./images/transparent.gif" border="0" width="1" height="3" alt="" /></td>
+</tr>
+<tr>
+<td width="8">&nbsp;</td>
+<td width="330" class="Body" align="center">
+<img  src="./images/transparent.gif" border="0" width="1" height="10" alt="" /><br/>
+<input type="button" name="xx" value="Update Message" class="AdminButton" onmouseover="this.style.background='#ffeeaa';" onmouseout="this.style.background='#FFFFDD';" onclick="SubmitForm();" />
+<img src="./images/transparent.gif" border="0" width="15" height="1" alt="" />
+<input type="button" name="xx" value="Cancel" class="AdminButton" onmouseover="this.style.background='#ffeeaa';" onmouseout="this.style.background='#FFFFDD';" onclick="self.close();" />
+<br/>&nbsp;
+</td>
+</tr>
+
+</table>
+
+<textarea name="revisedmessage" style="width:330px; height:210px;" wrap="VIRTUAL">{OLD_MESSAGE}</textarea>
+</td>
+</tr>
+<tr>
+<td colspan="2"><img src="./images/transparent.gif" border="0" width="1" height="5" alt="" /></td>
+</tr>
+</form>
+</table>
+</td>
+</tr>
+<tr>
+<td><img src="images/header-editoptions-fade-bot.gif" width="350" height="35" alt="" /></td>
+</tr>
+</table>
+
+</div>
+
+<!-- END messageRevisionBL -->
+
+</body>
+</html>

@@ -1,0 +1,129 @@
+<html>
+<head>
+<title>Admin</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<script language="javascript">
+
+	//Make an array of the images we want to preload for the mouse-overs.
+	arImageSrc = new Array (
+		"./images/button-go-d.gif",
+		"./images/button-sendmessage-u.gif"
+	)
+
+	//Preload images.
+	arImageList = new Array ();
+	for (counter in arImageSrc) {
+		arImageList[counter] = new Image();
+		arImageList[counter].src = arImageSrc[counter];
+	}
+
+
+	function AddEvent(DayNumber){
+		var AddEventAddress = './ad_schedule_add.php?month={MONTH}&year={YEAR}&day=' + DayNumber;
+		newWindow = window.open(AddEventAddress, "AddEvent", "height=390,width=390,directories=no,location=no,menubar=no,scrollbars=yes,status=yes,toolbar=no,resizable=yes");
+		newWindow.focus();
+	}
+	function EditEvent(EventTitleSignature){
+		var AddEventAddress = './ad_schedule_add.php?eventTitleSignature=' + EventTitleSignature;
+		newWindow = window.open(AddEventAddress, "AddEvent", "height=390,width=390,directories=no,location=no,menubar=no,scrollbars=yes,status=yes,toolbar=no,resizable=yes");
+		newWindow.focus();
+	}
+
+
+
+</script>
+<style type="text/css">
+	A.DateNumber 	{ font-size:12px; color:#666666; font-family:Arial,Helvetica,sans-serif; text-decoration:none}
+	A.DateNumber:visited { color: #666666; }
+	A.DateNumber:link { color: #666666; }
+	A.DateNumber:hover { color: #FF0000; text-decoration:underline }
+</style>
+<link rel="stylesheet" type="text/css" href="library/calendar/themes/winter.css"/>
+<script type="text/javascript" src="library/calendar/src/utils.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar.js"></script>
+<script type="text/javascript" src="library/calendar/lang/calendar-en.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar-setup.js"></script>
+<script type="text/javascript" src="library/formatDate.js"></script>
+</head>
+<body bgcolor="#FFFFFF" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="">
+<div align="center">
+{HEADER}
+&nbsp;
+<table width="760" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td class="Body">
+<!-- Inner Body  -->
+
+<table width="100%" border="0" cellspacing="0" cellpadding="4">
+  <tr>
+    <td align="right" width="33%"><a href="{PREVIOUS_MONTH_LINK}" class="blueredlink">&lt; Previous</a></td>
+	<td align="center" width="33%" class="Body"><b>{CALENDAR_DATE}</b></td>
+	<td align="left" width="33%"><a href="{NEXT_MONTH_LINK}" class="blueredlink">Next &gt;</a></td>
+  </tr>
+</table>
+
+&nbsp;
+
+
+
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#CCCCCC">
+  <tr>
+    <td>
+
+<table width="100%" border="0" cellspacing="1" cellpadding="0">
+<tr>
+<td bgcolor="#FFFFFF" width="14%" style="background-image: url(./images/admin/calendar_back_weekname.png); background-repeat: no-repeat;" class="Body" align="center">Monday</td>
+<td bgcolor="#FFFFFF" width="14%" style="background-image: url(./images/admin/calendar_back_weekname.png); background-repeat: no-repeat;" class="Body" align="center">Tuesday</td>
+<td bgcolor="#FFFFFF" width="14%" style="background-image: url(./images/admin/calendar_back_weekname.png); background-repeat: no-repeat;" class="Body" align="center">Wednesday</td>
+<td bgcolor="#FFFFFF" width="14%" style="background-image: url(./images/admin/calendar_back_weekname.png); background-repeat: no-repeat;" class="Body" align="center">Thursday</td>
+<td bgcolor="#FFFFFF" width="14%" style="background-image: url(./images/admin/calendar_back_weekname.png); background-repeat: no-repeat;" class="Body" align="center">Friday</td>
+<td bgcolor="#FFFFFF" width="14%" style="background-image: url(./images/admin/calendar_back_weekname.png); background-repeat: no-repeat;" class="Body" align="center">Saturday</td>
+<td bgcolor="#FFFFFF" width="14%" style="background-image: url(./images/admin/calendar_back_weekname.png); background-repeat: no-repeat;" class="Body" align="center">Sunday</td>
+</tr>
+<!-- BEGIN WeekBL -->
+  <tr>
+  	<!-- BEGIN DayBL -->
+    <td bgcolor="#FFFFFF" width="14%" style="background-image: url(./images/admin/{BACK_IMAGE}); background-repeat: no-repeat;" class="Body" valign="top">
+
+	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="1%"><img src="./images/transparent.gif" width="1" height="60" alt="" /></td>
+    <td width="99%" class="SmallBody" valign="top">{DAY_NUMBER}<br/><img  src="./images/transparent.gif" width="1" height="4" alt="" /><br/>{EVENT_LIST}<br/><img src="./images/transparent.gif" width="1" height="6" alt="" /></td>
+  </tr>
+</table>
+	</td>
+	<!-- END DayBL -->
+  </tr>
+<!-- END WeekBL -->
+</table>
+
+	</td>
+  </tr>
+</table>
+
+
+<br/>
+<img src="./images/icon-truck.png" alt="" /> = Transit Delay
+<br/><img  src="./images/transparent.gif" border="0" width="1" height="4" alt="" /><br/>
+<img src="./images/icon-proudctionDelay.png" alt="" /> = Production Delay
+<br/><br/><br/><br/><br/><br/><br/>
+
+<!-- Inner Body  END -->
+</td>
+</tr>
+</table>
+<table width="760" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="360" class="NavColor"><img src="./images/footer.gif" border="0" width="350" height="16" usemap="#footer" alt="" /></td>
+	<td width="400" align="right" class="NavColor"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+  </tr>
+</table>
+<font class="copyright"> </font>
+</div>
+&nbsp;
+<script type="text/javascript" src="./library/ImageMap-footer.js"></script>
+</body>
+</html>

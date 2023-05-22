@@ -1,0 +1,241 @@
+<html>
+<head>
+<title>Admin</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<script type="text/javascript" src="./library/admin_library.js"></script>
+<script type="text/javascript" src="./library/general_lib.js"></script>
+
+<script type="text/javascript">
+
+	function SelectPeriodTypeTimeFrame( state )
+	{
+		document.all.TimeFrame.disabled = !state;
+		document.all.DateRangeStartDay.disabled = state;
+		document.all.DateRangeStartMonth.disabled = state;
+		document.all.DateRangeStartYear.disabled = state;
+		document.all.DateRangeEndDay.disabled = state;
+		document.all.DateRangeEndMonth.disabled = state;
+		document.all.DateRangeEndYear.disabled = state;
+	}
+
+	function InitializeTimeFields()
+	{
+		var periodTimeFrame = {PERIODISTIMEFRAME};
+		document.all.TimeFrame.disabled = !periodTimeFrame;
+		document.all.DateRangeStartDay.disabled = periodTimeFrame;
+		document.all.DateRangeStartMonth.disabled = periodTimeFrame;
+		document.all.DateRangeStartYear.disabled = periodTimeFrame;
+		document.all.DateRangeEndDay.disabled = periodTimeFrame;
+		document.all.DateRangeEndMonth.disabled = periodTimeFrame;
+		document.all.DateRangeEndYear.disabled = periodTimeFrame;
+	}
+	
+	
+	
+
+	function formSubmit(){
+
+		// If we are clicking "Go" after we switched back to the TimeFrame drop down.
+		if(GetRadioButtonValue("document.forms['ReportOptions'].PeriodType") == "TIMEFRAME"){
+			return true;
+		}
+
+		var startDay = parseInt(document.all.DateRangeStartDay.value);
+		var startMonth = parseInt(document.all.DateRangeStartMonth.value);
+		var startYear = parseInt(document.all.DateRangeStartYear.value);
+		var endDay = parseInt(document.all.DateRangeEndDay.value);
+		var endMonth = parseInt(document.all.DateRangeEndMonth.value);
+		var endYear = parseInt(document.all.DateRangeEndYear.value);
+	
+		if(endYear < startYear){
+			alert("Date Range is Invalid (Year Value)");
+			return false;
+		}
+		
+		if(endYear == startYear){
+			if(endMonth < startMonth){
+				alert("Date Range is Invalid (Month Value)");
+				return false;
+			}
+			
+			if(endMonth == startMonth){
+				if(endDay < startDay){
+					alert("Date Range is Invalid (Day Value)" );
+					return false;
+				}
+			}
+		}
+		
+		return true;
+	}
+
+
+</script>
+<script type="text/javascript" src="./library/customer_service.js"></script>
+
+<link rel="stylesheet" type="text/css" href="library/calendar/themes/winter.css"/>
+<script type="text/javascript" src="library/calendar/src/utils.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar.js"></script>
+<script type="text/javascript" src="library/calendar/lang/calendar-en.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar-setup.js"></script>
+<script type="text/javascript" src="library/formatDate.js"></script>
+</head>
+<body bgcolor="#FFFFFF" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="">
+<div align="center">
+{HEADER}
+&nbsp;
+<br/>
+
+<table width="760" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td class="Body">
+
+
+
+
+
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="28%" valign="bottom" class="LargeBody"><strong>Chat Search</strong></td>
+    <td width="72%" align="left" class="SmallBody">
+<form style="display:inline" name="ReportOptions" action="ad_chat_search.php" method="get" onSubmit="return formSubmit();">
+
+<input type="radio" name="PeriodType" class="SmallBody" value="TIMEFRAME" onClick="SelectPeriodTypeTimeFrame( true );" {PERIODTYPETIMEFRAME} />	
+	<select onChange='top.window.changeDomainTimeFrame(this.value)' name="TimeFrame">
+	{TIMEFRAME_SEL}
+	</select><img src="./images/transparent.gif" width="35" height="1" /><img alt='Calendar' align='absmiddle' src='./images/calendar5.gif' border='0' id='calendarDateRange'  onmouseover="this.style.cursor='pointer'" onMouseOut="this.style.cursor='default'" />
+	<br/><img  src="./images/transparent.gif" width="4" height="8" alt="" /><br/>
+	
+ <input type="radio" name="PeriodType"  class="SmallBody" value="DATERANGE" onClick="SelectPeriodTypeTimeFrame( false );" {PERIODTYPEDATERANGE} />	
+
+{DATERANGESELS}
+<input type="hidden" name="calendarProxyField" value="" id="calendarField" onChange="calendarDateRangeChanged(this.value)" />&nbsp;&nbsp;<input type="submit" value="Go" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" />
+</form>
+    </td>
+  </tr>
+</table>
+
+
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td bgcolor="#3366CC"><img src="./images/transparent.gif" border="0" width="2" height="4" alt="" /></td>
+</tr>
+</table>
+<br/>
+
+
+<!-- BEGIN EmptyChatBL -->
+
+
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#3366CC">
+  <tr>
+    <td>
+
+<table width="100%" border="0" cellspacing="1" cellpadding="4">
+
+
+<tr>
+<td width="138" class="SmallBody" bgcolor="#ddeeff"><strong>Chat ID</strong></td>
+<td width="186" class="SmallBody" bgcolor="#ddeeff"><strong>CSR</strong></td>
+<td width="189" class="SmallBody" bgcolor="#ddeeff"><strong>Customer</strong></td>
+<td width="210" class="SmallBody" bgcolor="#ddeeff"><strong>Categories</strong></td>
+</tr>
+<!-- BEGIN ChatBL -->
+ <tr>
+    <td class="SmallBody" bgcolor="#f3f3f3">
+ <table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td class="SmallBody"><a href="javascript:Chat('{CHAT_ID}');">C{CHAT_ID}</a></td>
+    <td align="right">{DOMAIN_LOGO}</td>
+  </tr>
+</table>
+{CHAT_DATE} ({DURATION})<br>
+{STATUS}</td>
+ 	<td class="SmallBody" bgcolor="#f3f3f3">{CSR_DESC}<br />{CSR_COUNT} Msg(s){TRANSFERS_DESC}</td>
+	<td class="SmallBody" bgcolor="#f3f3f3">{CUSTOMER_DESC}<br />{CUSTOMER_COUNT} Msg(s){ORDER_LINK}</td>
+	<td class="SmallBody" bgcolor="#f3f3f3"><strong>Type: </strong>{CHAT_TYPE}<br><strong>Subject: </strong>{SUBJECT}<br><strong>Closure: </strong>{CLOSED_REASON}</td>
+  </tr>
+<!-- END ChatBL -->
+</table>
+
+	</td>
+  </tr>
+</table>
+
+<!-- END EmptyChatBL -->
+
+<!-- BEGIN EmptyDateMessageBL -->
+{EMPTY_MESSAGE}
+<!-- END EmptyDateMessageBL -->
+<br>
+<br/><br>
+<br>
+<br>
+
+<script type="text/javascript">
+InitializeTimeFields();
+</script>
+<script>
+	function calendarDateRangeChanged(newDateForRange){
+	
+		var calendarDate = new Date(Date.parse(newDateForRange));
+		
+		SelectPeriodTypeTimeFrame( false );
+		
+		document.forms["ReportOptions"].DateRangeStartYear.value = calendarDate.getFullYear();
+		document.forms["ReportOptions"].DateRangeEndYear.value = calendarDate.getFullYear();
+		document.forms["ReportOptions"].DateRangeStartMonth.value =  (calendarDate.getMonth() + 1);
+		document.forms["ReportOptions"].DateRangeEndMonth.value =  (calendarDate.getMonth() + 1);
+		document.forms["ReportOptions"].DateRangeStartDay.value =  (calendarDate.getDate());
+		document.forms["ReportOptions"].DateRangeEndDay.value =  (calendarDate.getDate());
+		
+		SetRadioButtonValue("document.forms['ReportOptions'].PeriodType", "DATERANGE");
+	}
+	
+	
+		var cal = new Zapatec.Calendar.setup({
+
+		inputField     :    "calendarField",     // id of the input field
+		singleClick    :    false,     // require two clicks to submit
+		ifFormat       :    '%a, %e %b %Y %H:%M:%S',     //  of the input field
+		timeFormat     : 	"12",
+		ampm           :    false,
+		showsTime      :    false,     // show time as well as date
+		button         :    "calendarDateRange",  // trigger button
+		timeInterval   :    10,
+		floating	   : 	true,
+		position	   : 	[190, 140],
+		date	       :	new Date("{START_REPORT_DATE_STRING}")
+		});
+		
+
+		
+</script>
+
+</td>
+</tr>
+</table>
+
+<br/>
+</td>
+</tr>
+</table>
+<br/>
+<br/>
+
+<table width="760" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="360" class="NavColor"><img src="./images/footer.gif" border="0" width="350" height="16" usemap="#footer" alt="" /></td>
+	<td width="400" align="right" class="NavColor"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+  </tr>
+</table>
+<font class="copyright"> </font>
+</div>
+&nbsp;
+<script type="text/javascript" src="./library/ImageMap-footer.js"></script>
+</body>
+</html>

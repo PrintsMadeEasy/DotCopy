@@ -1,0 +1,496 @@
+<html>
+<head>
+<title>Admin</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<script language="javascript">
+
+	//Make an array of the images we want to preload for the mouse-overs.
+	arImageSrc = new Array (
+		"./images/button-go-d.gif",
+		"./images/TimeClockButton-d.gif"
+	)
+
+	//Preload images.
+	arImageList = new Array ();
+	for (counter in arImageSrc) {
+		arImageList[counter] = new Image();
+		arImageList[counter].src = arImageSrc[counter];
+	}
+
+	function RunEmailFilters(){
+		document.location = "./ad_actions.php?returl=" + escape("{CURRENT_URL}") + "&action=runEmailFilters&form_sc={FORM_SECURITY_CODE}";
+	}
+
+
+	function makeNewWindow2(address){
+		newWindow = window.open(address, "sub", "height=395,width=375,directories=no,location=no,menubar=no,scrollbars=no,status=no,toolbar=no,resizable=no");
+		newWindow.focus();
+	}
+
+	function makeNewWindow3(address){
+		newWindow3 = window.open(address, "newwin3", "height=695,width=575,directories=no,location=no,menubar=no,scrollbars=yes,status=no,toolbar=no,resizable=yes");
+		newWindow3.focus();
+	}
+	function makeNewWindow4(address){
+		newWindow = window.open(address, "subwindow4", "height=425,width=390,directories=no,location=no,menubar=no,scrollbars=yes,status=no,toolbar=no,resizable=no");
+		newWindow.focus();
+	}
+	function searchCS(){
+
+		if(document.forms["searchcs"].bydaysold.value.search(/^\d+$/) == -1){
+			alert("Fix search by days old.  \n\nMust be numeric.");
+			return false;
+		}
+		else{
+			document.forms["searchcs"].action = "./ad_cs_home.php";
+			return true;
+			//document.forms["searchcs"].submit();
+		}
+
+	}
+
+	function CloseUser(ThreadID, PipedIDlist){
+		document.location = "./ad_actions.php?returl={CURRENT_URL}&action=markmessageread&messagelist=" + PipedIDlist + "&form_sc={FORM_SECURITY_CODE}";
+	}
+
+
+
+	function DisplayEmailFilters(){
+		var address="./ad_emailfilter.php";
+		newWindow3 = window.open(address, "emailfilters", "height=695,width=840,directories=no,location=no,menubar=no,scrollbars=yes,status=no,toolbar=no,resizable=yes");
+		newWindow3.focus();
+	}
+
+	function DisplayOtherCSitems(UserID){
+		document.location = "./ad_cs_home.php?view=others&byowner=" + UserID;
+	}
+
+	//Allways increate a global variable  to ensure that the fly open layer is always on top
+	var ZindexCouterTimeClock = 5;
+
+	function showTimeClock(divShow) {
+
+		var divname = "timeclockdiv";
+		var spanname = "timeclockspan";
+
+		if (divShow) {
+
+			ZindexCouterTimeClock++;
+			ZindexCouterTimeClock++;
+
+			document.all(spanname).style.visibility = "visible";
+			document.all(spanname).style.zIndex = ZindexCouterTimeClock;
+			document.all(divname).style.zIndex = ZindexCouterTimeClock + 1;
+		}
+		else{
+
+			document.all(spanname).style.visibility = "hidden";
+		}
+	}
+	
+	function hlClock(e)
+	{
+		e.style.textDecoration='underline';
+
+	}
+	function dlClock(e)
+	{
+		e.style.textDecoration='none';
+	}
+	
+</script>
+<script type="text/javascript" src="./library/customer_service.js"></script>
+<script type="text/javascript" src="./library/admin_library.js"></script>
+
+<link rel="stylesheet" type="text/css" href="library/calendar/themes/winter.css"/>
+<script type="text/javascript" src="library/calendar/src/utils.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar.js"></script>
+<script type="text/javascript" src="library/calendar/lang/calendar-en.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar-setup.js"></script>
+<script type="text/javascript" src="library/formatDate.js"></script>
+</head>
+<body bgcolor="#FFFFFF" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="">
+<div align="center">
+{HEADER}
+&nbsp;
+<table width="760" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td class="Body">
+<!-- Inner Body  -->
+
+
+<table width="100%" border="0" cellspacing="0" cellpadding="1">
+<form name="commandbuttons">
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+<tr>
+              <td width="45%" class="Body">			 <!-- BEGIN EmailFilterBL --> <input type="button" name="Generate2" value="Email Filters" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" onClick="DisplayEmailFilters();" /> &nbsp;&nbsp;&nbsp;<input type="button" name="Generate2" value="Run Email Filters Now" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" onClick="RunEmailFilters();" /> <!-- END EmailFilterBL --> </td>
+              <td width="10%" class="Body" align="center" valign="top"> 
+			  
+			  <div id="timeclockdiv" class="hiddenDHTMLwindow" style="z-index:1000;" onMouseOver="showTimeClock(true);" onMouseOut="showTimeClock(false);"> 
+                                         <img src="./images/TimeClockButton-u.gif" onMouseOver="this.src='./images/TimeClockButton-d.gif';" onMouseOut="this.src='./images/TimeClockButton-u.gif';" border="0" align="absmiddle"  alt="" />
+			  <span style="visibility:hidden; left:-10px; top:30; z-index:1001;" id="timeclockspan"> 
+                                          <table width="315" border="0" cellspacing="0" cellpadding="2" bgcolor="#CC6600" style='-moz-opacity:60%;filter:progid:DXImageTransform.Microsoft.dropShadow(Color=#999999,offX=3,offY=3)'>
+                                            <tr> 
+                                              <td> 
+                                                <table width="100%" border="0" cellspacing="0" cellpadding="4" bgcolor="#FFFFFF">
+                                                  <tr> 
+                                                    <td class="SmallBody" align="center" style="background-image: url(./images/admin/arrival_time_back.png); background-repeat: repeat;"><u>CSR Timeclock</u><br/>
+                                                      <img  src="./images/transparent.gif" height="6" width="1" alt="" /><br/>
+                                                      <table width="100%" border="0" cellspacing="0" cellpadding="4">
+                                                        <tr> 
+                                                          <td class="ReallySmallBody" ><font color="#000000">NAME</font></td>
+                                                          <td class="ReallySmallBody" ><font color="#000000">STATUS</font></td>
+														  <td class="ReallySmallBody" ><font color="#000000">WILL RETURN</font></td>
+                                                        </tr>
+														<!-- BEGIN CsrWorkBL -->
+                                                        <tr onMouseOver="hlClock(this)" onMouseOut="dlClock(this)"> 
+                                                          <td class="ReallySmallBody" >{CSR_NAME}</td>
+                                                          <td class="ReallySmallBody" >{CSR_STATUS}</td>
+														  <td class="ReallySmallBody" >{CSR_RETURN_TIME}</td>
+                                                        </tr>
+														<!-- END CsrWorkBL -->
+
+                                                      </table>
+                                              
+                                                      <br/>
+                                                      <img src="./images/transparent.gif" height="4" width="1" alt="" /></td>
+                                                  </tr>
+                                                </table>
+                                              </td>
+                                            </tr>
+                                          </table>
+                                          </span> </div>
+										  </td>
+										   <td width="45%" class="Body" align="right"> 
+			  &nbsp;&nbsp;&nbsp;<input type="button" name="Generate2" value="Resource Center" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" onClick="CannedMessages();" /><br/>&nbsp;<br/><img src="./images/transparent.gif" height="9" width="1" alt="" /></td>
+</tr>
+</form>
+</table>
+
+
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td class="SmallBody" width="50%">&nbsp;</td>
+    <td class="SmallBody" width="50%" align="right">{NAV_BAR_HTML}</td>
+  </tr>
+</table>
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td bgcolor="#3366CC"><img src="./images/transparent.gif" height="3" width="3" alt="" /></td>
+  </tr>
+</table>
+
+
+<table width="100%" border="0" cellspacing="0" cellpadding="1" bgcolor="#999999">
+<form name="searchcs" onSubmit="return searchCS();">
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+<input type="hidden" name="view" value="search" />
+  <tr>
+    <td><table width="100%" border="0" cellspacing="0" cellpadding="4" bgcolor="#EEEEEE">
+  <tr>
+      <td class="SmallBody" width="75%" align="right">
+	  Belonging to&nbsp;&nbsp;&nbsp;{CS_DROPDOWN}
+	  <!-- BEGIN SearchKeywordBL -->
+	  &nbsp;&nbsp;&nbsp; keywords &nbsp;&nbsp;<input type="text" name="bykeywords" value="{SEARCH_KEYWORDS}" style="width:120px; font-size:13;" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;within &nbsp;<input type="text" name="bydaysold" value="{SEARCH_DAYSOLD}" style="width:30px; font-size:13;" /> day(s) of activity.&nbsp;&nbsp;&nbsp;&nbsp;<input type="submit" name="xx" value="Search" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" />
+	  <!-- END SearchKeywordBL -->
+	  </td>
+  </tr>
+</table>
+</td>
+  </tr>
+  </form>
+</table>
+<br/><br/>
+<!-- BEGIN EmptyOwnedInquiriesBL -->
+<font color="#336699" size="4"><b>My Inquiries</b></font>
+<table width="100%" border="0" cellspacing="0" cellpadding="1" bgcolor="#666699">
+  <tr>
+    <td><table width="100%" border="0" cellspacing="1" cellpadding="3">
+  <tr>
+                  <td bgcolor="#ddddee" class="SmallBody" width="5%">Date</td>
+                  <td bgcolor="#ddddee" class="SmallBody" width="16%">Subject</td>
+	              <td bgcolor="#ddddee" class="SmallBody" width="69%">Message</td>
+				  <td bgcolor="#ddddee" class="SmallBody" width="10%">&nbsp;</td>
+  </tr>
+  <!-- BEGIN ownedInquiriesBL -->
+   <tr>
+                  <td valign="top" bgcolor="{ROWCOLOR}" class="SmallBody" width="5%">{CS_DATE}</td>
+                  <td valign="top" bgcolor="{ROWCOLOR}" class="SmallBody" width="16%">{CS_SUBJECT}</td>
+	              <td valign="top" bgcolor="{ROWCOLOR}" class="SmallBody" width="69%">&nbsp;<br/>{CS_ATTACHMENTS}{CS_MESSAGE}&nbsp;</td>
+				  <td valign="top" bgcolor="{ROWCOLOR}" class="SmallBody" width="10%" align="center">{CS_SNDMSG}</td>
+  </tr>
+   <!-- END ownedInquiriesBL -->
+</table></td>
+  </tr>
+</table>
+<br/><br/>
+<!-- END EmptyOwnedInquiriesBL -->
+
+
+
+<!-- BEGIN EmptyPhoneInquiriesBL -->
+<table width="100%" border="0" cellspacing="0" cellpadding="1" bgcolor="#ccCC66">
+  <tr>
+    <td><table width="100%" border="0" cellspacing="1" cellpadding="3">
+  <tr>
+                  <td bgcolor="#eeEECC" class="SmallBody" width="5%">Date</td>
+                  <td bgcolor="#eeEECC" class="SmallBody" width="16%">Subject</td>
+	              <td bgcolor="#eeEECC" class="SmallBody" width="69%">Message</td>
+				  <td bgcolor="#eeEECC" class="SmallBody" width="10%">&nbsp;</td>
+  </tr>
+  <!-- BEGIN phoneInquiriesBL -->
+   <tr>
+                  <td valign="top" bgcolor="{ROWCOLOR}" class="SmallBody" width="5%">{CS_DATE}</td>
+                  <td valign="top" bgcolor="{ROWCOLOR}" class="SmallBody" width="16%">{CS_SUBJECT}</td>
+	              <td valign="top" bgcolor="{ROWCOLOR}" class="SmallBody" width="69%">&nbsp;<br/>{CS_ATTACHMENTS}{CS_MESSAGE}&nbsp;</td>
+				  <td valign="top" bgcolor="{ROWCOLOR}" class="SmallBody" width="10%" align="center">{CS_SNDMSG}</td>
+  </tr>
+   <!-- END phoneInquiriesBL -->
+</table></td>
+  </tr>
+</table>
+<br/><br/>
+<!-- END EmptyPhoneInquiriesBL -->
+
+
+
+<!-- BEGIN EmptyOthersInquiriesBL -->
+<table width="100%" border="0" cellspacing="0" cellpadding="1" bgcolor="#cc9966">
+  <tr>
+    <td><table width="100%" border="0" cellspacing="1" cellpadding="3">
+  <tr>
+                  <td bgcolor="#eeddCC" class="SmallBody" width="5%">Date</td>
+                  <td bgcolor="#eeddCC" class="SmallBody" width="16%">Subject</td>
+	              <td bgcolor="#eeddCC" class="SmallBody" width="69%">Message</td>
+				  <td bgcolor="#eeddCC" class="SmallBody" width="10%">&nbsp;</td>
+  </tr>
+  <!-- BEGIN othersInquiriesBL -->
+   <tr>
+                  <td valign="top" bgcolor="{ROWCOLOR}" class="SmallBody" width="5%">{CS_DATE}</td>
+                  <td valign="top" bgcolor="{ROWCOLOR}" class="SmallBody" width="16%">{CS_SUBJECT}</td>
+	              <td valign="top" bgcolor="{ROWCOLOR}" class="SmallBody" width="69%">&nbsp;<br/>{CS_ATTACHMENTS}{CS_MESSAGE}&nbsp;</td>
+				  <td valign="top" bgcolor="{ROWCOLOR}" class="SmallBody" width="10%" align="center">{CS_SNDMSG}</td>
+  </tr>
+   <!-- END othersInquiriesBL -->
+</table></td>
+  </tr>
+</table>
+<br/><br/>
+<!-- END EmptyOthersInquiriesBL -->
+
+
+<!-- BEGIN EmptyHelpInquiriesBL -->
+<table width="100%" border="0" cellspacing="0" cellpadding="1" bgcolor="#990000">
+  <tr>
+    <td><table width="100%" border="0" cellspacing="1" cellpadding="3">
+  <tr>
+                  <td bgcolor="#ddcccc" class="SmallBody" width="5%">Date</td>
+                  <td bgcolor="#ddcccc" class="SmallBody" width="16%">Subject</td>
+	              <td bgcolor="#ddcccc" class="SmallBody" width="69%">Message</td>
+				  <td bgcolor="#ddcccc" class="SmallBody" width="10%">&nbsp;</td>
+  </tr>
+  <!-- BEGIN helpInquiriesBL -->
+   <tr>
+                  <td valign="top" bgcolor="{ROWCOLOR}" class="SmallBody" width="5%">{CS_DATE}</td>
+                  <td valign="top" bgcolor="{ROWCOLOR}" class="SmallBody" width="16%">{CS_SUBJECT}</td>
+	              <td valign="top" bgcolor="{ROWCOLOR}" class="SmallBody" width="69%">&nbsp;<br/>{CS_ATTACHMENTS}{CS_MESSAGE}&nbsp;</td>
+				  <td valign="top" bgcolor="{ROWCOLOR}" class="SmallBody" width="10%" align="center">{CS_SNDMSG}</td>
+  </tr>
+   <!-- END helpInquiriesBL -->
+</table></td>
+  </tr>
+</table>
+<br/><br/>
+<!-- END EmptyHelpInquiriesBL -->
+
+
+
+
+
+<!-- BEGIN EmptyOpenInquiriesBL -->
+  <form name="ownership" action="./ad_actions.php">
+  <input type="hidden" name="action" value="csitem_assign" />
+  <input type="hidden" name="returl" value="{CURRENT_URL}" />
+  <input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+<font color="#336699" size="4"><b>Unassigned Customer Service Inquiries</b></font>
+<table width="100%" border="0" cellspacing="0" cellpadding="1" bgcolor="#669966">
+  <tr>
+    <td><table width="100%" border="0" cellspacing="2" cellpadding="5">
+  <tr>
+                    <td bgcolor="#ddEEdd" class="SmallBody" width="4%">&nbsp;</td>
+                    <td bgcolor="#ddEEdd" class="SmallBody" width="11%">Date</td>
+	                <td bgcolor="#ddEEdd" class="SmallBody" width="15%">Subject</td>
+	                <td bgcolor="#ddEEdd" class="SmallBody" width="58%">Message</td>
+				    <td bgcolor="#ddEEdd" class="SmallBody" width="12%">&nbsp;</td>
+  </tr>
+<!-- BEGIN openInquiriesBL -->
+   <tr>
+                    <td valign="top" bgcolor="{ROWCOLOR}" class="SmallBody" width="4%"><input type="checkbox" name="assign[]" value="{CSITEM_ID}" /></td>
+                    <td valign="top" bgcolor="{ROWCOLOR}" class="SmallBody" width="11%">{CS_DATE}</td>
+	                <td valign="top" bgcolor="{ROWCOLOR}" class="SmallBody" width="15%">{CS_SUBJECT}</td>
+	                <td valign="top" bgcolor="{ROWCOLOR}" class="SmallBody" width="58%">&nbsp;<br/>{CS_ATTACHMENTS}{CS_MESSAGE}&nbsp;</td>
+				    <td valign="top" bgcolor="{ROWCOLOR}" class="SmallBody" width="12%">{CS_SNDMSG}</td>
+  </tr>
+<!-- END openInquiriesBL -->
+</table></td>
+  </tr>
+</table>
+
+<img src="./images/arrow-up-left.gif" border="0" width="30" height="20" alt="" /><input type="submit" name="xx2" value="Take Ownership" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" onClick="" />
+<br/><br/><br/><br/>
+  </form>
+
+  <!-- END EmptyOpenInquiriesBL -->
+
+
+ <!-- BEGIN EmptySearchResultsBL -->
+
+
+ <!-- BEGIN MultiPageBL -->
+<table width="100%" border="0" cellspacing="0" cellpadding="1" class="NavColor">
+  <tr>
+    <td>
+	<table width="100%" border="0" cellspacing="0" cellpadding="1" bgcolor="#ddeeff">
+  <tr>
+    <td>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="40%" class="SmallBody"><img  src="./images/transparent.gif" border="0" width="1" height="3" alt="" /><br/><font color="#000000">Total of {RESULT_DESC} results.</font><br/><img src="./images/transparent.gif" border="0" width="2" height="3" alt="" /></td>
+<td width="60%" align="right" class="SmallBody"><font color="#000000">{NAVIGATE}</font></td>
+</tr>
+</table>
+	</td>
+  </tr>
+</table>
+	</td>
+  </tr>
+</table>
+&nbsp;<br/>
+<!-- END MultiPageBL -->
+
+
+<font color="#336699" size="4"><b>Search Results</b></font>
+<table width="100%" border="0" cellspacing="0" cellpadding="1" bgcolor="#996699">
+  <tr>
+    <td><table width="100%" border="0" cellspacing="2" cellpadding="5">
+  <tr>
+                  <td bgcolor="#EEddee" class="SmallBody" width="12%">Date</td>
+	              <td bgcolor="#EEddee" class="SmallBody" width="18%">Subject</td>
+	              <td bgcolor="#EEddee" class="SmallBody" width="62%">Message</td>
+				  <td bgcolor="#EEddee" class="SmallBody" width="8%">&nbsp;</td>
+  </tr>
+  <!-- BEGIN searchresultBL -->
+   <tr>
+                  <td valign="top" bgcolor="{ROWCOLOR}" class="SmallBody" width="12%">{CS_DATE}</td>
+	              <td valign="top" bgcolor="{ROWCOLOR}" class="SmallBody" width="18%">{CS_SUBJECT}</td>
+	              <td valign="top" bgcolor="{ROWCOLOR}" class="SmallBody" width="62%">{CS_ATTACHMENTS}{CS_MESSAGE}</td>
+				  <td valign="top" bgcolor="{ROWCOLOR}" class="SmallBody" width="8%" nowrap>{CS_SNDMSG}</td>
+  </tr>
+   <!-- END searchresultBL -->
+</table></td>
+  </tr>
+</table>
+<br/><br/>
+
+<!-- BEGIN SecondMultiPageBL -->
+<table width="100%" border="0" cellspacing="0" cellpadding="1" class="NavColor">
+  <tr>
+    <td>
+	<table width="100%" border="0" cellspacing="0" cellpadding="1" bgcolor="#ddeeff">
+  <tr>
+    <td>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="40%" class="SmallBody"><img  src="./images/transparent.gif" border="0" width="1" height="3" alt="" /><br/><font color="#000000">Total of {RESULT_DESC} results.</font><br/><img src="./images/transparent.gif" border="0" width="2" height="3" alt="" /></td>
+<td width="60%" align="right" class="SmallBody"><font color="#000000">{NAVIGATE}</font></td>
+</tr>
+</table>
+	</td>
+  </tr>
+</table>
+	</td>
+  </tr>
+</table>
+&nbsp;<br/>
+<!-- END SecondMultiPageBL -->
+
+
+<!-- BEGIN EmptyMessageBL -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><font class="AdminLabel">Message Threads</font></td>
+    <td align="right">&nbsp;</td>
+  </tr>
+</table>
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td ><img src="./images/transparent.gif" height="2" width="2" alt="" /></td>
+  </tr>
+  <tr>
+    <td bgcolor="#000000"><img src="./images/transparent.gif" height="1" width="1" alt="" /></td>
+  </tr>
+  <tr>
+    <td ><img src="./images/transparent.gif" height="5" width="5" alt="" /></td>
+  </tr>
+</table>
+<!-- BEGIN MessageThreadBL -->
+<table width="100%" border="0" cellspacing="0" cellpadding="1" bgcolor="#333333">
+  <tr>
+    <td><table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td bgcolor="#FFFFFF" class="SmallBody" style="background-image: url(./images/admin/header-message.png); background-repeat: no-repeat;">
+
+	<table width="100%" border="0" cellspacing="0" cellpadding="2">
+  <tr>
+                              <td class="SmallBody" width="53%"><b>Subject:</b><br/>
+                                <font class="ReallySmallBody">{THREAD_SUB}</font></td>
+                              <td class="SmallBody" width="47%" align="center"> <a href="javascript:ReplyToInternalMessage('{THREADID}');" class="BlueRedLink">Reply</a> 
+                              
+                              <!-- BEGIN CloseMessageLinkBL -->
+                              <br/><a href='javascript:CloseUser("{THREADID}", "{UNREAD_MESSAGE_IDS}")' class='BlueRedLink'>Close</a>
+                              <!-- END CloseMessageLinkBL -->
+                              </td>
+  </tr>
+</table>
+	</td>
+  </tr>
+</table></td>
+  </tr>
+</table>
+
+			{MESSAGE_BLOCK}
+			<br/>
+<!-- END MessageThreadBL -->
+
+<br/><br/><br/>
+<!-- END EmptyMessageBL -->
+
+
+<!-- END EmptySearchResultsBL -->
+
+
+  {DISPLAY_MESSAGE}
+
+<br/>{TASKS}<br/><br/>
+
+<!-- Inner Body  END -->
+</td>
+</tr>
+</table>
+<table width="760" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="360" class="NavColor"><img src="./images/footer.gif" border="0" width="350" height="16" usemap="#footer" alt="" /></td>
+	<td width="400" align="right" class="NavColor"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+  </tr>
+</table>
+<font class="copyright"> </font>
+</div>
+&nbsp;
+<script type="text/javascript" src="./library/ImageMap-footer.js"></script>
+</body>
+</html>

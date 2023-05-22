@@ -1,0 +1,214 @@
+<html>
+<head>
+<title>Admin</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<script type="text/javascript" src="./library/admin_library.js"></script>
+<script language="javascript">
+
+	//Make an array of the images we want to preload for the mouse-overs.
+	arImageSrc = new Array (
+		"./images/button-go-d.gif",
+		"./images/button-sendmessage-u.gif"
+	)
+
+	//Preload images.
+	arImageList = new Array ();
+	for (counter in arImageSrc) {
+		arImageList[counter] = new Image();
+		arImageList[counter].src = arImageSrc[counter];
+	}
+
+
+
+	
+	var returnURL = "{RETURN_URL_ENCODED}";
+	
+	
+	function AddIpAddress(theAddress, userID){
+		if(confirm("Are you sure that you want to add an IP Address permission for this user?"))
+			document.location = "./ad_ipaccess.php?action=AddIPaddress&form_sc={FORM_SECURITY_CODE}&userRecord=" + userID + "&address=" + theAddress + "&returnurl=" + returnURL;
+	}
+	function AddSubnet(theAddress, userID){
+		if(confirm("Are you sure that you want to add a Subnet permission for this user?"))
+			document.location = "./ad_ipaccess.php?action=AddSubNet&form_sc={FORM_SECURITY_CODE}&userRecord=" + userID + "&address=" + theAddress + "&returnurl=" + returnURL;
+	}
+
+
+	function RemoveAccess(userID, ipAddress, SubNet){
+		
+		var confirmMessage = "";
+		
+		if(ipAddress == "")
+			confirmMessage = "Are you sure that you want to remove the Subnet address " + SubNet + " from this user?";
+		else
+			confirmMessage = "Are you sure that you want to remove the IP address " + ipAddress + " from this user?";
+			
+		if(confirm(confirmMessage))
+			document.location = "./ad_ipaccess.php?action=RemoveAccess&form_sc={FORM_SECURITY_CODE}&userRecord=" + userID + "&subnet=" + SubNet + "&ipaddress=" + ipAddress + "&returnurl=" + returnURL;
+		
+
+	}
+
+
+
+
+
+</script>
+<style type="text/css">
+	A.DateNumber 	{ font-size:12px; color:#666666; font-family:Arial,Helvetica,sans-serif; text-decoration:none}
+	A.DateNumber:visited { color: #666666; }
+	A.DateNumber:link { color: #666666; }
+	A.DateNumber:hover { color: #FF0000; text-decoration:underline }
+</style>
+<link rel="stylesheet" type="text/css" href="library/calendar/themes/winter.css"/>
+<script type="text/javascript" src="library/calendar/src/utils.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar.js"></script>
+<script type="text/javascript" src="library/calendar/lang/calendar-en.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar-setup.js"></script>
+<script type="text/javascript" src="library/formatDate.js"></script>
+</head>
+<body bgcolor="#FFFFFF" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="">
+<div align="center">
+{HEADER}
+&nbsp;
+<table width="760" cellpadding="0" cellspacing="0" border="0">
+<tr>
+      <td class="Body"> 
+        <!-- Inner Body  -->
+		
+<br/>
+
+
+				<FORM name="ReportOptions" method="get" >
+				<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+				<input type="hidden" name="view" value="{VIEW_TYPE}" />
+					<TABLE width="100%" border="0" cellspacing="0" cellpadding="2" bgcolor="#999999">
+						<TR>
+							<TD>
+								<TABLE width="100%" border="0" cellspacing="2" cellpadding="0" bgcolor="#EEEEEE" >
+									<TR>
+
+                    <TD class="SmallBodyBold" width="14%">&nbsp;&nbsp;Report Period:</TD>
+
+                    <TD class="SmallBodyBlack" width="68%">
+                      <input type="radio" name="PeriodType" class="SmallBody" value="TIMEFRAME" onclick="SelectPeriodTypeTimeFrame( true );"
+											{PERIODTYPETIMEFRAME} />
+											{TIMEFRAMESELS}
+										</TD>
+
+                    <TD class="SmallBodyBold" width="18%">&nbsp;
+					</TD>
+									</TR>
+									<TR>
+
+                    <TD class="SmallBodyBold" width="14%"></TD>
+
+                    <TD class="SmallBodyBlack" width="68%" >
+                      <input type="radio" name="PeriodType"  class="SmallBody" value="DATERANGE" onclick="SelectPeriodTypeTimeFrame( false );"
+											{PERIODTYPEDATERANGE} />
+											{DATERANGESELS}
+										</TD>
+
+                    <TD class="SmallBodyBold" width="18%">&nbsp;&nbsp;</TD>
+									</TR>
+									<TR>
+								</TABLE>
+							</TD>
+						</TR>
+					</TABLE>
+				<TABLE width="100%" border="0" cellspacing="0" cellpadding="0">
+					<TR>
+						<TD colspan="2"><img src="./images/transparent.gif" border="0" width="1" height="4" alt="" /></TD>
+					</TR>
+					<TR>
+						<TD width="59%">&nbsp;</TD>
+						<TD width="41%" align="center">
+							<input type="button" value="Refresh" class="AdminButton" onmouseover="this.style.background='#ffeeaa';" onmouseout="this.style.background='#FFFFDD';" onclick="document.ReportOptions.submit();" />
+						</TD>
+					</TR>
+				</TABLE>
+			</FORM>
+						<span class="Error">&nbsp;{MESSAGE}</span>
+
+<!-- BEGIN ReportBody -->
+
+<br/><br/>
+        <!-- BEGIN EmptyAccessResults -->
+        <font class="Body"><b>Access Log</b></font><img src="./images/transparent.gif" width="30" height="1" alt="" /><font class="ReallySmallBody">(Rejected 
+        access attempts show in red. The user names and passwords are always correct if an entry is added to these tables.)</font> <br/>
+        <img src="./images/transparent.gif" width="10" height="5" alt="" /><table width="100%" border="0" cellspacing="0" cellpadding="1" class="NavColor">
+  <tr>
+    <td>
+<table width="100%" border="0" cellspacing="1" cellpadding="4" >
+  <tr style="background-image: url(./images/blue_cell_back_faded.png); background-repeat: no-repeat;">
+                  <td class="Body" width="26%" >User</td>
+	              <td class="Body" width="22%">IP Address</td>
+				  <td class="Body" width="17%">Count</td>
+	              <td class="Body" width="35%">Commands</td>
+  </tr>
+  <!-- BEGIN IPlogBL -->
+   <tr bgcolor="{ROWCOLOR}">
+                  <td class="Body" width="26%">{USER_NAME}</td>
+	              <td class="Body" width="22%">{USER_IP}</td>
+				  <td class="Body" width="17%">{USER_COUNT}</td>
+	              <td class="Body" width="35%"><a class="blueredlink" href="javascript:ShowIPaddress('{USER_IP}');">Show 
+                    Map</a>&nbsp;&nbsp;{ADD_COMMANDS}</td>
+  </tr>
+   <!-- END IPlogBL -->
+</table>
+	</td>
+  </tr>
+</table>
+
+<!-- END EmptyAccessResults -->
+<br/><br/><br/><br/>
+
+<!-- BEGIN EmptyPermissionsBL -->
+<font class="Body"><b>Permissions Granted to...</b></font><img src="./images/transparent.gif" width="30" height="1" alt="" /><font class="ReallySmallBody">(Regardless of Report Period)</font>
+<br/><img src="./images/transparent.gif" width="10" height="5" alt="" /><table width="65%" border="0" cellspacing="0" cellpadding="1" class="NavColor">
+  <tr>
+    <td>
+<table width="100%" border="0" cellspacing="1" cellpadding="4" >
+  <tr style="background-image: url(./images/purple_cell_back_faded.png); background-repeat: no-repeat;">
+                  <td class="SmallBody" width="35%" >User</td>
+	              <td class="SmallBody" width="25%">IP Address</td>
+				  <td class="SmallBody" width="25%">Subnet</td>
+	              <td class="SmallBody" width="15%">&nbsp;</td>
+  </tr>
+  <!-- BEGIN grantsBL -->
+   <tr bgcolor="#DDDDDD">
+                  <td class="SmallBody" width="35%">{GRANT_USER_NAME}</td>
+	              <td class="SmallBody" width="25%">{GRANT_USER_IP}</td>
+				  <td class="SmallBody" width="25%">{GRANT_USER_SUBNET}</td>
+	              <td class="SmallBody" width="15%"><a class="blueredlink" href="javascript:RemoveAccess('{USERID}', '{GRANT_USER_IP}', '{GRANT_USER_SUBNET}');">Remove</a></td>
+  </tr>
+   <!-- END grantsBL -->
+</table>
+	</td></tr></table>
+	<br/><br/>
+	
+	<font class="SmallBody"><font color="#FF0000">*</font> It is more secure to add IP Address for a user's account, rather than 
+        a Subnet. <br/><font color="#FF0000">*</font> If an IP address or Subnet is not used within 5 Days, the permission will automatically be removed for the user.</font>
+<!-- END EmptyPermissionsBL -->
+
+
+<br/><br/><br/><br/>
+
+<!-- Inner Body  END -->
+</td>
+</tr>
+</table>
+<table width="760" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="360" class="NavColor"><img src="./images/footer.gif" border="0" width="350" height="16" usemap="#footer" alt="" /></td>
+	<td width="400" align="right" class="NavColor"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+  </tr>
+</table>
+<font class="copyright"> </font>
+</div>
+&nbsp;
+<script type="text/javascript" src="./library/ImageMap-footer.js"></script>
+</body>
+</html>

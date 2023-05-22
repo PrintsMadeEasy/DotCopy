@@ -1,0 +1,78 @@
+<html>
+<head>
+<title>Message Revisions</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+
+<script language="javascript">
+
+	//Make an array of the images we want to preload for the mouse-overs.
+	arImageSrc = new Array (
+		"./images/button-closewindow-blue-d.gif",
+	)
+
+	//Preload images.
+	arImageList = new Array ();
+	for (counter in arImageSrc) {
+		arImageList[counter] = new Image();
+		arImageList[counter].src = arImageSrc[counter];
+	}
+
+</script>
+
+</head>
+
+<body bgcolor="#3366CC" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" >
+<img  src="./images/transparent.gif" border="0" width="1" height="10" alt="" /><br/>
+
+<div align="center">
+
+<table bgcolor="#eeeeee" width="350" cellpadding="0" cellspacing="0" border="0">
+	<tr>
+	<td bgcolor="#eeeeee" align="center" class="Body" style="background-image: url(./images/admin/header-shipping.png); background-repeat: no-repeat;"><b>Message Revisions</b></td>
+	</tr>
+	
+	<tr>
+	<td bgcolor="#eeeeee"><img src="./images/transparent.gif" border="0" width="1" height="15" alt="" /></td>
+	</tr>
+	
+	<!-- BEGIN messageRevisionBL -->
+	<tr>
+		<td align="center">
+
+			<table width="350" cellpadding="0" cellspacing="0" border="0">
+	
+			<tr align="center">
+			<td><font class="SmallBody"><font color="#990000">{REVISION_NO}:&nbsp;&nbsp;{REVISION_DATE}</font></font><br/></td>
+			</tr>
+			
+			<tr align="center">
+			<td> <textarea name="revisedmessage" style="width:340px; height:202px; background-color:#eeeeee" wrap="VIRTUAL" readonly>{REVISION_TEXT}</textarea></td>
+			</tr>
+			
+			<tr>
+			<td colspan="2"><img src="./images/transparent.gif" border="0" width="1" height="5" alt="" /></td>
+			</tr>
+		
+			</table>
+			
+		</td>
+	</tr>
+	<!-- END messageRevisionBL -->
+
+</table>
+
+<table width="350" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td align="center">
+<img  src="images/header-editoptions-fade-bot.gif" width="350" height="35" alt="" /><br/><img  src="./images/transparent.gif" border="0" width="1" height="10" alt="" /><br/>
+<input type="button" name="xx" value="Close" class="AdminButton" onmouseover="this.style.background='#ffeeaa';" onmouseout="this.style.background='#FFFFDD';" onclick="self.close();" />
+<br/>&nbsp;
+</td>
+</tr>
+</table>
+</div>
+	
+</body>
+</html>

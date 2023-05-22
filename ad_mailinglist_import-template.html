@@ -1,0 +1,175 @@
+<html>
+<head>
+<title>Mailing List Import</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+
+<script language="javascript">
+
+	//Make an array of the images we want to preload for the mouse-overs.
+	arImageSrc = new Array (
+		"./images/button-go-d.gif",
+		"./images/button-cancel-blue-d.gif",
+		"./images/button-update-blue-d.gif"
+	)
+
+	//Preload images.
+	arImageList = new Array ();
+	for (counter in arImageSrc) {
+		arImageList[counter] = new Image();
+		arImageList[counter].src = arImageSrc[counter];
+	}
+
+	function UploadFile(){
+		document.forms["uploadForm"].submit();
+	}
+
+
+
+	function ShowCurrentTask(Msg){
+		document.all.curenttask.innerHTML = Msg;
+	}
+
+	function DataPercent(Status, Percent){
+		ShowProgress('<em>' + Status + '</em><font color="#990000"><b>' + Percent + "%</b></font> complete.");
+	}
+	function ShowProgress(Msg){
+		document.all.percentcomplete.innerHTML = Msg;
+	}
+
+	function ClosePopUpDelayed(){
+		setTimeout("ClosePopUpNow()",2000);
+	}
+	function ClosePopUpNow(){
+		self.close();
+	}
+	function ShowError(errorMsg){
+		setTimeout("showErrorDelayed('" + errorMsg + "')",3000);
+	}
+	
+	function showErrorDelayed(errorMsg){
+		document.all.percentcomplete.innerHTML = "";
+		document.all.flashanimation.innerHTML = "";
+		document.all.curenttask.innerHTML = "<font class=\"Error\">" + errorMsg + "</font><br/><br/><a class='blueredlink' href='javascript:self.close();'>Close Window</a>";
+	}
+
+
+
+</script>
+
+
+
+
+</head>
+
+<body bgcolor="#3366CC" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="">
+<img  src="./images/transparent.gif" border="0" width="1" height="10" alt="" /><br/>
+<div align="center">
+<table bgcolor="#EEEEEE" width="500" cellpadding="0" cellspacing="0" border="0">
+
+<tr>
+<td bgcolor="#CCCCCC" align="center" class="Body" style="background-image: url(./images/admin/header-shipping.png); background-repeat: no-repeat;"><b>Import Mailing List for Batch # {BATCHID}</b></td>
+
+<tr>
+<tr>
+<td bgcolor="#666666" align="center" class="Body"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+
+<tr>
+<td align="center">
+<!-- BEGIN UploadFormBL -->
+<table width="96%" border="0" cellspacing="0" cellpadding="0">
+
+
+<form name="uploadForm" enctype="multipart/form-data" method="post" >
+<input type="hidden" name="batchID" value="{BATCHID}" />
+<input type="hidden" name="action" value="uploadfile" />
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+
+  <tr>
+    <td class="SmallBody"><br/>
+	
+	<input type="file" name="csvfile" style="width:470" /><br/>&nbsp;<br/>
+<table width="100%" border="0" cellspacing="1" cellpadding="0">
+  <tr>
+    <td align="center">
+
+<OBJECT classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"
+ codebase="https://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=7,0,19,0"
+ WIDTH=205 HEIGHT=50> <param name="movie" VALUE="./uploadfile.swf" /> <param name="quality" VALUE=best /> <param NAME=bgcolor VALUE=#3366cc /> <EMBED src="./uploadfile.swf" quality="best" bgcolor=#3366cc  WIDTH=205 HEIGHT=50 TYPE="application/x-shockwave-flash" PLUGINSPAGE="https://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash"></EMBED>
+</OBJECT>
+
+	</td>
+  </tr>
+</table>
+</td>
+  </tr>
+ </form>
+</table>
+<!-- END UploadFormBL -->
+
+<!-- BEGIN ProgressBL -->
+&nbsp;
+<table width="95%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+                    <td class="SmallBody">
+<table width="100%" border="0" cellspacing="0" cellpadding="2" bgcolor="#CCCCCC">
+  <tr>
+    <td><table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td align="center" bgcolor="#dddddd"><div id="curenttask" class="Largebody">
+<b>Status:</b> Analyzing File
+</div>
+	<div id="percentcomplete" class="Largebody">
+&nbsp;
+</div>
+<div id="flashanimation" class="Largebody">
+<img  src='./images/transparent.gif' wight='7' height='7' alt="" /><br/>
+<OBJECT classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="https://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=7,0,19,0" width="250" height="100" id="GeneratingArtwork" align="middle">
+<param name="allowScriptAccess" value="sameDomain" />
+<param name="movie" value="./Thinking.swf" />
+<param name="quality" value="high" />
+<param name="bgcolor" value="#ffffff" />
+<embed src="./Thinking.swf" quality="high" bgcolor="#ffffff" width="250" height="100" name="GeneratingArtwork" align="middle" allowScriptAccess="sameDomain" type="application/x-shockwave-flash" pluginspage="https://www.macromedia.com/go/getflashplayer" /></embed>
+</OBJECT>
+<br/>
+</div>
+&nbsp;
+	</td>
+  </tr>
+</table>
+
+				  </td>
+  </tr>
+</table>
+</td>
+  </tr>
+</table>
+                <br/>
+<!-- END ProgressBL -->
+</td>
+</tr>
+
+
+<tr>
+<td><img src="images/header-editoptions-fade-bot.gif" width="500" alt="" /></td>
+</tr>
+</table>
+
+<table width="350" border="0" cellspacing="0" cellpadding="0">
+
+  <tr>
+
+    <td align="center">
+
+<img  src="./images/transparent.gif" border="0" width="1" height="5" alt="" /><br/>
+
+&nbsp;
+	</td>
+
+  </tr>
+</table>
+</div>
+
+</body>
+</html>

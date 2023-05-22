@@ -1,0 +1,39 @@
+<HTML>
+  <TITLE>Clipboard</TITLE>
+  <script>
+  	var ReloadParent = {RELOAD_PARENT};
+  	if(ReloadParent){
+
+  		var current_window_url = window.opener.location.toString();
+  		var new_window_url = "";
+
+ 		dateObj = new Date();
+		var NoCache = dateObj.getTime();
+
+  		if (current_window_url.match(/nocache=\d+/i)){
+  			new_window_url = current_window_url.replace(/nocache=\d+/i, ("nocache=" + NoCache));
+  		}
+		else{
+			if (!current_window_url.match(/\?/i))
+				new_window_url = current_window_url + "?nocache=" + NoCache;
+			else
+				new_window_url = current_window_url + "&nocache=" + NoCache;
+		}
+
+  		window.opener.location = new_window_url;
+
+  	}
+  </script>
+
+  <FRAMESET  name=fs1 ROWS="60,*" border=7 bordercolor=#666666>
+
+      <FRAME SRC="./clipboard_commands.php?projectid={PROJECTID}&view={VIEW}&sidenumber={SIDENUMBER}" NAME="Commands" NORESIZE   SCROLLING="NO">
+
+   <FRAMESET  name=fs2 ROWS="65%,35%"   >
+      <FRAME SRC="clipboard_activedocument.php?projectid={PROJECTID}&view={VIEW}&sidenumber={SIDENUMBER}" NAME="ActiveDocumentFrame" >
+      <FRAME SRC="clipboard_clipboarddocument.php" NAME="ClipboardFrame"  >
+     </FRAMESET>
+
+
+  </FRAMESET>
+</HTML>

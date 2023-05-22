@@ -1,0 +1,43 @@
+Your current NAT translation is:
+
+74.53.59.100 <-> 10.0.0.2  (printsmadeeasy.com)
+74.53.59.101 <-> 10.0.0.3  (AmazingGrass.com)
+74.53.59.102 <-> 10.0.0.4  (merchantmadeeasy.com)
+74.53.59.103 <-> 10.0.0.5  (HouseOfBluesPrinting.com)
+74.53.59.104 <-> 10.0.0.6 (Postcards.com FTP)
+74.53.59.105 <-> 10.0.0.7 (Letterhead.com FTP)
+74.53.59.106 <-> 10.0.0.8 (Letterhead.com)
+74.53.59.107 <-> 10.0.0.9 (Letterhead.com FTP)
+74.53.59.108 <-> 10.0.0.10 (VinylBanners.com)
+74.53.59.109 <-> 10.0.0.11 (VinylBanners.com FTP)
+74.53.59.110 <-> 10.0.0.12 (CarMagnets.com)
+74.53.59.111 <-> 10.0.0.13 (RefrigeratorMagnets.com)
+74.53.59.112 <-> 10.0.0.14 (FlyerPrinting.com)
+74.53.59.113 <-> 10.0.0.15 (PostcardPrinting.com)
+74.53.59.114 <-> 10.0.0.16 (HolidayGreetingCards.com)
+74.53.59.115 <-> 10.0.0.17 (BusinessCards24.com)
+74.53.59.116 <-> 10.0.0.18 (ZEN Development)
+74.53.59.117 <-> 10.0.0.19 (ThankYouCards.com)
+74.53.59.118 <-> 10.0.0.20 (LuauInvitations.com)
+74.53.59.119 <-> 10.0.0.21 (BusinessHolidayCards.com)
+74.53.59.120 <-> 10.0.0.22 (SunAmerica.com)
+74.53.59.121 <-> 10.0.0.23 
+74.53.59.122 <-> 10.0.0.24 (ChristmasPhotoCards.com)
+74.53.59.123 <-> 10.0.0.25 (PosterPrinting.com)
+74.53.59.124 <-> 10.0.0.26 (HotLaptopSkins.com)
+74.53.2.160 <========> 10.0.0.27 PowerBalancePrinting.com
+74.53.2.161 <========> 10.0.0.28 (BridalShowerInvitations.com)
+74.53.2.162 <========> 10.0.0.29 (NNAServices.org)
+74.53.2.163 <========> 10.0.0.30 DotGraphics.net (old / moved)
+74.53.2.164 <========> 10.0.0.31 ShakeysServices.com
+74.53.2.165 <========> 10.0.0.32 BusinessCards.co.uk
+74.53.2.166 <========> 10.0.0.33 (YourOnlinePrintingCompany.com)
+74.53.2.167 <========> 10.0.0.34  (postcards.com)
+74.53.0.24 <----------------> 10.0.0.35
+74.53.0.25 <----------------> 10.0.0.36
+74.53.0.26 <----------------> 10.0.0.37 DotGraphics.net
+74.53.0.27 <----------------> 10.0.0.38	MyGym
+74.53.0.28 <----------------> 10.0.0.39 CarlsonWagonlit
+74.53.0.29 <----------------> 10.0.0.40
+74.53.0.30 <----------------> 10.0.0.41
+74.53.0.31 <----------------> 10.0.0.42

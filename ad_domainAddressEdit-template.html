@@ -1,0 +1,97 @@
+<html>
+<head>
+<title>Admin</title>
+<LINK REL=stylesheet HREF="./library/stylesheet.css" TYPE="text/css">
+<LINK REL="SHORTCUT ICON" HREF="/favicon.ico">
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+
+<script type="text/javascript" src="./library/admin_library.js"></script>
+<script type="text/javascript" src="./library/general_lib.js"></script>
+<link rel="stylesheet" type="text/css" href="library/calendar/themes/winter.css"/>
+<script type="text/javascript" src="library/calendar/src/utils.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar.js"></script>
+<script type="text/javascript" src="library/calendar/lang/calendar-en.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar-setup.js"></script>
+<script type="text/javascript" src="library/formatDate.js"></script>
+</head>
+<body bgcolor="#FFFFFF" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="">
+<div align="center">
+{HEADER}
+
+<table width="760" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td class="body">
+<br><br>
+<table width="100%" border="0" cellspacing="0" cellpadding="1">
+  <tr>
+    <td width="80%"><font class="LargeBody" color="#336699"><b>Edit Addresses for {DOMAINKEY}</b></font></td>
+	  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
+	<tr>
+	<td bgcolor="#3366CC"><img src="./images/transparent.gif" border="0" width="2" height="4"></td>
+	</tr>
+</table>
+
+
+<table width="100%" border="0" cellspacing="5" cellpadding="0">  
+<form enctype="multipart/form-data" action="ad_domainAddressEdit.php?action=update&domainid={DOMAINID}" method="POST">
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+<tr>
+<td width="20%" align="right" colspan="8"><input type="submit" value="Save Values" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" /></td>
+</tr>
+<!-- BEGIN editFieldBL -->
+<tr>  
+<td align="left" colspan="8"><b>{FIELDLABEL}<b></td>
+</tr>
+<tr>
+<td>Company</td><td> <input name="company_{FIELDNAME}" type="text" size="38" value="{COMPANYVALUE}" /> </td>
+<td>Attention</td><td colspan="5"><input name="attention_{FIELDNAME}"  type="text" size="48" value="{ATTENTIONVALUE}" /> </td>
+</tr>
+<tr>
+<td>Address1 </td><td><input name="addressone_{FIELDNAME}"  type="text" size="38" value="{ADDRESSONEVALUE}"/> </td>
+<td width="18%">Address2 </td><td colspan="5"><input name="addresstwo_{FIELDNAME}"  type="text" size="48" value="{ADDRESSTWOVALUE}"/> </td>
+</tr>
+<tr>
+<td width="15%">City</td><td width="30%"><input name="city_{FIELDNAME}"  type="text" size="38" value="{CITYVALUE}"/> </td>
+<td width="12%">State</td><td width="8%"><input name="state_{FIELDNAME}"  type="text" size="2" value="{STATEVALUE}"/> </td>
+<td width="10%">ZIP</td><td width="8%"><input name="zip_{FIELDNAME}"  type="text" size="5" value="{ZIPVALUE}"/> </td>
+<td width="10%">CountryCode</td><td width="8%"><input name="cc_{FIELDNAME}"  type="text" size="2" value="{CCVALUE}"/> </td>
+</tr>
+<tr>
+<td>Phone</td><td><input name="phone_{FIELDNAME}"  type="text" size="38" value="{PHONEVALUE}"/> </td>
+<td>Residential</td><td colesan="3"><input type="checkbox" name="resident_{FIELDNAME}" value="active" {RESIDENTIALCHECKED}>
+</td>
+</tr>
+<tr>  
+<td height="12"></td>
+</tr>
+<!-- END editFieldBL -->
+<tr>  
+<td align="left" colspan="8"><b>General Information<b></td>
+</tr>
+<tr>
+<tr>
+<td>UPSAccNo</td><td> <input name="upsaccountno" type="text" size="38" value="{UPSACCOUNTNOVALUE}" /> </td>
+</tr>
+<td>TaxIDNo</td><td><input name="taxidno"  type="text" size="38" value="{TAXIDNOVALUE}" /> </td>
+<td>TaxIDType</td><td colspan="2"><input name="taxidtype"  type="text" size="10" value="{TAXIDTYPEVALUE}" /> </td>
+</tr>
+<tr>  
+<td height="12"></td>
+</tr>
+</form>
+</table>
+
+<table width="760" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="360" class="NavColor"><img src="./images/footer.gif" border="0" width="350" height="16" usemap="#footer"></td>
+	<td width="400" align="right" class="NavColor"><img src="./images/transparent.gif" border="0" width="1" height="1"></td>
+  </tr>
+</table>
+<font class="copyright"> </font>
+
+&nbsp;
+<script type="text/javascript" src="./library/ImageMap-footer.js"></script>
+</body>
+</html>

@@ -1,0 +1,329 @@
+<html>
+<head>
+<title>Batch Control Window</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+
+<script language="javascript">
+
+	function ViewPDFinPopup(ProjectID){
+		var address = "./pdf_launch.php?forward=pdf_done.php%3Fview=projectssession%26projectid=" +  ProjectID;
+
+		newWindow = window.open(address, "pdfpreview", "height=500,width=700,directories=no,location=no,menubar=no,scrollbars=yes,status=no,toolbar=no,resizable=yes");
+		newWindow.moveTo((self.screenLeft + self.screen.width/9),(self.screenTop + self.screen.height/9));
+		newWindow.focus();
+	}
+	
+	function jumpToProjectPage(projectID){
+		if(projectID != "")
+			window.opener.location = "./ad_project.php?projectorderid=" + projectID;
+	}
+
+
+
+function NewAction(ActionValue){
+
+		var FormObjGo = document.forms["batchwindow"];
+		var FormObjInput = document.forms["batchcontrols"];
+		
+		// Reset the target  (in case it changes between commands.
+		FormObjGo.target = originalFormTarget;
+
+		if(ActionValue == "pdfMulti"){
+			FormObjGo.action = "./ad_batch_pdf_generate.php";
+			FormObjGo.pdf_type.value = "multifiles";
+			FormObjGo.pdf_profile.value = document.forms["batchcontrols"].multiProfile.value
+		}
+		else if(ActionValue == "pdfbyprofile"){
+			FormObjGo.target = "top";
+			FormObjGo.action = "./pdf_launch.php";
+			FormObjGo.formaction.value = "./ad_batch_pdf_generate.php";
+			FormObjGo.pdf_type.value = "singlefilepdf";
+			FormObjGo.pdf_profile.value = document.forms["batchcontrols"].profile.value
+		}
+		else if(ActionValue == "gangPDF"){
+		
+			// So that we can have many Gang Run windows open at the same time.
+			var ran_number = Math.round(Math.random()*500);
+		
+			FormObjGo.target = "gang" + ran_number;
+			FormObjGo.action = "./ad_gangRun.php";
+			FormObjGo.pdf_type.value = "singlefilepdf";
+			FormObjGo.sheet_quantity.value = document.forms["batchcontrols"].gangsheetcount.value;
+			FormObjGo.side_count.value = document.forms["batchcontrols"].gangduplex.value;
+			FormObjGo.superpdfprofileID.value = document.forms["batchcontrols"].superpdfprofileID.value
+			FormObjGo.quantity_preference.value = document.forms["batchcontrols"].gangQuanPref.value
+			
+			var forceQuantityValue = document.forms["batchcontrols"].forceQuantity.value;
+			
+			if(forceQuantityValue != "" && document.forms["batchcontrols"].gangsheetcount.value != "0"){
+				alert("If you are specifying a Forced Quantity value, you must also select 'Force Quantity' in the drop down menu.");
+				return;
+			}
+			if(forceQuantityValue != "" && !forceQuantityValue.match(/^\d+$/)){
+				alert("Forced Quantity values must be numeric and without spaces or special characters.");
+				return;
+			}
+			if(document.forms["batchcontrols"].gangsheetcount.value == "0" && forceQuantityValue == "" ){
+				alert("If you are selecting a Forced Quantity from the Drop down menu then you must also type in the quantity amount.");
+				return;
+			}
+			
+			if(forceQuantityValue != ""){
+				FormObjGo.sheet_quantity.value = forceQuantityValue;
+				FormObjGo.force_quantity.value = "Y";
+			}
+			else{
+				FormObjGo.force_quantity.value = "N";
+			}
+			
+		}
+		else if(ActionValue == "invoice"){
+			FormObjGo.action = "./customer_receipts.php";
+		}
+		else if(ActionValue == "orderListCsv"){
+			//FormObjGo.target = "orderCsvList";
+			FormObjGo.action = "./ad_orderListCsv.php";
+		}
+		else if(ActionValue == "labels"){
+
+			var ErrorMessage = "";
+
+			if(FormObjInput.startrow.value.search(/^\d+$/) == -1 || FormObjInput.startrow.value == "0"){
+				ErrorMessage += "Error with start row\n";
+			}
+
+			if(FormObjInput.startcolumn.value.search(/^\d+$/) == -1 || FormObjInput.startcolumn.value == "0"){
+				ErrorMessage += "Error with start column\n";
+			}
+
+			if(ErrorMessage != ""){
+				alert(ErrorMessage);
+				return false;
+			}
+			else{
+				FormObjGo.action = "./label_generation.php";
+				FormObjGo.startrow.value = FormObjInput.startrow.value;
+				FormObjGo.startcolumn.value = FormObjInput.startcolumn.value;
+			}
+
+		}
+		else if(ActionValue == "status"){
+
+			if(FormObjInput.status.value == ""){
+				alert("Selected a Status first.");
+				return false;
+			}
+			FormObjGo.action = "./ad_batchwindow_new.php";
+			FormObjGo.batch_command.value = FormObjInput.status.value;
+		}
+		else if(ActionValue == "noturgent"){
+
+			FormObjGo.action = "./ad_batchwindow_new.php";
+			FormObjGo.priority.value = "N";
+		}
+		else if(ActionValue == "urgent"){
+
+			FormObjGo.action = "./ad_batchwindow_new.php";
+			FormObjGo.priority.value = "U";
+		}
+		else if(ActionValue == "MailingBatch"){
+
+			FormObjGo.action = "./ad_actions.php";
+			FormObjGo.command.value = "NewMailingBatch";
+		}
+		else{
+			alert("illegal command");
+			return false;
+		}
+
+
+		FormObjGo.submit();
+
+}
+
+var originalFormTarget = null;
+function InitializeOnLoad(){
+	originalFormTarget = document.forms["batchcontrols"].target;
+	window.resizeTo(570,600);
+}
+
+{JAVASCRIPT_STR}
+
+</script>
+<script type="text/javascript" src="library/admin_library.js"></script>
+
+
+</head>
+
+<body bgcolor="#3366CC" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="InitializeOnLoad();" >
+<img  src="./images/transparent.gif" border="0" width="1" height="10" alt="" /><br/>
+<div align="center">
+<table bgcolor="#EEEEEE" width="520" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td bgcolor="#DDDDDD" class="Body" align="center"><img  src="./images/transparent.gif" border="0" width="1" height="3" alt="" /><br/>{TITLE}<br/><img src="./images/transparent.gif" border="0" width="1" height="3" alt="" /></td>
+</tr>
+<tr>
+<td bgcolor="#CCCCCC"><img src="./images/transparent.gif" border="0" width="1" height="2" alt="" /></td>
+</tr>
+<td align="center" class="SmallBody">
+<br/>
+<form name="batchcontrols">
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+<!-- BEGIN MiniLabelsBL -->
+Start Row <input type="text" name="startrow" value="1" class="SmallInputBox" />&nbsp;&nbsp;
+Start Column <input type="text" name="startcolumn" value="1" class="SmallInputBox" />&nbsp;&nbsp;
+<input type="button" name="labels" value="Print Labels" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" onClick="NewAction('labels')" />
+<br/><br/>
+<!-- END MiniLabelsBL -->
+<!-- BEGIN MultiplePDFbl -->
+PDF Profile
+<select name="multiProfile" class="AdminDropDown">
+{PDFPROFILES}
+</select>
+<input type="button" name="shipped" value="Gather PDF's" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" onClick="NewAction('pdfMulti')" />  (Only Click Once)
+<br/><br/>
+<!-- END MultiplePDFbl -->
+<!-- BEGIN SingleFilePDFGenerationBL -->
+PDF Profile
+<select name="profile" class="AdminDropDown">
+{PDFPROFILES}
+</select>
+<input type="button" name="shipped" value="Gather Single PDF" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" onClick="NewAction('pdfbyprofile')" />  (Only Click Once)
+<br/><br/>
+<!-- END SingleFilePDFGenerationBL -->
+
+
+<!-- BEGIN GangPDFGenerationBL -->
+Gang Profile
+<select name="superpdfprofileID" class="AdminDropDown">
+<option value="auto" >Automatic</option>
+{GANGPROFILES}
+</select>
+&nbsp;Force Quantity <input type="text" name="forceQuantity" value="" class="SmallInputBox" style="width:50px;" />
+<br/>
+<select name="gangsheetcount" class="AdminDropDown">
+<option value="0" >Force Quantity</option>
+<option value="100" >100</option>
+<option value="300" >300</option>
+<option value="500" >500</option>
+<option value="1000" selected>1K</option>
+<option value="2000" >2K</option>
+<option value="3000" >3K</option>
+<option value="4000" >4K</option>
+<option value="5000" >5K</option>
+<option value="10000" >10K</option>
+<option value="15000" >15K</option>
+<option value="20000" >20K</option>
+<option value="25000" >25K</option>
+<option value="30000" >30K</option>
+<option value="50000" >50K</option>
+
+</select>
+<select name="gangduplex" class="AdminDropDown">
+<option value="single">Single-Sided</option>
+<option value="double" selected="selected">Double-Sided</option>
+</select>
+<select name="gangQuanPref" class="AdminDropDown">
+<option value="small" selected="selected">Small</option>
+<option value="large">Big</option>
+</select>
+<input type="button" name="shipped" value="Gang Run" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" onClick="NewAction('gangPDF')" /> 
+<br/><br/>
+<!-- END GangPDFGenerationBL -->
+
+<!-- BEGIN InvoicesBL -->
+<input type="button" name="shipped" value="Gather Invoices" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" onClick="NewAction('invoice')" /> (Only Click Once)
+<!-- END InvoicesBL -->
+<br/><br/>
+<!-- BEGIN adminBL -->
+<select name="status">
+<option value=""></option>
+<option value="N">New</option>
+<option value="P">Proofed</option>
+<option value="H">On Hold</option>
+<option value="S">Some</option>
+<option value="T">Printed</option>
+<option value="Q">Queued</option>
+<option value="B">Boxed</option>
+<option value="D">For Offset</option>
+<option value="E">Plated</option>
+<option value="L">Artwork Help</option>
+<option value="A">Artwork Problem</option>
+</select>
+<!-- END adminBL -->
+<!-- BEGIN fulfillmentBL -->
+<select name="status">
+<option value=""></option>
+<option value="P">Proofed</option>
+<option value="H">On Hold</option>
+<option value="S">Some</option>
+<option value="T">Printed</option>
+<option value="Q">Queued</option>
+<option value="B">Boxed</option>
+<option value="D">For Offset</option>
+<option value="E">Plated</option>
+<option value="A">Artwork Problem</option>
+</select>
+<!-- END fulfillmentBL -->
+<input type="button" name="shipped" value="Change Status" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" onClick="NewAction('status')" />
+<br/>
+Status must be &quot;printed &quot; in order to change to boxed.
+<br/>
+<br/>
+<input type="button" name="labels" value="Mark as Urgent" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" onClick="NewAction('urgent')" />
+&nbsp;&nbsp;&nbsp;<input type="button" name="labels" value="Mark as Not Urgent" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" onClick="NewAction('noturgent')" />
+		<br/>
+		
+<!-- BEGIN MailingBatchBL -->
+<br/>
+<input type="button" name="mailing" value="New Mailing Batch" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" onClick="NewAction('MailingBatch')" /> (Only Click Once)
+<br/>
+<!-- END MailingBatchBL -->	
+<!-- BEGIN OrderListCsvBL -->
+<br/>
+<input type="button" name="csvlist" value="Download CSV List" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" onClick="NewAction('orderListCsv')" />
+<br/>
+<!-- END OrderListCsvBL -->	
+
+
+	
+</form>
+</td>
+
+</tr>
+
+
+<tr>
+<td><img src="images/header-editoptions-fade-bot.gif" width="520" height="30" alt="" /></td>
+</tr>
+</table>
+
+</div>
+<form name="batchwindow" method="post" action="">
+<input type="hidden" name="projectlist" value="{PROJECTLIST}" />
+<input type="hidden" name="userid" value="{USERID}" />
+<input type="hidden" name="timestamp" value="{TIMESTAMP}" />
+<input type="hidden" name="batch_command" value="" />
+<input type="hidden" name="gather_pdfs" value="" />
+<input type="hidden" name="pdf_type" value="" />
+<input type="hidden" name="pdf_profile" value="" />
+<input type="hidden" name="superpdfprofileID" value="" />
+<input type="hidden" name="sheet_quantity" value="" />
+<input type="hidden" name="quantity_preference" value="" />
+<input type="hidden" name="side_count" value="" />
+<input type="hidden" name="viewtype" value="{VIEWTYPE}" />
+<input type="hidden" name="startrow" value="" />
+<input type="hidden" name="startcolumn" value="" />
+<input type="hidden" name="formaction" value="" />
+<input type="hidden" name="priority" value="" />
+<input type="hidden" name="command" value="" />
+<input type="hidden" name="force_quantity" value="" />
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+
+
+</form>
+
+</body>
+</html>

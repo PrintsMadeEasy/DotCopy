@@ -1,0 +1,840 @@
+<html>
+<head>
+<title>Admin</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<script language="javascript">
+
+	//Make an array of the images we want to preload for the mouse-overs.
+	arImageSrc = new Array (
+		"./images/button-go-d.gif",
+		"./images/button-sendmessage-u.gif"
+	)
+
+	//Preload images.
+	arImageList = new Array ();
+	for (counter in arImageSrc) {
+		arImageList[counter] = new Image();
+		arImageList[counter].src = arImageSrc[counter];
+	}
+	function SelectPeriodTypeTimeFrame( state )
+	{
+		document.forms["ReportOptions"].TimeFrame.disabled = !state;
+		document.forms["ReportOptions"].DateRangeStartDay.disabled = state;
+		document.forms["ReportOptions"].DateRangeStartMonth.disabled = state;
+		document.forms["ReportOptions"].DateRangeStartYear.disabled = state;
+		document.forms["ReportOptions"].DateRangeEndDay.disabled = state;
+		document.forms["ReportOptions"].DateRangeEndMonth.disabled = state;
+		document.forms["ReportOptions"].DateRangeEndYear.disabled = state;
+	}
+
+	function InitializeTimeFields()
+	{
+		var periodTimeFrame = {PERIODISTIMEFRAME};
+		document.forms["ReportOptions"].TimeFrame.disabled = !periodTimeFrame;
+		document.forms["ReportOptions"].DateRangeStartDay.disabled = periodTimeFrame;
+		document.forms["ReportOptions"].DateRangeStartMonth.disabled = periodTimeFrame;
+		document.forms["ReportOptions"].DateRangeStartYear.disabled = periodTimeFrame;
+		document.forms["ReportOptions"].DateRangeEndDay.disabled = periodTimeFrame;
+		document.forms["ReportOptions"].DateRangeEndMonth.disabled = periodTimeFrame;
+		document.forms["ReportOptions"].DateRangeEndYear.disabled = periodTimeFrame;
+	}
+
+	function hl(e)
+	{
+		e.style.textDecoration='underline';
+	}
+	function dl(e)
+	{
+		e.style.textDecoration='none';
+	}
+	
+
+	
+	function gatherFormData(){
+	
+		var errorMessage = "";
+	
+		var mainLabelFilters = "";
+		var detailLabelFilters = "";
+		
+		for(var i =0; i<parseInt("{LABEL_LIMITER_ROWS}"); i++){
+			var mainLabel = document.getElementById("filterMainLabel_" + i).value;
+			var detailLabel = document.getElementById("filterDetailLabel_" + i).value;
+			
+			// Pipe Symbols are special to separate values in the URL.
+			mainLabel = mainLabel.replace(/\|/g, "");
+			detailLabel = detailLabel.replace(/\|/g, "");
+			
+			mainLabelFilters += mainLabel + "|";
+			detailLabelFilters += detailLabel + "|";
+			
+			if(detailLabel != "" && mainLabel == "")
+				errorMessage += "*) You can not provide a Detail Label filter if you don't also provide a Main Label filter.\n";
+		}
+		
+		var mainLabelInvalidators = "";
+		var detailLabelInvalidators = "";
+		
+		for(var i =0; i<parseInt("{LABEL_INVALIDATOR_ROWS}"); i++){
+			var mainLabel = document.getElementById("invalidateMainLabel_" + i).value;
+			var detailLabel = document.getElementById("invalidateDetailLabel_" + i).value;
+
+			// Pipe Symbols are special to separate values in the URL.
+			mainLabel = mainLabel.replace(/\|/g, "");
+			detailLabel = detailLabel.replace(/\|/g, "");
+
+			mainLabelInvalidators += mainLabel + "|";
+			detailLabelInvalidators += detailLabel + "|";
+			
+			if(detailLabel != "" && mainLabel == "")
+				errorMessage += "*) You can not provide a Detail Label Invalidator if you don't also provide a Main Label Invalidator.\n";
+		}
+		
+		
+		
+		
+		var mainPathFilterSources = "";
+		var detailPathFilterSources = "";
+		var mainPathFilterTargets = "";
+		var detailPathFilterTargets = "";
+		
+		for(var i =0; i<parseInt("{PATH_FILTERS_ROWS}"); i++){
+		
+			var mainLabelSrc = document.getElementById("filterMainPathSrc_" + i).value;
+			var detailLabelSrc = document.getElementById("filterDetailPathSrc_" + i).value;
+			var mainLabelTrgt = document.getElementById("filterMainPathTrgt_" + i).value;
+			var detailLabelTrgt = document.getElementById("filterDetailPathTrgt_" + i).value;
+
+			// Pipe Symbols are special to separate values in the URL.
+			mainLabelSrc = mainLabelSrc.replace(/\|/g, "");
+			detailLabelSrc = detailLabelSrc.replace(/\|/g, "");
+			mainLabelTrgt = mainLabelTrgt.replace(/\|/g, "");
+			detailLabelTrgt = detailLabelTrgt.replace(/\|/g, "");
+
+			mainPathFilterSources += mainLabelSrc + "|";
+			detailPathFilterSources += detailLabelSrc + "|";
+			mainPathFilterTargets += mainLabelTrgt + "|";
+			detailPathFilterTargets += detailLabelTrgt + "|";
+			
+			if(mainLabelSrc == "" && mainLabelTrgt != "" || mainLabelTrgt == "" && mainLabelSrc != "")
+				errorMessage += "*) To add a Path Limiter, you must have at least provide one Main Label Source and one Main Label Target.\n";
+			
+			if(detailLabelSrc != "" && mainLabelSrc == "" || detailLabelTrgt != "" && mainLabelTrgt == "")
+				errorMessage += "*) You can not provide a Detail Path Filter if you don't also provide a Main Path Filter.\n";
+		}
+		
+		
+		
+		var mainPathInvalidatorSources = "";
+		var detailPathInvalidatorSources = "";
+		var mainPathInvalidatorTargets = "";
+		var detailPathInvalidatorTargets = "";
+		
+		for(var i =0; i<parseInt("{PATH_INVALIDATORS_ROWS}"); i++){
+		
+			var mainLabelSrc = document.getElementById("invalidatorMainPathSrc_" + i).value;
+			var detailLabelSrc = document.getElementById("invalidatorDetailPathSrc_" + i).value;
+			var mainLabelTrgt = document.getElementById("invalidatorMainPathTrgt_" + i).value;
+			var detailLabelTrgt = document.getElementById("invalidatorDetailPathTrgt_" + i).value;
+
+			// Pipe Symbols are special to separate values in the URL.
+			mainLabelSrc = mainLabelSrc.replace(/\|/g, "");
+			detailLabelSrc = detailLabelSrc.replace(/\|/g, "");
+			mainLabelTrgt = mainLabelTrgt.replace(/\|/g, "");
+			detailLabelTrgt = detailLabelTrgt.replace(/\|/g, "");
+
+			mainPathInvalidatorSources += mainLabelSrc + "|";
+			detailPathInvalidatorSources += detailLabelSrc + "|";
+			mainPathInvalidatorTargets += mainLabelTrgt + "|";
+			detailPathInvalidatorTargets += detailLabelTrgt + "|";
+			
+			if(mainLabelSrc == "" && mainLabelTrgt != "" || mainLabelTrgt == "" && mainLabelSrc != "")
+				errorMessage += "*) To add a Path Invalidator, you must have at least provide one Main Label Source and one Main Label Target.\n";
+			
+			if(detailLabelSrc != "" && mainLabelSrc == "" || detailLabelTrgt != "" && mainLabelTrgt == "")
+				errorMessage += "*) You can not provide a Detail Path Invalidator if you don't also provide a Main Path Invalidator.\n";
+		}
+		
+		
+		
+		
+		var userAgentFilters = "";
+		for(var i =0; i<parseInt("{USER_AGENT_ROWS}"); i++){
+			var userAgent = document.getElementById("userAgent_" + i).value;
+	
+			// Pipe Symbols are special to separate values in the URL.
+			userAgent = userAgent.replace(/\|/g, "");
+
+			userAgentFilters += userAgent + "|";
+		}
+		
+		
+		var referrerKeywords = "";
+		for(var i =0; i<parseInt("{REFERRER_KEYWORDS_ROWS}"); i++){
+			var refKw = document.getElementById("refKeywords_" + i).value;
+	
+			// Pipe Symbols are special to separate values in the URL.
+			refKw = refKw.replace(/\|/g, "");
+
+			referrerKeywords += refKw + "|";
+		}
+		
+		
+		
+		
+		var userIdFilters = "";
+		for(var i =0; i<parseInt("{USER_ID_ROWS}"); i++){
+			var userID = document.getElementById("userID_" + i).value;
+	
+			if(userID != "" && !userID.match(/^u\d+$/i))
+				errorMessage += "*) User ID Limiters must be in the format \"U123456\".\n";
+
+			userIdFilters += userID + "|";
+		}
+		
+		
+		var showNodesNames = "";
+		var showNodesOptionList = document.getElementById("showNodesList").options;
+		
+		for(var i=0; i<showNodesOptionList.length; i++){
+			if(showNodesOptionList[i].selected)
+				showNodesNames += showNodesOptionList[i].value + "|";
+		}
+		
+
+		
+		
+		var labelExpansionsStr = ""
+		var labelExplansionOptionList = document.getElementById("labelExpansion").options;
+		
+		for(var i=0; i<labelExplansionOptionList.length; i++){
+			if(labelExplansionOptionList[i].selected)
+				labelExpansionsStr += labelExplansionOptionList[i].value + "|";
+		}
+		
+		
+		
+		var referrerTypeStr = "";
+		var refTypeCheckBoxList = document.forms["ReportOptions"].refType;
+
+		for(var i=0; i<refTypeCheckBoxList.length; i++){
+			if(refTypeCheckBoxList[i].checked)
+				referrerTypeStr += refTypeCheckBoxList[i].value + "|";
+		}
+		
+		
+		
+		var minSessionDuration = document.getElementById("minSessionMin").value;
+		if(!minSessionDuration.match(/^\d*$/))
+			errorMessage += "*) The minimum session duration must be a number.\n";
+		var maxSessionDuration = document.getElementById("maxSessionMin").value;
+		if(!maxSessionDuration.match(/^\d*$/))
+			errorMessage += "*) The maximum session duration must be a number.\n";
+			
+			
+		var minNodes = document.getElementById("minimumNodes").value;
+		if(!minNodes.match(/^\d*$/))
+			errorMessage += "*) The minimum number of nodes must be a number.\n";
+		var maxNodes = document.getElementById("maximumNodes").value;
+		if(!maxNodes.match(/^\d*$/))
+			errorMessage += "*) The maximum number of nodes must be a number.\n";		
+
+		
+		if(errorMessage != ""){
+			alert("Please fix the following errors.\n---------------------------\n\n" + errorMessage);
+
+		}
+		else{
+		
+			// Put our collected data from the main form into the proxy form and then submit.
+			document.getElementById("minimumSessionDuration").value = document.getElementById("minSessionMin").value;
+			document.getElementById("maximumSessionDuration").value = document.getElementById("maxSessionMin").value;
+	
+			document.getElementById("fMnLbl").value = mainLabelFilters;
+			document.getElementById("fDtLbl").value = detailLabelFilters;
+	
+			document.getElementById("minNodes").value = minNodes;
+			document.getElementById("maxNodes").value = maxNodes;
+
+			document.getElementById("iMnLbl").value = mainLabelInvalidators;
+			document.getElementById("iDtLbl").value = detailLabelInvalidators;
+		
+			document.getElementById("fMnPthS").value = mainPathFilterSources;
+			document.getElementById("fDtPthS").value = detailPathFilterSources;
+			document.getElementById("fMnPthT").value = mainPathFilterTargets;
+			document.getElementById("fDtPthT").value = detailPathFilterTargets;
+			
+			document.getElementById("iMnPthS").value = mainPathInvalidatorSources;
+			document.getElementById("iDtPthS").value = detailPathInvalidatorSources;
+			document.getElementById("iMnPthT").value = mainPathInvalidatorTargets;
+			document.getElementById("iDtPthT").value = detailPathInvalidatorTargets;	
+		
+		
+			document.getElementById("fUsrAg").value = userAgentFilters;
+			
+			document.getElementById("fRefKw").value = referrerKeywords;
+			
+			
+			document.getElementById("userIDsFilter").value = userIdFilters;
+			
+			document.getElementById("showNodes").value = showNodesNames;
+			
+			document.getElementById("expandLabels").value = labelExpansionsStr;
+			
+			document.getElementById("referrerType").value = referrerTypeStr;
+			
+			
+
+			document.forms["formProxy"].PeriodType.value = GetRadioButtonValue(document.forms["ReportOptions"].PeriodType)
+	
+			document.forms["formProxy"].TimeFrame.value = document.forms["ReportOptions"].TimeFrame.value;
+			document.forms["formProxy"].DateRangeStartMonth.value = document.forms["ReportOptions"].DateRangeStartMonth.value;
+			document.forms["formProxy"].DateRangeStartDay.value = document.forms["ReportOptions"].DateRangeStartDay.value;
+			document.forms["formProxy"].DateRangeStartYear.value = document.forms["ReportOptions"].DateRangeStartYear.value;
+			
+			document.forms["formProxy"].DateRangeEndMonth.value = document.forms["ReportOptions"].DateRangeEndMonth.value;
+			document.forms["formProxy"].DateRangeEndDay.value = document.forms["ReportOptions"].DateRangeEndDay.value;
+			document.forms["formProxy"].DateRangeEndYear.value = document.forms["ReportOptions"].DateRangeEndYear.value;
+			
+
+			document.forms["formProxy"].submit();
+
+		
+
+		}
+	
+		return false;
+	}
+
+
+	function ClearDomainLinks(){
+		document.getElementById("domainIDs").value = "";
+		document.getElementById("hideDomainLinksDiv").style.visibility="hidden";
+	}
+
+</script>
+<script type="text/javascript" src="library/admin_library.js"></script>
+
+<script type="text/javascript" src="./library/customer_service.js"></script>
+<link rel="stylesheet" type="text/css" href="library/calendar/themes/winter.css"/>
+<script type="text/javascript" src="library/calendar/src/utils.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar.js"></script>
+<script type="text/javascript" src="library/calendar/lang/calendar-en.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar-setup.js"></script>
+<script type="text/javascript" src="library/formatDate.js"></script>
+</head>
+<body bgcolor="#FFFFFF" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="">
+<div align="center">
+{HEADER}
+&nbsp;
+<table width="760" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td class="Body">
+<!-- Inner Body  -->
+
+
+				<FORM name="ReportOptions" method="get" onSubmit="return gatherFormData();" >
+				
+				<input type="hidden" name="calendarProxyField" value="" id="calendarField" onChange="calendarDateRangeChanged(this.value)" />
+					<TABLE width="100%" border="0" cellspacing="0" cellpadding="2" bgcolor="#999999">
+						<TR>
+							<TD>
+								<TABLE width="100%" border="0" cellspacing="2" cellpadding="0" bgcolor="#EEEEEE" >
+									<TR>
+										<TD class="SmallBodyBold" width="8%">&nbsp;&nbsp;Report Period:</TD>
+										<TD class="SmallBodyBlack" width="49%">
+											<input type="radio" name="PeriodType" class="SmallBody" value="TIMEFRAME" onClick="SelectPeriodTypeTimeFrame( true );"
+											{PERIODTYPETIMEFRAME} />
+											{TIMEFRAMESELS}<img src="./images/transparent.gif" border="0" width="30" height="1" /><img alt='Calendar' align='absmiddle' src='./images/calendar5.gif' border='0' id='calendarDateRange'  onmouseover="this.style.cursor='pointer'" onMouseOut="this.style.cursor='default'" />
+										</TD>
+									</TR>
+									<TR>
+										<TD class="SmallBodyBold" width="8%"></TD>
+										<TD class="SmallBodyBlack" width="49%" >
+											<input type="radio" name="PeriodType"  class="SmallBody" value="DATERANGE" onClick="SelectPeriodTypeTimeFrame( false );"
+											{PERIODTYPEDATERANGE} />
+											{DATERANGESELS}
+										</TD>
+									</TR>
+									<TR>
+								</TABLE>
+							</TD>
+						</TR>
+					</TABLE>
+					&nbsp;
+					
+
+<table width="100%" border="0" cellspacing="1" cellpadding="3">
+	<tr>
+		<td class="Body" valign="top">
+<strong>Label Limiters</strong>
+					<table width="300" border="0" cellspacing="0" cellpadding="0" bgcolor="#99dd66">
+	<tr>
+		<td>
+		<table width="100%" border="0" cellspacing="1" cellpadding="3">
+	<tr>
+		<td bgcolor="#eeeeee" class="SmallBody">Main Label</td>
+		<td bgcolor="#eeeeee" class="SmallBody">Label Detail</td>
+	</tr>
+	<!-- BEGIN filtersBL -->
+	<tr>
+		<td bgcolor="#eeeeee"><input type="text" name="filterMainLabel_{COUNTER}" id="filterMainLabel_{COUNTER}" value="{FILTER_MAIN_LABEL}" class="AdminInput" style="width:160px;" /></td>
+		<td bgcolor="#eeeeee"><input type="text" name="filterDetailLabel_{COUNTER}" id="filterDetailLabel_{COUNTER}" value="{FILTER_DETAIL_LABEL}" class="AdminInput" style="width:186px;" /></td>
+	</tr>
+	<!-- END filtersBL -->
+
+</table>
+
+		</td>
+	</tr>
+</table>
+
+		</td>
+		<td class="Body" valign="top">
+<strong>Label Invalidators</strong>
+					<table width="300" border="0" cellspacing="0" cellpadding="0" bgcolor="#CC6699">
+	<tr>
+		<td>
+		<table width="100%" border="0" cellspacing="1" cellpadding="3">
+	<tr>
+		<td bgcolor="#eeeeee" class="SmallBody">Main Label</td>
+		<td bgcolor="#eeeeee" class="SmallBody">Label Detail</td>
+	</tr>
+	<!-- BEGIN invalidatorsBL -->
+	<tr>
+		<td bgcolor="#eeeeee"><input type="text" name="invalidateMainLabel_{COUNTER}" id="invalidateMainLabel_{COUNTER}" value="{INVALIDATE_MAIN_LABEL}" class="AdminInput" style="width:160px;" /></td>
+		<td bgcolor="#eeeeee"><input type="text" name="invalidateDetailLabel_{COUNTER}" id="invalidateDetailLabel_{COUNTER}" value="{INVALIDATE_DETAIL_LABEL}" class="AdminInput" style="width:186px;" /></td>
+	</tr>
+	<!-- END invalidatorsBL -->
+</table>
+
+		</td>
+	</tr>
+</table>
+
+		</td>
+	</tr>
+</table>
+
+&nbsp;
+<br/>
+
+
+
+<strong>Path Limiters</strong>
+<table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#99dd66">
+	<tr>
+		<td width="35%" valign="top" class="Body">
+		<table width="100%" border="0" cellspacing="1" cellpadding="3">
+	<tr>
+		<td width="16%" bgcolor="#eeeeee" class="SmallBody">Main Source</td>
+		<td width="39%" bgcolor="#eeeeee" class="SmallBody">Detail Source</td>
+			<td width="15%" bgcolor="#eeeeee" class="SmallBody">Main Target</td>
+		<td width="30%" bgcolor="#eeeeee" class="SmallBody">Detail Target</td>
+	</tr>
+	<!-- BEGIN pathFiltersBL -->
+	<tr>
+		<td bgcolor="#eeeeee" class="Body"><input type="text" name="filterMainPathSrc_{COUNTER}" id="filterMainPathSrc_{COUNTER}" value="{FILTER_MAIN_PATH_SRC}" class="AdminInput" style="width:150px;" /></td>
+		<td bgcolor="#eeeeee" class="Body"><input type="text" name="filterDetailPathSrc_{COUNTER}" id="filterDetailPathSrc_{COUNTER}" value="{FILTER_DETAIL_PATH_SRC}" class="AdminInput" style="width:150px;" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#999999"><strong>&gt;</strong></font></td>
+		<td bgcolor="#eeeeee" class="Body"><input type="text" name="filterMainPathTrgt_{COUNTER}" id="filterMainPathTrgt_{COUNTER}" value="{FILTER_MAIN_PATH_TRGT}" class="AdminInput" style="width:150px;" /></td>
+		<td bgcolor="#eeeeee" class="Body"><input type="text" name="filterDetailPathTrgt_{COUNTER}" id="filterDetailPathTrgt_{COUNTER}" value="{FILTER_DETAIL_PATH_TRGT}" class="AdminInput" style="width:150px;" /></td>
+	</tr>
+	<!-- END pathFiltersBL -->
+
+</table>
+
+		</td>
+	</tr>
+</table>
+
+&nbsp;
+<br/>
+
+
+
+<strong>Path Invalidators</strong>
+<table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#CC6699">
+	<tr>
+		<td width="35%" valign="top" class="Body">
+		<table width="100%" border="0" cellspacing="1" cellpadding="3">
+	<tr>
+		<td width="16%" bgcolor="#eeeeee" class="SmallBody">Main Source</td>
+		<td width="39%" bgcolor="#eeeeee" class="SmallBody">Detail Source</td>
+			<td width="15%" bgcolor="#eeeeee" class="SmallBody">Main Target</td>
+		<td width="30%" bgcolor="#eeeeee" class="SmallBody">Detail Target</td>
+	</tr>
+	<!-- BEGIN pathInvalidatorsBL -->
+	<tr>
+		<td bgcolor="#eeeeee" class="Body"><input type="text" name="invalidatorMainPathSrc_{COUNTER}" id="invalidatorMainPathSrc_{COUNTER}" value="{INVALIDATOR_MAIN_PATH_SRC}" class="AdminInput" style="width:150px;" /></td>
+		<td bgcolor="#eeeeee" class="Body"><input type="text" name="invalidatorDetailPathSrc_{COUNTER}" id="invalidatorDetailPathSrc_{COUNTER}" value="{INVALIDATOR_DETAIL_PATH_SRC}" class="AdminInput" style="width:150px;" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#999999"><strong>&gt;</strong></font></td>
+		<td bgcolor="#eeeeee" class="Body"><input type="text" name="invalidatorMainPathTrgt_{COUNTER}" id="invalidatorMainPathTrgt_{COUNTER}" value="{INVALIDATOR_MAIN_PATH_TRGT}" class="AdminInput" style="width:150px;" /></td>
+		<td bgcolor="#eeeeee" class="Body"><input type="text" name="invalidatorDetailPathTrgt_{COUNTER}" id="invalidatorDetailPathTrgt_{COUNTER}" value="{INVALIDATOR_DETAIL_PATH_TRGT}" class="AdminInput" style="width:150px;" /></td>
+	</tr>
+	<!-- END pathInvalidatorsBL -->
+
+</table>
+
+		</td>
+	</tr>
+</table>
+
+				
+				&nbsp;
+				<br/>
+
+
+	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+	<tr>
+		<td width="29%" class="Body" valign="top">
+		<strong>Web Browser Limiters</strong>
+		<table width="100" border="0" cellspacing="0" cellpadding="0" bgcolor="#6699dd">
+	<tr>
+		<td>
+		<table width="100%" border="0" cellspacing="1" cellpadding="3">
+	<!-- BEGIN userAgentBL -->
+	<tr>
+		<td bgcolor="#eeeeee"><input type="text" name="userAgent_{COUNTER}" id="userAgent_{COUNTER}" value="{USER_AGENT}" class="AdminInput" style="width:160px;" /></td>
+	</tr>
+	<!-- END userAgentBL -->
+</table>
+		</td>
+	</tr>
+</table>
+<br/>
+<br/>
+
+		<strong>Referrer Limiters</strong>
+		<table width="100" border="0" cellspacing="0" cellpadding="0" bgcolor="#6699dd">
+	<tr>
+		<td>
+		<table width="100%" border="0" cellspacing="1" cellpadding="3">
+	<!-- BEGIN referrerLimitBL -->
+	<tr>
+		<td bgcolor="#eeeeee"><input type="text" name="refKeywords_{COUNTER}" id="refKeywords_{COUNTER}" value="{REF_KEYWORDS}" class="AdminInput" style="width:160px;" /></td>
+	</tr>
+	<!-- END referrerLimitBL -->
+</table>
+		</td>
+	</tr>
+</table>
+<br/>
+<br/>
+		<strong>User ID Limiters</strong>
+		<table width="100" border="0" cellspacing="0" cellpadding="0" bgcolor="#6699dd">
+	<tr>
+		<td>
+		<table width="100%" border="0" cellspacing="1" cellpadding="3">
+	<!-- BEGIN userIDlimiters -->
+	<tr>
+		<td bgcolor="#eeeeee"><input type="text" name="userID_{COUNTER}" id="userID_{COUNTER}" value="{USER_ID}" class="AdminInput" style="width:160px;" /></td>
+	</tr>
+	<!-- END userIDlimiters -->
+</table>
+
+		</td>
+	</tr>
+</table>
+
+<br/>
+
+
+</td>
+		<td width="71%" class="Body" valign="top">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+	<tr>
+		<td class="Body" valign="top">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+	<tr>
+		<td class="Body"><strong>Minimum Duration</strong><br/><input type="text" name="minSessionMin" id="minSessionMin" value="{MINIMUM_SESSION_DURATION}" class="AdminInput" style="width:50px;" maxlength="5" /> Minutes</td>
+		<td class="Body"><strong>Maximum Duration</strong><br/><input type="text" name="maxSessionMin" id="maxSessionMin" value="{MAXIMUM_SESSION_DURATION}" class="AdminInput" style="width:50px;" maxlength="5" /> Minutes</td>
+	</tr>
+</table>
+		
+
+<br/>
+<br/>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+	<tr>
+		<td class="Body"><strong>Minimum Nodes</strong><br/><input type="text" name="minimumNodes" id="minimumNodes" value="{MINIMUM_NODES}" class="AdminInput" style="width:50px;" maxlength="5" /></td>
+		<td class="Body"><strong>Maximum Nodes</strong><br/><input type="text" name="maximumNodes" id="maximumNodes" value="{MAXIMUM_NODES}" class="AdminInput" style="width:50px;" maxlength="5" /></td>
+	</tr>
+</table>
+
+
+<br/>
+<br/>
+		<strong>Label Expansion</strong><br/>
+<select name="labelExpansion" id="labelExpansion" size="9" multiple>
+{LABEL_EXPANSION_LIST}
+</select>	
+<br/>
+
+
+
+		
+		</td>
+		<td class="Body">
+		<strong>Display Nodes</strong><br/>
+		<select name="showNodesList" id="showNodesList" size="15" multiple>
+{DISPLAYED_NODES_LIST}
+</select>	
+		
+	
+		</td>
+	</tr>
+</table>
+		
+
+<br/><br/>
+<!-- BEGIN ClearDomainsLink -->
+<div id='hideDomainLinksDiv'>
+<a href="javascript:ClearDomainLinks();" class="BlueRedLink" style="font-size:16px;"><strong>Reset Domains in Report to Match Dashboard Selection</strong></a>
+</div>
+<!-- END ClearDomainsLink -->		
+		</td>
+	</tr>
+</table>
+&nbsp;
+
+
+<font class="SmallBody">
+<input type="checkbox" name="refType" id="refType" value="B" {REF_B} /> <img src="images/icon-dollars.png" width="19" height="16" align="absmiddle" alt="" />Banner Click
+<img src="./images/transparent.gif" border="0" width="30" height="1" align="absmiddle" alt="" />
+<input type="checkbox" name="refType" id="refType" value="O" {REF_O} /> <img src="images/icon-leaf.png" width="19" height="16" align="absmiddle" alt="" />Organic Click
+<img src="./images/transparent.gif" border="0" width="30" height="1" align="absmiddle" alt="" />
+<input type="checkbox" name="refType" id="refType" value="L" {REF_L} /> <img src="images/icon-linked.png" width="19" height="16" align="absmiddle" alt="" />Uncategorized Link
+<img src="./images/transparent.gif" border="0" width="30" height="1" align="absmiddle" alt="" />
+<input type="checkbox" name="refType" id="refType" value="S" {REF_S} /> <img src="images/icon-linkSalesRep.png" width="19" height="16" align="absmiddle" alt="" />Sales Rep Link
+<img src="./images/transparent.gif" border="0" width="30" height="1" align="absmiddle" alt="" />
+<input type="checkbox" name="refType" id="refType" value="U" {REF_U} /> <img src="images/icon-unknown.png" width="19" height="16" align="absmiddle" alt="" />Unknown
+<img src="./images/transparent.gif" border="0" width="30" height="1" align="absmiddle" alt="" />
+</font>
+
+
+</form>
+
+
+
+<form id="formProxy" name="formProxy" method="get">
+<br/>
+
+<br/>
+&nbsp;				
+
+<input type="hidden" name="generateReport" value="yes" />
+
+<input type="hidden" name="fMnLbl" id="fMnLbl" value="" />
+<input type="hidden" name="fDtLbl" id="fDtLbl" value="" />
+
+<input type="hidden" name="iMnLbl" id="iMnLbl" value="" />
+<input type="hidden" name="iDtLbl" id="iDtLbl" value="" />
+
+<input type="hidden" name="minNodes" id="minNodes" value="" />
+<input type="hidden" name="maxNodes" id="maxNodes" value="" />
+
+<input type="hidden" name="fMnPthS" id="fMnPthS" value="" />
+<input type="hidden" name="fDtPthS" id="fDtPthS" value="" />
+<input type="hidden" name="fMnPthT" id="fMnPthT" value="" />
+<input type="hidden" name="fDtPthT" id="fDtPthT" value="" />
+
+<input type="hidden" name="iMnPthS" id="iMnPthS" value="" />
+<input type="hidden" name="iDtPthS" id="iDtPthS" value="" />
+<input type="hidden" name="iMnPthT" id="iMnPthT" value="" />
+<input type="hidden" name="iDtPthT" id="iDtPthT" value="" />
+
+
+<input type="hidden" name="fUsrAg" id="fUsrAg" value="" />
+<input type="hidden" name="fRefKw" id="fRefKw" value="" />
+<input type="hidden" name="sessionIDs" id="sessionIDs" value="" />
+<input type="hidden" name="userIDs" id="userIDsFilter" value="" />
+<input type="hidden" name="showNds" id="showNodes" value="" />
+
+
+<input type="hidden" name="referrerType" id="referrerType" value="" />
+<input type="hidden" name="expandLabels" id="expandLabels" value="" />
+<input type="hidden" name="minSess" id="minimumSessionDuration" value="" />
+<input type="hidden" name="maxSess" id="maximumSessionDuration" value="" />
+<input type="hidden" name="domainIDs" id="domainIDs" value="{DOMAIN_IDS}" />
+
+<input type="hidden" name="PeriodType" value="" />
+
+<input type="hidden" name="TimeFrame" value="" />
+<input type="hidden" name="DateRangeStartMonth" value="" />
+<input type="hidden" name="DateRangeStartDay" value="" />
+<input type="hidden" name="DateRangeStartYear" value="" />
+
+<input type="hidden" name="DateRangeEndMonth" value="" />
+<input type="hidden" name="DateRangeEndDay" value="" />
+<input type="hidden" name="DateRangeEndYear" value="" />
+
+					
+				<TABLE width="100%" border="0" cellspacing="0" cellpadding="3" bgcolor="#eeeeee" style="border:solid; border-width:1px; border-color:#999999;">
+					<TR>
+						<TD width="76%" class="SmallBody">
+						<!-- BEGIN ShowChartLink -->
+						<a href="ad_visitorPathsChart.php?chartType=combined&combinedChartParams={CHART_QUERY_STRING}" class="BlueRedLink" target="visitorPathsChart">Chart</a> &nbsp;&nbsp;&nbsp;{SESSION_COUNT} &nbsp;&nbsp;{UNIQUE_IPS} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{USER_COUNT}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ORDER_COUNT}
+						<!-- END ShowChartLink -->						</TD>
+				  <TD width="24%" align="center">
+			<input type="button" value="Create Report" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" onClick="gatherFormData();"  />
+						</TD>
+				  </TR>
+				</TABLE>
+			</FORM>
+
+
+
+
+
+
+<br/>&nbsp;<br/>
+
+<br/>
+
+<!-- BEGIN ReportBody -->
+
+
+<font class="Body"><u><strong>Session Details</strong></u></font>
+
+<br/>
+&nbsp;<br/>
+<!-- BEGIN MultiPageBL -->
+<table width="100%" border="0" cellspacing="0" cellpadding="1" class="NavColor">
+  <tr>
+    <td>
+	<table width="100%" border="0" cellspacing="0" cellpadding="1" bgcolor="#ddeeff">
+  <tr>
+    <td>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="50%" class="SmallBody"><img  src="./images/transparent.gif" border="0" width="1" height="3" alt="" /><br/>
+                            <font color="#000000">&nbsp; Total of {SESSION_COUNT} sessions.  <font class="ReallySmallBody" style="color:#000000">Displaying {START_RESULTS_DISP} - {END_RESULTS_DISP}</font></font><br/>
+                            <img src="./images/transparent.gif" border="0" width="2" height="3" alt="" /></td>
+<td width="50%" align="right" class="SmallBody"><font color="#000000">{NAVIGATE}</font></td>
+</tr>
+</table>
+	</td>
+  </tr>
+</table>
+	</td>
+  </tr>
+</table>
+&nbsp;
+ <!-- END MultiPageBL -->
+
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#999999">
+	<tr>
+		<td>
+<table width="100%" border="0" cellspacing="1" cellpadding="3">
+	<tr>
+		<td width="33%" bgcolor="#f3f3ff" class="SmallBody"><strong>Session ID</strong></td>
+		<td width="18%" bgcolor="#f3f3ff" class="SmallBody"><strong>Duration</strong></td>
+		<td width="35%" bgcolor="#f3f3ff" class="SmallBody"><strong>Web Browser Agent / Referrer</strong></td>
+		<td width="14%" bgcolor="#f3f3ff" class="SmallBody"><strong>Details</strong></td>
+	</tr>
+<!-- BEGIN SessionListBL -->
+	<tr>
+		<td width="33%" bgcolor="#f3f3f3" class="SmallBody">{DOMAIN_LOGO} <a href='javascript:visitorChartSession("{SESSION_ID}", false);' class="BlueRedLinkRecord">{SESSION_STARTDATE}</a><br><font class='ReallySmallBody'>{IPADDRESS}</font></td>
+		<td width="18%" bgcolor="#f3f3f3" class="SmallBody">{SESSION_DURATION}</td>
+		<td width="35%" bgcolor="#f3f3f3" class="ReallySmallBody">{WEB_BROWSER_AGENT}<br/>
+		{REFERRAL_TYPE}<font color="#000099">{REF_DETAIL}</font>
+		<br/>
+
+<font color="#006666">{REFERER}</font></td>
+		<td width="14%" bgcolor="#f3f3f3" class="SmallBody">{DETAILS}</td>
+	</tr>
+<!-- END SessionListBL -->
+</table>
+
+		</td>
+	</tr>
+</table>
+
+<!-- BEGIN SecondMultiPageBL -->
+&nbsp;
+	<table width="100%" border="0" cellspacing="0" cellpadding="1" class="NavColor">
+  <tr>
+    <td>
+	<table width="100%" border="0" cellspacing="0" cellpadding="1" bgcolor="#ddeeff">
+  <tr>
+    <td>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="50%" class="SmallBody"><img  src="./images/transparent.gif" border="0" width="1" height="3" alt="" /><br/>
+                            <font color="#000000">&nbsp; Total of {SESSION_COUNT} sessions. <font class="ReallySmallBody" style="color:#000000">Displaying {START_RESULTS_DISP} - {END_RESULTS_DISP}</font></font><br/>
+                            <img src="./images/transparent.gif" border="0" width="2" height="3" alt="" /></td>
+<td width="50%" align="right" class="SmallBody"><font color="#000000">{NAVIGATE}</font></td>
+</tr>
+</table>
+	</td>
+  </tr>
+</table>
+	</td>
+  </tr>
+</table>
+<!-- END SecondMultiPageBL -->
+
+
+<!-- END ReportBody -->
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+
+<!-- Inner Body  END -->
+</td>
+</tr>
+</table>
+<table width="760" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="360" class="NavColor"><img src="./images/footer.gif" border="0" width="350" height="16" usemap="#footer" alt="" /></td>
+	<td width="400" align="right" class="NavColor"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+  </tr>
+</table>
+<font class="copyright"> </font>
+</div>
+&nbsp;
+<script type="text/javascript" src="./library/ImageMap-footer.js"></script>
+<script type="text/javascript">InitializeTimeFields()</script>
+<script>
+	function calendarDateRangeChanged(newDateForRange){
+	
+		var calendarDate = new Date(Date.parse(newDateForRange));
+		
+		SelectPeriodTypeTimeFrame( false );
+		
+		document.forms["ReportOptions"].DateRangeStartYear.value = calendarDate.getFullYear();
+		document.forms["ReportOptions"].DateRangeEndYear.value = calendarDate.getFullYear();
+		document.forms["ReportOptions"].DateRangeStartMonth.value =  (calendarDate.getMonth() + 1);
+		document.forms["ReportOptions"].DateRangeEndMonth.value =  (calendarDate.getMonth() + 1);
+		document.forms["ReportOptions"].DateRangeStartDay.value =  (calendarDate.getDate());
+		document.forms["ReportOptions"].DateRangeEndDay.value =  (calendarDate.getDate());
+		
+		SetRadioButtonValue("document.forms['ReportOptions'].PeriodType", "DATERANGE");
+	}
+	
+	
+		var cal = new Zapatec.Calendar.setup({
+
+		inputField     :    "calendarField",     // id of the input field
+		singleClick    :    true,     // require two clicks to submit
+		ifFormat       :    '%a, %e %b %Y %H:%M:%S',     //  of the input field
+		timeFormat     : 	"12",
+		ampm           :    false,
+		showsTime      :    false,     // show time as well as date
+		button         :    "calendarDateRange",  // trigger button
+		timeInterval   :    10,
+		floating	   : 	true,
+		position	   : 	[190, 140],
+		date	       :	new Date("{START_REPORT_DATE_STRING}")
+		});
+		
+
+		
+</script>
+</body>
+</html>

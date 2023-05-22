@@ -1,0 +1,111 @@
+<html>
+<head>
+<title>Coupon Activation</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+
+<script language="javascript">
+
+	//Make an array of the images we want to preload for the mouse-overs.
+	arImageSrc = new Array (
+		"./images/button-go-d.gif",
+		"./images/button-closewindow-blue-d.gif",
+		"./images/button-sendmessage-blue-d.gif"
+	)
+
+	//Preload images.
+	arImageList = new Array ();
+	for (counter in arImageSrc) {
+		arImageList[counter] = new Image();
+		arImageList[counter].src = arImageSrc[counter];
+	}
+
+
+	function DeleteCoupon(CPid){
+			document.location = "./ad_users_coupons.php?customer_id={CUST_ID}&delcouponid=" + CPid;
+	}
+
+
+</script>
+
+</head>
+
+<body bgcolor="#3366CC" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="" >
+<img  src="./images/transparent.gif" border="0" width="1" height="10" alt="" /><br/>
+<div align="center">
+<table bgcolor="#EEEEEE" width="300" cellpadding="0" cellspacing="0" border="0">
+
+<tr>
+<td bgcolor="#666666" class="Body" align="center"><img  src="./images/transparent.gif" border="0" width="1" height="3" alt="" /><br/><font color="#FFFFFF"><b>Coupon Activation</b></font><br/><img src="./images/transparent.gif" border="0" width="1" height="3" alt="" /></td>
+
+<tr>
+<td class="Body">&nbsp;
+<!-- BEGIN ErrorBL -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<form name="cat" action="./ad_users_coupons.php">
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+<input type="hidden" name="customer_id" value="{CUST_ID}" />
+  <tr>
+            <td class="ReallySmallBody" align="center" width="89%">Use commas to activate multiple coupons.<br/><input type="text" name="addcouponcode" value="" style="background-color:#FFFFFF; width:215; border-width:1; font-size:12px;" class="SmallInputBox" /></td>
+            <td align="right" width="11%">
+              <input type="submit" name="xx" value="Add" class="AdminButton" onmouseover="this.style.background='#ffeeaa';" onmouseout="this.style.background='#FFFFDD';" />&nbsp;&nbsp;&nbsp;</td>
+  </tr>
+ </form>
+</table>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td class="Body" align="left"><br/>&nbsp;&nbsp;&nbsp;Current Activated Coupons</td>
+  </tr>
+   <tr>
+    <td class="Body" align="center" bgcolor="#CCCCCC"><img src="./images/transparent.gif" width="2" height="2" alt="" /></td>
+  </tr>
+</table>
+<!-- BEGIN NoCats -->
+<table width="100%" border="0" cellspacing="10" cellpadding="3">
+
+<!-- BEGIN ActivationBL -->
+  <tr>
+			<td class="ReallySmallBody" bgcolor="#DDDDFF" width="83%">{COUPON_CODE} : {COUPON_NAME}</td>
+			<td class="SmallBody" bgcolor="#DDDDFF" width="17%" align="center"><a href="javascript:DeleteCoupon({CPID});">X</a></td>
+  </tr>
+ <!-- END ActivationBL -->
+</table>
+<!-- END NoCats -->
+
+
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td class="Body" align="left"><br/>&nbsp;&nbsp;&nbsp;Coupons Customer Has Used</td>
+  </tr>
+   <tr>
+    <td class="Body" align="center" bgcolor="#CCCCCC"><img src="./images/transparent.gif" width="2" height="2" alt="" /></td>
+  </tr>
+</table>
+<!-- BEGIN NoCouponsUsedBL -->
+<table width="100%" border="0" cellspacing="10" cellpadding="1">
+
+<!-- BEGIN CouponsUsedBL -->
+  <tr>
+			<td class="SmallBody" bgcolor="#e0e0e0" width="83%"><strong>{COUPON_CODE_USED}</strong> : Used {COUPON_COUNT_USED} time(s)<br/><font class="ReallySmallBody">{COUPON_CODE_USED_DESC}</font></td>
+  </tr>
+ <!-- END CouponsUsedBL -->
+</table>
+<!-- END NoCouponsUsedBL -->
+
+<!-- END ErrorBL -->
+ </td>
+</tr>
+
+
+<tr>
+<td><img src="images/header-editoptions-fade-bot.gif" width="300" alt="" /></td>
+</tr>
+</table>
+
+</div>
+
+
+</body>
+</html>

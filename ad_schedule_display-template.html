@@ -1,0 +1,78 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<title>Schedule Display</title>
+</head>
+
+<body bgcolor="#3366CC" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<img  src="./images/transparent.gif" border="0" width="1" height="10" alt="" /><br/>
+<div align="center">
+<!-- 24 hours in the Day ... each hour takes up 20 pixels.   So the internal Table width is 480 pixels. -->
+
+<table bgcolor="#EEEEEE" width="500" cellpadding="0" cellspacing="0" border="0">
+
+<tr>
+<td bgcolor="#CCCCCC" align="center" class="Body" style="background-image: url(./images/admin/header-shipping.png); background-repeat: no-repeat;"><b>{SCHEDULE_TITLE}</b></td>
+
+<tr>
+<tr>
+<td bgcolor="#666666" align="center" class="Body"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+
+<tr>
+<td align="center" class="Body">
+
+<table width="480" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td bgcolor="#CCCCCC"><img src="./images/Schedule-24-hours.png" alt="" /></td>
+  </tr>
+</table>
+
+
+
+
+<!-- BEGIN ScheduleBl -->
+&nbsp;
+<table width="480" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="{LEFT_WIDTH}"><img src="./images/transparent.gif" width="1" height="3" alt="" /></td>
+    <td width="{CENTER_WIDTH}" bgcolor="{BAR_BACKGROUND}"><img src="./images/transparent.gif" width="1" height="3" alt="" /></td>
+    <td width="{RIGHT_WIDTH}"><img src="./images/transparent.gif" width="1" height="3" alt="" /></td>
+  </tr>
+</table>
+	</td>
+  </tr>
+  <tr>
+    <td class="SmallBody" bgcolor="#FFFFFF">
+<table width="100%" border="0" cellspacing="0" cellpadding="2">
+  <tr>
+    <td class="SmallBody" align="left">{TIME_DESC}{EVENT_DESC}</td>
+  </tr>
+</table>
+
+	</td>
+  </tr>
+</table>
+
+<!-- END ScheduleBl -->
+&nbsp;
+
+</td>
+</tr>
+
+
+<tr>
+<td><img src="images/header-editoptions-fade-bot.gif" width="500" height="30" alt="" /></td>
+</tr>
+</table>
+
+
+</div>
+
+
+</body>
+</html>

@@ -1,0 +1,326 @@
+<html>
+<head>
+<title>Admin</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<script>
+
+function SaveButton(){
+	
+	var contentTitle = document.forms["contentitemform"].contentTitle.value;
+	var contentDescription = document.forms["contentitemform"].contentDescription.value;
+	var contentCategoryID = document.forms["contentitemform"].categoryID.value;
+	var imageHyperlink = document.forms["contentitemform"].imageHyperlink.value;
+	
+	// Trim Whitespace
+	contentTitle = contentTitle.replace(/^\s+/, "");
+	contentTitle = contentTitle.replace(/\s+$/, "");
+	imageHyperlink = imageHyperlink.replace(/^\s+/, "");
+	imageHyperlink = imageHyperlink.replace(/\s+$/, "");
+	
+	
+	errorMessage = "";
+	
+	if(contentTitle == "")
+		errorMessage += "* The title can not be left blank.\n\n";
+		
+	if(contentDescription == "")
+		errorMessage += "* The content can not be left blank.\n\n";
+	
+	if(contentCategoryID == "0")
+		errorMessage += "* Your have to select a Content Category before saving.\n\n";
+
+	if(imageHyperlink != "" && !imageHyperlink.match(/^http.+/))
+		errorMessage += "* The image hyperlink is not in the correct format.\n\n";
+
+	if(errorMessage != ""){
+		alert(errorMessage);
+	}
+	else{
+		document.forms["contentitemform"].submit();
+	}
+	
+
+}
+
+
+
+function RemoveImage(){
+	if(confirm("Are you sure that you want to remove the current image?")){
+		document.location = "./ad_contentItem.php?action=removeImage&viewType=edit&editContentItemID={ITEM_EDIT_ID}&form_sc={FORM_SECURITY_CODE}";
+	}
+}
+
+function CreatNewContent(){
+	document.location = "./ad_contentItem.php?viewType=new";
+}
+
+function ViewLiveContent(){
+
+		var contentAddress = "{LIVE_CONTENT_LINK}";
+		newWindow = window.open(contentAddress, "LiveContentCategory", "height=700,width=1000,directories=no,location=yes,menubar=no,scrollbars=yes,status=yes,toolbar=no,resizable=yes");
+		newWindow.focus();
+}
+
+function RemoveContentItem(){
+
+	if(confirm("Are you sure that you want to delete this Content Item?"))
+		document.location = "./ad_contentItem.php?action=removeContentItem&viewType=edit&editContentItemID={ITEM_EDIT_ID}&form_sc={FORM_SECURITY_CODE}";
+}
+
+
+function AddContentTemplate(){
+
+		var productLinkIsEmpty = {EMPTY_PRODUCT_FLAG_JS};
+		
+		if(productLinkIsEmpty){
+			alert("You can not add content for a template unless\nthe Content Category (that this Content Item belongs to)\nis linked to a product.");
+		}
+		else{
+			var address = "./ad_contentTemplateSelect.php?editContentItemID={ITEM_EDIT_ID}";
+			newWindow = window.open(address, "contentTemplateSelect", "height=500,width=480,directories=no,location=no,menubar=no,scrollbars=yes,status=no,toolbar=no,resizable=no");
+			newWindow.focus();
+		}
+}
+
+
+function ChangeContentItem(contentItemID){
+	document.location = "./ad_contentItem.php?viewType=edit&editContentItemID=" + contentItemID;
+}
+
+function TemplatePicked(templateID){
+	document.location = "./ad_contentTemplate.php?viewType=new&contentItemID={ITEM_EDIT_ID}&artworkTemplateID=" + templateID;
+	
+}
+
+
+
+</script>
+
+<script type="text/javascript" src="./library/admin_library.js"></script>
+<link rel="stylesheet" type="text/css" href="library/calendar/themes/winter.css"/>
+<script type="text/javascript" src="library/calendar/src/utils.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar.js"></script>
+<script type="text/javascript" src="library/calendar/lang/calendar-en.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar-setup.js"></script>
+<script type="text/javascript" src="library/formatDate.js"></script>
+<style type="text/css">
+<!--
+.style1 {
+	color: #000000;
+	font-weight: bold;
+}
+.style2 {color: #000000}
+.style3 {
+	color: #333333;
+	font-weight: bold;
+}
+-->
+</style>
+</head>
+<body bgcolor="#FFFFFF" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="">
+<div align="center">
+{HEADER}
+&nbsp;
+<table width="760" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td class="SmallBody">
+<form name="contentitemform" action="./ad_contentItem.php" enctype="multipart/form-data" method="post" >
+<input type="hidden" name="action" value="save" />
+<input type="hidden" name="viewType" value="{NEW_OR_EDIT}" />
+<input type="hidden" name="editContentItemID" value="{ITEM_EDIT_ID}" />
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+
+<font class="Error">{MESSAGE}</font><br/>
+
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+  <td>
+
+	<!-- BEGIN ContentCategoryLinkBL -->
+	<img src="./images/content-back.jpg" align="absmiddle" width="18" height="17" alt="" /> <a href='./ad_contentCategory.php?viewType=edit&editCategoryID={CONTENT_CATEGORY_ID}' class='BlueRedLink'>Back to Content Category</a>  <em><font class="SmallBody">( {CONTENT_CATEGORY_NAME} )</font></em>
+			<!-- BEGIN categoryDisabledBL -->
+		<font class="SmallBody" style="color:#cc0000"><i>The category has been disabled.</i></font>
+		<!-- END categoryDisabledBL -->
+	<br/><img  src="./images/transparent.gif" width="7" height="7" alt="" /><br/>
+	<!-- END ContentCategoryLinkBL -->
+
+		<!-- BEGIN LiveContentLinkBL -->
+		<img  src="./images/content-earth.jpg" align="absmiddle" width="18" height="17" alt="" /> <a href='javascript:ViewLiveContent()' class='BlueRedLink'>View Live Content</a><br/><img  src="./images/transparent.gif" width="7" height="7" alt="" /><br/>
+		<img src="./images/content-remove.jpg" align="absmiddle" width="18" height="17" alt="" /> <a href='javascript:RemoveContentItem()' class='BlueRedLink'>Remove this Content Item</a>
+		
+
+		
+		<br/><img  src="./images/transparent.gif" width="7" height="7" alt="" /><br/>
+		<img  src="./images/content-add.jpg" align="absmiddle" width="18" height="17" alt="" /> <a href='javascript:AddContentTemplate()' class='BlueRedLink'>Add Content for Template</a><br/><img  src="./images/transparent.gif" width="7" height="7" alt="" /><br/>
+		<!-- END LiveContentLinkBL -->
+&nbsp;</td>
+    <td align="right">
+	{OTHER_CONTENT_ITEMS}
+	<!-- BEGIN SavedMessageBL -->
+	<br/>
+<OBJECT classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"
+ codebase="https://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=7,0,19,0"
+ WIDTH=200 HEIGHT=30>
+ <param name="movie" VALUE="./Saved-WhiteBack.swf" /> <param name="quality" value="high" /> <param NAME=bgcolor VALUE=#FFFFFF /> <EMBED src="./Saved-WhiteBack.swf" quality=high bgcolor=#FFFFFF  WIDTH=200 HEIGHT=30 TYPE="application/x-shockwave-flash" PLUGINSPAGE="https://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash"></EMBED>
+</OBJECT>
+<br/> &nbsp;<!-- END SavedMessageBL --></td>
+  </tr>
+</table>
+
+<table width="100%" border="0" cellspacing="0" cellpadding="5">
+  <tr>
+    <td bgcolor="#EFE0CB" class="SmallBody">
+
+
+
+
+
+
+<span class="style1">Title <font class="ReallySmallBody">(used for creating the URL)</font></span><br/>
+<input type="text" name="contentTitle" value="{CONTENT_TITLE}" style="font-family:Arial, Helvetica, sans-serif; font-size:14px; width:600px; font-weight:bold; color:#993333" />
+
+
+<br/><img  src="./images/transparent.gif" width="15" height="15" alt="" /><br/>
+<span class="style1">Meta Page Title <font class="ReallySmallBody">(appears in the Title Browser Bar)</font></span><br/>
+<input type="text" name="metaTitle" value="{META_TITLE}" style="font-family:Arial, Helvetica, sans-serif; font-size:14px; width:600px; font-weight:bold;" />
+<br/><img  src="./images/transparent.gif" width="15" height="15" alt="" /><br/>
+
+<span class="style1">Meta Description <font class="ReallySmallBody">(shows as a blurb in Search Engines... 1-2 sentences)</font></span><br/>
+<input type="text" name="metaDescription" value="{META_DESCRIPTION}" style="font-family:Arial, Helvetica, sans-serif; font-size:14px; width:600px;" />
+<br/><img  src="./images/transparent.gif" width="15" height="15" alt="" /><br/>
+
+
+<span class="style2"><strong>Content Category</strong></span><br/><select name="categoryID" class="AdminDropDown">
+{CONTENT_CATEGORY_DROPDOWN}
+</select><br/><img src="./images/transparent.gif" width="15" height="15" alt="" /><img src="./images/transparent.gif" width="15" height="15" alt="" /><table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="75%" class="SmallBody"><strong><span class="style2">Image</span> (JPEG)</strong> (optional)<br/>
+<input type="file" name="image" style="font-family:Arial, Helvetica, sans-serif; font-size:11px; width:400px; color:#333333" /></td>
+    <td width="25%" class="SmallBody"><span class="style3">Image Alignment</span><br/>
+<select name="imageAlign" class="AdminDropDown">
+{IMAGE_ALIGN_DROPDOWN}
+</select></td>
+  </tr>
+</table>
+
+<br/>
+<!-- BEGIN ImageUploadedBL -->
+<a href="javascript:RemoveImage();" class="BlueRedLink">Remove Current Image</a><br/>
+{CURRENT_IMAGE}
+
+<br/><br/>
+<!-- END ImageUploadedBL -->
+
+<span class="style2"><strong>Image Hyperlink</strong></span> <br/>
+      <font class="SmallBody"><font color="#666666">(Use absolute URL's such as http://{DOMAIN_WEBSITE_URL}/postcards.html)</font></font><br/>
+<input type="text" name="imageHyperlink" value="{IMAGE_HYPERLINK}" style="font-family:Arial, Helvetica, sans-serif; font-size:11px; width:400px; color:#333333" />
+
+
+
+
+<br/><img  src="./images/transparent.gif" width="15" height="15" alt="" /><br/>
+
+
+<span class="style2"><strong>Content Format</strong></span><br/>
+<input type="radio" name="descriptionFormat" value="text" {DESC_FORMAT_TEXT_CHECKED} /> Text &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<input type="radio" name="descriptionFormat" value="html" {DESC_FORMAT_HTML_CHECKED} /> HTML
+<br/>
+<br/>
+<span class="style2"><strong>Active</strong></span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font class="ReallySmallBody">De-activating a Content Item will cause this content and all Content Templates linked to it to show up with a 404 error on the front-end.</font><br/>
+<input type="radio" name="activeContent" value="Y" {ACTIVE_YES_CHECKED} /> Yes &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<input type="radio" name="activeContent" value="N" {ACTIVE_NO_CHECKED} /> No
+<br/>
+<br/>
+<span class="style2"><strong>Content</strong></span><br/>
+<textarea name="contentDescription" style="font-family:Arial, Helvetica, sans-serif; font-size:13px; width:750px; height:400px; color:#333333" wrap="VIRTUAL">{CONTENT_DESCRIPTION}</textarea>
+
+<br/>
+<br/>
+<span class="style2"><strong>HTML Header</strong> (optional)</span><br/>
+<textarea name="htmlHeader" style="font-family:Arial, Helvetica, sans-serif; font-size:13px; width:750px; height:80px; color:#333333" wrap="VIRTUAL">{HTML_HEADER}</textarea>
+
+
+<br/>
+<br/>
+<span class="style2"><strong>Links</strong></span><br/>
+<textarea name="contentLinks" style="font-family:Arial, Helvetica, sans-serif; font-size:13px; width:750px; height:80px; color:#333333" wrap="VIRTUAL">{CONTENT_LINKS}</textarea>
+
+
+
+
+
+<br/><img  src="./images/transparent.gif" width="15" height="15" alt="" /><br/>
+
+
+<span class="style2"><strong>Footer Format</strong></span> (optional)<br/>
+<input type="radio" name="footerFormat" value="text" {FOOTER_FORMAT_TEXT_CHECKED} /> Text &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<input type="radio" name="footerFormat" value="html" {FOOTER_FORMAT_HTML_CHECKED} /> HTML
+
+<br/>
+<br/>
+<span class="style2"><strong>Footer</strong></span> (optional)<br/>
+<textarea name="contentFooter" style="font-family:Arial, Helvetica, sans-serif; font-size:13px; width:750px; height:60px; color:#333333" wrap="VIRTUAL">{CONTENT_FOOTER}</textarea>
+<br/><br/><br/>
+
+<input type="button" name="SaveBtn" value="Save" class="AdminButton" onmouseover="this.style.background='#ffeeaa';" onmouseout="this.style.background='#FFFFDD';" onclick="SaveButton();" />
+<br/><br/><br/><br/>
+
+</td>
+  </tr>
+</table>
+</form>
+<br/><br/>
+<!-- BEGIN TemplateListBL -->
+
+<font color="#333333"><strong>Content Templates</strong></font>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td bgcolor="#333333"><img src="./images/greypixel.gif" border="0" width="1" height="1" alt="" /></td>
+  </tr>
+</table>
+&nbsp;<br/>
+
+
+<!-- BEGIN ContentTemplateBL -->
+<table width="100%" border="0" cellspacing="0" cellpadding="7">
+  <tr>
+    <td width="10%">
+	{TEMPLATE_TITLE}<br/><img  src="./images/transparent.gif" border="0" width="1" height="5" alt="" /><br/>
+	<a href="./ad_contentTemplate.php?viewType=edit&editContentTemplateID={CONTENT_TEMPLATE_ID}">{CONTENT_TEMPLATE_IMAGE}</a></td>
+    <td width="90%" class="SmallBody" valign="top"><strong>{CONTENT_TEMPLATE_KB} KB</strong> - {CONTENT_TEMPLATE_DESC}<br/><img  src="./images/transparent.gif" border="0" width="1" height="4" alt="" /><br/>{TEMPLATE_LINKS} <font class="ReallySmallBody">Last Edited: {LAST_EDITED_ON} by: {LAST_EDITED_BY}</font></td>
+  </tr>
+</table><img src="./images/transparent.gif" border="0" width="1" height="7" alt="" />
+<!-- END ContentTemplateBL -->
+<br/>
+<br/>
+
+<!-- END TemplateListBL -->
+
+<!-- BEGIN TimeStampBL -->
+<br/><hr/>
+Created By: {CREATED_BY} &nbsp;&nbsp;&nbsp;&nbsp;<font class="ReallySmallBody">{CREATED_ON}</font>
+<br/>
+Last Edited By: {LAST_EDITED_BY} &nbsp;&nbsp;&nbsp;&nbsp;<font class="ReallySmallBody">{LAST_EDITED_ON}</font>
+<br/>
+&nbsp;
+<!-- END TimeStampBL -->
+
+<br/>
+</td>
+</tr>
+</table>
+<table width="760" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="360" class="NavColor"><img src="./images/footer.gif" border="0" width="350" height="16" usemap="#footer" alt="" /></td>
+	<td width="400" align="right" class="NavColor"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+  </tr>
+</table>
+<font class="copyright"> </font>
+</div>
+&nbsp;
+<script type="text/javascript" src="./library/ImageMap-footer.js"></script>
+</body>
+</html>

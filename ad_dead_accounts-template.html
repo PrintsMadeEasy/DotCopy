@@ -1,0 +1,254 @@
+<html>
+<head>
+<title>Admin</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<script language="javascript">
+
+	function SelectPeriodTypeTimeFrame( state )
+	{
+		document.all.TimeFrame.disabled = !state;
+		document.all.DateRangeStartDay.disabled = state;
+		document.all.DateRangeStartMonth.disabled = state;
+		document.all.DateRangeStartYear.disabled = state;
+		document.all.DateRangeEndDay.disabled = state;
+		document.all.DateRangeEndMonth.disabled = state;
+		document.all.DateRangeEndYear.disabled = state;
+	}
+
+	function InitializeTimeFields()
+	{
+		var periodTimeFrame = {PERIODISTIMEFRAME};
+		document.all.TimeFrame.disabled = !periodTimeFrame;
+		document.all.DateRangeStartDay.disabled = periodTimeFrame;
+		document.all.DateRangeStartMonth.disabled = periodTimeFrame;
+		document.all.DateRangeStartYear.disabled = periodTimeFrame;
+		document.all.DateRangeEndDay.disabled = periodTimeFrame;
+		document.all.DateRangeEndMonth.disabled = periodTimeFrame;
+		document.all.DateRangeEndYear.disabled = periodTimeFrame;
+	}
+	
+	
+	
+	
+	
+	
+	// Since the pages can take a long time to generate... make sure that users can only click 1 time.
+	var submitFormOnce = false;
+	function SubmitFormOnce(){
+
+		if(!submitFormOnce){
+			submitFormOnce = true;
+			document.forms["ReportOptions"].submit();
+		}
+		
+		return false;
+	}
+
+</script>
+
+
+
+<script type="text/javascript" src="library/admin_library.js"></script>
+
+<link rel="stylesheet" type="text/css" href="library/calendar/themes/winter.css"/>
+<script type="text/javascript" src="library/calendar/src/utils.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar.js"></script>
+<script type="text/javascript" src="library/calendar/lang/calendar-en.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar-setup.js"></script>
+<script type="text/javascript" src="library/formatDate.js"></script>
+</head>
+<body bgcolor="#FFFFFF" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="">
+<div align="center">
+{HEADER}
+<table width="760" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td class="Body"><!-- Inner Body  -->
+<br/>
+<br/>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+	<tr>
+		<td><strong>Dead Accounts</strong></td>
+		<td align="right"><img src="./images/skull-crossbones.jpg" width="43" height="30" align="absmiddle" alt="" /></td>
+	</tr>
+</table><FORM name="ReportOptions" method="get" onsubmit="return SubmitFormOnce();" style="display:inline;">
+
+				<input type="hidden" name="DatePeriodEndMonth" value="{REPORTPERIOD_END_MONTH}" />
+				<input type="hidden" name="DatePeriodEndDay" value="{REPORTPERIOD_END_DAY}" />
+				<input type="hidden" name="DatePeriodEndYear" value="{REPORTPERIOD_END_YEAR}" />
+
+				<input type="hidden" name="calendarProxyField" value="" id="calendarField" onChange="calendarDateRangeChanged(this.value)" />
+				
+				
+					<TABLE width="100%" border="0" cellspacing="0" cellpadding="2" bgcolor="#999999">
+						<TR>
+							<TD>
+								<TABLE width="100%" border="0" cellspacing="2" cellpadding="0" bgcolor="#EEEEEE" >
+									<TR>
+
+
+
+                    <TD class="SmallBodyBlack" width="68%">
+                      <input type="radio" name="PeriodType" class="SmallBody" value="TIMEFRAME" onclick="SelectPeriodTypeTimeFrame( true );"
+											{PERIODTYPETIMEFRAME} />
+											{TIMEFRAMESELS}<img src="./images/transparent.gif" border="0" width="30" height="1" /><img alt='Calendar' align='absmiddle' src='./images/calendar5.gif' border='0' id='calendarDateRange'  onmouseover="this.style.cursor='pointer'" onmouseout="this.style.cursor='default'" />
+										</TD>
+
+                    <TD class="SmallBodyBold" width="18%">
+					</TD>
+									</TR>
+									<TR>
+
+            
+
+                    <TD class="SmallBodyBlack" width="68%" >
+                      <input type="radio" name="PeriodType"  class="SmallBody" value="DATERANGE" onclick="SelectPeriodTypeTimeFrame( false );"
+											{PERIODTYPEDATERANGE} />
+											{DATERANGESELS}
+											
+											
+										</TD>
+
+                    <TD class="SmallBodyBold" width="18%">&nbsp;&nbsp;</TD>
+									</TR>
+									<TR>
+								</TABLE>
+							</TD>
+						</TR>
+					</TABLE>
+				<TABLE width="100%" border="0" cellspacing="0" cellpadding="0">
+					<TR>
+						<TD colspan="2"><img src="./images/transparent.gif" border="0" width="1" height="4" alt="" /></TD>
+					</TR>
+					<TR>
+						<TD width="59%">
+<table width="100%" border="0" cellspacing="0" cellpadding="0" style="border:dotted; border-color:#999999; border-width:1px;">
+	<tr>
+		<td width="65%" class="SmallBody"><input type="radio" name="displayCustomerService" value="Y" {CUST_SERV_SHOW_CHECKED} /> Include Rows with Customer Service</td>
+		<td width="35%" class="SmallBody"><input type="radio" name="displayCustomerService" value="N" {CUST_SERV_HIDE_CHECKED} /> Hide</td>
+	</tr>
+	<tr>
+		<td class="SmallBody"><input type="radio" name="displayCustomerMemos" value="Y" {MEMOS_SHOW_CHECKED} /> Include Rows with Memos</td>
+		<td class="SmallBody"><input type="radio" name="displayCustomerMemos" value="N" {MEMOS_HIDE_CHECKED} /> Hide</td>
+	</tr>
+</table>
+
+
+
+</TD>
+						<TD width="41%" align="center">
+							<input type="submit" value="Refresh" class="AdminButton" onmouseover="this.style.background='#ffeeaa';" onmouseout="this.style.background='#FFFFDD';" />
+						</TD>
+					</TR>
+				</TABLE>
+			</FORM>
+
+<br/>
+<br/>
+<br/>
+<!-- BEGIN NoResultsBL -->
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+	<tr>
+		<td bgcolor="#999999">
+
+<table width="100%" border="0" cellspacing="1" cellpadding="2">
+	<tr>
+		<td class="Body" bgcolor="#C8D8DD">User Account</td>
+		<td class="Body" bgcolor="#C8D8DD">Customer Activity</td>
+		<td class="Body" bgcolor="#C8D8DD">Memos</td>
+		<td class="Body" bgcolor="#C8D8DD">Reaction</td>
+		<td class="Body" bgcolor="#C8D8DD">Cust Srvc.</td>
+		<td class="Body" bgcolor="#C8D8DD" align="center">Saved Projects</td>
+	</tr>
+<!-- BEGIN UsersBL -->
+	<tr>
+		<td bgcolor="#F9F9F9" class="ReallySmallBody"><img  src="./images/transparent.gif" width="3" height="5" alt="" /><br/>{DOMLOGO}<a href="javascript:UserInfo({CUSTID});">{USER_NAME}</a><br/><font class="SmallBody" style="color:#333333">{USER_COMPANY}<br/>{USER_STATE}</font><br/><img src="./images/transparent.gif" width="3" height="5" alt="" /></td>
+		<td bgcolor="#F9F9F9" class="SmallBody">
+				<table width="100%" border="0" cellspacing="0" cellpadding="0">
+			<tr>
+				<td class="ReallySmallBody">Registered:</td>
+				<td class="ReallySmallBody">{CREATED}</td>
+			</tr>
+			<tr>
+				<td class="ReallySmallBody">Last Activity:</td>
+				<td class="ReallySmallBody"><font color="{LAST_USED_COLOR}" style="font-size:12px;">{LAST_USED}</font></td>
+			</tr>
+		</table>
+
+		</td>
+		<td bgcolor="#F9F9F9"><a href="javascript:CustomerMemo({CUSTID}, false)" class="BlueRedLinkRecSM">{MEMOS}</a></td>
+		<td bgcolor="#F9F9F9" class="SmallBody" >{LAST_REACTION}</td>
+		<td bgcolor="#F9F9F9" class="ReallySmallBody">{CS}</td>
+		<td bgcolor="#F9F9F9" align="center" class="Body">{SAVED}</td>
+	</tr>
+<!-- END UsersBL -->
+</table>
+</td>
+	</tr>
+</table>
+<!-- END NoResultsBL -->
+
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+
+
+<!-- Inner Body  END -->
+</td>
+</tr>
+</table>
+<table width="760" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="360" class="NavColor"><img src="./images/footer.gif" border="0" width="350" height="16" usemap="#footer" alt="" /></td>
+	<td width="400" align="right" class="NavColor"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+  </tr>
+</table>
+<font class="copyright"> </font>
+</div>
+&nbsp;
+&nbsp;
+<script type="text/javascript" src="./library/ImageMap-footer.js"></script>
+<script type="text/javascript">InitializeTimeFields()</script>
+<script>
+	function calendarDateRangeChanged(newDateForRange){
+	
+		var calendarDate = new Date(Date.parse(newDateForRange));
+		
+		SelectPeriodTypeTimeFrame( false );
+		
+		document.forms["ReportOptions"].DateRangeStartYear.value = calendarDate.getFullYear();
+		document.forms["ReportOptions"].DateRangeEndYear.value = calendarDate.getFullYear();
+		document.forms["ReportOptions"].DateRangeStartMonth.value =  (calendarDate.getMonth() + 1);
+		document.forms["ReportOptions"].DateRangeEndMonth.value =  (calendarDate.getMonth() + 1);
+		document.forms["ReportOptions"].DateRangeStartDay.value =  (calendarDate.getDate());
+		document.forms["ReportOptions"].DateRangeEndDay.value =  (calendarDate.getDate());
+		
+		SetRadioButtonValue("document.forms['ReportOptions'].PeriodType", "DATERANGE");
+	}
+	
+	
+		var cal = new Zapatec.Calendar.setup({
+
+		inputField     :    "calendarField",     // id of the input field
+		singleClick    :    false,     // require two clicks to submit
+		ifFormat       :    '%a, %e %b %Y %H:%M:%S',     //  of the input field
+		timeFormat     : 	"12",
+		ampm           :    false,
+		showsTime      :    false,     // show time as well as date
+		button         :    "calendarDateRange",  // trigger button
+		timeInterval   :    10,
+		floating	   : 	true,
+		position	   : 	[190, 140],
+		date	       :	new Date("{START_REPORT_DATE_STRING}")
+		});
+		
+
+		
+</script>
+<script type="text/javascript" src="./library/ImageMap-footer.js"></script>
+</body>
+</html>

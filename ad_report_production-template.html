@@ -1,0 +1,97 @@
+<html>
+<head>
+<title>Production Report</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+
+<script language="javascript">
+
+	//Make an array of the images we want to preload for the mouse-overs.
+	arImageSrc = new Array (
+		"./images/button-go-d.gif",
+		"./images/button-closewindow-blue-d.gif",
+		"./images/button-sendmessage-blue-d.gif"
+	)
+
+	//Preload images.
+	arImageList = new Array ();
+	for (counter in arImageSrc) {
+		arImageList[counter] = new Image();
+		arImageList[counter].src = arImageSrc[counter];
+	}
+	
+	
+	function SubmitForm(){
+		if(document.forms[0].message.value==""){
+			alert("Please type a message before sending.");
+		}
+		else if(document.forms[0].subject.value==""){
+			alert("Please type a subject for the message before sending.");
+		}
+		else{
+			document.forms[0].submit();
+		}
+	}
+
+</script>
+</head>
+
+<body bgcolor="#3366CC" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="" >
+<img  src="./images/transparent.gif" border="0" width="1" height="10" alt="" /><br/>
+<div align="center">
+<table bgcolor="#EEEEEE" width="600" cellpadding="0" cellspacing="0" border="0">
+
+<tr>
+<td bgcolor="#999999" class="Body" align="center"><img  src="./images/transparent.gif" border="0" width="1" height="3" alt="" /><br/><font color="#FFFFFF"><b>Production Report</b> - <font class="SmallBody"><font color="#FFFFFF">(Completed Orders Only)<br/><strong>Order Date between</strong> ({DATE_RANGE})</font></font></font><br/><img src="./images/transparent.gif" border="0" width="1" height="3" alt="" /></td>
+
+<tr>
+<td align="center">
+<table width="100%" border="0" cellspacing="10" cellpadding="1">
+  <tr>
+    <td bgcolor="#DDDDFF" class="SmallBody"><strong>Product Name</strong></td>
+	<td bgcolor="#DDDDFF" class="SmallBody"><strong>Project Count</strong></td>
+	<td bgcolor="#DDDDFF" class="SmallBody"><strong>Unit Count</strong></td>
+	<td bgcolor="#DDDDFF" class="SmallBody"><strong>Sheet Count</strong></td>
+	<td bgcolor="#DDDDFF" class="SmallBody"><strong>Page Impressions</strong></td>
+  </tr>
+<!-- BEGIN ProductBL -->
+  <tr>
+    <td class="SmallBody" bgcolor="#DDDDFF">{PRODUCT_NAME}</td>
+	<td class="SmallBody" bgcolor="#DDDDFF">{PROJ_COUNT}</td>
+	<td class="SmallBody" bgcolor="#DDDDFF">{UNIT_COUNT}</td>
+	<td class="SmallBody" bgcolor="#DDDDFF">{PRODUCT_SHEETCOUNTS}</td>
+	<td class="SmallBody" bgcolor="#DDDDFF">{PRODUCT_IMPRESSIONS}</td>
+  </tr>
+ <!-- END ProductBL -->
+</table>
+ </td>
+</tr>
+
+
+<tr>
+<td><img src="images/header-editoptions-fade-bot.gif" width="600" alt="" /></td>
+</tr>
+</table>
+
+<table width="350" border="0" cellspacing="0" cellpadding="0">
+
+  <tr>
+
+    <td align="center">
+
+<img  src="./images/transparent.gif" border="0" width="1" height="5" alt="" /><br/>
+<a onclick="self.close();" ><img src="./images/button-closewindow-blue-u.gif" onmouseover="this.src='./images/button-closewindow-blue-d.gif';" onmouseout="this.src='./images/button-closewindow-blue-u.gif';" border="0"  align="absmiddle" alt="" /></a>  &nbsp;&nbsp;
+
+
+<br/>
+&nbsp;
+	</td>
+
+  </tr>
+</table>
+</div>
+
+
+</body>
+</html>

@@ -1,0 +1,105 @@
+<html>
+<head>
+<title>Admin</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<script language="javascript">
+
+	//Make an array of the images we want to preload for the mouse-overs.
+	arImageSrc = new Array (
+		"./images/button-go-d.gif",
+		"./images/button-sendmessage-u.gif"
+	)
+
+	//Preload images.
+	arImageList = new Array ();
+	for (counter in arImageSrc) {
+		arImageList[counter] = new Image();
+		arImageList[counter].src = arImageSrc[counter];
+	}
+
+
+</script>
+
+<link rel="stylesheet" type="text/css" href="library/calendar/themes/winter.css"/>
+<script type="text/javascript" src="library/calendar/src/utils.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar.js"></script>
+<script type="text/javascript" src="library/calendar/lang/calendar-en.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar-setup.js"></script>
+<script type="text/javascript" src="library/formatDate.js"></script>
+</head>
+<body bgcolor="#FFFFFF" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="">
+<div align="center">
+{HEADER}
+&nbsp;
+<table width="760" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td class="Body">
+<!-- Inner Body  -->
+
+
+
+
+
+<br/>
+<table width="100%" border="0" cellspacing="1" cellpadding="0">
+<form name="pagevisitform" action="ad_pagevisits.php">
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+  <tr>
+    <td width="50%"><table width="100%" border="0" cellspacing="0" cellpadding="1" bgcolor="#999999">
+
+  <tr>
+    <td><table width="100%" border="0" cellspacing="1" cellpadding="3">
+  <tr>
+    <td bgcolor="#eeeeee" class="Body">Number of Results</td>
+    <td bgcolor="#eeeeee" class="Body">Page Type</td>
+  </tr>
+  <tr>
+    <td bgcolor="#eeeeee" class="Body"><select name="limitresults" class="AdminInput" onChange="document.forms['pagevisitform'].submit()">{NUM_RESULTS_SEL}</select></td>
+    <td bgcolor="#eeeeee" class="Body"><select name="pagename" class="AdminInput" onChange="document.forms['pagevisitform'].submit()">{PAGE_NAMES_SEL}</select></td>
+  </tr>
+</table>
+</td>
+  </tr>
+
+</table></td>
+    <td width="50%" align="center"><!-- BEGIN UserOverrideBL -->History For User: <select name="userOverride" class="AdminDropDown" onChange="document.forms['pagevisitform'].submit()">{USER_DROP_DOWN}</select><!-- END UserOverrideBL --></td>
+  </tr>
+   </form>
+</table>
+
+
+
+<br/><br/><br/>
+{EMPTY_RESTUTS_MSG}
+
+<!-- BEGIN EmptyResultsBL -->
+<table width="100%" border="0" cellspacing="0" cellpadding="4">
+<!-- BEGIN itemsBL -->
+  <tr>
+            <td class="Body" width="20%">{DATE}</td>
+            <td class="Body" width="80%">{DESC}</td>
+  </tr>
+ <!-- END itemsBL -->
+</table>
+<!-- END EmptyResultsBL -->
+
+        <br/><br/><br/><br/><br/>
+
+<!-- Inner Body  END -->
+</td>
+</tr>
+</table>
+<table width="760" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="360" class="NavColor"><img src="./images/footer.gif" border="0" width="350" height="16" usemap="#footer" alt="" /></td>
+	<td width="400" align="right" class="NavColor"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+  </tr>
+</table>
+<font class="copyright"> </font>
+</div>
+&nbsp;
+<script type="text/javascript" src="./library/ImageMap-footer.js"></script>
+</body>
+</html>

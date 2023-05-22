@@ -1,0 +1,94 @@
+<?xml version="1.0" ?>
+<content>
+<side>
+	<description>Side 0</description>
+	<initialzoom>100</initialzoom>
+	<rotatecanvas>90</rotatecanvas>
+	<contentwidth>300</contentwidth>
+	<contentheight>300</contentheight>
+	<backgroundimage>0</backgroundimage>
+	<background_x>-100</background_x>
+	<background_y>-100</background_y>
+	<background_width>100</background_width>
+	<background_height>100</background_height>
+	<background_color>16777215</background_color>
+	<scale>100</scale>
+	<folds_horiz>1</folds_horiz>
+	<folds_vert>1</folds_vert>
+	<color_definitions />
+	
+	<dpi>300</dpi>
+	<side_permissions>0</side_permissions>
+	
+	
+	<layer>
+		<level>10002</level>
+		<x_coordinate>-82.6</x_coordinate>
+		<y_coordinate>-100.55</y_coordinate>
+		<rotation>0</rotation>
+		
+		<text>
+		
+			<field_name>Company</field_name>
+			<permissions>0</permissions>
+			
+			<font>Timeless</font>
+			<size>20</size>
+			<bold>no</bold>
+			<italics>no</italics>
+			<underline>no</underline>
+			<align>Left</align>
+			<message>Brian Piere</message>
+			<color>0</color>
+		</text>
+	</layer>
+
+	<layer>
+		<level>10004</level>
+		<x_coordinate>-25.6</x_coordinate>
+		<y_coordinate>-90.55</y_coordinate>
+		<rotation>0</rotation>
+		
+		<text>
+		
+			<field_name>Company</field_name>
+			<permissions>0</permissions>
+			
+			<font>Eurasia</font>
+			<size>20</size>
+			<bold>yes</bold>
+			<italics>yes</italics>
+			<underline>yes</underline>
+			<align>Left</align>
+			<message>Should be Italics</message>
+			<color>0</color>
+		</text>
+	</layer>
+	
+
+	<layer>
+		<level>1</level>
+		<x_coordinate>0</x_coordinate>
+		<y_coordinate>0</y_coordinate>
+		<rotation>0</rotation>
+		<graphic>
+			<width>11.5</width>
+			<height>20.5</height>
+			<originalheight>11.5</originalheight>
+			<originalwidth>11.5</originalwidth>
+			<imageid>2</imageid>
+			<permissions></permissions>
+		</graphic>
+	</layer>
+
+
+</side>
+</content>
+
+
+
+
+
+
+
+

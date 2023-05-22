@@ -1,0 +1,287 @@
+<html>
+<head>
+<title>Admin</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<script language="javascript">
+
+	//Make an array of the images we want to preload for the mouse-overs.
+	arImageSrc = new Array (
+		"./images/button-go-d.gif",
+		"./images/arrow-button-right-up-d.png"
+
+	)
+
+	//Preload images.
+	arImageList = new Array ();
+	for (counter in arImageSrc) {
+		arImageList[counter] = new Image();
+		arImageList[counter].src = arImageSrc[counter];
+	}
+
+
+
+	function makeNewWindow(address){
+		newWindow = window.open(address, "sub", "height=350,width=375,directories=no,location=no,menubar=no,scrollbars=no,status=no,toolbar=no,resizable=no");
+		newWindow.focus();
+	}
+
+	function ShowLoginLink(text){
+		document.formlink.loginlink.value = text;
+		document.location="#";
+		document.getElementById("loginlink").focus();
+		document.getElementById("loginlink").select();
+		
+	}
+	function CustDiscount(CustomerID){
+		var DiscountAddress = "./ad_discount.php?customerid=" + CustomerID;
+		newWindow = window.open(DiscountAddress, "customerdiscount", "height=400,width=440,directories=no,location=no,menubar=no,scrollbars=no,status=no,toolbar=no,resizable=no");
+		newWindow.focus();
+	}
+	function CouponActivation(CustomerID){
+		newWindow = window.open("./ad_users_coupons.php?customer_id=" + CustomerID, "couponactivation", "height=295,width=335,directories=no,location=no,menubar=no,scrollbars=yes,status=no,toolbar=no,resizable=no");
+		newWindow.focus();
+	}
+
+	function CheckSearchForm(){
+		var FormsObj = document.forms["usersSearchForm"];
+		var EmailAdd = FormsObj.email.value;
+		var UserName = FormsObj.username.value;
+		var PhoneNum = FormsObj.phone.value;
+		var UserID = FormsObj.customerid.value;
+
+		if(EmailAdd == "" && UserName == "" && PhoneNum == "" && UserID == ""){
+			alert("You must enter some search criteria.");
+			return false;
+		}
+		if(EmailAdd != "" && EmailAdd.search(/^\w+([-.]\w+)*\@\w+([-.]\w+)*\.\w+$/) == -1){
+			alert("The email address is invalid.");
+			return false;
+		}
+		if(PhoneNum != "" && PhoneNum.length < 4){
+			alert("If you are searching by Phone Number then you must have at least 4 characters.");
+			return false;
+		}
+		if(UserName != "" && UserName.length < 3){
+			alert("If you are searching by the User's Name then you must have at least 3 characters.");
+			return false;
+		}
+		if(UserID != "" && UserID.search(/^(u|U)\d+\s*$/) == -1){
+			alert("The UserID is invalid.  Should be a number like 'U12345'.");
+			return false;
+		}
+
+		return true;
+	}
+
+	function CloseUser(ThreadID, PipedIDlist){
+		document.location = "./ad_actions.php?returl=" + escape("ad_users_search.php?customerid={USER_ID}") + "&form_sc={FORM_SECURITY_CODE}&action=markmessageread&messagelist=" + PipedIDlist;
+	}
+
+
+</script>
+<script type="text/javascript" src="./library/admin_library.js"></script>
+<link rel="stylesheet" type="text/css" href="library/calendar/themes/winter.css"/>
+<script type="text/javascript" src="library/calendar/src/utils.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar.js"></script>
+<script type="text/javascript" src="library/calendar/lang/calendar-en.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar-setup.js"></script>
+<script type="text/javascript" src="library/formatDate.js"></script>
+</head>
+<body bgcolor="#FFFFFF" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="">
+<div align="center">
+{HEADER}
+&nbsp;
+<table width="760" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td class="Body">
+<!-- Inner Body  -->
+
+<img src="./images/label-searchforusers.gif" border="0"  alt="" />
+<table width="100%" border="0" cellspacing="0" cellpadding="1" bgcolor="#666666">
+<tr>
+<td>
+              <table width="100%" border="0" cellspacing="0" cellpadding="4" bgcolor="#CCCCCC">
+                <form name="usersSearchForm" action="./ad_users_search.php" method="GET" onSubmit="return CheckSearchForm();">
+                <input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+                  <tr>
+                    <td align="left" class="Body" width="26%">Email Address<br/>
+                      <input type="text" name="email" value="{SEARCH_EMAIL}" class="InputBox" style="width:170px; font-size:12px;" maxlength="60" />
+
+
+                    </td>
+                    <td align="left" class="Body" width="23%">Name<br/>
+                    <input type="text" name="username" value="{SEARCH_NAME}" class="InputBox" style="width:150px; font-size:12px;" /></td>
+					<td align="left" class="Body" width="17%">Phone<br/>
+                    <input type="text" name="phone" value="{SEARCH_PHONE}" class="InputBox" style="width:100px; font-size:12px;" maxlength="14" /></td>
+					<td align="left" class="Body" width="22%">User ID<br/>
+				    <input type="text" name="customerid" value="{USER_ID}" class="InputBox" style="width:80px; font-size:12px;" maxlength="10" /></td>
+                    <td align="left" class="Body" width="12%">
+                    <input type="image" name="gobutton" src="./images/button-go-grey-u.gif" onMouseOver="this.src='./images/button-go-grey-d.gif';" onMouseOut="this.src='./images/button-go-grey-u.gif';" border="0"  align="absmiddle" /></td>
+                  </tr>
+                </form>
+              </table>
+</td>
+</tr>
+</table>
+
+
+
+
+<!-- BEGIN EmptyUsersBL -->
+
+<form name="formlink">
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+<input type="text" name="loginlink" id="loginlink" value="" class="WhiteBox" style="width:750; color:#990000; font-size:11px;"  />
+</form>
+
+ <!-- BEGIN MultiPageBL -->
+<table width="100%" border="0" cellspacing="0" cellpadding="1" class="NavColor">
+  <tr>
+    <td>
+	<table width="100%" border="0" cellspacing="0" cellpadding="1" bgcolor="#ddeeff">
+  <tr>
+    <td>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="50%" class="SmallBody"><img  src="./images/transparent.gif" border="0" width="1" height="3" alt="" /><br/><font color="#000000">Total of {RESULT_DESC} users.</font><br/><img src="./images/transparent.gif" border="0" width="2" height="3" alt="" /></td>
+<td width="50%" align="right" class="SmallBody"><font color="#000000">{NAVIGATE}</font></td>
+</tr>
+</table>
+	</td>
+  </tr>
+</table>
+	</td>
+  </tr>
+</table>
+ <!-- END MultiPageBL -->
+
+<table width="740" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+  <td colspan="4" bgcolor="#999999"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+  </tr>
+<!-- BEGIN usersBL -->
+  <tr>
+            <td width="246" class="SmallBody" valign="top"><img  src="./images/transparent.gif" border="0" width="1" height="3" alt="" /><br/>{NAME_AND_COMPANY}<br/>
+{EMAIL}
+
+
+			<br/><a href="javascript:Cust({CUSTOMERID});" class="BlueRedLink">Projects by User - {PROJECT_COUNT}</a>
+			{CUSTOMER_SERVICE_LINK}{SAVED_PROJECTS_LINK}{CUST_RATE}{DOMAIN_SICON}{SIMILAR_ACCOUNTS} {BELONGS_TO_REP}
+			<br/><img src="./images/transparent.gif" border="0" width="1" height="3" alt="" /></td>
+            <td width="216" class="SmallBody" valign="top">{ADDRESS}<br/>{CITY}, {STATE} {ZIP}<br/>{COUNTRY}<br/>{PHONE}</td>
+            <td width="158" class="SmallBody" valign="top">
+{HIDELOGIN_START}
+
+			<a href="javascript:ShowLoginLink('{LOGIN_LINK}');" class="BlueRedLink">Login Link</a><br/>
+
+{HIDELOGIN_END}
+{COUPON_ACTIVATION}
+{DISCOUNT}
+{OFFLINE_PAYMENTS}
+{ACCOUNT}
+
+<br/><a href="javascript:CustomerMemo({CUSTOMERID}, true)" class="BlueRedLinkRecSM">{MEMO}</a>&nbsp;&nbsp;<a class="BlueRedLinkRecSM" href="javascript:MakeNewTask('user', {CUSTOMERID}, true);">Task{T_COUNT}</a>&nbsp;&nbsp;<a href="javascript:SendInternalMessage('user', {CUSTOMERID}, true);" class='BlueRedLinkRecSM'>Msg</a>{USER_CHATS}{SALESREP}
+			</td>
+            <td width="120" class="SmallBody" valign="top">Registered Since<br/>{CREATED}<br/><img  src="./images/transparent.gif" border="0" width="1" height="5" alt="" /><br/>Last Used<br/>{LASTUSED}<br/><img  src="./images/transparent.gif" border="0" width="1" height="5" alt="" /><br/>{DOMAIN_SICON}</td>
+
+  </tr>
+  <tr>
+  <td colspan="4" bgcolor="#999999"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+  </tr>
+<!-- END usersBL -->
+</table>
+
+<!-- BEGIN SecondMultiPageBL -->
+	<table width="100%" border="0" cellspacing="0" cellpadding="1" class="NavColor">
+  <tr>
+    <td>
+	<table width="100%" border="0" cellspacing="0" cellpadding="1" bgcolor="#ddeeff">
+  <tr>
+    <td>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="50%" class="SmallBody"><img  src="./images/transparent.gif" border="0" width="1" height="3" alt="" /><br/><font color="#000000">Total of {RESULT_DESC} users.</font><br/><img src="./images/transparent.gif" border="0" width="2" height="3" alt="" /></td>
+<td width="50%" align="right" class="SmallBody"><font color="#000000">{NAVIGATE}</font></td>
+</tr>
+</table>
+	</td>
+  </tr>
+</table>
+	</td>
+  </tr>
+</table>
+<!-- END SecondMultiPageBL -->
+
+<!-- END EmptyUsersBL -->
+<br/><br/>{TASKS}<br/>
+
+
+<!-- BEGIN HideMessagesBlock -->
+<br/>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><font class="AdminLabel">Messages Attached to {NAME_AND_COMPANY}</font></td>
+  </tr>
+</table>
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td ><img src="./images/transparent.gif" height="2" width="2" alt="" /></td>
+  </tr>
+  <tr>
+    <td bgcolor="#000000"><img src="./images/transparent.gif" height="1" width="1" alt="" /></td>
+  </tr>
+  <tr>
+    <td ><img src="./images/transparent.gif" height="5" width="5" alt="" /></td>
+  </tr>
+</table>
+<!-- BEGIN MessageThreadBL -->
+<table width="100%" border="0" cellspacing="0" cellpadding="1" bgcolor="#333333">
+  <tr>
+    <td><table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td bgcolor="#FFFFFF" class="SmallBody" style="background-image: url(./images/admin/header-message.png); background-repeat: no-repeat;">
+
+	<table width="100%" border="0" cellspacing="0" cellpadding="2">
+  <tr>
+                              <td class="SmallBody" width="53%"><b>Subject:</b><br/>
+                                <font class="ReallySmallBody">{THREAD_SUB}</font></td>
+                              <td class="SmallBody" width="47%" align="center"> <a href="javascript:ReplyToInternalMessage('{THREADID}');" class="BlueRedLink">Reply</a> 
+                              
+                              
+                          <!-- BEGIN CloseMessageLinkBL -->
+                              <br/><a href='javascript:CloseUser("{THREADID}", "{UNREAD_MESSAGE_IDS}")' class='BlueRedLink'>Close</a>
+                          <!-- END CloseMessageLinkBL -->
+
+                              </td>
+  </tr>
+</table>
+	</td>
+  </tr>
+</table></td>
+  </tr>
+</table>
+
+			{MESSAGE_BLOCK}<br/>
+<!-- END MessageThreadBL -->
+<br/><br/><br/>
+<!-- END HideMessagesBlock -->
+
+<!-- Inner Body  END -->
+</td>
+</tr>
+</table>
+<table width="760" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="360" class="NavColor"><img src="./images/footer.gif" border="0" width="350" height="16" usemap="#footer" alt="" /></td>
+	<td width="400" align="right" class="NavColor"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+  </tr>
+</table>
+<font class="copyright"> </font>
+</div>
+&nbsp;
+<script type="text/javascript" src="./library/ImageMap-footer.js"></script>
+</body>
+</html>

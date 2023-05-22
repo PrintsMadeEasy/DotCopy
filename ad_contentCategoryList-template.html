@@ -1,0 +1,148 @@
+<html>
+<head>
+<title>Admin</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<script>
+
+function SaveButton(){
+	
+	var parentLinkDesc = document.forms["categoryform"].parentLinkDesc.value;
+	var parentHyperLink = document.forms["categoryform"].parentHyperlink.value;
+	var contentTitle = document.forms["categoryform"].contentTitle.value;
+	var contentDescription = document.forms["categoryform"].contentDescription.value;
+	
+	// Trim Whitespace
+	parentLinkDesc = parentLinkDesc.replace(/^\s+/, "");
+	parentLinkDesc = parentLinkDesc.replace(/\s+$/, "");
+	parentHyperLink = parentHyperLink.replace(/^\s+/, "");
+	parentHyperLink = parentHyperLink.replace(/\s+$/, "");
+	contentTitle = contentTitle.replace(/^\s+/, "");
+	contentTitle = contentTitle.replace(/\s+$/, "");
+	
+	
+	errorMessage = "";
+	
+	if(contentTitle == "")
+		errorMessage += "* The title can not be left blank.\n\n";
+		
+	if(contentDescription == "")
+		errorMessage += "* The content can not be left blank.\n\n";
+	
+	if(parentLinkDesc == "" && parentHyperLink != "")
+		errorMessage += "* If you are including a Hyperlink then you must also include a Link Description.\n\n";
+		
+	
+	if(errorMessage != ""){
+		alert(errorMessage);
+	}
+	else{
+		document.forms["categoryform"].submit();
+	}
+	
+
+}
+
+
+function RemoveImage(){
+	if(confirm("Are you sure that you want to remove the current image?")){
+		document.location = "./ad_contentCategory.php?action=removeImage&viewType=edit&editCategoryID={CATEGORY_EDIT_ID}&form_sc={FORM_SECURITY_CODE}";
+	}
+}
+
+function CreatNewContent(){
+	document.location = "./ad_contentCategory.php?viewType=new";
+}
+
+function ViewLiveContent(){
+
+		var contentAddress = "{LIVE_CONTENT_LINK}";
+		newWindow = window.open(contentAddress, "LiveContentCategory", "height=700,width=1000,directories=no,location=no,menubar=no,scrollbars=yes,status=yes,toolbar=no,resizable=yes");
+		newWindow.focus();
+}
+
+
+
+</script>
+
+<script type="text/javascript" src="./library/admin_library.js"></script>
+<link rel="stylesheet" type="text/css" href="library/calendar/themes/winter.css"/>
+<script type="text/javascript" src="library/calendar/src/utils.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar.js"></script>
+<script type="text/javascript" src="library/calendar/lang/calendar-en.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar-setup.js"></script>
+<script type="text/javascript" src="library/formatDate.js"></script>
+<style type="text/css">
+<!--
+.style1 {
+	color: #000000;
+	font-weight: bold;
+}
+.style2 {color: #000000}
+.style3 {
+	color: #333333;
+	font-weight: bold;
+}
+-->
+</style>
+</head>
+<body bgcolor="#FFFFFF" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="">
+<div align="center">
+{HEADER}
+&nbsp;
+<table width="760" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td class="SmallBody">
+
+
+
+
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+  <td><br/>
+<br/>
+
+  		<img  src="./images/content-add.jpg" align="absmiddle" width="18" height="17" alt="" /> <a href='./ad_contentCategory.php?viewType=new' class='BlueRedLink'>Create a new Content Category</a><br/><img src="./images/transparent.gif" width="7" height="7" alt="" />
+
+
+</td>
+
+  </tr>
+</table>
+
+
+
+
+
+
+<!-- BEGIN CategoryBL -->
+<font class="SmallBody"><font color="#990000"><strong>{PRODUCT_NAME}</strong> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font></font>Total Pages:{TOTAL_PAGES_CATEGORY}<br/><img  src="./images/greypixel.gif" width="760" height="1" alt="" /><br/><img  src="./images/transparent.gif" width="7" height="7" alt="" /><br/>{CONTENT_CATEGORIES}
+<!-- END CategoryBL -->
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+Total Pages: {TOTAL_PAGES}
+<br/>
+<br/>
+<br/>
+<br/>
+
+</td>
+</tr>
+</table>
+<table width="760" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="360" class="NavColor"><img src="./images/footer.gif" border="0" width="350" height="16" usemap="#footer" alt="" /></td>
+	<td width="400" align="right" class="NavColor"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+  </tr>
+</table>
+<font class="copyright"> </font>
+</div>
+&nbsp;
+<script type="text/javascript" src="./library/ImageMap-footer.js"></script>
+</body>
+</html>

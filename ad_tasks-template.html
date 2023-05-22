@@ -1,0 +1,166 @@
+<html>
+<head>
+<title>Admin</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<script language="javascript">
+
+	//Make an array of the images we want to preload for the mouse-overs.
+	arImageSrc = new Array (
+		"./images/button-go-d.gif",
+		"./images/button-go-grey-u.gif",
+		"./images/button-hasbeenshipped-u.gif"
+
+	)
+
+	//Preload images.
+	arImageList = new Array ();
+	for (counter in arImageSrc) {
+		arImageList[counter] = new Image();
+		arImageList[counter].src = arImageSrc[counter];
+	}
+
+	function makeNewWindow(address){
+		newWindow = window.open(address, "sub", "height=360,width=375,directories=no,location=no,menubar=no,scrollbars=no,status=no,toolbar=no,resizable=no");
+		newWindow.focus();
+	}
+
+	function SearchTasks(){
+		var StartMonth = parseInt(document.tasks.startmonth.value);
+		var EndMonth = parseInt(document.tasks.endmonth.value);
+		var StartYear = parseInt(document.tasks.startyear.value);
+		var EndYear = parseInt(document.tasks.endyear.value);
+		var Keywords = document.tasks.keywords.value;
+
+		//Trim Whitespaces of of keywords
+		Keywords = Keywords.replace(/^\s+/, "");
+		Keywords = Keywords.replace(/\s+$/, "");
+		document.tasks.keywords.value = Keywords;
+
+		if(Keywords.length < 3 && Keywords.length != 0){
+			alert("If you choose to search for messages by keywords you must have at least 1 word with a minimum of 3 characters.");
+			return false;
+		}
+
+		if(StartYear > EndYear){
+			alert("Year values are not in range.");
+			return false;
+		}
+		else if(StartYear == EndYear){
+			if(StartMonth > EndMonth){
+				alert("Month values are not in range.");
+				return false;
+			}
+			else{
+				document.tasks.submit();
+			}
+		}
+		else{
+			document.tasks.submit();
+		}
+	}
+
+
+</script>
+<script type="text/javascript" src="./library/admin_library.js"></script>
+
+<link rel="stylesheet" type="text/css" href="library/calendar/themes/winter.css"/>
+<script type="text/javascript" src="library/calendar/src/utils.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar.js"></script>
+<script type="text/javascript" src="library/calendar/lang/calendar-en.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar-setup.js"></script>
+<script type="text/javascript" src="library/formatDate.js"></script>
+</head>
+<body bgcolor="#FFFFFF" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="">
+<div align="center">
+{HEADER}
+&nbsp;
+<table width="760" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td class="Body">
+<!-- Inner Body  -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="50%"><img src="./images/label-searchfortasks.gif" border="0"  alt="" /></td>
+    <td width="50%" align="right" class="SmallBody"><input type="checkbox" name="tasksReminder" align="absmiddle" onclick="TasksShowEarlyReminders(this.checked, 'ad_tasks.php', '{FORM_SECURITY_CODE}')" {SHOW_FUTURE_TASKS} /> Show Future Reminders
+</td>
+</tr>
+</table>
+<table width="100%" border="0" cellspacing="0" cellpadding="1" bgcolor="#666666">
+<tr>
+<td>
+              <table width="100%" border="0" cellspacing="0" cellpadding="4" bgcolor="#CCCCCC">
+                <form name="tasks" onsubmit="return SearchTasks();" action="./ad_tasks.php" method="GET">
+                <input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+				<input type="hidden" name="usertype" value="{USER_TYPE}" />
+                  <tr>
+                    <td width="30%" align="left" class="Body">Keyword(s)<br/>
+                      <input type="text" name="keywords" value="{KEYWORDS}" class="InputBox" style="width:165px;" />
+                    </td>
+                    <td width="56%" class="Body">
+                      <table cellpadding="0" cellspacing="0">
+					<tr>
+					<td align="center" class="Body">Threads Starting Between</td>
+					</tr>
+					<tr>
+					<td bgcolor="#666666" class="Body"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+					</tr>
+					<tr>
+					<td class="Body"><img src="./images/transparent.gif" border="0" width="1" height="3" alt="" /></td>
+					</tr>
+					<tr>
+					<td align="center" class="Body"><nobr> {START_MONTH} {START_YEAR} AND   {END_MONTH} {END_YEAR}</nobr></td>
+					</tr>
+					</table>
+
+					</td>
+                    <td width="14%" align="left" class="Body">&nbsp;<br/>
+                      <a onclick="SearchTasks();"><img src="./images/button-go-grey-u.gif" onmouseover="this.src='./images/button-go-grey-d.gif';" onmouseout="this.src='./images/button-go-grey-u.gif';" border="0"  align="absmiddle" alt="" /></a>
+                    </td>
+                  </tr>
+                </form>
+              </table>
+</td>
+</tr>
+</table>
+
+
+<img  src="./images/transparent.gif" border="0" width="1" height="10" alt="" /><br/>
+<!-- BEGIN EmptyMessageBL -->
+<table width="100%" border="0" cellspacing="0" cellpadding="1" bgcolor="#999999">
+  <tr>
+    <td>
+	<table width="100%" border="0" cellspacing="0" cellpadding="1" bgcolor="#FFFFEE">
+  <tr>
+    <td class="SmallBody">Total {RESULT_DESC}</td>
+  </tr>
+</table>
+	</td>
+  </tr>
+</table>
+<img  src="./images/transparent.gif" border="0" width="1" height="30" alt="" /><br/>
+{TASKS}
+
+
+<br/>&nbsp;<br/>
+<br/>&nbsp;<br/>
+
+
+<br/>&nbsp;
+<!-- Inner Body  END -->
+</td>
+</tr>
+</table>
+<table width="760" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="360" class="NavColor"><img src="./images/footer.gif" border="0" width="350" height="16" usemap="#footer" alt="" /></td>
+	<td width="400" align="right" class="NavColor"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+  </tr>
+</table>
+<font class="copyright"> </font>
+</div>
+&nbsp;
+<script type="text/javascript" src="./library/ImageMap-footer.js"></script>
+</body>
+</html>

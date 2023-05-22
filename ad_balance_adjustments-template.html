@@ -1,0 +1,256 @@
+<html>
+<head>
+<title>Price Adjustments</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+
+<script language="javascript">
+
+	//Make an array of the images we want to preload for the mouse-overs.
+	arImageSrc = new Array (
+		"./images/button-go-d.gif",
+		"./images/button-closewindow-blue-d.gif",
+		"./images/button-sendmessage-blue-d.gif"
+	)
+
+	function BackToCustomerServiceReport(){
+
+		if(window.opener)
+			window.opener.location = "{CSREPORTURL}";
+		else
+			alert("The parent Window has been closed.  You may need to close this pop-up window and re-open it again.");
+
+	}
+
+
+	function ShowProofPage(ProjectID){
+
+		ShowIconOnClickedProject(ProjectID);
+
+		// just add proofingcheck=true to the proof URL to make it unique... so our "visited" color over the hyperlink will be a different color (only if we arrive at the page by going through this pop-up window.
+
+		if(window.opener)
+			window.opener.location = "./ad_proof_artwork.php?proofingcheck=true&projectid=" + ProjectID;
+		else
+			alert("The parent Window has been closed.  You may need to close this pop-up window and re-open it again.");
+
+	}
+
+	function CheckSelect(ProjectID, CheckedFlag){
+		ChangeBatchColor(ProjectID, CheckedFlag);
+	}
+
+
+
+var LastProjectClickedOn = null;
+function ShowIconOnClickedProject(projectID){
+
+	if(!document.getElementsByTagName)
+		return;
+
+	if(LastProjectClickedOn != null){
+		var lastProjectImageObj = document.getElementById("ICON" + LastProjectClickedOn);
+		lastProjectImageObj.src = "./images/transparent.gif";
+		lastProjectImageObj.width = 10;
+	}
+
+	LastProjectClickedOn = projectID;
+
+	var thisProjectImageObj = document.getElementById("ICON" + projectID);
+	thisProjectImageObj.src = "./images/arrow-right-red-blocky.png";
+	thisProjectImageObj.width = 20;
+
+
+	GatherChecksBoxes();
+
+}
+
+
+function GatherChecksBoxes(){
+
+	ChkBoxList = GetProjectCheckBoxList();
+
+	var textAreaString = "";
+	var checkCounter = 0;
+
+	for(var i=0; i < ChkBoxList.length; i++){
+
+		if(ChkBoxList[i].checked){
+			textAreaString += "A" + ChkBoxList[i].value + "\n";
+			checkCounter++;
+		}
+	}
+
+	if(checkCounter > 0)
+		document.all.totalcount.innerHTML = checkCounter + " checked";
+	else
+		document.all.totalcount.innerHTML = "";
+
+
+	document.forms["textblockForm"].projectlist.value = textAreaString;
+
+}
+
+
+//We have a hidden input on the HTML to keep a single check box from not forming an array
+function GetProjectCheckBoxList(){
+
+	var retArray = new Array();
+	ThisChkBoxList = document.forms["projectListForm"].chkbx;
+	for(var i=0; i < ThisChkBoxList.length; i++){
+		if(ThisChkBoxList[i].type == "checkbox"){
+			retArray.push(ThisChkBoxList[i]);
+		}
+	}
+	return retArray;
+}
+
+
+function ChangeBatchColor(projectID, HighlightFlag){
+
+	if(!document.getElementsByTagName)
+		return;
+
+	var tableData = document.getElementById("cell" + projectID);
+
+	if(HighlightFlag)
+		tableData.className = "isHighlighted";
+	else
+		tableData.className = "notHighlighted";
+}
+
+
+function LaunchBatchWindow(){
+
+
+	var projectListPiped = "";
+
+	ChkBoxList = GetProjectCheckBoxList();
+	var checkCounter = 0;
+	for(var i=0; i < ChkBoxList.length; i++){
+
+		if(ChkBoxList[i].checked){
+			projectListPiped += ChkBoxList[i].value + "|";
+			checkCounter++;
+		}
+	}
+
+	if(checkCounter == 0){
+		alert("You must select some projects before creating a batch window.");
+	}
+	else{
+		alert("If you are using the batch window to change statuses, make sure\nthat none of the projects have been 'Printed' or 'Boxed' yet.\nIf they are, you are best off to cancel them and issue reprint(s).");
+
+		var NewWindowAddress = "./ad_batchwindow_new.php?viewtype=admin&projectlist=" + projectListPiped;
+		newWindow = window.open(NewWindowAddress, "proofCheckBatch", "height=395,width=375,directories=no,location=no,menubar=no,scrollbars=yes,status=yes,toolbar=no,resizable=yes");
+		newWindow.focus();
+	}
+}
+
+function showOrderNo(orderNumber){
+	window.opener.location = "./ad_order.php?orderno=" + orderNumber;
+}
+
+
+
+</script>
+
+<style type="text/css">
+ .isHighlighted { background-color: #FFDDDD; }
+ .notHighlighted { background-color: #E3E3FF; }
+
+A.proofLink 	{ font-size:10px; color:#333333; font-family:Arial,Helvetica,sans-serif;  text-decoration:none}
+A.proofLink:visited { color: #990000; }
+A.proofLink:link { color: #333333; }
+A.proofLink:hover { color: #0000FF;  text-decoration:underline}
+
+</style>
+
+</head>
+
+<body bgcolor="#3366CC" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="" >
+<img  src="./images/transparent.gif" border="0" width="1" height="10" alt="" /><br/>
+<div align="center">
+<table bgcolor="#EEEEEE" width="720" cellpadding="0" cellspacing="0" border="0">
+
+<tr>
+<td bgcolor="#cccccc" class="SmallBody" align="center" style="background-image: url(./images/admin/header-shipping.png); background-repeat: no-repeat;"><img  src="./images/transparent.gif" border="0" width="1" height="3" alt="" /><br/><font color="#333333"><b>Adjustments Between {START_DATE} <b>--</b> {END_DATE}</b></font><br/><img src="./images/transparent.gif" border="0" width="1" height="3" alt="" /></td>
+
+<tr>
+<td align="center" class="Body"><img src="./images/transparent.gif" border="0" width="8" height="8" alt="" /><table width="95%" border="0" cellspacing="0" cellpadding="0">
+  <form name="adjustmentSearch" method="get">
+  <input type="hidden" name="starttime" value="{START_TIMESTAMP}" />
+   <input type="hidden" name="endtime" value="{END_TIMESTAMP}" />
+  <tr>
+            <td class="ReallySmallBody">Keywords: <input type="text" style="width:400px; font-family:Arial, Helvetica, sans-serif; font-size:10px; background-color:#FFFFFF" name="keywords" value="{KEYWORDS}" size="50" /> <input type="submit" value="Search" class="AdminButton" onmouseover="this.style.background='#ffeeaa';" onmouseout="this.style.background='#FFFFDD';" /></td>
+  </tr>
+  </form>
+</table>
+
+<table width="100%" border="0" cellspacing="0" cellpadding="7">
+  <tr>
+    <td>
+
+<!-- BEGIN NoResultsBL -->
+<table width="100%" cellpadding="1" cellspacing="0" border="0" bgcolor="#6699FF">
+<tr>
+<td>
+		<table width="100%" cellpadding="2" cellspacing="1" border="0">
+
+
+<tr>
+                  <td width="14%" class="SmallBody" align="left" bgcolor="#DDDDFF">Order</td>
+                  <td width="14%" class="SmallBody" align="left" bgcolor="#DDDDFF">Date</td>
+				  <td width="16%" class="SmallBody" align="left" bgcolor="#DDDDFF">By</td>
+                  <td width="44%" class="SmallBody" align="left" bgcolor="#DDDDFF">Reason</td>
+                  <td width="20%" class="SmallBody" align="right" bgcolor="#DDDDFF">Vendor</td>
+                  <td width="7%" class="SmallBody" align="right" bgcolor="#DDDDFF">Customer</td>
+
+</tr>
+<!-- BEGIN AdminAdjustmentBL -->
+<tr>
+                  <td width="14%" class="SmallBody" align="left" bgcolor="#EEF3FF">&nbsp;<a href="javascript:showOrderNo({ADJ_ORDERID});" class="BlueRedLink">{ADJ_ORDERID}</a></td>
+                  <td width="14%" class="SmallBody" align="left" bgcolor="#EEF3FF">{ADJUSTDATE}</td>
+				   <td width="16%" class="SmallBody" align="left" bgcolor="#EEF3FF">{ADJUSTBY}</td>
+                  <td width="44%" class="SmallBody" align="left" bgcolor="#EEF3FF">{ADJUSTSUMMARY}</td>
+                  <td width="20%" class="SmallBody" bgcolor="#EEF3FF">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td class="SmallBody"><font class="ReallySmallBody">{V_NAME}</font></td>
+    <td class="SmallBody" align="right">{VENDORADUST}</td>
+  </tr>
+</table>
+</td>
+<td width="7%" class="SmallBody" align="right" bgcolor="#EEF3FF">{CUSTOMERADJUST}</td>
+</tr>
+<!-- END AdminAdjustmentBL -->
+<tr>
+                  <td colspan="4" class="SmallBody" align="right" bgcolor="#EEEEEE">Total Adjustments&nbsp;&nbsp;</td>
+                  <td width="20%" class="SmallBody" align="right" bgcolor="#EEEEEE"><b>{TOTALVENDORADJUST}</b>&nbsp;</td>
+                  <td width="7%" class="SmallBody" align="right" bgcolor="#EEEEEE"><b>{TOTALCUSTOMERADJUST}</b>&nbsp;</td>
+</tr>
+</table>
+
+	</td>
+	</tr>
+	</table>
+
+<!-- END NoResultsBL -->
+</td>
+  </tr>
+</table>
+</td>
+</tr>
+
+
+<tr>
+<td><img src="images/header-editoptions-fade-bot.gif" width="720" alt="" /></td>
+</tr>
+</table>
+
+</div>
+
+
+</body>
+</html>

@@ -1,0 +1,3263 @@
+
+CREATE TABLE IF NOT EXISTS projectsordered (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   Quantity int(8),
+   ProductID int(11),
+   OrderID int(11),
+   SavedID int(11),
+   VendorID1 int(11),
+   VendorID2 int(11),
+   VendorID3 int(11),
+   VendorID4 int(11),
+   VendorID5 int(11),
+   VendorID6 int(11),
+   RePrintLink int(11) NOT NULL,  ##-- If this project is a reprint, it will have an ID pointing to the project that is being reprinted
+   RePrintReason char(1),
+   ArtworkFile mediumtext,
+   ArtworkFileModified mediumtext,
+   ArtworkSignature char(32),
+   Status char(1),
+   Priority char(1),
+   ShippingPriority int(1),
+   FromTemplateID int(11),
+   FromTemplateArea char(1),
+   CopyrightPurchase char(1),
+   CustomerSubtotal varchar(10),
+   CustomerTax varchar(10),
+   CouponID smallint(2) null,
+   CustomerDiscount varchar(10),   ##-- float number like 0.20 ... for a 20% discount
+   VendorSubtotal1 varchar(10),
+   VendorSubtotal2 varchar(10),
+   VendorSubtotal3 varchar(10),
+   VendorSubtotal4 varchar(10),
+   VendorSubtotal5 varchar(10),
+   VendorSubtotal6 varchar(10),
+   OrderDescription varchar(70),
+   OptionsDescription varchar(250),
+   OptionsAlias varchar(250),
+   VariableDataStatus char(1),
+   VariableDataMessage text,
+   VariableDataArtworkConfig text,
+   VariableDataArtworkConfigOriginal text,
+   VariableDataFirstLine text,
+   NotesProduction varchar(200),
+   NotesAdmin varchar(200),
+   EstPrintDate DATETIME,
+   EstShipDate DATETIME,
+   EstArrivalDate DATETIME,
+   CutOffTime DATETIME,
+   DomainID int(11),
+   ArtworkSides int(7),
+   PRIMARY KEY (ID),
+   
+   INDEX projectsordered_ProductID (ProductID),
+   INDEX projectsordered_Quantity (Quantity),
+   INDEX projectsordered_OrderID (OrderID),
+   INDEX projectsordered_SavedID (SavedID),
+   INDEX projectsordered_VendorID1 (VendorID1),
+   INDEX projectsordered_VendorID2 (VendorID2),
+   INDEX projectsordered_VendorID3 (VendorID3),
+   INDEX projectsordered_VendorID4 (VendorID4),
+   INDEX projectsordered_VendorID5 (VendorID5),
+   INDEX projectsordered_VendorID6 (VendorID6),
+   INDEX projectsordered_RePrintLink (RePrintLink),
+   INDEX projectsordered_RePrintReason (RePrintReason),
+   INDEX projectsordered_FromTemplateID (FromTemplateID),
+   INDEX projectsordered_FromTemplateArea (FromTemplateArea),
+   INDEX projectsordered_CopyrightPurchase (CopyrightPurchase),
+   INDEX projectsordered_ArtworkSignature (ArtworkSignature),
+   INDEX projectsordered_Status (Status),
+   INDEX projectsordered_Priority (Priority),
+   INDEX projectsordered_ShippingPriority (ShippingPriority),
+   INDEX projectsordered_EstPrintDate (EstPrintDate),
+   INDEX projectsordered_EstShipDate (EstShipDate),
+   INDEX projectsordered_EstArrivalDate (EstArrivalDate),
+   INDEX projectsordered_DomainID (DomainID)
+   
+   ) MAX_ROWS=4294967295 AVG_ROW_LENGTH = 100;
+
+#---------------------------------------
+
+CREATE TABLE IF NOT EXISTS products (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   
+   ProductTitle varchar(70),
+   ProductTitleExt varchar(50),
+   ProductStatus char(1),
+   
+   ArtworkCanvasWidth char(10),
+   ArtworkCanvasHeight char(10),
+   ArtworkDPI char(5),
+   ArtworkSidesCount int(2),
+   ArtworkSidesDesc varchar(255),
+   ArtworkBleedPicas int(5),
+   ArtworkImgUploadEmbedMsg varchar(250),
+   ArtworkCustomTemplateURL varchar(250),
+   
+   ArtworkSweetSpotWidth char(10),
+   ArtworkSweetSpotHeight char(10),
+   ArtworkSweetSpotX char(10),
+   ArtworkSweetSpotY char(10),
+   
+   TemplatePreviewScale char(10),
+   TemplatePreviewSweetSpot char(1),
+   UseTemplatesFromProductID int(11),
+   ProductionPiggybackID int(11),
+   ParentProductID int(11),
+   MultipleTemplatePreviews varchar(60),
+   DefaultMultiPreviewID int(11),
+   ProductUnitWeight char(10),
+   CompatibleProductIDs varchar(255),
+   ProductImportance int(3),
+   ArtworkIsEditable char(1),
+   
+   UserIDofArtworkSetup int(11),
+   ReorderCardSavedNote varchar(200),
+   ProjectInitSavedNote varchar(200),
+   
+   PromotionalCommands varchar(200),
+   
+   VariableDataFlag char(1),
+   MailingServicesFlag char(1),
+   
+   ArtThumbReorderScale int(3),
+   ArtThumbReorderXcoord int(3),
+   ArtThumbReorderYcoord int(3),
+
+   TemplatePreviewSidesDisplay char(1),
+   TemplatePreviewMaskPNG mediumblob,
+   ThumbnailCopyIconJPG mediumblob,
+   ThumbnailBackJPG mediumblob,
+   ThumbnailCopyFileSize int(7),
+   ThumbnailBackFileSize int(7),
+   ThumbBackWidth int(4),
+   ThumbBackHeight int(4),
+   ThumbWidth int(4),
+   ThumbHeight int(4),
+   ThumbOverlayX int(4),
+   ThumbOverlayY int(4),
+   
+   TempPrevBackLandscapeJPG mediumblob,
+   TempPrevBackLandscapeJpgWidth int(4),
+   TempPrevBackLandscapeJpgHeight int(4),
+   TempPrevBackPortraitJPG mediumblob,
+   TempPrevBackPortraitJpgWidth int(4),
+   TempPrevBackPortraitJpgHeight int(4),
+   TempPrevBackLandscapeFileSize int(7),
+   TempPrevBackPortraitFileSize int(7),
+   TempPrevBackLandscapeOverlayX char(5),
+   TempPrevBackLandscapeOverlayY char(5),
+   TempPrevBackPortraitOverlayX char(5),
+   TempPrevBackPortraitOverlayY char(5),
+   
+   DefaultProductionDays int(2),
+   DefaultCutOffHour int(2),
+   
+   CustInitSub char(10),
+   CustInitBase char(10),
+   Vend1InitSub char(10),
+   Vend1InitBase char(10),
+   Vend2InitSub char(10),
+   Vend2InitBase char(10),
+   Vend3InitSub char(10),
+   Vend3InitBase char(10),
+   Vend4InitSub char(10),
+   Vend4InitBase char(10),
+   Vend5InitSub char(10),
+   Vend5InitBase char(10),
+   Vend6InitSub char(10),
+   Vend6InitBase char(10),
+   
+   VendorID1 int(11),
+   VendorID2 int(11),
+   VendorID3 int(11),
+   VendorID4 int(11),
+   VendorID5 int(11),
+   VendorID6 int(11),
+   
+   MaxBoxSize int(6), 
+   DomainID int(11),
+   
+   PRIMARY KEY (ID),
+   INDEX products_ProductTitle (ProductTitle),
+   INDEX products_ProductStatus (ProductStatus),
+   INDEX products_VariableDataFlag (VariableDataFlag),
+   INDEX products_MailingServicesFlag (MailingServicesFlag),
+   INDEX products_ProductImportance (ProductImportance),
+   INDEX products_DomainID (DomainID),
+   
+   INDEX products_VendorID1 (VendorID1),
+   INDEX products_VendorID2 (VendorID2),
+   INDEX products_VendorID3 (VendorID3),
+   INDEX products_VendorID4 (VendorID4),
+   INDEX products_VendorID5 (VendorID5),
+   INDEX products_VendorID6 (VendorID6)
+   );
+
+
+CREATE TABLE IF NOT EXISTS productquantitybreaks (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   
+   ProductID int(11),
+   Quantity int(11),
+   
+   CustSub char(10),
+   CustBase char(10),
+   
+   Vend1Sub char(10),
+   Vend1Base char(10),
+   Vend2Sub char(10),
+   Vend2Base char(10),
+   Vend3Sub char(10),
+   Vend3Base char(10),
+   Vend4Sub char(10),
+   Vend4Base char(10),
+   Vend5Sub char(10),
+   Vend5Base char(10),
+   Vend6Sub char(10),
+   Vend6Base char(10),
+   
+   PRIMARY KEY (ID),
+   INDEX productquantitybreaks_ProductID (ProductID),
+   INDEX productquantitybreaks_Quantity (Quantity)
+   );
+
+
+
+CREATE TABLE IF NOT EXISTS productswitches (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   ProductIDsource int(11),
+   ProductIDtarget int(11),
+   SwitchTitle varchar(250),
+   SwitchLinkSubject varchar(150),
+   SwitchDescription varchar(255),
+   SwitchDescriptionIsHTML char(1),
+   
+   PRIMARY KEY (ID),
+   INDEX productswitches_ProductIDsource (ProductIDsource),
+   INDEX productswitches_ProductIDtarget (ProductIDtarget)
+   );
+
+
+CREATE TABLE IF NOT EXISTS productoptions (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   ProductID int(11),
+   OptionName varchar(150),
+   OptionNameAlias varchar(150),
+   OptionDescription varchar(255),
+   OptionDescriptionIsHTML char(1),
+   AdminOptionController char(1),
+   ArtworkSidesController char(1),
+   VariableImageController char(1),
+   ArtSearchReplaceController char(1),
+   OptionInCommonForProduction char(1),
+   CouponDiscountExempt char(1),
+   Sort int(5),
+   
+   PRIMARY KEY (ID),
+   INDEX productoptions_ProductID (ProductID),
+   INDEX productoptions_OptionName (OptionName),
+   INDEX productoptions_OptionNameAlias (OptionNameAlias),
+   INDEX productoptions_AdminOptionController (AdminOptionController),
+   INDEX productoptions_ArtworkSidesController (ArtworkSidesController),
+   INDEX productoptions_VariableImageController (VariableImageController),
+   INDEX productoptions_ArtSearchReplaceController (ArtSearchReplaceController),
+   INDEX productoptions_OptionInCommonForProduction (OptionInCommonForProduction)
+   );
+ 
+CREATE TABLE IF NOT EXISTS productoptionchoices (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   ProductOptionID int(11),
+   ChoiceName varchar(150),
+   ChoiceNameAlias varchar(150),
+   ChoiceDescription varchar(250),
+   ChoiceDescriptionIsHTML char(1),
+   HideOptionAll char(1),
+   HideOptionInLists char(1),
+   
+   UnitWeightChange char(10),
+   ProjectWeightChange char(10),
+   ArtworkSideCount int(2),
+   VariableImageFlag char(1),
+   ArtStringSearchFor text,
+   ArtStringReplaceWith text,
+   ProductionAlert varchar(250),
+   Sort int(5),
+   
+   CustSub char(10),
+   CustBase char(10),
+   
+   Vend1Sub char(10),
+   Vend1Base char(10),
+   Vend2Sub char(10),
+   Vend2Base char(10),
+   Vend3Sub char(10),
+   Vend3Base char(10),
+   Vend4Sub char(10),
+   Vend4Base char(10),
+   Vend5Sub char(10),
+   Vend5Base char(10),
+   Vend6Sub char(10),
+   Vend6Base char(10),
+   
+   PRIMARY KEY (ID),
+   INDEX productoptionchoices_ProductOptionID (ProductOptionID),
+   INDEX productoptionchoices_HideAdminOption (HideAdminOption),
+   INDEX productoptionchoices_ChoiceNameAlias (ChoiceNameAlias),
+   INDEX productoptionchoices_ChoiceName (ChoiceName)
+   
+   );
+   
+
+
+ 
+CREATE TABLE IF NOT EXISTS productchoicequantbrks (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   
+   ProductOptionChoiceID int(11),
+   Quantity int(11),
+   
+   CustSub char(10),
+   CustBase char(10),
+   
+   Vend1Sub char(10),
+   Vend1Base char(10),
+   Vend2Sub char(10),
+   Vend2Base char(10),
+   Vend3Sub char(10),
+   Vend3Base char(10),
+   Vend4Sub char(10),
+   Vend4Base char(10),
+   Vend5Sub char(10),
+   Vend5Base char(10),
+   Vend6Sub char(10),
+   Vend6Base char(10),
+  
+   PRIMARY KEY (ID),
+   INDEX productchoicequantbrks_ProductOptionChoiceID (ProductOptionChoiceID),
+   INDEX productchoicequantbrks_Quantity (Quantity)
+   );
+   
+CREATE TABLE IF NOT EXISTS productcutoffhour (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   ProductID int(11),
+   ShippingChoiceID int(11),
+   CutOffHour int(2),
+   
+   PRIMARY KEY (ID),
+   INDEX productcutoffhour_ProductID (ProductID),
+   INDEX productcutoffhour_ShippingChoiceID (ShippingChoiceID)
+   );
+
+CREATE TABLE IF NOT EXISTS productproductiondays (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   ProductID int(11),
+   ShippingChoiceID int(11),
+   ProductionDays int(2),
+   
+   PRIMARY KEY (ID),
+   INDEX productproductiondays_ProductID (ProductID),
+   INDEX productproductiondays_ShippingChoiceID (ShippingChoiceID)
+   );
+ 
+ 
+ #-- This Table can hold Product-Specific messages in it.  They are configured in the back-end and displayed to the user on the front-end
+ CREATE TABLE IF NOT EXISTS productmessages (
+    ID int(11) NOT NULL AUTO_INCREMENT,
+    SourceProductID int(11),
+    TargetProductID int(11),
+    MultiTemplatePreviewSwitchDesc varchar(255),
+
+    PRIMARY KEY (ID),
+    INDEX productmessages_SourceProductID (SourceProductID),
+    INDEX productmessages_TargetProductID (TargetProductID)
+   );
+ 
+ #--------------------------------------------------------------------
+ 
+ 
+  CREATE TABLE IF NOT EXISTS dosattack (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   IPaddress varchar(20),
+   AccessCount int(11),
+   DateCreated DATETIME,
+   
+   PRIMARY KEY (ID),
+   INDEX dosattack_IPaddress (IPaddress),
+   INDEX dosattack_DateCreated (DateCreated)
+   );
+   
+   
+   
+ CREATE TABLE IF NOT EXISTS dosattackaddresses (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   IPaddress varchar(20),
+   AccessCount int(11),
+   DateRefreshed DATETIME,
+   DateCreated DATETIME,
+
+   
+   PRIMARY KEY (ID),
+   INDEX dosattackaddresses_IPaddress (IPaddress),
+   INDEX dosattackaddresses_DateRefreshed (DateRefreshed)
+   );
+ 
+ CREATE TABLE  IF NOT EXISTS pop3getemails (
+  ID int(11) auto_increment,
+  DomainID int(11),
+  LastConnection datetime,
+  
+  PRIMARY KEY  (ID)
+);
+ 
+ 
+ 
+ CREATE TABLE IF NOT EXISTS emailnewsletterrequest (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   DomainID int(11),
+   Email varchar(70),
+   IPaddress varchar(20),
+   BannerTrackingCode varchar(70),
+   DateSubmitted DATETIME,
+   
+   PRIMARY KEY (ID),
+   INDEX emailnewsletterrequest_Email (Email),
+   INDEX emailnewsletterrequest_DateSubmitted (DateSubmitted)
+   );
+ 
+ 
+ 
+CREATE TABLE IF NOT EXISTS orders (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   UserID int(11),
+   CardType varchar(30),
+   CardNumber varchar(30),
+   MonthExpiration varchar(30),
+   YearExpiration varchar(30),
+   ThirdPartyInvoiceID varchar(10),
+   BillingName varchar(30),
+   BillingCompany varchar(30),
+   BillingAddress varchar(70),
+   BillingAddressTwo varchar(30),
+   BillingCity varchar(30),
+   BillingState varchar(30),
+   BillingZip varchar(30),
+   BillingCountry char(2),
+   ShippingName varchar(30),
+   ShippingCompany varchar(30),
+   ShippingAddress varchar(70),
+   ShippingAddressTwo varchar(30),
+   ShippingCity varchar(30),
+   ShippingState varchar(30),
+   ShippingZip varchar(30),
+   ShippingCountry char(2),
+   ShippingResidentialFlag char(1),
+   ShippingChoiceID int(11),
+   ShippingQuote varchar(10),
+   ShippingTax varchar(10),
+   Referral varchar(150),
+   ReferralDate DATETIME,
+   RegenTrackingCode varchar(150),
+   EmailNotifyJobHistoryID int(11),
+   BannerReferer text,
+   InvoiceNote varchar(200),
+   BillingType char(1),
+   DateOrdered DATETIME,
+   IPaddress varchar(20),
+   AffiliateSource varchar(50),
+   AffiliateIdentifier varchar(50),
+   CouponID int(11),
+   DomainID int(11),
+   FirstTimeCustomer char(1),
+   LocationID int(8),
+   ISPname varchar(50),
+   SessionID varchar(32),
+   ShippingInstructions varchar(255),
+   PRIMARY KEY (ID),
+   
+   INDEX orders_BillingType (BillingType),
+   INDEX orders_BillingName (BillingName),
+   INDEX orders_UserID (UserID),
+   INDEX orders_Referral (Referral),
+   INDEX orders_DateOrdered (DateOrdered),
+   INDEX orders_CouponID (CouponID),
+   INDEX orders_IPaddress (IPaddress),
+   INDEX orders_CardNumber (CardNumber),
+   INDEX orders_ShippingChoiceID (ShippingChoiceID),
+   INDEX orders_DomainID (DomainID),
+   INDEX orders_LocationID (LocationID),
+   INDEX orders_ThirdPartyInvoiceID (ThirdPartyInvoiceID),
+   INDEX orders_EmailNotifyJobHistoryID (EmailNotifyJobHistoryID)
+   
+   ) MAX_ROWS=4294967295 AVG_ROW_LENGTH = 100;
+   
+
+CREATE TABLE IF NOT EXISTS shipmentlink (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   ProjectID int(11),
+   ShipmentID int(11),
+   Quantity int(8),
+   PRIMARY KEY (ID),
+   
+   INDEX shipmentlink_ProjectID (ProjectID),
+   INDEX shipmentlink_ShipmentID (ShipmentID)
+   );
+   
+
+
+
+
+CREATE TABLE IF NOT EXISTS gangruns (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   SheetCount int(11),
+   SuperProfileID int(11),
+   DuplexFlag char(1),
+   ForceQuantityFlag char(1),
+   GangRunStatus char(1),
+   PrintingPressID int(11),
+   FrontPDF longblob,
+   BackPDF longblob,
+   CoverPDF longblob,
+   FrontThumbJPG mediumblob,
+   BackThumbJPG mediumblob,
+   FrontStatus char(1),
+   BackStatus char(1),   
+   CoverStatus char(1),
+   MaterialDesc varchar(255),
+   BatchNotes varchar(255),
+   ConfirmedBy varchar(30),
+   LastUpdated DATETIME,
+   CreatedOn DATETIME,
+   PRIMARY KEY (ID),
+   
+   INDEX gangruns_PrintingPressID (PrintingPressID),
+   INDEX gangruns_SuperProfileID (SuperProfileID),
+   INDEX gangruns_DuplexFlag (DuplexFlag),
+   INDEX gangruns_GangRunStatus (GangRunStatus),
+   INDEX gangruns_FrontStatus (FrontStatus),
+   INDEX gangruns_BackStatus (BackStatus),
+   INDEX gangruns_CoverStatus (CoverStatus),
+   INDEX gangruns_LastUpdated (LastUpdated)
+   ) MAX_ROWS=4294967295 AVG_ROW_LENGTH = 100;
+   
+CREATE TABLE IF NOT EXISTS gangrunlinks (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   GangRunID int(11),
+   ProjectID int(11),
+   Sequence int(5),
+   PRIMARY KEY (ID),
+   
+   INDEX gangrunlink_GangRunID (GangRunID),
+   INDEX gangrunlink_ProjectID (ProjectID)
+   );
+
+
+
+
+CREATE TABLE IF NOT EXISTS digitalruns (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   SheetCount int(11),
+   ProfileName char(100),
+   PrintingPressID int(11),
+   DigitalRunStatus char(1),
+   PDFfile longblob,
+   FrontThumbJPG mediumblob,
+   PDFStatus char(1),
+   ConfirmedBy varchar(30),
+   LastUpdated DATETIME,
+   CreatedOn DATETIME,
+   PRIMARY KEY (ID),
+   
+   INDEX digitalruns_PrintingPressID (PrintingPressID),
+   INDEX digitalruns_ProfileName (ProfileName),
+   INDEX digitalruns_DigitalRunStatus (DigitalRunStatus),
+   INDEX digitalruns_PDFStatus (PDFStatus),
+   INDEX digitalruns_LastUpdated (LastUpdated)
+   );
+
+CREATE TABLE IF NOT EXISTS digitalrunlinks (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   DigitalRunID int(11),
+   ProjectID int(11),
+   PRIMARY KEY (ID),
+   
+   INDEX digitalrunlinks_DigitalRunID (DigitalRunID),
+   INDEX digitalrunlinks_ProjectID (ProjectID)
+   );
+
+
+
+
+
+
+
+
+
+CREATE TABLE IF NOT EXISTS mailingbatch (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   AddressDataOriginal LONGTEXT,
+   OriginalLineCount int(11),
+   AddressDataImported LONGTEXT,
+   ImportedLineCount int(11),
+   BatchStatus char(10),
+   CreatedOn DATETIME,
+   CreatedBy int(11),
+   PRIMARY KEY (ID),
+   
+   INDEX mailingbatch_BatchStatus (BatchStatus)
+   );
+
+CREATE TABLE IF NOT EXISTS mailingbatchlinks (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   ProjectID int(11),
+   MailingBatchID int(11),
+   PRIMARY KEY (ID),
+   
+   INDEX mailingbatchlinks_ProjectID (ProjectID),
+   INDEX mailingbatchlinks_MailingBatchID (MailingBatchID)
+   );
+   
+
+   
+ CREATE TABLE IF NOT EXISTS projectsavedneedsupdate (
+    ID int(11) NOT NULL AUTO_INCREMENT,
+    ProjectSavedID int(11),
+    PRIMARY KEY (ID)
+   );
+   
+ CREATE TABLE IF NOT EXISTS projectorderedartworkupdate (
+    ID int(11) NOT NULL AUTO_INCREMENT,
+    ProjectOrderedID int(11),
+    PRIMARY KEY (ID)
+   );
+   
+
+CREATE TABLE IF NOT EXISTS shipments (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   TrackingNumber varchar(60),
+   ShippingMethod char(3),
+   ShippingCost varchar(10),
+   ShippingRefund varchar(10),
+   Carrier varchar(10),
+   PackageWeight int(11),
+   PackageType char(1),
+   PackageDimensions varchar(15),
+   DateShipped DATETIME,
+   DateArrived DATETIME,   ##--- Populated by the cron... which goes out and checks with UPS when tracking numbers have finally been delivered.
+   PRIMARY KEY (ID),
+   
+   INDEX shipments_ShippingMethod (ShippingMethod),
+   INDEX shipments_DateShipped (DateShipped),
+   INDEX shipments_TrackingNumber (TrackingNumber)
+   );
+
+CREATE TABLE IF NOT EXISTS eventschedule (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   ProductID int(11),
+   Title varchar(255),
+   Description varchar(255),
+   DelaysTransit char(1),
+   DelaysProduction char(1),
+   EventDate DATETIME,
+   DomainID int(11),
+   TitleSignature char(38),
+   EventSignature char(38),
+   StartMinute int(4),
+   EndMinute int(4),
+   UserIdCreated int(11),
+   UserIdEdited int(11),
+   CreatedOn DATETIME,
+   EditedOn DATETIME,
+   PRIMARY KEY (ID),
+   
+   INDEX eventschedule_ProductID (ProductID),
+   INDEX eventschedule_EventDate (EventDate),
+   INDEX eventschedule_DomainID (DomainID),
+   INDEX eventschedule_TitleSignature (TitleSignature),
+   INDEX eventschedule_EventSignature (EventSignature)
+   );
+
+
+CREATE TABLE IF NOT EXISTS charges (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   OrderID int(11),
+   LoyaltyChargeID int(11),
+   ChargeAmount varchar(10), #-- Includes Tax and Freight... this is the total charge
+   TaxAmount varchar(10),
+   FreightAmount varchar(10),
+   ChargeType char(1),   ##-- Can either be a auth_capture, auth, capture_previous, or refund.
+   Status char(1),    #-- Result from authorize.net.  May be "declined", "accepted", or "error"  D, A or E
+   ResponseReasonCode varchar(5),
+   ResponseReasonText varchar(250),
+   StatusDate DATETIME,  #-- Date the last charge was attempted
+   ChargeRetries int(5),  #-- Incremented every time we attempt the charge... basically an error counter.  Will only occur on ChargeTypes of C & R
+   ChargeIDlink int(11),  #-- If the Charge type is a refund or a capture, then this will show us what chargeID it is linked to.
+   TransactionID varchar(25),  #-- ID pointing the transaction within Authorize.net's system
+   ApprovalCode varchar(25), #-- not used yet
+   CommissionFee varchar(8), 
+   PRIMARY KEY (ID),
+   
+   INDEX charges_OrderID (OrderID),
+   INDEX charges_LoyaltyChargeID (LoyaltyChargeID),
+   INDEX charges_ChargeType (ChargeType),
+   INDEX charges_Status (Status),
+   INDEX charges_StatusDate (StatusDate),
+   INDEX charges_ChargeRetries (ChargeRetries),
+   INDEX charges_ChargeIDlink (ChargeIDlink)
+   );
+
+
+CREATE TABLE IF NOT EXISTS projecthistory (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   ProjectID int(11),
+   UserID int(11),
+   Note varchar(250),
+   Date TIMESTAMP,
+   PRIMARY KEY (ID),
+   
+   INDEX projecthistory_ProjectID (ProjectID),
+   INDEX projecthistory_Date (Date),
+   INDEX projecthistory_UserID (UserID)
+   );
+   
+
+CREATE TABLE IF NOT EXISTS shippingaddresshistory (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   OrderID int(11),
+   UserID int(11),
+   ShippingName varchar(30),
+   ShippingCompany varchar(30),
+   ShippingAddress varchar(70),
+   ShippingAddressTwo varchar(30),
+   ShippingCity varchar(30),
+   ShippingState varchar(30),
+   ShippingZip varchar(30),
+   ShippingCountry char(2),
+   ShippingResidentialFlag char(1),
+   Date TIMESTAMP,
+   PRIMARY KEY (ID),
+   
+   INDEX shippingaddresshistory_OrderID (OrderID)
+   );
+   
+CREATE TABLE IF NOT EXISTS shippingchoicehistory (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   OrderID int(11),
+   UserID int(11),
+   ShippingChoiceID int(11),
+   Date TIMESTAMP,
+   PRIMARY KEY (ID),
+   
+   INDEX shippingchoicehistory_OrderID (OrderID)
+   );
+   
+CREATE TABLE IF NOT EXISTS shippingmethodhistory (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   OrderID int(11),
+   ShippingMethodCode char(3),
+   Date TIMESTAMP,
+   PRIMARY KEY (ID),
+   
+   INDEX shippingmethodhistory_OrderID (OrderID)
+   );
+
+
+
+CREATE TABLE IF NOT EXISTS customermemos (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   CustomerUserID int(11),
+   CreatedByUserID int(11),
+   CustomerReaction char(1),
+   LastSalesForceReaction char(1),
+   Date DATETIME,
+   Memo TEXT,
+   PRIMARY KEY (ID),
+   
+   INDEX customermemos_CustomerUserID (CustomerUserID),
+   INDEX customermemos_CreatedByUserID (CreatedByUserID),
+   INDEX customermemos_CustomerReaction (CustomerReaction),
+   INDEX customermemos_LastSalesForceReaction (LastSalesForceReaction),
+   INDEX customermemos_Date (Date)
+   );
+
+CREATE TABLE IF NOT EXISTS customermemoslocker (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   UserID int(11),
+   CustomerID int(11),
+   LockTime DATETIME,
+   PRIMARY KEY (ID),
+   
+   INDEX customermemoslocker_UserID (UserID),
+   INDEX customermemoslocker_CustomerID (CustomerID),
+   INDEX customermemoslocker_LockTime (LockTime)
+   );
+
+
+CREATE TABLE IF NOT EXISTS userchangelog (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   UserID int(11),
+   WhoChangedUserID int(11),
+   DescriptionFrom text,
+   DescriptionTo text,
+   Date DATETIME,
+   PRIMARY KEY (ID),
+   
+   INDEX userchangelog_UserID (UserID),
+   INDEX userchangelog_WhoChangedUserID (WhoChangedUserID),
+   INDEX userchangelog_Date (Date)
+   );
+
+
+CREATE TABLE IF NOT EXISTS salesreps (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   UserID int(11),
+   ParentSalesRep int(11),
+   CommissionPercent varchar(5),
+   FixedAmntNewCustomer varchar(7),
+   CanAddSubSalesReps char(1),
+   MonthsExpires int(5),
+   PaymentsSuspended char(1),
+   AccountDisabled char(1),
+   IsAnEmployee char(1),
+   HaveReceivedW9 char(1),
+   AddressIsVerified char(1),
+   EmailIsVerified char(1),
+   DateCreated DATETIME,
+   W9Name varchar(30),
+   W9Company varchar(60),
+   W9Address varchar(70),
+   W9City varchar(30),
+   W9State varchar(30),
+   W9Zip varchar(30),
+   W9TIN varchar(12),
+   W9TINtype char(1),
+   W9BusinessType char(1),
+   W9BusinessTypeOther varchar(30),
+   W9Exempt char(1),
+   W9AccountNumbers varchar(255),
+   W9Coments varchar(255),
+   W9DateSigned DATETIME,
+   W9FiledByUserID int(11),
+   PRIMARY KEY (ID),
+   
+   INDEX salesreps_UserID (UserID),
+   INDEX salesreps_ParentSalesRep (ParentSalesRep),
+   INDEX salesreps_IsAnEmployee (IsAnEmployee),
+   INDEX salesreps_HaveReceivedW9 (HaveReceivedW9),
+   INDEX salesreps_AddressIsVerified (AddressIsVerified),
+   INDEX salesreps_EmailIsVerified (EmailIsVerified),
+   INDEX salesreps_DateCreated (DateCreated)
+   );
+
+
+CREATE TABLE IF NOT EXISTS salesrepchangelog (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   SalesUserID int(11),
+   WhoChangedUserID int(11),
+   Description text,
+   Date DATETIME,
+   PRIMARY KEY (ID),
+   
+   INDEX salesrepchangelog_SalesUserID (SalesUserID),
+   INDEX salesrepchangelog_WhoChangedUserID (WhoChangedUserID),
+   INDEX salesrepchangelog_Date (Date)
+   );
+   
+  
+CREATE TABLE IF NOT EXISTS salesrepsrateslocked (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   CustomerUserID int(11),
+   SalesUserID int(11),
+   CommissionPercent varchar(5),
+   PRIMARY KEY (ID),
+   
+   INDEX salesrepsrateslocked_CustomerUserID (CustomerUserID),
+   INDEX salesrepsrateslocked_SalesUserID (SalesUserID)
+   );
+   
+CREATE TABLE IF NOT EXISTS salesrepinvitations (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   Email varchar(60),
+   Hashcode char(32),
+   FromUserID int(11),
+   CanAddSubReps char(1),
+   CommissionPercent varchar(5),
+   PRIMARY KEY (ID),
+   
+   INDEX salesrepinvitations_Email (Email),
+   INDEX salesrepinvitations_Hashcode (Hashcode),
+   INDEX salesrepinvitations_FromUserID (FromUserID)
+   );
+
+CREATE TABLE IF NOT EXISTS salescommissions (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   OrderID int(11),
+   UserID int(11),
+   BaseSalesRep int(11),  #- The sales person that acutally landed the customer, may match the column UserID
+   PaymentLink int(11), #-- Foreign key to the salespayments table   0 if no payment has been initiated.
+   OrderSubtotal varchar(10),
+   OrderDiscount varchar(10),
+   SubtotalAfterDiscount varchar(10),
+   CommissionPercentNormal varchar(5),
+   CommissionPercentAfterDiscount varchar(5),
+   CommissionEarned varchar(10),
+   CommissionStatus char(1),  #-- Could be 'G'ood, or 'S'uspended, or 'E'xpired
+   OrderCompletedDate DATETIME,
+   PaymentDate DATETIME,
+   PRIMARY KEY (ID),
+   
+   INDEX salescommissions_OrderID (OrderID),
+   INDEX salescommissions_UserID (UserID),
+   INDEX salescommissions_BaseSalesRep (BaseSalesRep),
+   INDEX salescommissions_PaymentLink (PaymentLink),
+   INDEX salescommissions_CommissionStatus (CommissionStatus),
+   INDEX salescommissions_OrderCompletedDate (OrderCompletedDate),
+   INDEX salescommissions_PaymentDate (PaymentDate)
+   );
+   
+
+#-- Totals all Sales Commissions for a certain pay period and consolidates them
+#-- Payments may be associated to a PayPal MassPay transaction or with an entry for additional Employee wages
+CREATE TABLE IF NOT EXISTS salespayments (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   SalesUserID int(11),
+   Amount varchar(10),
+   PayPalMassPayLink int(11), 		#-- 0 if Payment is for an employee Employee, there is no MassPay for them
+   PayPalStatus char(1),	#-- 'N'ew, 'C'laimed, 'U'nclaimed, 'R'eturned, 'D'enied, or 'T'rying again (if it was returned)
+   PayPalStatusDateChanged DATETIME,
+   PayPalTransactionID varchar(30),
+   EmployeePaymentStatus char(1),  #-- "N"ew or "R"ecorded  or Null if this payment is a MassPay
+   EmployeePaymentRecordedBy int(11),
+   EmployeePaymentRecordedOn DATETIME,
+   DateCreated DATETIME,
+   PRIMARY KEY (ID),
+   
+   INDEX salespayments_SalesUserID (SalesUserID),
+   INDEX salespayments_PayPalMassPayLink (PayPalMassPayLink),
+   INDEX salespayments_PayPalStatus (PayPalStatus),
+   INDEX salespayments_EmployeePaymentStatus (EmployeePaymentStatus),
+   INDEX salespayments_EmployeePaymentRecordedBy (EmployeePaymentRecordedBy),
+   INDEX salespayments_EmployeePaymentRecordedOn (EmployeePaymentRecordedOn),
+   INDEX salespayments_DateCreated (DateCreated)
+   );
+
+
+CREATE TABLE IF NOT EXISTS paypalmasspay (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   MassPayStatus char(1),   #-- "N"ew or "A"accepted or "E"rror, "M"anually accepted
+   PaypalTimestamp DATETIME,
+   LastStatusChange DATETIME,
+   ManuallyAcceptedUserID int(11),
+   PaymentAmount varchar(10),
+   FeeAmount varchar(10),
+   ErrorMessage varchar(200),
+   DomainID int(11),
+   PRIMARY KEY (ID),
+   
+   INDEX paypalmasspay_MassPayStatus (MassPayStatus),
+   INDEX paypalmasspay_PaypalTimestamp (PaypalTimestamp),
+   INDEX paypalmasspay_ManuallyAcceptedUserID (ManuallyAcceptedUserID),
+   INDEX paypalmasspay_LastStatusChange (LastStatusChange)
+   );
+
+
+
+CREATE TABLE IF NOT EXISTS paymentsreceived (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   CustomerID int(11),
+   Amount varchar(10),
+   EmployeeUserID int(11),
+   Notes varchar(250),
+   Date DATETIME,
+   PRIMARY KEY (ID),
+   
+   INDEX paymentsreceived_CustomerID (CustomerID),
+   INDEX paymentsreceived_EmployeeUserID (EmployeeUserID),
+   INDEX paymentsreceived_Date (Date)
+   );
+
+
+CREATE TABLE IF NOT EXISTS projectmassimport (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   ReferenceID varchar(15),
+   ArtworkFile mediumtext,
+   FieldOrder text,	#-- Just small small text that represents the corresponding position in the Data Import file EX:  name|phone|address
+   FieldData text,  	#-- Every new line represents a new project... Each line separates fields by pipe symbols
+   Created TIMESTAMP,
+
+   PRIMARY KEY (ID),
+   INDEX projectmassimport_ReferenceID (ReferenceID),
+   INDEX projectmassimport_Created (Created)
+   );
+
+
+
+CREATE TABLE IF NOT EXISTS bannerlog (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   Name varchar(150),
+   IPaddress varchar(20),
+   Referer varchar(255),
+   UserAgent varchar(255),
+   RefererBlank tinyint unsigned NOT NULL,
+   Date DATETIME,
+   DomainID int(11),
+   LocationID int(8),
+   ISPname varchar(50),
+   PRIMARY KEY (ID),
+   
+   INDEX bannerlog_IPaddress (IPaddress),
+   INDEX bannerlog_Name (Name),
+   INDEX bannerlog_LocationID (LocationID),
+   INDEX bannerlog_Date (Date)
+   ) MAX_ROWS=4294967295 AVG_ROW_LENGTH = 100;
+   
+   
+CREATE TABLE IF NOT EXISTS salesbannerlog (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   SalesUserID int(11),
+   Name varchar(150),
+   IPaddress varchar(20),
+   Referer varchar(255),
+   Date DATETIME,
+   PRIMARY KEY (ID),
+   
+   INDEX salesbannerlog_SalesUserID (SalesUserID),
+   INDEX salesbannerlog_IPaddress (IPaddress),
+   INDEX salesbannerlog_Name (Name),
+   INDEX salesbannerlog_Date (Date)
+   );
+
+CREATE TABLE IF NOT EXISTS emailsdiscoverysessions (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   Email varchar(70),
+   DomainID int(11),
+   DiscoveryDate DATETIME,
+   PRIMARY KEY (ID),
+   
+   INDEX emailsdiscoverysessions_Email (Email),
+   INDEX emailsdiscoverysessions_DiscoveryDate (DiscoveryDate)
+   );
+
+
+CREATE TABLE IF NOT EXISTS costperclicklog (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   TrackingCode varchar(255),
+   TrackCodeForConvRate varchar(255),
+   MinOrdersToMeasureConversion int(7),
+   BreakEvenDays int(7),
+   ConversionRate varchar(10),
+   CustomerWorthAverage varchar(10),
+   CustomerWorthAverageAdjusted varchar(10),
+   CustomerWorthShortTerm varchar(10),
+   TrackCodeShortTermWorth varchar(255),
+   CustomerWorthMediumTerm varchar(10),
+   TrackCodeMediumTermWorth varchar(255),
+   CustomerWorthLongTerm varchar(10),
+   TrackCodeLongTermWorth varchar(255),
+   CpcPerfectEstimate varchar(10),
+   DomainID int(11),
+   Date DATETIME,
+   PRIMARY KEY (ID),
+   
+   INDEX costperclicklog_Date (Date),
+   INDEX costperclicklog_TrackingCode (TrackingCode)
+   );
+   
+CREATE TABLE IF NOT EXISTS googleapiupdates (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   AdGroupID int(11),
+   Date DATETIME,
+   PRIMARY KEY (ID),
+   
+   INDEX googleapiupdates_Date (Date)
+   );
+   
+   
+ CREATE TABLE IF NOT EXISTS customertestimonials (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   DomainID int(11),
+   Status char(1),
+   CreatedByUserID int(11),
+   EditedByUserID int(11),
+   TestimonialOriginal mediumtext,
+   TestimonialModified mediumtext,
+   FirstName varchar(50),
+   Email varchar(70),
+   City varchar(50),
+   DateLastEdited DATETIME,
+   DateCreated DATETIME,
+   PRIMARY KEY (ID),
+   
+   INDEX customertestimonials_DateCreated (DateCreated),
+   INDEX customertestimonials_Status (Status)
+   );
+
+
+CREATE TABLE IF NOT EXISTS csemailfilters (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   FilterFrom text,
+   FilterSubject text,
+   FilterBodyText text,
+   Action char(1),
+   ActionValue varchar(30),
+   DomainID int(11),
+   PRIMARY KEY (ID),
+   
+   INDEX csemailfilters_DomainID (DomainID) 
+   );
+
+   
+CREATE TABLE IF NOT EXISTS artworkstemplates (
+   ArtworkID int(11) NOT NULL AUTO_INCREMENT,
+   ArtFile mediumtext,
+   ProductID int(11),
+   ZoomFactor int(3),
+   CategoryID int(11),
+   IndexID int(4),
+   PRIMARY KEY (ArtworkID),
+   
+   INDEX artworkstemplates_ProductID (ProductID),
+   INDEX artworkstemplates_CategoryID (CategoryID),
+   INDEX artworkstemplates_IndexID (IndexID)   
+   );
+
+
+CREATE TABLE IF NOT EXISTS artworksearchengine (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   ArtFile mediumtext,
+   ProductID int(11),
+   ZoomFactor int(3),
+   Sort char(1),
+   PRIMARY KEY (ID),
+   
+   INDEX artworksearchengine_ProductID (ProductID),
+   INDEX artworksearchengine_Sort (Sort)
+   );
+
+
+
+CREATE TABLE IF NOT EXISTS templatelinks (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   OneTemplateID int(11),
+   OneTemplateArea char(1),
+   OneProductID int(11),
+   TwoTemplateID int(11),
+   TwoTemplateArea char(1),
+   TwoProductID int(11),
+   LinkDate DATETIME,
+   LinkByUserID int(11),
+   PRIMARY KEY (ID),
+   
+   INDEX templateproductlinks_OneTemplateID (OneTemplateID),
+   INDEX templateproductlinks_OneTemplateArea (OneTemplateArea),
+   INDEX templateproductlinks_TwoTemplateID (TwoTemplateID),
+   INDEX templateproductlinks_TwoTemplateArea (TwoTemplateArea)
+   );
+
+
+CREATE TABLE IF NOT EXISTS returnedpackages (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   OrderID int(11),
+   Status char(1),  #-- Can be 'O'pen or 'C'losed
+   PRIMARY KEY (ID),
+   
+   INDEX returnedpackages_OrderID (OrderID),
+   INDEX returnedpackages_Status (Status)
+   );
+   
+   
+
+   
+   
+CREATE TABLE IF NOT EXISTS merchantmailers (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   CompanySearch char(30),
+   Company varchar(100),
+   Attention varchar(100),
+   Address1 varchar(100),
+   Address2 varchar(100),
+   City varchar(100),
+   State varchar(50),
+   Zip varchar(10),
+   SicCode varchar(10),
+   IndustryName varchar(50),
+   AccessCount int(3),
+   DateAdded DATETIME,
+   FirstAccessed DATETIME,
+   PRIMARY KEY (ID),
+   
+   INDEX merchantmailers_CompanySearch (CompanySearch),
+   INDEX merchantmailers_DateAdded (DateAdded),
+   INDEX merchantmailers_FirstAccessed (FirstAccessed)
+   );
+   
+   
+CREATE TABLE IF NOT EXISTS returnedpackagesmessages (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   ReturnedPackageID int(11),
+   UserID int(11),
+   Message text,
+   Date DATETIME,
+   PRIMARY KEY (ID),
+   
+   INDEX returnedpackagesmessages_ReturnedPackageID (ReturnedPackageID),
+   INDEX returnedpackagesmessages_UserID (UserID)
+   );
+
+
+
+CREATE TABLE IF NOT EXISTS templatekeywords (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   TempKw varchar(35),
+   TemplateID int(11),
+   PRIMARY KEY (ID),
+   
+   INDEX templatekeywords_TempKw (TempKw),
+   INDEX templatekeywords_TemplateID (TemplateID)
+   );
+
+CREATE TABLE IF NOT EXISTS templaterequests (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   Keywords varchar(250),
+   ProductID int(11),
+   Date TIMESTAMP,
+   PRIMARY KEY (ID),
+   
+   INDEX templaterequests_Keywords (Keywords),
+   INDEX templaterequests_ProductID (ProductID),
+   INDEX templaterequests_Date (Date)
+   );
+   
+CREATE TABLE IF NOT EXISTS artworkstemplatespreview (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   TemplateID int(11),
+   SearchEngineID int(11),
+   SideName varchar(30),
+   Width varchar(4),
+   Height varchar(4),
+   ProductID int(11),
+   PRIMARY KEY (ID),
+   
+   INDEX artworkstemplatespreview_TemplateID (TemplateID),
+   INDEX artworkstemplatespreview_SearchEngineID (SearchEngineID),
+   INDEX artworkstemplatespreview_ProductID (ProductID)
+   );
+   
+   
+
+ 
+CREATE TABLE IF NOT EXISTS templatecategories (
+   CategoryID int(11) NOT NULL AUTO_INCREMENT,
+   ProductID int(11),
+   IndexID int(11),
+   CategoryName varchar(30),
+   PRIMARY KEY (CategoryID),
+   
+   INDEX templatecategories_ProductID (ProductID),
+   INDEX templatecategories_IndexID (IndexID)
+   );
+   
+CREATE TABLE IF NOT EXISTS wrongphoneaccess (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   IPaddress varchar(20),
+   PhoneNumber int(11),
+
+   PRIMARY KEY (ID),
+   INDEX wrongphoneaccess_IPaddress (IPaddress),
+   INDEX wrongphoneaccess_PhoneNumber (PhoneNumber)
+   );
+
+CREATE TABLE IF NOT EXISTS ipaddresswrongaccess (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   IPaddress varchar(20),
+   AccessType char(5),
+   Date DATETIME,
+
+   PRIMARY KEY (ID),
+   INDEX ipaddresswrongaccess_IPaddress (IPaddress)
+   );
+
+CREATE TABLE IF NOT EXISTS coupons (
+   ID int(11) AUTO_INCREMENT,
+   Code varchar(20) NOT NULL,
+   IsActive tinyint(1) NULL default '1',
+   Name varchar(120) NULL default NULL,
+   ProductIDs varchar(200) NULL default NULL,
+   ProductBundleIDs varchar(200) NULL default NULL,
+   CategoryID int(6) NOT NULL,
+   DateCreated date NOT NULL,
+   CreateUserID int(11) NOT NULL,
+   ActReq tinyint(1) NULL  default '0',
+   UsageLimit int(7) NULL default '0',
+   WithinFirstOrders int(7) NULL default '0',
+   MinimumSubtotal varchar(10) default NULL,
+   MaximumSubtotal varchar(10) default NULL,
+   ExpireDate date default NULL,
+   DiscountPercent tinyint(1) NOT NULL,
+   MaxAmount varchar(10) NOT NULL,
+   MaxAmountType char(1),
+   ProjectMinQuantity int(8) NULL default '0',
+   ProjectMaxQuantity int(8) NULL default '0',
+   ShippingDiscount varchar(10) NOT NULL,
+   Comments varchar(200) default NULL,
+   ProductOptions text default NULL,
+   NoDiscountOnOptions text default NULL,
+   SalesLink int(11),
+   ProofingAlert varchar(200) default NULL,
+   ProductionNote varchar(200) default NULL,
+   DomainID int(11),
+   
+   PRIMARY KEY  (ID),
+   INDEX coupons_SalesLink (SalesLink),
+   INDEX coupons_Code (Code)
+   );
+   
+CREATE TABLE IF NOT EXISTS couponactivation (
+   ID int(11) AUTO_INCREMENT,
+   CouponID int(11) NOT NULL,
+   UserID int(11) NOT NULL,
+   
+   PRIMARY KEY (ID),
+   INDEX couponactivation_UserID(UserID) 
+   );
+
+CREATE TABLE IF NOT EXISTS couponcategories (
+   ID int(11) AUTO_INCREMENT,
+   Name varchar(30) NOT NULL,
+   DomainID int(11),
+   
+   PRIMARY KEY (ID),
+   INDEX couponcategories_Name(Name)
+   ); 
+
+
+
+CREATE TABLE IF NOT EXISTS productionracks (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   DomainID int(11),
+   Rack int(3),
+   RowNum int(3),
+   ColumnNum int(3),
+   ProjectID int(11),
+   OrderID int(11),
+   
+   INDEX productionracks_DomainID (DomainID),
+   INDEX productionracks_Rack (Rack),
+   INDEX productionracks_RowNum (RowNum),
+   INDEX productionracks_ColumnNum (ColumnNum),
+   INDEX productionracks_ProjectID (ProjectID),
+   INDEX productionracks_OrderID (OrderID),
+   PRIMARY KEY (ID)
+   );
+
+
+CREATE TABLE IF NOT EXISTS productionsetup (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   DomainID int(11),
+   RacksAmount int(3),
+   RowsPerRack int(3),
+   ColumnsPerRack int(3),
+   RackTranslations text,
+   RowTranslations text,
+   ColumnTranslations text,
+   
+   INDEX productionsetup_DomainID (DomainID),
+   PRIMARY KEY (ID)
+   );
+
+
+CREATE TABLE IF NOT EXISTS labelsetup (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   UserID int(11),
+   ReplicationRows varchar(10),
+   ReplicationColumns varchar(10),
+   PageWidth varchar(10),
+   PageHeight varchar(10),
+   SpacingHorizontal varchar(10),
+   SpacingVertical varchar(10),
+   MarginsLeft varchar(10),
+   MarginsTop varchar(10),
+   LabelWidth varchar(10),
+   LabelHeight varchar(10),
+   QuantitySpill varchar(10),
+   PRIMARY KEY (ID),
+   );
+
+ 
+   
+CREATE TABLE IF NOT EXISTS projectssession (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   ProductID int(4),
+   Quantity int(8),
+   VendorID int(11),
+   SavedID int(11),
+   FromTemplateID int(11),
+   FromTemplateArea char(1),
+   CustomerSubtotal varchar(10),
+   VendorSubtotal varchar(10),
+   OrderDescription varchar(70),
+   OptionsDescription varchar(250),
+   OptionsAlias varchar(250),
+   VariableDataStatus char(1),
+   VariableDataMessage text,
+   VariableDataArtworkConfig text,
+   VariableDataFirstLine text,
+   VariableDataFile LONGTEXT,
+   SID varchar(50),
+   ArtworkCopied char(1),
+   ArtworkTransfered char(1),
+   ArtworkFile mediumtext,
+   DateLastModified DATETIME,
+   ThumbnailCheck varchar(35),
+   DomainID int(11),
+   ArtworkSides int(7),
+   PRIMARY KEY (ID),
+   
+   INDEX projectssession_ProductID (ProductID),
+   INDEX projectssession_SID (SID),
+   INDEX projectssession_FromTemplateID (FromTemplateID),
+   INDEX projectssession_FromTemplateArea (FromTemplateArea),
+   INDEX projectssession_SavedID (SavedID),
+   INDEX projectssession_DateLastModified (DateLastModified),
+   INDEX projectssession_DomainID (DomainID),
+   );
+   
+CREATE TABLE IF NOT EXISTS projectssaved (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   UserID int(11),
+   ProductID int(4),
+   Quantity int(8),
+   FromTemplateID int(11),
+   FromTemplateArea char(1),
+   ArtworkCopied char(1),
+   ArtworkTransfered char(1),
+   ArtworkFile mediumtext,
+   OrderDescription varchar(70),
+   OptionsDescription varchar(250),
+   OptionsAlias varchar(250),
+   VariableDataStatus char(1),
+   VariableDataMessage text,
+   VariableDataArtworkConfig text,
+   VariableDataFirstLine text,
+   VariableDataFile LONGTEXT,
+   Notes varchar(200),
+   DateLastModified DATETIME,
+   ThumbnailCheck varchar(35),
+   DomainID int(11),
+   ArtworkSides int(7),
+   PRIMARY KEY (ID),
+   
+   INDEX projectssaved_UserID (UserID),
+   INDEX projectssaved_ProductID (ProductID),
+   INDEX projectssaved_FromTemplateID (FromTemplateID),
+   INDEX projectssaved_FromTemplateArea (FromTemplateArea),
+   INDEX projectssaved_DomainID (DomainID)
+   ) MAX_ROWS=4294967295 AVG_ROW_LENGTH = 100;
+   
+
+
+
+CREATE TABLE IF NOT EXISTS balanceadjustments (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   OrderID int(11),
+   VendorID int(8),
+   FromUserID int(11),
+   CustomerAdjustment varchar(10),
+   CustomerAdjustmentType char(1),
+   VendorAdjustment varchar(10),
+   Description varchar(100),
+   DateCreated DATETIME,
+   PRIMARY KEY (ID),
+   
+   INDEX balanceadjustments_OrderID (OrderID),
+   INDEX balanceadjustments_VendorID (VendorID),
+   INDEX balanceadjustments_DateCreated (DateCreated)
+   ); 
+ 
+ 
+ 
+
+CREATE TABLE IF NOT EXISTS msgsdata (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   ThreadID int(11),
+   UserID int(11),
+   Message text,
+   DateCreated TIMESTAMP,
+   PRIMARY KEY (ID),
+   
+   INDEX msgsdata_ThreadID (ThreadID),
+   INDEX msgsdata_UserID (UserID),
+   INDEX msgsdata_DateCreated (DateCreated)
+   );
+
+#-- When a user hasn't read a message, an entry will exist in this table --#
+#-- To mark a message as read, delete the entry from this table --#
+CREATE TABLE IF NOT EXISTS msgsunread (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   MessageID int(11),
+   UserID int(11),
+   PRIMARY KEY (ID),
+   
+   INDEX msgsread_MessageID (MessageID),
+   INDEX msgsread_UserID (UserID)
+   );
+   
+CREATE TABLE IF NOT EXISTS msgsthreads (
+   ThreadID int(11) NOT NULL AUTO_INCREMENT,
+   AttachedTo char(10),
+   RefID int(11),
+   Subject varchar(200),
+   PRIMARY KEY (ThreadID),
+   
+   INDEX msgsthreads_AttachedTo (AttachedTo),
+   INDEX msgsthreads_RefID (RefID)
+   );
+   
+CREATE TABLE IF NOT EXISTS msgsgroups (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   ThreadID int(11),
+   UserID int(11),
+   PRIMARY KEY (ID),
+
+   INDEX msgsgroups_ThreadID (ThreadID),
+   INDEX msgsgroups_UserID (UserID)
+   );
+   
+
+
+CREATE TABLE IF NOT EXISTS orderarbitration  (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   OrderID int(11),
+   UserID int(11),
+   DateLastModified TIMESTAMP,
+   PRIMARY KEY (ID),
+
+   INDEX orderarbitration_OrderID (OrderID),
+   INDEX orderarbitration_UserID (UserID),
+   INDEX orderarbitration_DateLastModified (DateLastModified)
+   );
+   
+   
+CREATE TABLE IF NOT EXISTS contentcategories  (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   Title varchar(250),
+   Description mediumtext,
+   DescriptionFormat char(1),
+   DescriptionBytes int(11),
+   HeaderHTML mediumtext,
+   Image longblob,
+   ImageHyperlink varchar(250),
+   ImageAlign char(2),
+   Links text,
+   ProductID int(11),
+   ParentHyperlink varchar(250),
+   ParentLinkDesc varchar(250),
+   CreatedByUserID int(11),
+   LastEditedByUserID int(11),
+   ActiveFlag char(1),
+   CreatedOn DATETIME,
+   LastEditedOn DATETIME,
+   DomainID int(11),
+   PRIMARY KEY (ID),
+
+   INDEX contentcategories_ProductID (ProductID),
+   INDEX contentcategories_Title (Title)
+   );
+
+ 
+CREATE TABLE IF NOT EXISTS contentitems  (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   Title varchar(250),
+   MetaTitle varchar(250),
+   MetaDescription varchar(250),
+   Description mediumtext,
+   DescriptionFormat char(1),
+   DescriptionBytes int(11),
+   HeaderHTML mediumtext,
+   Footer mediumtext,
+   FooterFormat char(1),
+   Image longblob,
+   ImageHyperlink varchar(250),
+   ImageAlign char(2),
+   Links text,
+   ContentCategoryID int(11),
+   CreatedByUserID int(11),
+   LastEditedByUserID int(11),
+   ActiveFlag char(1),
+   CreatedOn DATETIME,
+   LastEditedOn DATETIME,
+   DomainID int(11),
+   PRIMARY KEY (ID),
+
+   INDEX contentitem_ContentCategoryID (ContentCategoryID),
+   INDEX contentitem_Title (Title)
+   );
+
+
+CREATE TABLE IF NOT EXISTS contenttemplates  (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   Title varchar(250),
+   Description mediumtext,
+   DescriptionFormat char(1),
+   DescriptionBytes int(11),
+   HeaderHTML mediumtext,
+   ContentItemID int(11),
+   Links text,
+   TemplateID int(11),
+   CreatedByUserID int(11),
+   LastEditedByUserID int(11),
+   ActiveFlag char(1),
+   CreatedOn DATETIME,
+   LastEditedOn DATETIME,
+   DomainID int(11),
+   PRIMARY KEY (ID),
+
+   INDEX contenttemplates_ContentItemID (ContentItemID),
+   INDEX contenttemplates_TemplateID (TemplateID),
+   INDEX contenttemplates_Title (Title)
+   
+   );
+
+
+   
+CREATE TABLE IF NOT EXISTS shoppingcart (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   ProjectRecord int(11),
+   SID varchar(50),
+   DateLastModified TIMESTAMP,
+   MessageChar char(1),
+   DomainID int(11),
+   PRIMARY KEY (ID),
+   
+   INDEX shoppingcart_DateLastModified (DateLastModified),
+   INDEX shoppingcart_ProjectRecord (ProjectRecord),
+   INDEX shoppingcart_SID (SID(10))
+   );
+   
+   
+CREATE TABLE IF NOT EXISTS users (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   Email varchar(60),
+   Password varchar(30),
+   Name varchar(30),
+   Company varchar(60),
+   Address varchar(70),
+   AddressTwo varchar(30),
+   City varchar(30),
+   State varchar(30),
+   Zip varchar(30),
+   Country char(2),
+   ResidentialFlag char(1),
+   Phone varchar(30),
+   PhoneSearch varchar(10),
+   Newsletter varchar(10),
+   Hint varchar(30),
+   CustomerNotes varchar(250),
+   HearAbout varchar(30),
+   AffiliateName varchar(50),
+   AffiliateDiscount varchar(4),
+   AffiliateExpires DATETIME,
+   BillingType char(1),
+   BillingStatus char(1),
+   AccountType char(1),
+   AccountStatus char(1),
+   AddressLocked char(1),
+   DowngradeShipping char(1),
+   CreditLimit varchar(10),
+   SingleOrderLimit varchar(10),
+   MonthsChargesLimit varchar(10),
+   SalesRep int(11),
+   Rating int(2),
+   SalesRepExpiration DATETIME,
+   DateCreated DATETIME,
+   DateLastUsed DATETIME,
+   CopyrightTemplates char(1),
+   CopyrightHiddenAtReg char(1),
+   LoyaltyProgram char(1),
+   LoyaltyHiddenAtReg char(1),
+   DomainID int(11),
+   SiteKeyImageID int(11),
+   SiteKeyDesc varchar(100),
+   PasswordUpdateRequired char(1),
+
+   PRIMARY KEY (ID),
+   
+   INDEX users_AccountStatus (AccountStatus),
+   INDEX users_AccountType (AccountType),
+   INDEX users_DateCreated (DateCreated),
+   INDEX users_BillingStatus (BillingStatus),
+   INDEX users_BillingType (BillingType),
+   INDEX users_Email (Email),
+   INDEX users_SalesRep (SalesRep),
+   INDEX users_PhoneSearch (PhoneSearch),
+   INDEX users_CopyrightTemplates (CopyrightTemplates),
+   INDEX users_Name (Name),
+   INDEX users_Company (Company),
+   INDEX users_DomainID (DomainID)
+   );
+   
+   
+CREATE TABLE IF NOT EXISTS loyaltymissedcharges (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   UserID int(11),
+   DomainID int(11),
+   ChargeAmount varchar(10),
+   MissedReason char(1),
+   MissedReasonDesc varchar(255),
+   Date DATETIME,
+
+   PRIMARY KEY (ID),
+   
+   INDEX loyaltymissedcharges_UserID (UserID),
+   INDEX loyaltymissedcharges_Date (Date)
+   );
+   
+   
+CREATE TABLE IF NOT EXISTS loyaltycharges (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   UserID int(11),
+   DomainID int(11),
+   RefundChargeLink int(11),
+   ChargeAmount varchar(10),
+   RefundAmount varchar(10),
+   CardType varchar(30),
+   CardNumber varchar(30),
+   MonthExpiration varchar(30),
+   YearExpiration varchar(30),
+   BillingName varchar(30),
+   BillingCompany varchar(30),
+   BillingAddress varchar(70),
+   BillingAddressTwo varchar(30),
+   BillingCity varchar(30),
+   BillingState varchar(30),
+   BillingZip varchar(30),
+   BillingCountry char(2),
+   Note varchar(255),
+   Date DATETIME,
+
+   PRIMARY KEY (ID),
+   
+   INDEX loyaltycharges_UserID (UserID),
+   INDEX loyaltycharges_RefundChargeLink (RefundChargeLink),
+   INDEX loyaltycharges_Date (Date)
+   );
+   
+CREATE TABLE IF NOT EXISTS loyaltysavings (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   OrderID int(11),
+   Date DATETIME,
+   ShippingDiscount varchar(10),
+   SubtotalDiscount varchar(10),
+
+   PRIMARY KEY (ID),
+   
+   INDEX loyaltysavings_OrderID (OrderID)
+   );
+
+
+
+CREATE TABLE IF NOT EXISTS resellers (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   UserID int(11),
+   rAttention varchar(30),
+   rCompany varchar(60),
+   rAddress varchar(70),
+   rAddressTwo varchar(30),
+   rCity varchar(30),
+   rState varchar(30),
+   rZip varchar(30),
+   rCountry char(2),
+   rPhone varchar(30),
+   InvoiceMsg1 varchar(200),
+   InvoiceMsg2 varchar(200),
+   InvoiceMsg3 varchar(200),
+   LogoImage longblob,
+
+   PRIMARY KEY (ID),
+   
+   INDEX resellers_UserID (UserID)
+   );
+   
+
+
+
+   
+   
+CREATE TABLE IF NOT EXISTS imagessession (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   BinaryData longblob,
+   DateUploaded DATETIME,
+   SID varchar(50),
+   UploadIdentify varchar(20),	#-- Since macintosh does not have 2 way communication with Flash... we need to Poll the server after choosing to upload a file.. Use the MacIdentify in combination with the SID
+   FileSize int(11),
+   FileType varchar(100),
+   PRIMARY KEY (ID),
+   
+   INDEX imagessession_DateUploaded (DateUploaded),
+   INDEX imagessession_SID (SID),
+   INDEX imagessession_UploadIdentify (UploadIdentify)
+   ) MAX_ROWS=4294967295 AVG_ROW_LENGTH = 100;
+
+#-- For macinotosh users... we only have 1-way comminication, so store error messages in the DB and poll the server
+CREATE TABLE IF NOT EXISTS imageerrors (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   Date TIMESTAMP,
+   SID varchar(50),
+   UploadIdentify varchar(15),	#-- MacIdentify
+   ErrorMessage text,
+   PRIMARY KEY (ID),
+   
+   INDEX imageerrors_Date (Date),
+   INDEX imageerrors_SID (SID),
+   INDEX imageerrors_UploadIdentify (UploadIdentify)
+   );
+
+CREATE TABLE IF NOT EXISTS thumbnailimages (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   ThumbImage blob,
+   RefTableName varchar(50),   #-- The name of the table that the artworks belongs too...  Ex. "projectssession", "projectssaved"
+   RefTableID int(11),		#- The ID corresponding to the RefTableName
+   FileSize int(11),
+   DateModified DATETIME,
+   PRIMARY KEY (ID),
+   
+   INDEX thumbnailimages_RefTableName (RefTableName),
+   INDEX thumbnailimages_RefTableID (RefTableID),
+   INDEX thumbnailimages_DateModified (DateModified)
+   );
+   
+
+CREATE TABLE IF NOT EXISTS thumbnailimages_2 (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   ThumbImage blob,
+   RefTableName varchar(50),
+   RefTableID int(11),
+   FileSize int(11),
+   DateModified DATETIME,
+   PRIMARY KEY (ID),
+   
+   INDEX thumbnailimages_2_RefTableName (RefTableName),
+   INDEX thumbnailimages_2_RefTableID (RefTableID),
+   INDEX thumbnailimages_2_DateModified (DateModified)
+   );
+   
+CREATE TABLE IF NOT EXISTS thumbnailimages_3 (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   ThumbImage blob,
+   RefTableName varchar(50),
+   RefTableID int(11),
+   FileSize int(11),
+   DateModified DATETIME,
+   PRIMARY KEY (ID),
+   
+   INDEX thumbnailimages_3_RefTableName (RefTableName),
+   INDEX thumbnailimages_3_RefTableID (RefTableID),
+   INDEX thumbnailimages_3_DateModified (DateModified)
+   );
+
+CREATE TABLE IF NOT EXISTS imagestemplate (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   BinaryData longblob,
+   DateUploaded DATETIME,
+   FileSize int(11),
+   FileType varchar(100),
+   PRIMARY KEY (ID));
+   
+CREATE TABLE IF NOT EXISTS imagestemplate_2 (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   BinaryData longblob,
+   DateUploaded DATETIME,
+   FileSize int(11),
+   FileType varchar(100),
+   PRIMARY KEY (ID));
+
+CREATE TABLE IF NOT EXISTS imagessaved (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   BinaryData longblob,
+   DateUploaded DATETIME,
+   FileSize int(11),
+   FileType varchar(100),
+   PRIMARY KEY (ID),
+   
+   INDEX imagessaved_DateUploaded (DateUploaded)
+   );
+   
+CREATE TABLE IF NOT EXISTS imagessaved_2 (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   BinaryData longblob,
+   DateUploaded DATETIME,
+   FileSize int(11),
+   FileType varchar(100),
+   PRIMARY KEY (ID),
+   
+   INDEX imagessaved_2_DateUploaded (DateUploaded)
+   );
+CREATE TABLE IF NOT EXISTS imagessaved_3 (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   BinaryData longblob,
+   DateUploaded DATETIME,
+   FileSize int(11),
+   FileType varchar(100),
+   PRIMARY KEY (ID),
+   
+   INDEX imagessaved_3_DateUploaded (DateUploaded)
+   );
+   
+CREATE TABLE IF NOT EXISTS imagessaved_4 (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   BinaryData longblob,
+   DateUploaded DATETIME,
+   FileSize int(11),
+   FileType varchar(100),
+   PRIMARY KEY (ID),
+   
+   INDEX imagessaved_4_DateUploaded (DateUploaded)
+   );
+
+CREATE TABLE IF NOT EXISTS imagesdeleted (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   BinaryData longblob,
+   DateDeleted DATETIME,
+   FileSize int(11),
+   FileType varchar(100),
+   PRIMARY KEY (ID),
+   
+   INDEX imagesdeleted_DateDeleted (DateDeleted)
+   ) MAX_ROWS=4294967295 AVG_ROW_LENGTH = 100;
+
+
+CREATE TABLE IF NOT EXISTS vectorimagesdeleted (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   SID varchar(50),
+   PDFbinaryData longblob,
+   OrigFormatBinaryData longblob,
+   DateUploaded DATETIME,
+   EmbeddedText text,
+   OrigFileSize int(11),
+   OrigFileType varchar(100),
+   OrigFileName varchar(100),
+   PDFfileSize int(11),
+   PicasWidth varchar(20),
+   PicasHeight varchar(20),
+   DateDeleted DATETIME,
+   PRIMARY KEY (ID),
+   
+   INDEX vectorimagesdeleted_DateDeleted (DateDeleted)
+   );
+
+
+CREATE TABLE IF NOT EXISTS variableimagepointer (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   Record int(11),
+   TableName varchar(100),
+   FileName varchar(100),
+   UserID int(11),
+   PRIMARY KEY (ID),
+   
+   INDEX imagepointer_TableName (TableName),
+   INDEX imagepointer_FileName (FileName),
+   INDEX imagepointer_Record (Record),
+   INDEX imagepointer_UserID (UserID)
+   );
+
+
+CREATE TABLE IF NOT EXISTS variableimages (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   BinaryData longblob,
+   DateUploaded DATETIME,
+   FileSize int(11),
+   FileType varchar(100),
+   PixelWidth int(7),
+   PixelHeight int(7),
+   PRIMARY KEY (ID),
+   
+   INDEX variableimages_DateUploaded (DateUploaded)
+   );
+
+
+
+CREATE TABLE IF NOT EXISTS imagepointer (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   Record int(11),
+   TableName varchar(100),
+   PRIMARY KEY (ID),
+   
+   INDEX imagepointer_TableName (TableName),
+   INDEX imagepointer_Record (Record)   
+   );
+   
+
+CREATE TABLE IF NOT EXISTS vectorimagepointer (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   Record int(11),
+   TableName varchar(100),
+   PRIMARY KEY (ID),
+   
+   INDEX vectorimagepointer_TableName (TableName),
+   INDEX vectorimagepointer_Record (Record)   
+   );
+
+
+CREATE TABLE IF NOT EXISTS vectorimagessession (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   UploadIdentify varchar(20),	#-- Since macintosh does not have 2 way communication with Flash... we need to Poll the server after choosing to upload a file.. Use the MacIdentify in combination with the SID
+   SID varchar(50),
+   PDFbinaryData longblob,
+   OrigFormatBinaryData longblob,
+   DateUploaded DATETIME,
+   EmbeddedText text,
+   OrigFileSize int(11),
+   OrigFileType varchar(100),
+   OrigFileName varchar(100),
+   PDFfileSize int(11),
+   PicasWidth varchar(20),
+   PicasHeight varchar(20),
+   PRIMARY KEY (ID),
+   
+   INDEX vectorimagessession_DateUploaded (DateUploaded),
+   INDEX vectorimagessession_SID (SID),
+   INDEX vectorimagessession_UploadIdentify (UploadIdentify)
+   );
+
+CREATE TABLE IF NOT EXISTS vectorimagessaved_1 (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   PDFbinaryData longblob,
+   OrigFormatBinaryData longblob,
+   DateUploaded DATETIME,
+   EmbeddedText text,
+   OrigFileSize int(11),
+   OrigFileType varchar(100),
+   OrigFileName varchar(100),
+   PDFfileSize int(11),
+   PicasWidth varchar(20),
+   PicasHeight varchar(20),
+   PRIMARY KEY (ID),
+   
+   INDEX vectorimagessaved_1_DateUploaded (DateUploaded)
+   );
+
+CREATE TABLE IF NOT EXISTS vectorimagestemplate_1 (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   PDFbinaryData longblob,
+   OrigFormatBinaryData longblob,
+   DateUploaded DATETIME,
+   EmbeddedText text,
+   OrigFileSize int(11),
+   OrigFileType varchar(100),
+   OrigFileName varchar(100),
+   PDFfileSize int(11),
+   PicasWidth varchar(20),
+   PicasHeight varchar(20),
+   PRIMARY KEY (ID),
+   
+   INDEX vectorimagestemplate_1_DateUploaded (DateUploaded)
+   );
+
+
+CREATE TABLE IF NOT EXISTS imagesclean (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   ImageID int(11),
+   PRIMARY KEY (ID),
+   
+   INDEX imagesclean_ImageID (ImageID) 
+   );
+
+CREATE TABLE IF NOT EXISTS vectorimagesclean (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   ImageID int(11),
+   PRIMARY KEY (ID),
+   
+   INDEX vectorimagesclean_ImageID (ImageID) 
+   );
+
+
+
+CREATE TABLE IF NOT EXISTS memberattendance (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   Status char(1),
+   UserID int(11),
+   AutoReply char(1),
+   Message varchar(250),
+   StatusDate DATETIME,
+   ReturnDate DATETIME,
+   PRIMARY KEY (ID),
+   
+   INDEX memberattendance_Status (Status),
+   INDEX memberattendance_UserID (UserID),
+   INDEX memberattendance_AutoReply (AutoReply),
+   INDEX memberattendance_StatusDate (StatusDate),
+   INDEX memberattendance_ReturnDate (ReturnDate)
+   );
+
+
+CREATE TABLE IF NOT EXISTS navigationhistory (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   PageName char(10),
+   Identifier varchar(50),
+   UserID int(11),
+   Date DATETIME,
+   PRIMARY KEY (ID),
+   
+   INDEX navigationhistory_PageName (PageName),
+   INDEX navigationhistory_UserID (UserID),
+   INDEX navigationhistory_Date (Date)
+   );
+
+
+
+   
+CREATE TABLE IF NOT EXISTS tasks (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   AttachedTo char(10),
+   RefID int(11),
+   CreatedBy int(11),
+   AssignedTo int(11),
+   Task text,
+   Priority char(1),
+   Completed char(1),
+   DateCreated DATETIME,
+   DateCompleted DATETIME,
+   ReminderDate DATETIME,
+   PRIMARY KEY (ID),
+   
+   INDEX tasks_AttachedTo (AttachedTo),
+   INDEX tasks_RefID (RefID),
+   INDEX tasks_CreatedBy (CreatedBy),
+   INDEX tasks_AssignedTo (AssignedTo),
+   INDEX tasks_Priority (Priority),
+   INDEX tasks_Completed (Completed),
+   INDEX tasks_DateCreated (DateCreated),
+   INDEX tasks_ReminderDate (ReminderDate),
+   INDEX tasks_DateCompleted (DateCompleted)
+   );
+
+
+CREATE TABLE IF NOT EXISTS customermessages (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   IndexID int(11),
+   Title text,
+   Message text,
+   PRIMARY KEY (ID),
+   
+   INDEX customermessages_IndexID (IndexID)
+   );
+
+
+CREATE TABLE IF NOT EXISTS cannedmsgcategories (
+   ID int(8) NOT NULL AUTO_INCREMENT,
+   PID int(8),
+   CategoryName varchar(150),
+   PRIMARY KEY (ID),
+   
+   INDEX cannedmsgcategories_PID (PID)
+   );
+
+CREATE TABLE IF NOT EXISTS cannedmsgdata (
+   ID int(8) NOT NULL AUTO_INCREMENT,
+   CategoryID int(8),
+   MessageTitle varchar(200),
+   MessageData text,
+   PRIMARY KEY (ID),
+   
+   INDEX cannedmsgdata_CategoryID (CategoryID)
+   );
+
+
+CREATE TABLE IF NOT EXISTS emailunsubscribe (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   EmailAddress varchar(70),
+   Date DATETIME,
+   AffilliatUnsubscibeStatus char(1),
+   DomainID int(11),
+   PRIMARY KEY (ID),
+   
+   INDEX emailunsubscribe_EmailAddress (EmailAddress)
+   );
+
+
+
+
+CREATE TABLE IF NOT EXISTS tablerotations (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   RootTableName varchar(60),
+   TableNameWithSuffix varchar(60),
+   PRIMARY KEY (ID)
+   );
+
+
+CREATE TABLE IF NOT EXISTS tablerotationbackups (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   TableName varchar(60),
+   PRIMARY KEY (ID)
+   );
+
+
+CREATE TABLE IF NOT EXISTS closedemails (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   Email varchar(60),
+   Date TIMESTAMP,
+   PRIMARY KEY (ID)
+   );
+
+
+CREATE TABLE IF NOT EXISTS csitems (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   OrderRef int(11),
+   UserID int(11),
+   DomainID int(11),
+   Ownership int(11),
+   Status char(1),
+   CustomerName varchar(70),
+   CustomerEmail varchar(70),
+   RawTextDumpFileName varchar(70),
+   Subject varchar(100),
+   DateCreated DATETIME,
+   LastActivity DATETIME,
+   PRIMARY KEY (ID),
+   
+   INDEX csitems_ProjectRef (ProjectRef),
+   INDEX csitems_OrderRef (OrderRef),
+   INDEX csitems_UserID (UserID),
+   INDEX csitems_Ownership (Ownership),
+   INDEX csitems_Status (Status),
+   INDEX csitems_DomainID (DomainID),
+   INDEX csitems_CustomerEmail (CustomerEmail),
+   INDEX csitems_DateCreated (DateCreated),
+   INDEX csitems_LastActivity (LastActivity)
+   );
+
+CREATE TABLE IF NOT EXISTS csmessages (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   FromUserID int(11),
+   ToUserID int(11),
+   csThreadID int(11),
+   CustomerFlag char(1),
+   FromName varchar(70),
+   FromEmail varchar(70),
+   ToName varchar(70),
+   ToEmail varchar(70),
+   Message text,
+   DateSent DATETIME,
+   PRIMARY KEY (ID),
+   
+   INDEX csmessages_FromUserID (FromUserID),
+   INDEX csmessages_ToUserID (ToUserID),
+   INDEX csmessages_csThreadID (csThreadID),
+   INDEX csmessages_DateSent (DateSent)
+   );
+
+CREATE TABLE IF NOT EXISTS csattachments (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   csThreadID int(11),
+   filename varchar(100),
+   filesize varchar(20),
+   filetype varchar(50),
+   DateAttached DATETIME,
+   PRIMARY KEY (ID),
+   
+   INDEX csmattachments_csThreadID (csThreadID)
+   );
+
+
+CREATE TABLE IF NOT EXISTS pdfgenerated (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   ProjectRef int(11),
+   SideNumber int(11),
+   SideName varchar(50),
+   BleedType char(1),
+   Rotate int(3),
+   DateCreated TIMESTAMP,
+   PRIMARY KEY (ID),
+   
+   INDEX pdfgenerated_ProjectRef (ProjectRef),
+   INDEX pdfgenerated_SideNumber (SideNumber)
+   );
+   
+
+CREATE TABLE IF NOT EXISTS iplogger (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   UserID int(11),
+   IPaddress char(19),
+   IPsubnet char(15),
+   AccessDate TIMESTAMP,
+   PRIMARY KEY (ID),
+   
+   INDEX iplogger_UserID (UserID),
+   INDEX iplogger_IPaddress (IPaddress),
+   INDEX iplogger_IPsubnet (IPsubnet),
+   INDEX iplogger_AccessDate (AccessDate)
+   );
+
+CREATE TABLE IF NOT EXISTS ipaccess (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   UserID int(11),
+   IPaddress char(19),
+   IPsubnet char(15),
+   DateGranted DATETIME,
+   PRIMARY KEY (ID),
+   
+   INDEX iplogger_UserID (UserID),
+   INDEX iplogger_IPaddress (IPaddress),
+   INDEX iplogger_IPsubnet (IPsubnet)
+   );
+
+
+
+CREATE TABLE IF NOT EXISTS replicationcheck (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   MasterID int(11),
+   SlaveID int(11),
+   Date TIMESTAMP,
+   PRIMARY KEY (ID),
+   
+   INDEX replicationcheck_MasterID (MasterID),
+   INDEX replicationcheck_SlaveID (SlaveID),
+   INDEX replicationcheck_Date (Date)
+   );
+
+ 
+ CREATE TABLE IF NOT EXISTS purchaseordersvendors (
+    ID int(11) NOT NULL AUTO_INCREMENT,
+    Status char(1),
+    ProjectList text,
+    VendorIDsending int(11),
+    VendorIDreceiving int(11),
+    ProductID int(11),
+    Message text,
+    POsummary text,
+    PDFprofile varchar(100),
+    POnumber varchar(200),
+    StatusDate DATETIME,
+    PRIMARY KEY (ID),
+    
+    INDEX purchaseordersvendors_Status (Status),
+    INDEX purchaseordersvendors_VendorIDsending (VendorIDsending),
+    INDEX purchaseordersvendors_ProductID (ProductID)
+   );
+
+
+
+
+
+
+
+
+
+#-- For UPS Import and Export Data .... Will be setup within a Different Database with different permissions ----#
+#-- Clients may connect to these tables through ODBC connections across the web  ---#
+########################################
+
+CREATE TABLE IF NOT EXISTS shippingexport (
+    ID int(11) NOT NULL AUTO_INCREMENT,
+    
+    ShipmentID int(11),
+    
+    PaymentMethod varchar(30),
+    Carrier varchar(30),
+    PackageType varchar(30),    
+    PackageWeight varchar(30),
+    PackageLength varchar(30),
+    PackageWidth varchar(30),
+    PackageHeight varchar(30),
+    ShipmentMethod varchar(30),
+    SaturdayDelivery char(1),
+    ReferenceCode varchar(30),
+    PostOfficeShipMethod varchar(30),
+    
+    Cstmr_NameOrCompany varchar(60),
+    Cstmr_Attention varchar(30),
+    Cstmr_Address varchar(70),
+    Cstmr_AddressTwo varchar(30),
+    Cstmr_City varchar(30),
+    Cstmr_State varchar(30),
+    Cstmr_Zip varchar(30),
+    Cstmr_Country char(2),
+    Cstmr_ResidentialIndicator char(1) NOT NULL,
+    Cstmr_Phone varchar(30),
+
+    ThirdP_NameOrCompany varchar(60),
+    ThirdP_Attention varchar(30),
+    ThirdP_Address varchar(70),
+    ThirdP_AddressTwo varchar(30),
+    ThirdP_City varchar(30),
+    ThirdP_State varchar(30),
+    ThirdP_Zip varchar(30),
+    ThirdP_Country char(2),
+    ThirdP_Phone varchar(30),
+    ThirdP_UPS_AccountNumber varchar(30),
+  
+    ShpFrm_NameOrCompany varchar(60),
+    ShpFrm_Attention varchar(30),
+    ShpFrm_Address varchar(70),
+    ShpFrm_AddressTwo varchar(30),
+    ShpFrm_City varchar(30),
+    ShpFrm_State varchar(30),
+    ShpFrm_Zip varchar(30),
+    ShpFrm_Country char(2),
+    ShpFrm_Phone varchar(30),
+    ShpFrm_UPS_AccountNumber varchar(30),
+    ShpFrm_TaxID varchar(30),
+    ShpFrm_TaxIDtype varchar(30),
+    ShpFrm_ResidentialIndicator char(1) NOT NULL,
+    ShpFrm_OneLineWithPipes varchar(250),
+
+    DateExported DATETIME,
+    
+   PRIMARY KEY (ID),
+   
+   INDEX shippingexport_ShipmentID (ShipmentID)
+   );
+   
+   
+CREATE TABLE IF NOT EXISTS shippingimport (
+    ID int(11) NOT NULL AUTO_INCREMENT,
+    VoidIndicator varchar(10),
+    ReferenceCode varchar(30),
+    Dinero varchar(30),
+    TrackingNumber varchar(30),
+    Carrier varchar(50),
+    ShipmentID_FromUSPS varchar(30),
+    ShipmentMethodFromUSPS char(1),
+    DateImported DATETIME,
+    LabelGenerated DATETIME,
+   PRIMARY KEY (ID));   
+ 
+ 
+ ################################## END Shipping ODBC Tables ###########
+ 
+ 
+ CREATE TABLE IF NOT EXISTS pdfprofiles (
+   ID int(11) auto_increment,
+   ProfileName varchar(100),
+   DefaultProfile char(1) default 'N',
+   ProductID int(11),
+   ProfileNotes varchar(250),
+   RowsX int(11),
+   ColumnsY int(11),
+   RotateCanvas int(11),
+   BleedUnits varchar(8),
+   Force_AspectRatio char(1),
+   Gapr int(11),
+   Gapc int(11),
+   GapSizeH varchar(8),
+   GapSizeV varchar(8),
+   PageWidth varchar(8),
+   PageHeight varchar(8),
+   HSpacing varchar(8),
+   VSpacing varchar(8),
+   LMargin varchar(8),
+   BMargin varchar(8),
+   UnitWidth varchar(8),
+   UnitHeight varchar(8),
+   LabelX varchar(8),
+   LabelY varchar(8),
+   Label_Rotate int(11),
+   Display_Coversheet char(1),
+   Display_Summarysheet char(1),
+   ShowOutsideBorder char(1),
+   ShowCropMarks char(1),
+   PrintExtraQuantityPercent varchar(8),
+   PrintExtraQuantityMax int(11),
+   PrintExtraQuantityMinStart int(11),
+   MatrixDefinition MEDIUMTEXT,
+   
+   PRIMARY KEY (ID),
+   
+   INDEX pdfprofiles_profilename (ProfileName),
+   INDEX pdfprofiles_productid (ProductID)
+  );
+ 
+ 
+ CREATE TABLE IF NOT EXISTS pdfprofilecmykblocks (
+   ID int(11) auto_increment,
+   PDFProfileID int(11),
+   SideNumber int(3),
+   GroupWidth varchar(8),
+   GroupHeight varchar(8),
+   SpacingBetweenGroups varchar(8),
+   StartXCoord varchar(8),
+   StartYCoord varchar(8),
+   TotalGroups varchar(8),
+   Rotation int(3),
+   
+   
+   PRIMARY KEY  (ID),
+   
+   INDEX pdfprofilecmykblocks_pdfprofileid (PDFProfileID)
+ );
+ 
+ 
+ 
+ CREATE TABLE IF NOT EXISTS pdfprofileshapes (
+   ID int(11) auto_increment,
+   PDFProfileID int(11),
+   Remarks varchar(200),
+   OptionsLimiter varchar(200),
+   ShapeType char(1),
+   GlobalLocal char(1),
+   Side varchar(11),
+   Xcoord varchar(10),
+   Ycoord varchar(10),
+   Rotation int(3),
+   ShapeSpecificValue1 varchar(11),
+   ShapeSpecificValue2 varchar(11),
+   FillColorRGB varchar(7),
+   LineColor varchar(7),
+   LineStyle varchar(20),
+   LineThickness varchar(8),
+   FillAlpha varchar(8),
+   LineAlpha varchar(8),
+   
+   PRIMARY KEY  (ID),
+   
+   INDEX pdfprofileshapes_pdfprofileid (PDFProfileID)
+);
+
+
+
+CREATE TABLE IF NOT EXISTS superpdfprintingpressids (
+  ID int(11) auto_increment,
+  SuperPDFProfileID int(11),
+  PrintingPressID int(11),
+
+  PRIMARY KEY  (ID),
+
+  INDEX superpdfprintingpressids_SuperPDFProfileID (SuperPDFProfileID),
+  INDEX superpdfprintingpressids_PrintingPressID (PrintingPressID)
+);
+
+CREATE TABLE IF NOT EXISTS superpdfprofiles (
+  ID int(11) auto_increment,
+  SuperPDFProfileName varchar(100),
+  SheetWidth varchar(8),
+  SheetHeight varchar(8),
+  BarcodeX varchar(8),
+  BarcodeY varchar(8),
+  BarcodeRotateDeg varchar(8),
+  Notes varchar(200),
+  Sort int(3),
+  DomainID int(11),
+  
+  PRIMARY KEY (ID),
+  INDEX superpdfprofiles_DomainID (DomainID),
+  INDEX superpdfprofiles_SuperPDFProfileName (SuperPDFProfileName)
+);
+
+CREATE TABLE  IF NOT EXISTS superpdfprofilessub (
+  ID int(11) auto_increment,
+  SuperPDFProfileID int(11),
+  PDFProfileID int(11),
+  OptionsLimiter varchar(250),
+  Xcoord varchar(8),
+  Ycoord varchar(8),
+  Sort int(3),
+  
+  PRIMARY KEY (ID),
+  
+  INDEX superpdfprofilessub_SuperPDFProfileID (SuperPDFProfileID),
+  INDEX superpdfprofilessub_PDFProfileID (PDFProfileID)
+);
+
+
+CREATE TABLE IF NOT EXISTS productstatus (
+  ID int(11) NOT NULL auto_increment,
+  ProductID int(11),
+  StatusChar char(1),
+  StatusTitle varchar(100),
+  StatusDesc varchar(250),
+  IsDefault char(1) default 'N',
+  
+  PRIMARY KEY  (ID),
+  
+  INDEX productstatus_ProductID (ProductID),
+  INDEX productstatus_StatusChar (StatusChar),
+  INDEX productstatus_IsDefault (IsDefault)
+);
+
+
+
+CREATE TABLE IF NOT EXISTS shippingaddresscache_ups (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   AddressSignature char(32),
+   DateVerified TIMESTAMP,
+   
+   PRIMARY KEY (ID),
+   UNIQUE shippingaddresscache_ups_AddressSignature (AddressSignature)
+   );
+   
+ CREATE TABLE IF NOT EXISTS shippingtransitcache_ups (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   RequestSignature char(32),
+   Response TEXT,
+   DateCreated TIMESTAMP,
+   
+   PRIMARY KEY (ID),
+   UNIQUE shippingtransitcache_ups_RequestSignature (RequestSignature)
+   );
+
+CREATE TABLE IF NOT EXISTS shippingchoices (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   DomainID int(11),
+   ShippingChoiceName varchar(100),
+   TransitDays int(2),
+   Sequence int(3),
+   BasicChoice char(1),
+   DefaultChoice char(1),
+   ColorCode char(7),
+   Priority char(1),
+   PriceInitial char(6),
+   PricePerPound char(6),
+   RuralFee char(6),
+   ExtendedDistanceFee char(6),
+   
+   PRIMARY KEY (ID),
+   INDEX shippingchoices_DomainID (DomainID)
+   );
+
+CREATE TABLE IF NOT EXISTS shippingpriceproductoverride (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   ShippingChoiceID int(11),
+   ProductID int(11),
+   PriceInitial char(6),
+   
+   PRIMARY KEY (ID),
+   INDEX shippingpriceproductoverride_ShippingChoiceID (ShippingChoiceID)
+   );
+
+CREATE TABLE IF NOT EXISTS shippingpricesquantitybreaks (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   ShippingChoiceID int(11),
+   Weight int(5),
+   PricePerPound char(6),
+   
+   PRIMARY KEY (ID),
+   INDEX shippingpricesquantitybreaks_ShippingChoiceID (ShippingChoiceID)
+   );
+   
+ CREATE TABLE IF NOT EXISTS shippingchoicesdowngrades (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   ShippingChoiceID int(11),
+   ShippingMethodCode char(3),
+   MinimumWeight char(7),
+   MaximumWeight char(7),
+   AlertMessage char(30),
+   Sequence int(3),
+   IsDefault char(1),
+   AddressType char(1),
+   
+   PRIMARY KEY (ID),
+   INDEX shippingchoicesdowngrades_ShippingChoiceID (ShippingChoiceID)
+   );
+   
+  CREATE TABLE IF NOT EXISTS shippingchoices1to1map (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   ShippingChoiceID int(11),
+   ShippingMethodCode char(3),
+   AlertMessage char(30),
+   
+   PRIMARY KEY (ID),
+   INDEX shippingchoices1to1map_ShippingChoiceID (ShippingChoiceID)
+   );
+   
+
+CREATE TABLE IF NOT EXISTS msghistory (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   MessageID int(11),
+   Message text,
+   DateCreated timestamp(14) NOT NULL,
+   
+   PRIMARY KEY  (ID),
+   INDEX msghistory_MessageID (MessageID),
+   INDEX msghistory_DateCreated (DateCreated)
+);
+
+
+
+
+
+CREATE TABLE IF NOT EXISTS variabledatasaved (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   ProjectID int(11),
+   VariableDataFile LONGTEXT,
+   
+   PRIMARY KEY  (ID),
+   INDEX variabledatasaved_ProjectID (ProjectID)
+) MAX_ROWS=4294967295 AVG_ROW_LENGTH = 100;
+
+CREATE TABLE IF NOT EXISTS variabledataordered (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   ProjectID int(11),
+   VariableDataOriginal LONGTEXT,
+   VariableDataModified LONGTEXT,
+   
+   PRIMARY KEY  (ID),
+   INDEX variabledataordered_ProjectID (ProjectID)
+) MAX_ROWS=4294967295 AVG_ROW_LENGTH = 100;
+
+
+
+CREATE TABLE IF NOT EXISTS lostpasswordattempts (
+  ID int(11) NOT NULL AUTO_INCREMENT,
+  DomainID int(11),
+  IPaddress varchar(20),
+  Email varchar(60),
+  Date datetime,
+  GoodOrBad char(1),
+  PRIMARY KEY  (ID),
+  
+  INDEX lostpasswordattempts_Date (Date)
+);
+
+
+
+CREATE TABLE IF NOT EXISTS exceptionlog (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   EventSignature char(32),
+   IPaddress varchar(20),
+   Referer varchar(255),
+   UserAgent varchar(70),
+   Date DATETIME,
+   URL varchar(255),
+   DomainID int(11),
+   UserID int(11),
+   EventObjSerialized mediumtext,
+   EventObjTrace mediumtext,
+   PRIMARY KEY (ID),
+   
+   INDEX exceptionlog_IPaddress (IPaddress),
+   INDEX exceptionlog_EventSignature (EventSignature),
+   INDEX exceptionlog_Date (Date)
+   ) MAX_ROWS=4294967295 AVG_ROW_LENGTH = 100;
+
+
+
+
+CREATE TABLE IF NOT EXISTS visitorlog (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   SessionID char(32),
+   VisitLabel varchar(255),
+   VisitLabelDetail varchar(255),
+   Date DATETIME,
+   
+   PRIMARY KEY  (ID),
+   INDEX visitorlog_SessionID (SessionID)
+);
+
+CREATE TABLE IF NOT EXISTS visitorsessiondetails (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   UserID int(11) NOT NULL,
+   DomainID int(6),
+   SessionID char(32) NOT NULL,
+   PreviousSessionID char(32) DEFAULT NULL,
+   IPaddress char(255) NOT NULL,
+   UserAgent char(255),
+   RefURL varchar(255),
+   ReferralType char(1),
+   OrderPlaced char(1),
+   ISPname varchar(50),
+   LocationID int(8) DEFAULT NULL,
+   DateStarted DATETIME NOT NULL,
+   DateLastAccess DATETIME NOT NULL,
+   
+   PRIMARY KEY  (ID),
+   INDEX visitorsessiondetails_UserID (UserID),
+   INDEX visitorsessiondetails_SessionID (SessionID),
+   INDEX visitorsessiondetails_PreviousSessionID (PreviousSessionID),
+   INDEX visitorsessiondetails_IPaddress (IPaddress),
+   INDEX visitorsessiondetails_DateStarted (DateStarted),
+   INDEX visitorsessiondetails_LocationID (LocationID),
+   INDEX visitorsessiondetails_DateLastAccess (DateLastAccess)
+);
+
+
+
+CREATE TABLE IF NOT EXISTS usershippingaddresses (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   UserID int(11),
+   IsDefault char(1),
+   RequestSignature char(32),
+   Name varchar(30),
+   Company varchar(30),
+   Address varchar(70),
+   AddressTwo varchar(30),
+   City varchar(30),
+   State varchar(30),
+   Zip varchar(30),
+   Country char(2),
+   ResidentialFlag char(1),
+   Phone varchar(30),
+   
+   PRIMARY KEY  (ID),
+   INDEX usershippingaddresses_UserID (UserID)
+);
+
+CREATE TABLE IF NOT EXISTS userbillinginfos (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   UserID int(11),
+   IsDefault char(1),
+   BillingName varchar(30),
+   BillingCompany varchar(30),
+   BillingAddress varchar(70),
+   BillingAddressTwo varchar(30),
+   BillingCity varchar(30),
+   BillingState varchar(30),
+   BillingZip varchar(30),
+   BillingCountry char(2),
+   CreditCardNumber char(25),
+   CreditCardExpireMonth char(2),
+   CreditCardExpireYear char(2),
+
+   PRIMARY KEY  (ID),
+   INDEX userbillingaddresses_UserID (UserID)
+);
+
+
+CREATE TABLE IF NOT EXISTS messagesattachments (
+  ID int(11) NOT NULL AUTO_INCREMENT,
+  BinaryData longblob,
+  Filename varchar(100),
+  FileSize int(11),
+  DateAdded datetime,
+  
+  PRIMARY KEY  (ID),
+  INDEX messagesattachment_DateAdded (DateAdded)
+);
+
+CREATE TABLE IF NOT EXISTS messagesattachmentspointer (
+  ID int(11) NOT NULL AUTO_INCREMENT,
+  MessageID int(11),
+  TableName varchar(100),
+  BinaryTablePointerID int(11),
+  
+  PRIMARY KEY  (ID),
+  INDEX attachment_pointer_MessageID (MessageID)
+);
+
+
+CREATE TABLE IF NOT EXISTS emailnotifycollection (
+  ID int(11) AUTO_INCREMENT,
+  BatchID int(11),
+  Status char(1),
+  Email varchar(60),
+  ImportDate datetime,
+  LastStatusChange datetime,
+  LastEmailDate datetime,
+  DomainName varchar(200),
+  SourceType char(1),
+  Name varchar(100),
+  UpdateDate datetime,
+  CompanyName varchar(100),
+  Title varchar(50),
+  Address varchar(100),
+  City varchar(100),
+  State varchar(100),
+  Zip varchar(10),
+  Country char(2),
+  Phone varchar(10),
+  IndustryType varchar(20),
+  SICCode int(11),
+  LastDomainID int(11),
+  
+  PRIMARY KEY (ID),
+  
+  INDEX emailnotifycollection_Email (Email),
+  INDEX emailnotifycollection_Status (Status),
+  INDEX emailnotifycollection_LastEmailDate (Status),
+  INDEX emailnotifycollection_DomainID (LastDomainID)
+);
+
+
+CREATE TABLE IF NOT EXISTS emailnotifyhistory (
+  ID int(11) AUTO_INCREMENT,
+  EmailID int(11),
+  MessageID int(11),
+  Date datetime,
+  DomainID int(11),
+  JobID int(11),
+  BatchID int(11),
+  
+  PRIMARY KEY (ID),
+  
+  INDEX emailnotifyhistory_EmailID (EmailID)
+);
+
+
+CREATE TABLE IF NOT EXISTS emailunsubscriptions (
+  ID int(11) AUTO_INCREMENT,
+  DomainID int(11),
+  Date datetime,
+  IP varchar(20),
+  Email varchar(60),
+  
+  PRIMARY KEY  (ID),
+  
+  INDEX emailunsubscriptions_Email (Email)
+);
+
+
+CREATE TABLE IF NOT EXISTS emailcheckdomains (
+  ID int(11) AUTO_INCREMENT,
+  DomainName varchar(68),
+  Status char(1),
+  Retries int(11),
+  LastDate datetime,
+  
+  PRIMARY KEY  (ID),
+  INDEX emailcheckdomains_DomainName (DomainName)
+);
+
+
+CREATE TABLE IF NOT EXISTS emailnotifymessages (
+  ID int(11) AUTO_INCREMENT,
+  Subject varchar(200),
+  DateRangeStart date,
+  DateRangeEnd date,
+  Active char(1),
+  HTMLText char(1),
+  Body text,
+  CreatedByUserID int(11),
+  CreatedOnDate datetime,
+  LastEditedByUserID int(11),
+  LastEditedOnDate datetime,
+  DomainID int(11),
+  
+  PRIMARY KEY  (ID),
+  INDEX emailnotifymessages_DateRangeStart (DateRangeStart),  
+  INDEX emailnotifymessages_DateRangeEnd   (DateRangeEnd)
+);
+
+
+#---- This needs to go in the Database session_db
+CREATE TABLE IF NOT EXISTS sessions (
+  ID int(11) NOT NULL AUTO_INCREMENT,
+  SessionID varchar(255) NOT NULL,
+  DomainID int(11),
+  LastAccess DATETIME NOT NULL,
+  SessionData mediumtext,
+  PRIMARY KEY  (ID),
+  
+  INDEX sessions_SessionID (SessionID),
+  INDEX sessions_LastAccess (LastAccess)
+) ENGINE=InnoDB;
+
+
+
+CREATE TABLE IF NOT EXISTS chatthread (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   DomainID int(11),
+   CsrUserID int(11),
+   Status char(1),
+   ChatType char(1),
+   AllowPleaseWait char(1),
+   Subject char(1),
+   ClosedReason char(1),
+   OrderLinkSource char(1),
+   CustomerIpAddress varchar(25),
+   CustomerUserID int(11),
+   SessionID varchar(255),
+   PreviousSessionID varchar(255),
+   StartSessionID varchar(255),
+   OrderID int(11),
+   CustomerIsTyping tinyint(1),
+   CsrIsTyping tinyint(1),
+   AttachmentsCount int(3),
+   TotalCsrMessages int(5),
+   TotalCustomerMessages int(5),
+   StartDate DATETIME,
+   FirstCsrMsg DATETIME,
+   FirstCustomerMsg DATETIME,
+   LastCustomerMsg DATETIME,
+   LastCsrMsg DATETIME,
+   ClosedDate DATETIME,
+
+   PRIMARY KEY (ID),
+   INDEX chatthread_SessionID (SessionID),
+   INDEX chatthread_Status (Status),
+   INDEX chatthread_PreviousSessionID (PreviousSessionID),
+   INDEX chatthread_CsrUserID (CsrUserID),
+   INDEX chatthread_CustomerUserID (CustomerUserID),
+   INDEX chatthread_StartDate (StartDate),
+   INDEX chatthread_OrderID (OrderID)
+   );
+   
+   
+CREATE TABLE IF NOT EXISTS chatopeninstances (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   ChatThreadID int(11),
+   FirstPingByCsrFlag tinyint(1),
+   LastOpenedByCsr DATETIME,
+   LastCustomerPing DATETIME,
+   LastCsrPing DATETIME,
+
+   PRIMARY KEY (ID),
+   INDEX chatopeninstances_ChatThreadID (ChatThreadID)
+   );
+   
+   
+CREATE TABLE IF NOT EXISTS chatcsrstatus (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   UserID int(11),
+   Status char(1),
+   OpenChatThreads int(4),
+   OpenThreadsLimit int(4),
+
+   PRIMARY KEY (ID),
+   INDEX chatcsrstatus_UserID (UserID)
+   );
+   
+   
+CREATE TABLE IF NOT EXISTS chatcsrfavorites (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   UserID int(11),
+   DomainID int(11),
+   CannedMessage mediumtext,
+   Snippet varchar(255),
+
+   PRIMARY KEY (ID),
+   INDEX chatcsrfavorites_UserID (UserID)
+   );
+   
+CREATE TABLE IF NOT EXISTS chatcsrpleasewait (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   UserID int(11),
+   DomainID int(11),
+   Message mediumtext,
+
+   PRIMARY KEY (ID),
+   INDEX chatcsrpleasewait_UserID (UserID)
+   );
+   
+   
+   
+CREATE TABLE IF NOT EXISTS chatcsrsetup (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   UserID int(11),
+   DomainID int(11),
+   IsPhotoUploaded char(1),
+   GreetingMessage varchar(255),
+   SignOffMessage varchar(255),
+   CsrPenName varchar(255),
+   ChatTypes varchar(255),
+   CsrPhoto mediumblob,
+   DateModified TIMESTAMP,
+
+   PRIMARY KEY (ID),
+   INDEX chatcsrsetup_UserID (UserID)
+   );
+   
+   
+CREATE TABLE IF NOT EXISTS chatmessages (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   ChatThreadID int(11),
+   CsrUserID int(11),
+   PersonType char(1),
+   ReceiptAck tinyint(1),
+   FileAttachmentID int(11),
+   ForCsrOnly tinyint(1),
+   PleaseWaitMessageID int(11),
+   Date DATETIME,
+   Message mediumtext,
+
+   PRIMARY KEY (ID),
+   INDEX chatmessages_ChatThreadID (ChatThreadID)
+   );
+ 
+ 
+CREATE TABLE IF NOT EXISTS chatattachmentspointer (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   ChatThreadID int(11),
+   BinaryTableName varchar(100),
+   BinaryTableID int(11),
+
+   PRIMARY KEY (ID),
+   INDEX chatattachmentspointer_ChatThreadID (ChatThreadID)
+   );
+   
+CREATE TABLE IF NOT EXISTS chatattachments_1 (
+   ID int(11) NOT NULL AUTO_INCREMENT,
+   BinaryData longblob,
+   FileName varchar(70),
+   FileType varchar(50),
+   FileSize int(11),
+
+   PRIMARY KEY (ID)
+   );
+
+
+
+
+CREATE TABLE IF NOT EXISTS maxmindlocationids (
+  StartIP int(11) UNSIGNED,
+  EndIP int(11) UNSIGNED,
+  Counter int(11),
+  LocationID int(8),
+  PRIMARY KEY  (StartIP),
+  
+  INDEX maxmindlocationids_Counter (Counter)
+);
+
+CREATE TABLE IF NOT EXISTS maxmindlocationdetails (
+  ID int(11) NOT NULL AUTO_INCREMENT,
+  LocationID int(8),
+  Country char(2),
+  Region char(2),
+  City varchar(255),
+  PostalCode varchar(6),
+  Latitude float,
+  Longitude float,
+  MetroCode int(11),
+  AreaCode int(3),
+  PRIMARY KEY  (ID),
+  
+  INDEX maxmindlocationdetails_LocationID (LocationID)
+);
+
+CREATE TABLE IF NOT EXISTS maxmindisps (
+  StartIP int(11) UNSIGNED,
+  EndIP int(11) UNSIGNED,
+  Counter int(11),
+  ISPname varchar(50),
+  PRIMARY KEY  (StartIP),
+  
+  INDEX maxmindisps_Counter (Counter)
+);
+
+
+CREATE TABLE IF NOT EXISTS emailnotifyjob (
+  ID int(11) AUTO_INCREMENT,
+  DomainID int(11),
+  DeliveryDate datetime,
+  MessageID int(11),
+  
+  PRIMARY KEY  (ID)
+);
+
+CREATE TABLE IF NOT EXISTS emailnotifytracking (
+  ID int(11) NOT NULL AUTO_INCREMENT,
+  Date datetime,
+  JobID int(11),
+  BatchID int(11),
+  MessageID int(11),
+  EmailID int(11),
+  DomainID int(11),
+  
+  PRIMARY KEY  (ID),
+  
+  INDEX emailnotifytracking_JobID (JobID),
+  INDEX emailnotifytracking_BatchID (BatchID),
+  INDEX emailnotifytracking_MessageID (MessageID),
+  INDEX emailnotifytracking_DomainID (DomainID))
+);
+
+CREATE TABLE IF NOT EXISTS domainemailconfig (
+  ID int(11) NOT NULL AUTO_INCREMENT,
+  DomainID int(11),
+  EmailType varchar(50),
+  Name varchar(100),
+  Email varchar(100),
+  MailServerHost varchar(100),
+  MailServerUser varchar(100),
+  MailServerPassword varchar(100),
+  
+  PRIMARY KEY  (ID),
+  INDEX domainemailconfig_DomainID (DomainID)
+);
+
+CREATE TABLE IF NOT EXISTS emailnotifyorders (
+  ID int(11) NOT NULL AUTO_INCREMENT,
+  JobID int(11),
+  Email varchar(50),
+  Date datetime,
+  BatchID int(11),
+  MessageID int(11),
+  DomainID int(11),
+  
+  PRIMARY KEY (ID),
+  
+  INDEX emailnotifyorders_JobID (JobID),
+  INDEX emailnotifyorders_BatchID (BatchID),
+  INDEX emailnotifyorders_MessageID (MessageID),
+  INDEX emailnotifyorders_DomainID (DomainID)
+);
+
+CREATE TABLE IF NOT EXISTS emailnotifysenderror (
+  ID int(11) NOT NULL AUTO_INCREMENT,
+  Date datetime,
+  ErrorCode int(11),
+  Email varchar(50),
+  BatchID int(11),
+  JobID int(11),
+  DomainID int(11),
+  
+  PRIMARY KEY (ID),
+  
+  INDEX emailnotifysenderror_BatchID (BatchID),
+  INDEX emailnotifysenderror_JobID (JobID),
+  INDEX emailnotifysenderror_DomainID (DomainID)
+);
+
+CREATE TABLE IF NOT EXISTS emailnotifybatch (
+  ID int(11) AUTO_INCREMENT,
+  Description varchar(255),
+  Date datetime,
+  Sequence int(11),
+  
+  PRIMARY KEY (ID)
+);
+
+CREATE TABLE IF NOT EXISTS emailnotifybatchdomain (
+  ID int(11) AUTO_INCREMENT,
+  BatchID int(11),
+  DomainID int(11),
+ 
+  PRIMARY KEY (ID)
+);
+
+CREATE TABLE IF NOT EXISTS emailnotifypictures (
+  ID int(11) NOT NULL AUTO_INCREMENT,
+  BinaryData longblob,
+  BinaryThumb longblob,
+  Filename varchar(100),
+  FileSize int(11),
+  DateAdded datetime ,
+  MessageID int(11),
+  Width int(11),
+  Height int(11),
+  
+  PRIMARY KEY  (ID)
+);
+
+
+CREATE TABLE  IF NOT EXISTS domainaddresses (
+  ID int(11) auto_increment,
+  DomainID int(11),
+  Type varchar(50),
+  AddressType varchar(100),
+  Attention varchar(100),
+  Company varchar(100),
+  AddressOne varchar(100),
+  AddressTwo varchar(100),
+  City varchar(100),
+  State varchar(100),
+  ZIP varchar(10),
+  CountryCode char(2),
+  Phone varchar(20),
+  ResidentialFlag int(11),
+  TaxIDNo varchar(50),
+  TaxIDType varchar(50),
+  UPSAccountNo varchar(50),
+  PRIMARY KEY  (ID),
+  INDEX domainaddresses_DomainID (DomainID)
+);
+
+
+CREATE TABLE IF NOT EXISTS urlrewrites (
+  ID int(11) auto_increment,
+  DomainID int(11),
+  Request varchar(255),
+  BackgroundURL mediumtext,
+  
+  INDEX urlrewrites_DomainID (DomainID),
+    
+  PRIMARY KEY (ID)
+);

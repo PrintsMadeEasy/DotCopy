@@ -1,0 +1,151 @@
+This example uses the following settings:
+
+mydomain.com -> Replace with actual domain.
+74.74.74.74  -> IP on the same public proxy server.
+81.81.81.81  -> IP on the same public proxy server.
+
+Note: To add a second IP to the server add it under TCP/IP Settings -> Advanced.
+
+150.150.150.150  -> IP of the hidden server containing the original content.
+160.160.160.160  -> IP of the hidden server containing the original content.
+
+1) Turn off IIS: Go to Services -> disable Service "World Wide Publising Service" so that it doesn't start anymore.
+2) Add new rule to Firwall: Port TCP 80 "Apache" and Port TCP 443 "Apache SSL"
+
+3) Install apache_openssl_installer_for_proxy.msi (apache_2.2.14-win32-x86-openssl-0.9.8k.msi) in /server_files directry
+
+4) Copy ssleay32.dll and libeay32.dll to windows/system32
+
+5) Copy openssl.cnf file from c:/apache_install_dir/conf to c:/apache_install_dir/bin
+              
+6) Change directory to c:/apache_install_dir/bin ( cd C:\Program Files\Apache Software Foundation\Apache2.2\bin ) and type:
+  (Important: "Common name" type in your full domain name, eg. www.mydomain.com )
+
+openssl req -config openssl.cnf -new -out mydomain.csr
+
+7) Then type next commands:
+
+openssl rsa -in privkey.pem -out mydomain.key
+openssl x509 -in mydomain.csr -out mydomain.cert -req -signkey mydomain.key -days 365
+openssl x509 -in mydomain.cert -out mydomain.der.crt -outform DER
+
+8) Create ssl directory in c:/apache_install_dir/conf and put there mydomain.key and mydomain.cert from the /bin directory
+
+9) Make sure you load the following modules  (uncomment by removing # in httpd.conf)
+
+mod_proxy.so
+mod_proxy_http.so
+mod_proxy_connect.so
+mod_ssl.so 
+mod_vhost_alias.so
+
+10) Turn on the Reverse Proxy and SSL:
+          
+ProxyRequests Off
+
+<Proxy *>
+Order deny,allow
+Allow from all
+</Proxy>
+
+SSLProxyEngine On
+
+
+11) In the http.conf find "Listen 80" string and add (Example: 74.74.74.74 / 81.81.81.81 = Two public Proxy Domain IP's):
+
+Listen 74.74.74.74:80
+Listen 74.74.74.74:443
+
+Listen 81.81.81.81:80
+Listen 81.81.81.81:443
+
+12) At the end of http.conf the next block add:
+
+<IfModule ssl_module>
+SSLRandomSeed startup builtin
+SSLRandomSeed connect builtin
+</IfModule>
+            
+  and change it to:
+
+<IfModule ssl_module>
+SSLRandomSeed startup builtin
+SSLRandomSeed connect builtin
+SSLMutex default
+SSLSessionCache none
+</IfModule>
+
+
+13) Add to the end of http.conf file (Example: 74.74.74.74 / 81.81.81.81 = Two public Proxy Domain IP's):
+    IP's  150.150.150.150 and 160.160.160.160 the hidden servers.
+  
+
+
+#businesscards24.com 
+
+
+<VirtualHost 76.74.152.195:443>
+ServerName businesscards24.com
+SSLEngine On
+SSLCertificateFile conf/ssl/bc24.cert
+SSLCertificateKeyFile conf/ssl/bc24.key
+ProxyPass / https://74.53.59.115/
+ProxyPassReverse / https://74.53.59.115/
+</VirtualHost>
+
+# Special configuration to redirect http://www.businesscards24.com  to http://businesscards24.com with ProxyPass and IP's only
+
+NameVirtualHost  76.74.152.195:80
+
+<VirtualHost 76.74.152.195:80>
+ProxyPass / https://74.53.59.115/
+ProxyPassReverse / https://74.53.59.115/
+</VirtualHost>
+
+<VirtualHost  76.74.152.195:80>
+ServerName www.businesscards24.com
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteCond %{HTTP_HOST} ^www.businesscards24.com$ [NC,OR]
+RewriteRule ^(.*)$ http://businesscards24.com$1 [R=301,L]
+</IfModule>
+</VirtualHost>
+
+
+
+# IP Two
+
+<VirtualHost 81.81.81.81:443>
+SSLEngine On
+SSLCertificateFile conf/ssl/mydomain2.cert
+SSLCertificateKeyFile conf/ssl/mydomain2.key
+ProxyPass / https://160.160.160.160/
+ProxyPassReverse / https://160.160.160.160/
+</VirtualHost>
+
+<VirtualHost 81.81.81.81:80>
+ProxyPass / https://160.160.160.160/
+ProxyPassReverse / https://160.160.160.160/
+</VirtualHost>
+
+
+14) To avoid Proxy errors add this:
+
+# Avoid proxy errors
+SetEnv force-proxy-request-1.0 1
+SetEnv proxy-nokeepalive 1
+
+15) Restart apache.
+
+16) Log rotation:
+
+Add this log entry to the virtual host:
+CustomLog "|bin/rotatelogs.exe logs/letterhead.com-access.%Y-%m-%d-%H_%M_%S.log 100M" combined
+
+For automatic log file compression and archive copy the directory "logarchive" to "/logarchive" and edit "Archive.bat" with the directory of the log files.
+Then add "Archive.bat" to the windows scheduler to be called once a day or week. "logarchive" is located at /inet/Cplus/Logarchive/Installfiles/ .
+
+
+
+
+

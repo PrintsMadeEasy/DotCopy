@@ -1,0 +1,112 @@
+<html>
+<head>
+<title>Admin</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<script type="text/javascript" src="./library/admin_library.js"></script>
+<script language="javascript">
+
+
+</script>
+
+
+<link rel="stylesheet" type="text/css" href="library/calendar/themes/winter.css"/>
+<script type="text/javascript" src="library/calendar/src/utils.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar.js"></script>
+<script type="text/javascript" src="library/calendar/lang/calendar-en.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar-setup.js"></script>
+<script type="text/javascript" src="library/formatDate.js"></script>
+</head>
+<body bgcolor="#FFFFFF" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="">
+<div align="center">
+{HEADER}
+
+<table width="760" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td class="Body" >
+
+
+
+
+<br/><br/>
+
+<table width="100%" border="0" cellspacing="0" cellpadding="1">
+  <tr>
+    <td><font class="LargeBody"><font color="#336699"><b>Product Copy</b> - {FULL_PRODUCT_NAME}</font></font></td>
+    <td align="right">&nbsp;
+
+	</td>
+  </tr>
+</table>
+
+
+
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td bgcolor="#3366CC"><img src="./images/transparent.gif" border="0" width="2" height="4" alt="" /></td>
+</tr>
+</table>
+<br/>
+
+
+
+
+
+
+
+<br/>
+
+<br/>
+
+After making a copy, a new Product will be created with an &quot;Inactive Status&quot;.  <br/>
+The Product Title Extension will have &quot;- Copy&quot; added as a Suffix.<br/>
+<br/>
+The system will not copy over any &quot;Product Switches&quot;, Product Status Messages, or Product Schedules.
+<br/>
+Product Thumbnail images will not be transferred because they will most likely be changed. <br/>
+<form name="productCopyForm" action="./ad_product_copy.php" method="post">
+<input type="hidden" name="productID" value="{PRODUCT_ID}" />
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+<input type="hidden" name="action" value="makeCopy" />
+<!-- BEGIN MultiDomainBL -->
+<br/>
+
+Which Domain should the  Product be copied into?<br/>
+<select class="AdminDropDown" style="background-color:#F3F3F3" name="domainIDforNewProduct" >
+{DOMAIN_DROP_DOWN}
+</select>
+<br/>
+
+<!-- END MultiDomainBL -->
+<br/><br/>
+
+
+<input type="submit" name="Add" value="Make a Copy" class="AdminButton" onmouseover="this.style.background='#ffeeaa';" onmouseout="this.style.background='#FFFFDD';" />
+</form>
+
+<br/>
+<br/>
+<br/>
+<br/>
+<br/><br/><br/><br/>
+
+
+</td>
+</tr>
+</table>
+
+
+
+<table width="760" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="360" class="NavColor"><img src="./images/footer.gif" border="0" width="350" height="16" usemap="#footer" alt="" /></td>
+	<td width="400" align="right" class="NavColor"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+  </tr>
+</table>
+<font class="copyright"> </font>
+</div>
+&nbsp;
+<script type="text/javascript" src="./library/ImageMap-footer.js"></script>
+</body>
+</html>

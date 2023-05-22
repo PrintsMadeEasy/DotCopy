@@ -1,0 +1,191 @@
+<html>
+<head>
+<title>Customer Memos</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+
+<script language="javascript">
+
+
+	function SubmitForm(){
+		if(document.forms["memoform"].message.value==""){
+			alert("Please type a message before submitting.");
+		}
+		else{
+			document.forms["memoform"].submit();
+		}
+	}
+
+	function removeLockOnCustomerMemor(){
+
+		dateObj = new Date();
+		var NoCache = dateObj.getTime();
+
+
+		//Load the XML doc from the server.
+		var xmlDoc=getXmlReqObj();
+		xmlDoc.open("GET", "./ad_customermemos.php?action=removelock&form_sc={FORM_SECURITY_CODE}&customerid={CUSTOMERID}&nocache=" + NoCache, false);
+		xmlDoc.send(null);
+		var xmlResponseTxt = xmlDoc.responseText;
+
+		var ServerResponse = getXMLdataFromTagName(xmlResponseTxt, "success");
+
+		if(ServerResponse != "good")
+			alert("An Error Occured:\n\nWas not able to clear a lock on this cusotmer memo.");
+
+	}
+
+	function showCustInfoWindow(divShow) {
+
+		var spanname = "CustInfoSpan";
+		var divname = "CustInfoDiv";
+
+		if (divShow) {
+
+			document.all(spanname).style.visibility = "visible";
+			document.all(spanname).style.zIndex = 300;
+		}
+		else{
+			document.all(spanname).style.visibility = "hidden";
+
+		}
+
+		document.forms['memoform'].message.focus();
+	}
+
+</script>
+<script type="text/javascript" src="./library/admin_library.js"></script>
+</head>
+
+<body bgcolor="#3366CC" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onbeforeunload="document.forms['memoform'].message.focus();" onUnload="removeLockOnCustomerMemor()">
+<img  src="./images/transparent.gif" border="0" width="1" height="10" alt="" /><br/>
+<div align="center">
+<table bgcolor="#EEEEEE" width="96%" cellpadding="0" cellspacing="0" border="0">
+
+<tr>
+<td bgcolor="#999999" class="Body" align="center" style="background-image: url(./images/admin/header-shipping.png); background-repeat: repeat;"><img  src="./images/transparent.gif" border="0" width="1" height="3" alt="" /><br/><font color="#000000">
+        <b>Customer Memos for {NAME_OR_COMPANY}</b></font>&nbsp;&nbsp;&nbsp;<a href='javascript:showCustInfoWindow(true);' class="BlueRedLink">Acnt. Info</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:MakeNewTask('user', {CUSTOMERID}, false)" class="BlueRedLink" >Task</a>
+		<span style='visibility:hidden; position:absolute; left:120px; top:185' id='CustInfoSpan'>
+                                          <table width="215" border="0" cellspacing="0" cellpadding="2" bgcolor="#CC6600" style='-moz-opacity:60%;filter:progid:DXImageTransform.Microsoft.dropShadow(Color=#999999,offX=3,offY=3)'>
+                                            <tr>
+                                              <td>
+                                                <table width="100%" border="0" cellspacing="0" cellpadding="4" bgcolor="#FFFFFF">
+                                                  <tr>
+                                                    <td class="SmallBody"  style="background-image: url(./images/admin/arrival_time_back.png); background-repeat: no-repeat;">
+													<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td align="right"><a class="BlueRedLink" href='javascript:showCustInfoWindow(false);'>&nbsp;&nbsp;X&nbsp;</a></td>
+  </tr>
+</table>
+{CUST_INFO}
+
+                                                      <img src="./images/transparent.gif" height="4" width="1" alt="" /></td>
+                                                  </tr>
+                                                </table>
+                                              </td>
+                                            </tr>
+                                          </table>
+
+		</span>
+<br/><img src="./images/transparent.gif" border="0" width="1" height="3" alt="" /></td>
+<tr>
+<td align="center">
+<table bgcolor="#EEEEEE" width="100%" cellpadding="0" cellspacing="0" border="0">
+<form name="memoform" method="post" action="./ad_customermemos.php">
+<input type="hidden" name="action" value="savemessage" />
+<input type="hidden" name="refreshParent" value="{REFRESH_PARENT}" />
+<input type="hidden" name="customerid" value="{CUSTOMERID}" />
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+
+
+<tr>
+              <td width="1%">&nbsp;</td>
+              <td width="99%" class="Body" align="center"> <img  src="./images/transparent.gif" border="0" width="1" height="15" alt="" /><br/>
+<!-- BEGIN LockecMessageBL -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td align="center"><table width="90%" border="0" cellspacing="0" cellpadding="2" bgcolor="#993333">
+  <tr>
+    <td><table width="100%" border="0" cellspacing="0" cellpadding="9">
+  <tr>
+    <td bgcolor="#FFFFFF" class="SmallBody">{LOCKED_MESSAGE} currently viewing Customer Memos for <em>{NAME_OR_COMPANY}</em>.<br/><br/>
+    <font class="ReallySmallBody">If they close the Customer Memos pop-up window or &quot;save data&quot; this warning message will disappear.  Be cautious not to work on the same thing at the same time. <a class="BlueRedLink" href='javascript:document.location = document.location;'>Click here</a> to refresh this window.</font></td>
+  </tr>
+</table>
+</td>
+  </tr>
+</table>
+</td>
+  </tr>
+</table><img  src="./images/transparent.gif" border="0" width="1" height="15" alt="" /><br/>
+
+		<!-- END LockecMessageBL -->
+
+<textarea name="message" style="width:520px; height:70px; font-size:12px;" wrap="VIRTUAL"></textarea><br/><img src="./images/transparent.gif" border="0" width="1" height="3" alt="" /><table width="100%" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td><img src="./images/transparent.gif" border="0" width="1" height="7" alt="" /></td>
+</tr>
+<tr>
+<td bgcolor="#999999"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+</tr>
+<tr>
+<td><img src="./images/transparent.gif" border="0" width="1" height="7" alt="" /></td>
+</tr>
+</table>
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td align="center">
+<select class="AdminDropDown" name="reaction" onChange="document.forms['memoform'].message.focus();">
+			{CUST_REACTION}
+			  </select>
+
+	</td>
+    <td align="center"><input type="button" name="xx" value="Add Memo" class="AdminButton" onmouseover="this.style.background='#ffeeaa';" onmouseout="this.style.background='#FFFFDD';" onclick="SubmitForm();" />
+<img src="./images/transparent.gif" border="0" width="15" height="1" alt="" />
+<input type="button" name="xx" value="Close" class="AdminButton" onmouseover="this.style.background='#ffeeaa';" onmouseout="this.style.background='#FFFFDD';" onclick="window.close();" /></td>
+  </tr>
+</table>
+
+
+
+ <table width="100%" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td><img src="./images/transparent.gif" border="0" width="1" height="7" alt="" /></td>
+</tr>
+<tr>
+<td bgcolor="#999999"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+</tr>
+<tr>
+<td><img src="./images/transparent.gif" border="0" width="1" height="7" alt="" /></td>
+</tr>
+</table>
+
+
+
+
+
+{MEMOS}
+<br/>&nbsp;
+
+</td>
+<td width="1%">&nbsp;</td>
+</tr>
+
+</form>
+</table>
+</td>
+</tr>
+
+
+<tr>
+<td><img src="images/header-editoptions-fade-bot.gif" width="100%" height="40" alt="" /></td>
+</tr>
+</table>
+
+</div>
+
+{JAVASCRIPT_COMMAND}
+</body>
+</html>

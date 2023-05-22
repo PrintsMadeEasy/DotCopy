@@ -1,0 +1,78 @@
+<html>
+<head>
+<title>File Attachments</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+
+<script language="javascript">
+
+
+	//Will always keep the parent updated on what has been attached
+	window.opener.document.all.ManageAttDesc.innerHTML = "{ATTACHMENT_DESCRIPTION}";
+
+
+
+</script>
+
+</head>
+
+<body bgcolor="#3366CC" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="" >
+<img  src="./images/transparent.gif" border="0" width="1" height="10" alt="" /><br/>
+<div align="center">
+<table bgcolor="#EEEEEE" width="400" cellpadding="0" cellspacing="0" border="0">
+
+<tr>
+<td bgcolor="#999999" class="Body" align="center"><img  src="./images/transparent.gif" border="0" width="1" height="3" alt="" /><br/><font color="#FFFFFF"><b>Manage File Attachments</b></font><br/><img src="./images/transparent.gif" border="0" width="1" height="3" alt="" /></td>
+</tr>
+<tr>
+<td bgcolor="#666666" class="Body" align="center"><img src="./images/transparent.gif" border="0" width="1" height="2" alt="" /></td>
+</tr>
+<tr>
+<td class="Body" align="center">&nbsp;
+<font class="error">{ERROR_STR}&nbsp;</font>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<form name="cat" action="./ad_cs_attachments.php?command=upload&cs_message_unique={CS_MESSAGE_UNIQUE}" method="post" enctype="multipart/form-data">
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+
+  <tr>
+            <td class="ReallySmallBody" align="center" width="89%"><input  class="admininput" type="file" name="fileattach" style="width:300; background-color:#FFFFFF" /></td>
+            <td align="right" width="11%">
+              <input type="submit" name="xx" value="Add" class="AdminButton" onmouseover="this.style.background='#ffeeaa';" onmouseout="this.style.background='#FFFFDD';" />&nbsp;&nbsp;&nbsp;</td>
+  </tr>
+ </form>
+</table>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td class="Body" align="left"><br/>&nbsp;&nbsp;&nbsp;Current Attachments</td>
+  </tr>
+   <tr>
+    <td class="Body" align="center" bgcolor="#CCCCCC"><img src="./images/transparent.gif" width="2" height="2" alt="" /></td>
+  </tr>
+</table>
+<!-- BEGIN EmptyRows -->
+<table width="100%" border="0" cellspacing="10" cellpadding="3">
+
+<!-- BEGIN RowBL -->
+  <tr>
+			<td class="ReallySmallBody" bgcolor="#DDDDFF" width="83%">{FILE_NAME_STRIPPED}</td>
+			<td class="SmallBody" bgcolor="#DDDDFF" width="17%" align="center"><a href="./ad_cs_attachments.php?command=delete&removefile={FILE_NAME}&cs_message_unique={CS_MESSAGE_UNIQUE}">X</a></td>
+  </tr>
+ <!-- END RowBL -->
+</table>
+<!-- END EmptyRows -->
+
+ </td>
+</tr>
+
+
+<tr>
+<td><img src="images/header-editoptions-fade-bot.gif" width="400" alt="" /></td>
+</tr>
+</table>
+
+</div>
+
+
+</body>
+</html>

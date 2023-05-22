@@ -1,0 +1,35 @@
+<html>
+<body>
+<pre>
+<h1>Erstellungsprotokoll</h1>
+<h3>
+--------------------Konfiguration: EmailGenerator - Win32 Debug--------------------
+</h3>
+<h3>Befehlszeilen</h3>
+Erstellen der temporären Datei  "C:\DOCUME~1\CHRIST~1\LOCALS~1\Temp\RSP5E.tmp" mit Inhalten
+[
+/nologo /MDd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_AFXDLL" /D "_MBCS" /Fp"Debug/EmailGenerator.pch" /Yu"stdafx.h" /Fo"Debug/" /Fd"Debug/" /FD /GZ /c 
+"C:\inet\dot\Cplus\EmailGenerator\EmailGeneratorDlg.cpp"
+]
+Creating command line "cl.exe @C:\DOCUME~1\CHRIST~1\LOCALS~1\Temp\RSP5E.tmp" 
+Erstellen der temporären Datei  "C:\DOCUME~1\CHRIST~1\LOCALS~1\Temp\RSP5F.tmp" mit Inhalten
+[
+/nologo /subsystem:windows /incremental:yes /pdb:"Debug/EmailGenerator.pdb" /debug /machine:I386 /out:"Debug/EmailGenerator.exe" /pdbtype:sept 
+.\Debug\EmailGenerator.obj
+.\Debug\EmailGeneratorDlg.obj
+.\Debug\StdAfx.obj
+.\Debug\EmailGenerator.res
+]
+Erstellen der Befehlzeile "link.exe @C:\DOCUME~1\CHRIST~1\LOCALS~1\Temp\RSP5F.tmp"
+<h3>Ausgabefenster</h3>
+Kompilierung läuft...
+EmailGeneratorDlg.cpp
+Linker-Vorgang läuft...
+
+
+
+<h3>Ergebnisse</h3>
+EmailGenerator.exe - 0 Fehler, 0 Warnung(en)
+</pre>
+</body>
+</html>

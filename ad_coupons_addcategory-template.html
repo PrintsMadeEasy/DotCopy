@@ -1,0 +1,87 @@
+<html>
+<head>
+<title>Coupon Categories</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+
+<script language="javascript">
+
+	//Make an array of the images we want to preload for the mouse-overs.
+	arImageSrc = new Array (
+		"./images/button-go-d.gif",
+		"./images/button-closewindow-blue-d.gif",
+		"./images/button-sendmessage-blue-d.gif"
+	)
+
+	//Preload images.
+	arImageList = new Array ();
+	for (counter in arImageSrc) {
+		arImageList[counter] = new Image();
+		arImageList[counter].src = arImageSrc[counter];
+	}
+
+
+	function DeleteCategory(CategoryID){
+			document.location = "./ad_coupons_addcategory.php?deletecategory=" + CategoryID;
+	}
+
+</script>
+
+</head>
+
+<body bgcolor="#3366CC" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="" >
+<img  src="./images/transparent.gif" border="0" width="1" height="10" alt="" /><br/>
+<div align="center">
+<table bgcolor="#EEEEEE" width="300" cellpadding="0" cellspacing="0" border="0">
+
+<tr>
+<td bgcolor="#666666" class="Body" align="center"><img  src="./images/transparent.gif" border="0" width="1" height="3" alt="" /><br/><font color="#FFFFFF"><b>Coupon Categories</b></font><br/><img src="./images/transparent.gif" border="0" width="1" height="3" alt="" /></td>
+
+<tr>
+<td class="Body">&nbsp;
+<!-- BEGIN ErrorBL -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<form name="cat" action="./ad_coupons_addcategory.php">
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+  <tr>
+            <td class="ReallySmallBody" align="center" width="89%"><input type="text" name="newcategory" value="" style="background-color:#FFFFFF; width:180; border-width:1; font-size:12px;" class="SmallInputBox" maxlength="30" /></td>
+            <td align="right" width="11%">
+              <input type="submit" name="xx" value="Add" class="AdminButton" onmouseover="this.style.background='#ffeeaa';" onmouseout="this.style.background='#FFFFDD';" />&nbsp;&nbsp;&nbsp;</td>
+  </tr>
+ </form>
+</table>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td class="Body" align="left"><br/>&nbsp;&nbsp;&nbsp;Current Categories</td>
+  </tr>
+   <tr>
+    <td class="Body" align="center" bgcolor="#CCCCCC"><img src="./images/transparent.gif" width="2" height="2" alt="" /></td>
+  </tr>
+</table>
+<!-- BEGIN NoCats -->
+<table width="100%" border="0" cellspacing="10" cellpadding="3">
+
+<!-- BEGIN CategoryBL -->
+  <tr>
+			<td class="ReallySmallBody" bgcolor="#DDDDFF" width="83%">{CATEGORY}</td>
+			<td class="SmallBody" bgcolor="#DDDDFF" width="17%" align="center"><a href="javascript:DeleteCategory({CATID});">X</a></td>
+  </tr>
+ <!-- END CategoryBL -->
+</table>
+<!-- END NoCats -->
+<!-- END ErrorBL -->
+ </td>
+</tr>
+
+
+<tr>
+<td><img src="images/header-editoptions-fade-bot.gif" width="300" alt="" /></td>
+</tr>
+</table>
+
+</div>
+
+
+</body>
+</html>

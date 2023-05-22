@@ -1,0 +1,113 @@
+<html>
+<head>
+<title>Template Search</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+
+<script language="javascript">
+
+	//Make an array of the images we want to preload for the mouse-overs.
+	arImageSrc = new Array (
+		"./images/button-go-d.gif",
+		"./images/button-cancel-blue-d.gif",
+		"./images/button-update-blue-d.gif"
+	)
+
+	//Preload images.
+	arImageList = new Array ();
+	for (counter in arImageSrc) {
+		arImageList[counter] = new Image();
+		arImageList[counter].src = arImageSrc[counter];
+	}
+
+</script>
+
+
+
+</head>
+
+<body bgcolor="#3366CC" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<img  src="./images/transparent.gif" border="0" width="1" height="10" alt="" /><br/>
+<div align="center">
+<table bgcolor="#EEEEEE" width="440" cellpadding="0" cellspacing="0" border="0">
+
+<tr>
+<td bgcolor="#CCCCCC" align="center" class="Body" style="background-image: url(./images/admin/header-shipping.png); background-repeat: no-repeat;"><b>Pick a Template to Add Content For </b></td>
+
+<tr>
+<tr>
+<td bgcolor="#666666" align="center" class="Body"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+
+<tr>
+<td align="center">
+
+
+
+<table width="100%" border="0" cellspacing="0" cellpadding="5">
+<form name="searchForm" method="get">
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+<input type="hidden" name="editContentItemID" value="{CONTENT_ITEM_ID}" />
+  <tr>
+    <td bgcolor="#99CCFF">Search Term<br/><input type="text" name="searchTerm" value="{SEARCH_TERM}" style="font-family:Arial, Helvetica, sans-serif; font-size:12px; width:350px;" maxlength="100" /> <input type="submit" name="go" value="go" class="AdminButton" onmouseover="this.style.background='#ffeeaa';" onmouseout="this.style.background='#FFFFDD';" /></td>
+  </tr>
+  </form>
+</table>
+<br/>
+<br/>
+
+
+
+<!-- BEGIN NoResultsFoundBl -->
+No results found for the search phrase.
+<!-- END NoResultsFoundBl -->
+
+<!-- BEGIN EmptyTemplateChoicesBL -->
+<!-- BEGIN TemplateSelectionBl -->
+
+<a href="javascript:window.opener.TemplatePicked('{TEMPLATE_ID}'); self.close();">{TEMPLATE_PREVIEW_IMAGE}</a><br/><br/>
+<!-- END TemplateSelectionBl -->
+<!-- END EmptyTemplateChoicesBL -->
+
+
+  <table width="90%" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td><img src="./images/transparent.gif" border="0" width="1" height="7" alt="" /></td>
+</tr>
+<tr>
+<td bgcolor="#999999"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+</tr>
+<tr>
+<td><img src="./images/transparent.gif" border="0" width="1" height="7" alt="" /></td>
+</tr>
+</table>
+
+
+
+
+
+</td>
+</tr>
+
+
+<tr>
+<td><img src="images/header-editoptions-fade-bot.gif" width="440" alt="" /></td>
+</tr>
+</table>
+
+<table width="350" border="0" cellspacing="0" cellpadding="0">
+
+  <tr>
+
+    <td align="center">
+
+<img  src="./images/transparent.gif" border="0" width="1" height="5" alt="" /><br/>
+
+&nbsp;
+	</td>
+
+  </tr>
+</table>
+</div>
+</body>
+</html>

@@ -1,0 +1,338 @@
+<html>
+<head>
+<title>Admin</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<script language="javascript">
+
+
+	function CheckLabelForm(){
+
+		var FormObj = document.forms["SaveLabel"];
+
+		var ErrorMessage = "";
+
+		if(FormObj.rows.value.search(/^\d+$/) == -1){
+			ErrorMessage += "Error with rows\n";
+		}
+		if(FormObj.columns.value.search(/^\d+$/) == -1){
+			ErrorMessage += "Error with columns\n";
+		}
+
+		if(FormObj.pagewidth.value.search(/^\d+\.\d+$/) == -1){
+			ErrorMessage += "Error with Page Width\n";
+		}
+		if(FormObj.pageheight.value.search(/^\d+\.\d+$/) == -1){
+			ErrorMessage += "Error with Page Height\n";
+		}
+
+		if(FormObj.hspacing.value.search(/^\d+\.\d+$/) == -1 && FormObj.hspacing.value != "0"){
+			ErrorMessage += "Error with Horizontal Spacing\n";
+		}
+		if(FormObj.vspacing.value.search(/^\d+\.\d+$/) == -1 && FormObj.vspacing.value != "0"){
+			ErrorMessage += "Error with Vertical Spacing\n";
+		}
+
+		if(FormObj.lmargin.value.search(/^\d+\.\d+$/) == -1 && FormObj.lmargin.value != "0"){
+			ErrorMessage += "Error with Left Margin Spacing\n";
+		}
+		if(FormObj.bmargin.value.search(/^\d+\.\d+$/) == -1 && FormObj.bmargin.value != "0"){
+			ErrorMessage += "Error with Top Margin Spacing\n";
+		}
+
+		if(FormObj.labelw.value.search(/^\d+\.\d+$/) == -1){
+			ErrorMessage += "Error with Label Width\n";
+		}
+		if(FormObj.labelh.value.search(/^\d+\.\d+$/) == -1){
+			ErrorMessage += "Error with Label Height\n";
+		}
+		if(FormObj.quantityspill.value.search(/^\d+$/) == -1){
+			ErrorMessage += "Error with Quantity Spill\n";
+		}
+
+		//--------
+		if(ErrorMessage == ""){
+			FormObj.action = "./ad_production_setup.php";
+			FormObj.submit();
+		}
+		else{
+			alert(ErrorMessage);
+		}
+	}
+
+	function ClearRack(){
+		if(confirm("This will erase all memory of items on the rack.  Are you sure?")){
+			document.location = "./ad_production_setup.php?form_sc={FORM_SECURITY_CODE}&returl=ad_production_setup.php&action=clearrackoff";
+		}
+	}
+
+	function Translations(){
+		var address = "./ad_production_translations.php?";
+		newWindow = window.open(address, "translations", "height=335,width=450,directories=no,location=no,menubar=no,scrollbars=no,status=no,toolbar=no,resizable=no");
+		newWindow.focus();
+	}
+
+
+
+	function CheckRackForm(DomainID){
+		var FormObj = eval('document.forms["RackSetup'+DomainID+'"]')
+		var RackNum = FormObj.racks.value;
+		var RowNum = FormObj.rows.value;
+		var ColumnNum = FormObj.cols.value;
+
+		if(RackNum.search(/^\d+$/) == -1 || RackNum==0){
+			alert("Problem with the Rack value.");
+			return false;
+		}
+		if(RowNum.search(/^\d+$/) == -1 || RowNum==0){
+			alert("Problem with the Row value.");
+			return false;
+		}
+		if(ColumnNum.search(/^\d+$/) == -1 || ColumnNum==0){
+			alert("Problem with the Column value.");
+			return false;
+		}
+
+
+		return true;
+
+	}
+	function ClearOrder(OrderID){
+		if(confirm("Are you sure that you want to clear the order from this rack position?")){
+			document.location = "./ad_production_setup.php?form_sc={FORM_SECURITY_CODE}&returl=ad_production_setup.php&action=clearrackposition&orderid=" + OrderID;
+		}
+	}
+
+</script>
+<script type="text/javascript" src="./library/customer_service.js"></script>
+
+<link rel="stylesheet" type="text/css" href="library/calendar/themes/winter.css"/>
+<script type="text/javascript" src="library/calendar/src/utils.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar.js"></script>
+<script type="text/javascript" src="library/calendar/lang/calendar-en.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar-setup.js"></script>
+<script type="text/javascript" src="library/formatDate.js"></script>
+</head>
+<body bgcolor="#FFFFFF" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="">
+<div align="center">
+{HEADER}
+&nbsp;
+<br/>
+<font class="Body">
+<font color="#660000"><b>{SAVED_MESSAGE}</b></font></font>
+<table width="760" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td class="Body">
+<font class="LargeBody"><font color="#336699"><b>Label Setup</b></font></font>
+<table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#FFCC66">
+<tr>
+<td>
+<table width="100%" border="0" cellspacing="1" cellpadding="0" >
+<form name="SaveLabel">
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+<input type="hidden" name="savelabel" value="true" />
+
+  <tr bgcolor="#FFF4EE">
+                    <td valign="top" width="238">
+                      <table border="0" cellspacing="0" cellpadding="0" width="100%">
+
+
+<tr>
+						<td class="SmallBody" width="72">&nbsp;Replication</td>
+                        <td class="SmallBody" width="128">
+<table width="108" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="12" class="SmallBody">R</td>
+<td width="37" class="SmallBody"><input type="text" name="rows" value="{R_ROWS}" class="SmallInputBox" /></td>
+<td width="10" align="center">&nbsp;</td>
+<td width="12" class="SmallBody">C</td>
+<td width="37" class="SmallBody"><input type="text" name="columns" value="{R_COLS}" class="SmallInputBox" /></td>
+</tr>
+</table>
+
+</tr>
+<tr>
+                        <td class="SmallBody" width="72">&nbsp;Page Size</td>
+                        <td class="SmallBody" width="128">
+<table width="108" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="12" class="SmallBody">W</td>
+<td width="37" class="SmallBody"><input type="text" name="pagewidth" value="{P_W}" class="SmallInputBox" /> &quot;</td>
+<td width="10" class="SmallBody">x</td>
+<td width="12" class="SmallBody">H</td>
+<td width="37" class="SmallBody"><input type="text" name="pageheight" value="{P_H}" class="SmallInputBox" /> &quot;</td>
+</tr>
+</table>
+
+</tr>
+</table>
+
+	</td>
+                    <td width="253" valign="top">
+                      <table border="0" cellspacing="0" cellpadding="0">
+
+
+<tr>
+                        <td class="SmallBody" width="72">&nbsp;Spacing</td>
+                        <td class="SmallBody" width="128">
+<table width="108" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="12" class="SmallBody">H</td>
+<td width="37" class="SmallBody"><input type="text" name="hspacing" value="{S_H}" class="SmallInputBox" /> &quot;</td>
+<td width="10" align="center">&nbsp;</td>
+<td width="12" class="SmallBody">V</td>
+<td width="37" class="SmallBody"><input type="text" name="vspacing" value="{S_V}" class="SmallInputBox" /> &quot;</td>
+</tr>
+</table>
+</tr>
+<tr>
+                        <td class="SmallBody" width="72">&nbsp;Margins</td>
+                        <td class="SmallBody" width="128">
+<table width="108" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="12" class="SmallBody">L</td>
+<td width="37" class="SmallBody"><input type="text" name="lmargin" value="{M_L}" class="SmallInputBox" /> &quot;</td>
+<td width="10" align="center">&nbsp;</td>
+<td width="12" class="SmallBody">T</td>
+<td width="37" class="SmallBody"><input type="text" name="bmargin" value="{M_T}" class="SmallInputBox" /> &quot;</td>
+</tr>
+</table>
+</tr>
+
+</table>
+
+
+	</td>
+                    <td  valign="top" width="237">
+                      <table border="0" cellspacing="0" cellpadding="0">
+
+
+<tr>
+                        <td class="SmallBody" width="72">&nbsp;Label Size</td>
+                        <td class="SmallBody" width="128">
+<table width="108" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="12" class="SmallBody">W</td>
+<td width="37" class="SmallBody"><input type="text" name="labelw" value="{L_W}" class="SmallInputBox" /> &quot;</td>
+<td width="10" align="center">&nbsp;</td>
+<td width="12" class="SmallBody">H</td>
+<td width="37" class="SmallBody"><input type="text" name="labelh" value="{L_H}" class="SmallInputBox" /> &quot;</td>
+</tr>
+</table>
+</tr>
+
+</table>
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+                          <td class="SmallBody" width="39%">&nbsp;Quantity Spill</td>
+                          <td width="61%">
+                            <input type="text" name="quantityspill" value="{Q_S}" class="SmallInputBox" style="width:50px;" /><font class="ReallySmallBody"></font> </td>
+  </tr>
+</table>
+
+
+	</td>
+	                <td  valign="middle" width="100" align="center">
+                      <input type="button" name="Generate" value="Save" class="AdminButton" onmouseover="this.style.background='#ffeeaa';" onmouseout="this.style.background='#FFFFDD';" onclick="CheckLabelForm();" />
+
+	 </td>
+  </tr>
+  </form>
+</table>
+
+
+
+
+</td>
+</tr>
+</table>
+
+
+
+
+
+
+
+
+<br/>&nbsp;<br/>
+
+
+<font class="LargeBody"><font color="#336699"><b>Rack Setup</b></font></font>
+<!-- BEGIN RackBL -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td class="SmallBody" align="right"><table width="600" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+                   <td class="SmallBody" width="200" ><a href="javascript:Translations()" class="BlueRedLink">Rack ID Translations</a></td>
+                  <td class="SmallBody" width="209" ><a href="javascript:ClearRack()" class="BlueRedLink">Clear
+                    Rack Off -- {RACK_TOTAL} Items</a></td>
+                  <td class="SmallBody" align="right" width="191">&nbsp;</td>
+  </tr>
+</table>
+</td>
+  </tr>
+</table><img src="./images/transparent.gif" border="0" width="1" height="3" alt="" /><table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#66CCCC">
+<tr>
+<td>
+<table width="100%" border="0" cellspacing="1" cellpadding="4" >
+<form name="RackSetup{DOMAIN_ID}" onsubmit="return CheckRackForm('{DOMAIN_ID}')" action="./ad_production_setup.php">
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+<input type="hidden" name="action" value="saverack" />
+<input type="hidden" name="returl" value="ad_production_setup.php" />
+
+
+  <tr bgcolor="#F3FFFF">
+ <td width="22%" class="SmallBody">Number of Racks:&nbsp;&nbsp;<input type="text" name="racks" value="{RACKS}" class="SmallInputBox" /></td>
+ <td width="22%" class="SmallBody">Rows per Rack:&nbsp;&nbsp;<input type="text" name="rows" value="{ROWS}" class="SmallInputBox" /></td>
+ <td width="22%" class="SmallBody">Columns per Rack:&nbsp;&nbsp;<input type="text" name="cols" value="{COLS}" class="SmallInputBox" /></td>
+
+<td width="12%" align="center"><input type="submit" name="Generate" value="Save" class="AdminButton" onmouseover="this.style.background='#ffeeaa';" onmouseout="this.style.background='#FFFFDD';" />
+
+	 </td>
+  </tr>
+  </form>
+</table>
+
+
+
+
+</td>
+</tr>
+</table>
+<br/>
+
+<br/>
+{RACK_POSITIONS}
+<br/>
+
+<!-- END RackBL -->
+
+
+
+
+
+
+
+<br/>&nbsp;
+
+
+
+
+
+&nbsp;<br/><br/></td>
+</tr>
+</table>
+<table width="760" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="360" class="NavColor"><img src="./images/footer.gif" border="0" width="350" height="16" usemap="#footer" alt="" /></td>
+	<td width="400" align="right" class="NavColor"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+  </tr>
+</table>
+<font class="copyright"> </font>
+</div>
+&nbsp;
+<script type="text/javascript" src="./library/ImageMap-footer.js"></script>
+</body>
+</html>

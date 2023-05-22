@@ -1,0 +1,7 @@
+put these cron entries in as root... 
+
+30 * * * * cd /home2/business/ShellScripts; sh replication_check.sh
+0 1 * * 0 cd /home2/business/ShellScripts; sh db_backup_main_tables.sh
+30 11 * * 0 cd /home2/business/ShellScripts; sh db_backup_bin_tables.sh
+0 3 * * 0 cd /home2/business/ShellScripts; sh backup_cvs.sh
+45 * * * * cd /home2/business/ShellScripts; sh rotate_binary_tables.sh

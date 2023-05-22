@@ -1,0 +1,78 @@
+<html>
+<head>
+<title>Untitled Document</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<link rel="stylesheet" href="../../library/stylesheet.css" TYPE="text/css" />
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" background="../../images/background_vardata_bottom4.gif" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<table width="100%" border="0" cellspacing="0" cellpadding="12">
+  <tr>
+    <td class="Body">
+      <p><br/>
+        <b>Positioning &amp; Re-Sizing</b><br/>
+        <br/>
+      <p>When the Variable Image is substituted into the artwork file it will 
+        take the coordinates of the Image variable. Remember that the image variable 
+        will be in a text layer and look something like {IMAGE:YourVariableName}<br/>
+        <br/>
+        The text layer containing the variable name will be completely removed 
+        and replaced by the image, so don't include other text in there that you 
+        wish to be printed. By default the Lower-Left portion of the image will 
+        be orientated exactly where the top left portion of the text layer was. 
+        There is no need to right-alight or center-align a text layer, but if 
+        you do, the image will be aligned at the top-center, or top-right of the 
+        text layer, respectively.<br/>
+        <br/>
+        If all of your images are exactly the same size then the following does 
+        not apply. If your images are all different sizes you may need to have 
+        the image centered or right aligned in relation to the coordinate of the 
+        text layer. You can also vertically align the image at the top, middle, 
+        or bottom, in relation to the coordinates of the text layer. This is accomplished 
+        by adding attributes inside of the text layer that is shared by the Variable 
+        Image Name. The following are all of the possible choices you may use 
+        for alignment purposes. <br/>
+        <br/>
+        Please use only one for the horizontal alignment and one for the vertical.<br/>
+        <font color="#990000">{IMAGE:YourVarName} (Alignment:Left) (Alignment:Center) 
+        (Alignment:Right) (VerticalAlign:Top) (VerticalAlign:Middle) (VerticalAlign:Bottom)</font><br/>
+        <br/>
+        Generally you should re-size your images ahead of time so that they will 
+        print correctly at the given DPI, usually 200 or 300. You may also add 
+        attributes (similar to the way alignment attributes are added) for the 
+        purpose of re-sizing your images. <br/>
+        <br/>
+        There are many combinations you can apply. The two main attributes are 
+        specifying an Exact Width/Height or a Maximum Height/Width. If you specify 
+        a Maximum or Exact Width but not a height, then the height may be adjusted 
+        proportionally and vic versa.<br/>
+        <br/>
+        If you specify a both an exact width and height then Variable Image will 
+        conform to those specifications without regards to the proportion. If 
+        you specify a maximum width and a maximum height then the system will 
+        take the smallest version of the 2 and re-size the other leg proportionally. 
+        It is also possible to do such things as specify an exact width and a 
+        maximum height.<br/>
+        <br/>
+        In order to see how the attributes have affected your project you will 
+        need to view a &quot;PDF Preview with Data Merge&quot;. Below all all 
+        of the possible attributes relating to re-sizing.<br/>
+        <br/>
+		<font color="#990000">{IMAGE:YourVarName} (MaxWidth:100) (MaxHeight:100) 
+        (ExactWidth:100) (ExactHeight:100)</font><br/><br/>
+        The values of the re-sizing attributes are in Picas. That means each unit 
+        is 1/72 of an inch. If you want your image to be printed 1 inch wide by 
+        1.5 inches tall, the measurements would be (ExactWidth:72) (ExactHeight:108). 
+      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td align="right" class="Body"><a href="limitations.html">Limitations &gt;</a></td>
+  </tr>
+</table>
+	  </td>
+  </tr>
+</table>
+
+
+
+</body>
+</html>

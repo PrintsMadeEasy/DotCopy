@@ -1,0 +1,85 @@
+<html>
+<head>
+<title>Admin</title>
+<LINK REL=stylesheet HREF="./library/stylesheet.css" TYPE="text/css">
+<LINK REL="SHORTCUT ICON" HREF="/favicon.ico">
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+
+<script type="text/javascript" src="./library/admin_library.js"></script>
+<script type="text/javascript" src="./library/general_lib.js"></script>
+<link rel="stylesheet" type="text/css" href="library/calendar/themes/winter.css"/>
+<script type="text/javascript" src="library/calendar/src/utils.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar.js"></script>
+<script type="text/javascript" src="library/calendar/lang/calendar-en.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar-setup.js"></script>
+<script type="text/javascript" src="library/formatDate.js"></script>
+</head>
+<body bgcolor="#FFFFFF" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="">
+<div align="center">
+{HEADER}
+<table width="760" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td class="body">
+<br><br>
+<table width="100%" border="0" cellspacing="0" cellpadding="1">
+  <tr>
+    <td width="80%"><font class="LargeBody" color="#336699"><b>URL Rewrites for {DOMAINKEY}</b></font></td>
+	  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
+	<tr>
+	<td bgcolor="#3366CC"><img src="./images/transparent.gif" border="0" width="2" height="4"></td>
+	</tr>
+</table>
+<table width="100%" border="0" cellspacing="5" cellpadding="0">  
+<form enctype="multipart/form-data" action="ad_urlrewritesEdit.php?action=update" method="POST">
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+<input type="hidden" name="noofnew" value="{NOOFNEW}" />
+<tr>
+<td width="20%" align="right" colspan="13">
+<input type="submit" value="Save Values" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" /></td>
+</tr>
+<td>Request</td>
+<td>BackgroundURL </td>
+<td>Delete</td>
+<!-- BEGIN editFieldBL -->
+<tr>
+<td><input name="key_{RECORDID}" type="text" size="40" value="{KEYVALUE}" /> </td>
+<td><input name="value_{RECORDID}"  type="text" size="68" value="{REPLACEURLVALUE}" /> </td>
+<td align="center"><input type="checkbox" name="delete_{RECORDID}" value="delete">
+</tr>
+<!-- END editFieldBL -->
+<!-- BEGIN newFieldBL -->
+<tr>
+<td> <input name="newkey_{RECORDID}" type="text" size="40" value="{KEYVALUE}" /> </td>
+<td><input name="newvalue_{RECORDID}"  type="text" size="68" value="{REPLACEURLVALUE}" /> </td>
+</tr>
+<!-- END newFieldBL -->
+<tr>  
+<td height="12"></td>
+</tr>
+</form>
+</table>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">  
+<form enctype="multipart/form-data" action="ad_urlrewritesEdit.php" method="POST">
+<tr>
+<td>  
+New Fields <select name="addnew" class="AdminInput">{ADD_NEW_FIELDS_DROPDOWN}</select>
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+<input type="submit" value="Add" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" />
+<td>
+</tr>  
+</form>
+</table>
+<br>
+<table width="760" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="360" class="NavColor"><img src="./images/footer.gif" border="0" width="350" height="16" usemap="#footer"></td>
+	<td width="400" align="right" class="NavColor"><img src="./images/transparent.gif" border="0" width="1" height="1"></td>
+  </tr>
+</table>
+<font class="copyright"> </font>
+&nbsp;
+<script type="text/javascript" src="./library/ImageMap-footer.js"></script>
+</body>
+</html>

@@ -1,0 +1,209 @@
+<html>
+<head>
+<title>{USER_LIST_TYPE}</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+
+<script language="javascript">
+
+	//Make an array of the images we want to preload for the mouse-overs.
+	arImageSrc = new Array (
+		"./images/button-go-d.gif",
+		"./images/button-closewindow-blue-d.gif",
+		"./images/button-sendmessage-blue-d.gif"
+	)
+
+
+
+	function ShowCustomerResults(UserID){
+
+		ShowIconOnClickedProject(UserID);
+
+		UserInfo(UserID);
+
+	}
+
+
+	// Will Open both the User details as well as the memo window for the customer.
+	function ShowCustomerMemos(UserID){
+
+		ShowCustomerResults(UserID);
+
+		CustomerMemo(UserID, false);
+
+	}
+
+	function CheckSelect(OrderID, CheckedFlag){
+		ChangeBatchColor(OrderID, CheckedFlag);
+	}
+
+
+
+var LastProjectClickedOn = null;
+function ShowIconOnClickedProject(orderNo){
+
+	if(!document.getElementsByTagName)
+		return;
+
+	if(LastProjectClickedOn != null){
+		var lastProjectImageObj = document.getElementById("ICON" + LastProjectClickedOn);
+		lastProjectImageObj.src = "./images/transparent.gif";
+		lastProjectImageObj.width = 10;
+	}
+
+	LastProjectClickedOn = orderNo;
+
+	var thisProjectImageObj = document.getElementById("ICON" + orderNo);
+	thisProjectImageObj.src = "./images/arrow-right-red-blocky.png";
+	thisProjectImageObj.width = 20;
+
+
+	GatherChecksBoxes();
+
+}
+
+
+function GatherChecksBoxes(){
+
+	ChkBoxList = GetProjectCheckBoxList();
+
+	var textAreaString = "";
+	var checkCounter = 0;
+
+	for(var i=0; i < ChkBoxList.length; i++){
+
+		if(ChkBoxList[i].checked){
+			textAreaString += "U" + ChkBoxList[i].value + "\n";
+			checkCounter++;
+		}
+	}
+
+
+
+	document.forms["textblockForm"].projectlist.value = textAreaString;
+
+}
+
+
+//We have a hidden input on the HTML to keep a single check box from not forming an array
+function GetProjectCheckBoxList(){
+
+	var retArray = new Array();
+	ThisChkBoxList = document.forms["projectListForm"].chkbx;
+	for(var i=0; i < ThisChkBoxList.length; i++){
+		if(ThisChkBoxList[i].type == "checkbox"){
+			retArray.push(ThisChkBoxList[i]);
+		}
+	}
+	return retArray;
+}
+
+
+function ChangeBatchColor(orderNo, HighlightFlag){
+
+	if(!document.getElementsByTagName)
+		return;
+
+	var tableData = document.getElementById("cell" + orderNo);
+
+	if(HighlightFlag)
+		tableData.className = "isHighlighted";
+	else
+		tableData.className = "notHighlighted";
+
+}
+
+
+window.resizeTo(270,620);
+
+</script>
+<script type="text/javascript" src="./library/admin_library.js"></script>
+
+<style type="text/css">
+ .isHighlighted { background-color: #FFDDDD; }
+ .notHighlighted { background-color: #E3E3FF; }
+
+A.proofLink 	{ font-size:10px; color:#333333; font-family:Arial,Helvetica,sans-serif;  text-decoration:none}
+A.proofLink:visited { color: #CC0000; }
+A.proofLink:link { color: #333333; }
+A.proofLink:hover { color: #0000FF;  text-decoration:underline}
+
+</style>
+
+
+</head>
+
+<body bgcolor="#3366CC" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="" >
+<img  src="./images/transparent.gif" border="0" width="1" height="10" alt="" /><br/>
+<div align="center">
+<table bgcolor="#EEEEEE" width="230" cellpadding="0" cellspacing="0" border="0">
+
+<tr>
+<td bgcolor="#cccccc" class="SmallBody" align="center" style="background-image: url(./images/admin/header-shipping.png); background-repeat: no-repeat;"><img  src="./images/transparent.gif" border="0" width="1" height="3" alt="" /><br/><font color="#333333"><b>{USER_LIST_TYPE}</b></font><br/><img src="./images/transparent.gif" border="0" width="1" height="3" alt="" /></td>
+
+<tr>
+<td align="center" class="Body"><img src="./images/transparent.gif" border="0" width="8" height="8" alt="" /><table width="95%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+            <td class="ReallySmallBody">Total of {ACCOUNTS_NUM} accounts between<br/>
+              {START_DATE} <b>--</b> {END_DATE}<br/><br/>{CUSTOM_MESSAGE}
+			Put checkmarks next to each order number that you want to have within the Text Area.  You can then paste the User ID's into an email (or wherever) so that additional marketing/analysis can be done by another person.            </td>
+  </tr>
+</table>
+
+<!-- BEGIN NoResultsBL -->
+
+
+
+
+<table width="100%" border="0" cellspacing="8" cellpadding="3">
+<form name="projectListForm">
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+<input type="hidden" name="chkbx" value="" onclick="" />
+  <tr>
+              <td class="SmallBody" bgcolor="#CCCCEE" width="42%"><img src="./images/transparent.gif" height="10" width="10" align="absmiddle" alt="" /><b>User ID</b></td>
+              <td class="SmallBody" bgcolor="#CCCCEE" width="32%"><img src="./images/transparent.gif" height="10" width="10" align="absmiddle" alt="" /><b>{COLUMN2}</b></td>
+	          <td class="SmallBody" bgcolor="#CCCCEE" width="26%">&nbsp;<b>Select</b></td>
+  </tr>
+<!-- BEGIN UsersBL -->
+  <tr>
+              <td class="notHighlighted" width="42%"><img src="./images/transparent.gif" height="15" width="10" name="ICON{USERID}" align="absmiddle" alt="" /><a href="javascript:ShowCustomerResults({USERID})" class="proofLink">U{USERID}</a></td>
+	          <td class="notHighlighted" width="32%" align="right" nowrap="nowrap"><nobr><font  class="SmallBody">{VALUE2}</font></nobr></td>
+			  <td class="notHighlighted" width="26%" id="cell{USERID}"><img src="./images/transparent.gif" height="7" width="7" align="absmiddle" alt="" />
+                <input type="checkbox" name="chkbx" value="{USERID}" onclick="CheckSelect(this.value, this.checked); GatherChecksBoxes();" /></td>
+  </tr>
+ <!-- END UsersBL -->
+ </form>
+</table>
+&nbsp;
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<form name="textblockForm">
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+  <tr>
+            <td width="2%"><img src="./images/transparent.gif" height="10" width="8" alt="" /></td>
+            <td width="98%"><textarea name="projectlist" style="width:150px; height:70px; font-size:12;" wrap="VIRTUAL">
+
+</textarea></td>
+
+  </tr>
+  </form>
+</table>
+
+
+<!-- END NoResultsBL -->
+
+</td>
+</tr>
+
+
+<tr>
+<td><img src="images/header-editoptions-fade-bot.gif" width="230" alt="" /></td>
+</tr>
+</table>
+
+</div>
+
+
+</body>
+</html>

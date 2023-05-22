@@ -1,0 +1,125 @@
+<html>
+<head>
+<title>Shipping Calculator</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+
+<script language="javascript">
+
+	//Make an array of the images we want to preload for the mouse-overs.
+	arImageSrc = new Array (
+		"./images/button-go-d.gif",
+		"./images/button-cancel-blue-d.gif",
+		"./images/button-update-blue-d.gif"
+	)
+
+	//Preload images.
+	arImageList = new Array ();
+	for (counter in arImageSrc) {
+		arImageList[counter] = new Image();
+		arImageList[counter].src = arImageSrc[counter];
+	}
+
+	
+
+	function checkShippingForm(){
+		
+		var quantity = document.forms["shippingcalc"].quantity.value;
+		
+		if(!quantity.match(/^\s*\d+\s*$/)){
+			alert("Fix the quantity before submiting the form.");
+			return false;
+		}
+		
+		return true;
+	}
+	
+
+</script>
+
+
+
+
+</head>
+
+<body bgcolor="#3366CC" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="">
+<img  src="./images/transparent.gif" border="0" width="1" height="10" alt="" /><br/>
+<div align="center">
+<table bgcolor="#EEEEEE" width="500" cellpadding="0" cellspacing="0" border="0">
+
+<tr>
+<td bgcolor="#CCCCCC" align="center" class="Body" style="background-image: url(./images/admin/header-shipping.png); background-repeat: no-repeat;">{LOGO_SMALL}&nbsp;&nbsp;&nbsp;<b>Shipping Calculator</b></td>
+
+<tr>
+<tr>
+<td bgcolor="#666666" align="center" class="Body"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+
+<tr>
+<td align="center">
+
+<table width="96%" border="0" cellspacing="0" cellpadding="0">
+<form name="shippingcalc" onsubmit="return checkShippingForm();">
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+<input type="hidden" name="zip" value="{SHIPPING_ZIP}" />
+<input type="hidden" name="isResidentialFlag" value="{RESIDENTIAL_INDICATOR}" />
+<input type="hidden" name="city" value="{SHIPPING_CITY}" />
+<input type="hidden" name="country" value="{SHIPPING_COUNTRY_CODE}" />
+<input type="hidden" name="state" value="{SHIPPING_STATE}" />
+  <tr>
+    <td class="SmallBody"><br/>Shipping To: {SHIPPING_STATE}, {SHIPPING_ZIP}, {SHIPPING_COUNTRY}<br/>&nbsp;
+	<br/>
+<font class="ReallySmallBody"><font color="#cc0000">*</font> Be advised that in some cases Product Options can cause an increase to the weight, causing a different Shipping Total.</font><br/>
+&nbsp;
+	
+	<table width="100%" border="0" cellspacing="0" cellpadding="1">
+  <tr>
+    <td class="SmallBody"><strong>Product</strong></td>
+    <td class="SmallBody"><strong>Shipping Choice</strong></td>
+    <td class="SmallBody"><strong>Quantity</strong></td>
+    <td class="SmallBody">&nbsp;</td>
+  </tr>
+   <tr>
+    <td class="SmallBody"><select name="productID" style="font-size:9px; font-family:Arial, Helvetica, sans-serif;" >{SELECT_PRODUCT}</select></td>
+    <td class="SmallBody"><select name="shippingChoiceID" style="font-size:11px; font-family:Arial, Helvetica, sans-serif;">{SELECT_SHIP_CHOICES}</select></td>
+    <td class="SmallBody"><input type="text" name="quantity" value="{QUANTITY}" style="width:60; font-family:Arial, Helvetica, sans-serif; font-size:12px;" maxlength="6"  /></td>
+    <td class="SmallBody"><input type="submit" name="xx" value="Change" class="AdminButton" onmouseover="this.style.background='#ffeeaa';" onmouseout="this.style.background='#FFFFDD';"  /></td>
+  </tr>
+</table>
+
+&nbsp;<br/>
+<strong>Base Price: </strong>${BASE_PRICE} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<strong>Price per Pound: </strong>${PRICE_PER_POUND} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<strong>Weight: </strong>{PRODUCT_WEIGHT} lbs.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<strong>Shipping Quote: <font color="#006633">${SHIPPING_QUOTE}</font></strong>
+
+	</td>
+  </tr>
+ </form>
+</table>
+</td>
+</tr>
+
+
+<tr>
+<td><img src="images/header-editoptions-fade-bot.gif" height="35" width="600" alt="" /></td>
+</tr>
+</table>
+
+<table width="350" border="0" cellspacing="0" cellpadding="0">
+
+  <tr>
+
+    <td align="center">
+
+<img  src="./images/transparent.gif" border="0" width="1" height="5" alt="" /><br/>
+
+&nbsp;
+	</td>
+
+  </tr>
+</table>
+</div>
+
+</body>
+</html>

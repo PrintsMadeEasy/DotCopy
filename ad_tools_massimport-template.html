@@ -1,0 +1,350 @@
+<html>
+<head>
+<title>Admin</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<script language="javascript">
+
+	//Make an array of the images we want to preload for the mouse-overs.
+	arImageSrc = new Array (
+		"./images/button-go-d.gif",
+		"./images/button-viewartwork-d.gif",
+		"./images/button-edit-d.gif",
+		"./images/button-copy-d.gif",
+		"./images/button-delete-d.gif",
+		"./images/button-createtemplate-d.gif"
+
+	)
+
+	//Preload images.
+	arImageList = new Array ();
+	for (counter in arImageSrc) {
+		arImageList[counter] = new Image();
+		arImageList[counter].src = arImageSrc[counter];
+	}
+
+	function ReOrderVariables(OrderCommand){
+
+		var OrderArr = OrderCommand.split("|");
+		var MoveVariableName = OrderArr[0];
+		var MoveToPosition = OrderArr[1];
+
+		var MoveCommandURL = "./ad_tools_massimport.php?view=fieldorder&movevar=" + MoveVariableName + "&moveto=" + MoveToPosition;
+
+		document.location = MoveCommandURL;
+	}
+
+
+</script>
+<link rel="stylesheet" type="text/css" href="library/calendar/themes/winter.css"/>
+<script type="text/javascript" src="library/calendar/src/utils.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar.js"></script>
+<script type="text/javascript" src="library/calendar/lang/calendar-en.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar-setup.js"></script>
+<script type="text/javascript" src="library/formatDate.js"></script>
+</head>
+<body bgcolor="#FFFFFF" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="">
+<div align="center">
+{HEADER}
+&nbsp;
+<table width="760" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td class="Body">
+<!-- Inner Body  -->
+<div align="right"><font color="#336699" size="4"><b>Mass Project Import</b></font><br/>&nbsp;</div>
+
+
+
+<!-- BEGIN ArtworkBL -->
+
+<table cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td bgcolor="#3366CC" valign="top"><img src="./images/transparent.gif" border="0" width="5" height="6" alt="" /></td>
+<td bgcolor="#3366CC" nowrap class="SmallBody"><img  src="./images/transparent.gif" border="0" width="1" height="3" alt="" /><br/>
+&nbsp;<a href="./ad_tools_massimport.php?view=artwork"><font color="#FFFFFF" style="text-decoration:none;">Artwork</font></a>&nbsp;
+<br/><img src="./images/transparent.gif" border="0" width="1" height="3" alt="" /></td>
+<td bgcolor="#3366CC" valign="top"><img src="./images/corner-small-blue.gif" border="0" width="9" height="6" alt="" /></td>
+<td><img src="./images/transparent.gif" border="0" width="4" height="1" alt="" /></td>
+
+<td bgcolor="#666666" valign="top"><img src="./images/transparent.gif" border="0" width="5" height="6" alt="" /></td>
+<td bgcolor="#666666" nowrap class="SmallBody"><img  src="./images/transparent.gif" border="0" width="1" height="3" alt="" /><br/>
+&nbsp;<a href="./ad_tools_massimport.php?view=fieldorder"><font color="#FFFFFF" style="text-decoration:none;">Field Order</font></a>&nbsp;
+<br/><img src="./images/transparent.gif" border="0" width="1" height="3" alt="" /></td>
+<td bgcolor="#666666" valign="top"><img src="./images/corner-small-grey.gif" border="0" width="9" height="6" alt="" /></td>
+<td><img src="./images/transparent.gif" border="0" width="4" height="1" alt="" /></td>
+
+<td bgcolor="#666666" valign="top"><img src="./images/transparent.gif" border="0" width="5" height="6" alt="" /></td>
+<td bgcolor="#666666" nowrap class="SmallBody"><img  src="./images/transparent.gif" border="0" width="1" height="3" alt="" /><br/>
+&nbsp;<a href="./ad_tools_massimport.php?view=import"><font color="#FFFFFF" style="text-decoration:none;">Import</font></a>&nbsp;
+<br/><img src="./images/transparent.gif" border="0" width="1" height="3" alt="" /></td>
+<td bgcolor="#666666" valign="top"><img src="./images/corner-small-grey.gif" border="0" width="9" height="6" alt="" /></td>
+<td><img src="./images/transparent.gif" border="0" width="4" height="1" alt="" /></td>
+
+<td bgcolor="#666666" valign="top"><img src="./images/transparent.gif" border="0" width="5" height="6" alt="" /></td>
+<td bgcolor="#666666" nowrap class="SmallBody"><img  src="./images/transparent.gif" border="0" width="1" height="3" alt="" /><br/>
+&nbsp;<a href="./ad_tools_massimport.php?view=create"><font color="#FFFFFF" style="text-decoration:none;">Create Projects</font></a>&nbsp;
+<br/><img src="./images/transparent.gif" border="0" width="1" height="3" alt="" /></td>
+<td bgcolor="#666666" valign="top"><img src="./images/corner-small-grey.gif" border="0" width="9" height="6" alt="" /></td>
+<td><img src="./images/transparent.gif" border="0" width="4" height="1" alt="" /></td>
+
+
+
+
+</tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td bgcolor="#3366CC"><img src="./images/transparent.gif" border="0" width="2" height="4" alt="" /></td>
+</tr>
+</table>
+
+<br/>
+<form name="artworkinfo" actions="./ad_tools_massimport.php" method="post">
+<input type="hidden" name="saveartwork" value="true" />
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+'Copy and paste' or edit the artwork XML file in the field below.<br/>
+Create variables within the document by encapsulating a string in brackets.  EX. {PHONE_NUMBER}<br/>
+Variables names may not contain spaces or special characters.  Underscores are allowed.<br/>
+<br/>
+<div align="right">
+<input type="submit" name="updatebutton" value="Save Information" class="AdminButton" onmouseover="this.style.background='#ffeeaa';" onmouseout="this.style.background='#FFFFDD';" />
+</div>
+<textarea  name="artworkfile" style="width:760px; height:400px; background-color:#EEEEF0; font-size:11;" wrap="VIRTUAL">{ARTWORK_FILE}</textarea>
+</form>
+<br/><br/>
+<!-- END ArtworkBL -->
+
+
+
+
+
+
+
+
+
+<!-- BEGIN FieldOrderBL -->
+
+<table cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td bgcolor="#666666" valign="top"><img src="./images/transparent.gif" border="0" width="5" height="6" alt="" /></td>
+<td bgcolor="#666666" nowrap class="SmallBody"><img  src="./images/transparent.gif" border="0" width="1" height="3" alt="" /><br/>
+&nbsp;<a href="./ad_tools_massimport.php?view=artwork"><font color="#FFFFFF" style="text-decoration:none;">Artwork</font></a>&nbsp;
+<br/><img src="./images/transparent.gif" border="0" width="1" height="3" alt="" /></td>
+<td bgcolor="#666666" valign="top"><img src="./images/corner-small-grey.gif" border="0" width="9" height="6" alt="" /></td>
+<td><img src="./images/transparent.gif" border="0" width="4" height="1" alt="" /></td>
+
+<td bgcolor="#3366CC" valign="top"><img src="./images/transparent.gif" border="0" width="5" height="6" alt="" /></td>
+<td bgcolor="#3366CC" nowrap class="SmallBody"><img  src="./images/transparent.gif" border="0" width="1" height="3" alt="" /><br/>
+&nbsp;<a href="./ad_tools_massimport.php?view=fieldorder"><font color="#FFFFFF" style="text-decoration:none;">Field Order</font></a>&nbsp;
+<br/><img src="./images/transparent.gif" border="0" width="1" height="3" alt="" /></td>
+<td bgcolor="#3366CC" valign="top"><img src="./images/corner-small-blue.gif" border="0" width="9" height="6" alt="" /></td>
+<td><img src="./images/transparent.gif" border="0" width="4" height="1" alt="" /></td>
+
+<td bgcolor="#666666" valign="top"><img src="./images/transparent.gif" border="0" width="5" height="6" alt="" /></td>
+<td bgcolor="#666666" nowrap class="SmallBody"><img  src="./images/transparent.gif" border="0" width="1" height="3" alt="" /><br/>
+&nbsp;<a href="./ad_tools_massimport.php?view=import"><font color="#FFFFFF" style="text-decoration:none;">Import</font></a>&nbsp;
+<br/><img src="./images/transparent.gif" border="0" width="1" height="3" alt="" /></td>
+<td bgcolor="#666666" valign="top"><img src="./images/corner-small-grey.gif" border="0" width="9" height="6" alt="" /></td>
+<td><img src="./images/transparent.gif" border="0" width="4" height="1" alt="" /></td>
+
+<td bgcolor="#666666" valign="top"><img src="./images/transparent.gif" border="0" width="5" height="6" alt="" /></td>
+<td bgcolor="#666666" nowrap class="SmallBody"><img  src="./images/transparent.gif" border="0" width="1" height="3" alt="" /><br/>
+&nbsp;<a href="./ad_tools_massimport.php?view=create"><font color="#FFFFFF" style="text-decoration:none;">Create Projects</font></a>&nbsp;
+<br/><img src="./images/transparent.gif" border="0" width="1" height="3" alt="" /></td>
+<td bgcolor="#666666" valign="top"><img src="./images/corner-small-grey.gif" border="0" width="9" height="6" alt="" /></td>
+<td><img src="./images/transparent.gif" border="0" width="4" height="1" alt="" /></td>
+
+
+
+
+</tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td bgcolor="#3366CC"><img src="./images/transparent.gif" border="0" width="2" height="4" alt="" /></td>
+</tr>
+</table>
+
+<br/>
+{FIELD_ORDER_MESSAGE}
+
+<!-- BEGIN MultiVarsBL -->
+<table width="40%" cellpadding="0" cellspacing="0" border="0">
+<form name="artworkinfo" actions="./ad_tools_massimport.php" method="post">
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+<tr>
+<td bgcolor="#333333">
+<table width="100%" cellpadding="2" cellspacing="1" border="0">
+
+<tr>
+
+              <td bgcolor="#CCCCCC" class="Body" width="54%">Variable Name</td>
+
+              <td bgcolor="#CCCCCC" class="Body" width="46%">Order</td>
+</tr>
+
+<!-- BEGIN variableOrderBL -->
+
+<tr>
+
+              <td bgcolor="#FFFFFF"  class="Body" width="54%">{VAR_NAME}</td>
+
+              <td bgcolor="#FFFFFF"  class="Body" width="46%">&nbsp;&nbsp;
+                <select name="variableorder" onChange="ReOrderVariables(this.value)">{DROP_DOWN_ORDER}</select></td>
+</tr>
+<!-- END variableOrderBL -->
+
+</table>
+</td>
+</tr>
+</form>
+</table>
+<br/><br/><br/><br/>
+<!-- END MultiVarsBL -->
+
+<br/><br/>
+<!-- END FieldOrderBL -->
+
+
+
+
+
+
+
+<!-- BEGIN ImportBL -->
+
+<table cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td bgcolor="#666666" valign="top"><img src="./images/transparent.gif" border="0" width="5" height="6" alt="" /></td>
+<td bgcolor="#666666" nowrap class="SmallBody"><img  src="./images/transparent.gif" border="0" width="1" height="3" alt="" /><br/>
+&nbsp;<a href="./ad_tools_massimport.php?view=artwork"><font color="#FFFFFF" style="text-decoration:none;">Artwork</font></a>&nbsp;
+<br/><img src="./images/transparent.gif" border="0" width="1" height="3" alt="" /></td>
+<td bgcolor="#666666" valign="top"><img src="./images/corner-small-grey.gif" border="0" width="9" height="6" alt="" /></td>
+<td><img src="./images/transparent.gif" border="0" width="4" height="1" alt="" /></td>
+
+<td bgcolor="#666666" valign="top"><img src="./images/transparent.gif" border="0" width="5" height="6" alt="" /></td>
+<td bgcolor="#666666" nowrap class="SmallBody"><img  src="./images/transparent.gif" border="0" width="1" height="3" alt="" /><br/>
+&nbsp;<a href="./ad_tools_massimport.php?view=fieldorder"><font color="#FFFFFF" style="text-decoration:none;">Field Order</font></a>&nbsp;
+<br/><img src="./images/transparent.gif" border="0" width="1" height="3" alt="" /></td>
+<td bgcolor="#666666" valign="top"><img src="./images/corner-small-grey.gif" border="0" width="9" height="6" alt="" /></td>
+<td><img src="./images/transparent.gif" border="0" width="4" height="1" alt="" /></td>
+
+<td bgcolor="#3366CC" valign="top"><img src="./images/transparent.gif" border="0" width="5" height="6" alt="" /></td>
+<td bgcolor="#3366CC" nowrap class="SmallBody"><img  src="./images/transparent.gif" border="0" width="1" height="3" alt="" /><br/>
+&nbsp;<a href="./ad_tools_massimport.php?view=import"><font color="#FFFFFF" style="text-decoration:none;">Import</font></a>&nbsp;
+<br/><img src="./images/transparent.gif" border="0" width="1" height="3" alt="" /></td>
+<td bgcolor="#3366CC" valign="top"><img src="./images/corner-small-blue.gif" border="0" width="9" height="6" alt="" /></td>
+<td><img src="./images/transparent.gif" border="0" width="4" height="1" alt="" /></td>
+
+<td bgcolor="#666666" valign="top"><img src="./images/transparent.gif" border="0" width="5" height="6" alt="" /></td>
+<td bgcolor="#666666" nowrap class="SmallBody"><img  src="./images/transparent.gif" border="0" width="1" height="3" alt="" /><br/>
+&nbsp;<a href="./ad_tools_massimport.php?view=create"><font color="#FFFFFF" style="text-decoration:none;">Create Projects</font></a>&nbsp;
+<br/><img src="./images/transparent.gif" border="0" width="1" height="3" alt="" /></td>
+<td bgcolor="#666666" valign="top"><img src="./images/corner-small-grey.gif" border="0" width="9" height="6" alt="" /></td>
+<td><img src="./images/transparent.gif" border="0" width="4" height="1" alt="" /></td>
+
+
+
+
+</tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td bgcolor="#3366CC"><img src="./images/transparent.gif" border="0" width="2" height="4" alt="" /></td>
+</tr>
+</table>
+
+<br/>
+<form name="artworkinfo" actions="./ad_tools_massimport.php" method="post">
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+<input type="hidden" name="saveimport" value="true" />
+Copy and paste or edit the import file below.<br/>
+Each 'new line' represents a new project.  There can be many fields on each line.<br/>
+Separate each field with a double pipe symbol.  EX: &nbsp;&nbsp; <b>John Doe||818-121-1234||J@example.com</b><br/>
+Make sure to delete blank lines.
+<br/>
+<div align="right">
+<input type="submit" name="updatebutton" value="Save Information" class="AdminButton" onmouseover="this.style.background='#ffeeaa';" onmouseout="this.style.background='#FFFFDD';" />
+</div>
+<textarea  name="importfile" style="width:760px; height:400px; background-color:#F0EEEE; font-size:11;" wrap="VIRTUAL">{IMPORT_FILE}</textarea>
+</form>
+<br/><br/>
+<!-- END ImportBL -->
+
+
+
+
+
+
+
+
+<!-- BEGIN CreateProjectsBL -->
+
+<table cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td bgcolor="#666666" valign="top"><img src="./images/transparent.gif" border="0" width="5" height="6" alt="" /></td>
+<td bgcolor="#666666" nowrap class="SmallBody"><img  src="./images/transparent.gif" border="0" width="1" height="3" alt="" /><br/>
+&nbsp;<a href="./ad_tools_massimport.php?view=artwork"><font color="#FFFFFF" style="text-decoration:none;">Artwork</font></a>&nbsp;
+<br/><img src="./images/transparent.gif" border="0" width="1" height="3" alt="" /></td>
+<td bgcolor="#666666" valign="top"><img src="./images/corner-small-grey.gif" border="0" width="9" height="6" alt="" /></td>
+<td><img src="./images/transparent.gif" border="0" width="4" height="1" alt="" /></td>
+
+<td bgcolor="#666666" valign="top"><img src="./images/transparent.gif" border="0" width="5" height="6" alt="" /></td>
+<td bgcolor="#666666" nowrap class="SmallBody"><img  src="./images/transparent.gif" border="0" width="1" height="3" alt="" /><br/>
+&nbsp;<a href="./ad_tools_massimport.php?view=fieldorder"><font color="#FFFFFF" style="text-decoration:none;">Field Order</font></a>&nbsp;
+<br/><img src="./images/transparent.gif" border="0" width="1" height="3" alt="" /></td>
+<td bgcolor="#666666" valign="top"><img src="./images/corner-small-grey.gif" border="0" width="9" height="6" alt="" /></td>
+<td><img src="./images/transparent.gif" border="0" width="4" height="1" alt="" /></td>
+
+<td bgcolor="#666666" valign="top"><img src="./images/transparent.gif" border="0" width="5" height="6" alt="" /></td>
+<td bgcolor="#666666" nowrap class="SmallBody"><img  src="./images/transparent.gif" border="0" width="1" height="3" alt="" /><br/>
+&nbsp;<a href="./ad_tools_massimport.php?view=import"><font color="#FFFFFF" style="text-decoration:none;">Import</font></a>&nbsp;
+<br/><img src="./images/transparent.gif" border="0" width="1" height="3" alt="" /></td>
+<td bgcolor="#666666" valign="top"><img src="./images/corner-small-grey.gif" border="0" width="9" height="6" alt="" /></td>
+<td><img src="./images/transparent.gif" border="0" width="4" height="1" alt="" /></td>
+
+<td bgcolor="#3366CC" valign="top"><img src="./images/transparent.gif" border="0" width="5" height="6" alt="" /></td>
+<td bgcolor="#3366CC" nowrap class="SmallBody"><img  src="./images/transparent.gif" border="0" width="1" height="3" alt="" /><br/>
+&nbsp;<a href="./ad_tools_massimport.php?view=create"><font color="#FFFFFF" style="text-decoration:none;">Create Projects</font></a>&nbsp;
+<br/><img src="./images/transparent.gif" border="0" width="1" height="3" alt="" /></td>
+<td bgcolor="#3366CC" valign="top"><img src="./images/corner-small-blue.gif" border="0" width="9" height="6" alt="" /></td>
+<td><img src="./images/transparent.gif" border="0" width="4" height="1" alt="" /></td>
+
+
+
+
+</tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td bgcolor="#3366CC"><img src="./images/transparent.gif" border="0" width="2" height="4" alt="" /></td>
+</tr>
+</table>
+
+<br/>
+{CREATE_PROJECT_MESSAGE}
+<br/><br/>
+<!-- END CreateProjectsBL -->
+
+
+
+
+
+
+<!-- Inner Body  END -->
+</td>
+</tr>
+</table>
+<table width="760" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="360" class="NavColor"><img src="./images/footer.gif" border="0" width="350" height="16" usemap="#footer" alt="" /></td>
+	<td width="400" align="right" class="NavColor"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+  </tr>
+</table>
+<font class="copyright"> </font>
+</div>
+&nbsp;
+<script type="text/javascript" src="./library/ImageMap-footer.js"></script>
+</body>
+</html>

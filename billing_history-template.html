@@ -1,0 +1,248 @@
+
+<script language="javascript">
+
+
+	function hl(e)
+	{
+		e.style.color='#000000';
+		e.style.textDecoration='underline';
+	}
+	function dl(e)
+	{
+		e.style.color='#333333';
+		e.style.textDecoration='none';
+	}
+	function hl_order(e)
+	{
+		e.style.cursor='hand';
+		e.style.color='#0000FF';
+		e.style.textDecoration='underline';
+	}
+	function dl_order(e)
+	{
+		e.style.cursor='default';
+		e.style.color='#333333';
+		e.style.textDecoration='none';
+	}
+
+	function OrderClick(OrderID){
+
+		<!-- BEGIN InvoiceLinkBL -->
+		var address = "./pdf_launch.php?forward=customer_receipts.php%3Fviewtype=customerservice%26orderid=" +  OrderID;
+
+		newWindow = window.open(address, "viewinvoice", "height=500,width=700,directories=no,location=no,menubar=no,scrollbars=yes,status=no,toolbar=no,resizable=yes");
+		newWindow.moveTo((self.screenLeft + self.screen.width/9),(self.screenTop + self.screen.height/9));
+		newWindow.focus();
+		<!-- END InvoiceLinkBL -->
+		
+		<!-- BEGIN OrderLinkBL -->
+		document.location = "./ad_order.php?orderno=" + OrderID;
+		<!-- END OrderLinkBL -->
+	}
+</script>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+  <td class="SmallBody" width="5%" align="right">&nbsp;</td>
+    <td class="SmallBody" width="45%">{NAV_BAR_HTML}</td>
+    <td class="SmallBody" width="50%" align="right">&nbsp;</td>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td class="NavColor"><img src="./images/transparent.gif" border="0" width="1" height="3" alt="" /></td>
+</tr>
+</table>
+&nbsp;
+<br/>
+
+<!-- BEGIN DateSelectBlock -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width=47%><table width="100%" border="0" cellspacing="0" cellpadding="1" bgcolor="#333333">
+  <tr>
+    <td><table width="100%" border="0" cellspacing="0" cellpadding="5" bgcolor="#DDDDDD">
+  <tr>
+    <td class="Body">{DATE_SELECT}</td>
+  </tr>
+</table></td>
+  </tr>
+</table></td>
+<td width="3%">&nbsp;</td>
+    <td width="50%" class="Body">
+<table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#EEEEEE">
+  <tr>
+    <td><table width="100%" border="0" cellspacing="1" cellpadding="0">
+  <tr bgcolor="#FFFFFF">
+                              <td class="SmallBody" width="37%">&nbsp;Statment closing 
+                                Date:</td>
+                              <td class="SmallBody" width="63%">&nbsp;<b>{CLOSING_DATE}</b></td>
+  </tr>
+   <tr bgcolor="#FFFFFF">
+                              <td class="SmallBody" width="37%">&nbsp;Payment Due Date:</td>
+                              <td class="SmallBody" width="63%">&nbsp;<b>{DUEDATE}</b></td>
+  </tr>
+</table></td>
+  </tr>
+</table>
+
+	
+</td>
+  </tr>
+</table>
+<!-- END DateSelectBlock -->
+
+<!-- BEGIN UnbilledMessageBL -->
+The Statement Closing Date for the following charges is <b>{CLOSING_DATE}</b>.<br/>
+<!-- END UnbilledMessageBL -->
+<!-- BEGIN BilledSummaryTable -->
+&nbsp;
+<table width="100%" border="0" cellspacing="0" cellpadding="1" bgcolor="#99CC33">
+  <tr>
+    <td><table width="100%" border="0" cellspacing="0" cellpadding="5" bgcolor="#E4FEE7">
+  <tr>
+    <td class="Body">Previous Balance: <b>{PREV_BALANCE}</b></td>
+	<td class="Body">New Charges: <b>( + ) {NEW_CHARGES}</b></td>
+	<td class="Body">Payment Activity: <b>( - ) {PAY_ACTIVITY}</b></td>
+	<td class="Body">New Balance: <b>{NEW_BALANCE}</b></td>
+  </tr>
+</table>
+</td>
+  </tr>
+</table>
+<!-- END BilledSummaryTable -->
+<!-- BEGIN UnBilledSummaryTable -->
+&nbsp;
+<table width="100%" border="0" cellspacing="0" cellpadding="1" bgcolor="#FF9999">
+  <tr>
+    <td><table width="100%" border="0" cellspacing="0" cellpadding="5" bgcolor="#FFFFDD">
+  <tr>
+    <td class="Body">Previous Balance: <b>{PREV_BALANCE}</b></td>
+	<td class="Body">New Charges: <b>( + ) {NEW_CHARGES}</b></td>
+	<td class="Body">Payment Activity: <b>( - ) {PAY_ACTIVITY}</b></td>
+	<td class="Body">New Balance: <b>{NEW_BALANCE}</b></td>
+  </tr>
+</table>
+</td>
+  </tr>
+</table>
+<!-- END UnBilledSummaryTable -->
+
+<br/>&nbsp;
+
+<!-- BEGIN HideOrdersBL -->
+&nbsp;<br/>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+                        <td class="AdminLabel" width="42%">Orders</td>
+                        <td class="SmallBody" width="58%"><font color="#CC0000">*</font> 
+                          You can get detailed information on each order within 
+                          your <a class="blueredlink" href="./order_history.php">Order History</a></td>
+  </tr>
+</table><img  src="./images/blackpixel.gif" height="1" width="720" alt="" /><br/><img  src="./images/transparent.gif" height="5" width="1" alt="" /><br/>
+
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+
+  <tr>
+  						<td class="Body" width="32%"><b>Date</b></td>
+                        <td class="Body" width="20%"><b>Order #</b></td>
+						 
+                        <td class="Body" width="27%"><b>Notes</b></td>
+                        <td class="Body" width="19%" align="right"><b>Amount</b></td>
+						<td class="Body" width="2%">&nbsp;</td>
+  </tr>
+  <!-- BEGIN OrdersBL -->
+  <tr class="OrderRow" onclick="OrderClick({ORDER_ID})" onmouseover="hl_order(this)" onmouseout="dl_order(this)">
+  						<td width="32%"  valign="top" class="Body">{ORDER_DATE}&nbsp;&nbsp;{PENDING}</td>
+                        <td width="20%" valign="top" class="Body">{ORDER_NUM}</td>
+						<td width="27%" valign="top" class="Body">{ORDER_NOTES}</td>
+                        <td width="19%" valign="top" class="Body" align="right">{ORDER_AMOUNT}</td>
+						<td width="2%" valign="top" class="Body">&nbsp;</td>
+  </tr>
+ <!-- END OrdersBL -->
+   <tr>
+  						<td class="Body" width="32%">&nbsp;</td>
+						<td class="Body" width="20%">&nbsp;</td>
+                        <td class="Body" width="27%" align="right"><font class="ReallySmallBody">&nbsp;</font><br/>
+                          <font color="#999999"><b>Total:</b></font></td>
+                        <td class="Body" width="19%" align="right"><font class="ReallySmallBody">--------------------------</font><br/>
+                          <b>{ORDERS_TOTAL}</b></td>
+						<td class="Body" width="2%">&nbsp;</td>
+  </tr>
+</table>
+<!-- END HideOrdersBL -->
+
+
+
+<!-- BEGIN HideAdjustmentsBL -->
+&nbsp;<br/><br/>
+<font class="AdminLabel">Adjustments / Refunds</font><img  src="./images/transparent.gif" height="1" width="90" alt="" /><br/>
+              <img  src="./images/blackpixel.gif" height="1" width="720" alt="" /><br/><img  src="./images/transparent.gif" height="5" width="1" alt="" /><br/>
+
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+
+  <tr>
+                        <td class="Body" width="21%"><b>Date #</b></td>
+						<td class="Body" width="24%"><b>Order Ref #</b></td>
+                        <td class="Body" width="34%"><b>Notes</b></td>
+                        <td class="Body" width="17%" align="right"><b>Amount</b></td>
+						<td class="Body" width="4%">&nbsp;</td>
+  </tr>
+  <!-- BEGIN AdjustmentBL -->
+  <tr onmouseover="hl(this)" onmouseout="dl(this)">
+                        <td class="Body" width="21%" valign="top">{ADJUSTMENT_DATE}</td>
+						 
+                        <td class="Body" width="24%" valign="top">{ADJUSTMENT_ORDERID}</td>
+                        <td class="Body" width="34%" valign="top">{ADJUSTMENT_NOTES}</td>
+                        <td class="Body" width="17%" align="right" valign="top">{ADJUSTMENT_AMOUNT}</td>
+						<td class="Body" width="4%" valign="top">&nbsp;</td>
+  </tr>
+ <!-- END AdjustmentBL -->
+   <tr>
+                        <td class="Body" width="21%" valign="top">&nbsp;</td>
+						 
+                        <td class="Body" width="24%" valign="top">&nbsp;</td>
+                        <td class="Body" width="34%" valign="top" align="right"><font class="ReallySmallBody">&nbsp;</font><br/><font color="#999999"><b>Total:</b></font></td>
+                        <td class="Body" width="17%" align="right" valign="top"><font class="ReallySmallBody">--------------------------</font><br/><b>{ADJUSTMENTS_TOTAL}</b></td>
+						<td class="Body" width="4%" valign="top">&nbsp;</td>
+  </tr>
+</table>
+<!-- END HideAdjustmentsBL -->
+
+
+
+<!-- BEGIN HidePaymentsBL -->
+&nbsp;<br/><br/>
+<font class="AdminLabel">Payment Activity</font><img  src="./images/transparent.gif" height="1" width="90" alt="" /><br/>
+              <img  src="./images/blackpixel.gif" height="1" width="720" alt="" /><br/><img  src="./images/transparent.gif" height="5" width="1" alt="" /><br/>
+
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+
+  <tr>
+                        <td class="Body" width="25%"><b>Date #</b></td>
+                        <td class="Body" width="35%"><b>Notes</b></td>
+                        <td class="Body" width="13%" align="right"><b>Amount</b></td>
+						<td class="Body" width="9%">&nbsp;</td>
+  </tr>
+  <!-- BEGIN PaymentsBL -->
+  <tr onmouseover="hl(this)" onmouseout="dl(this)">
+                        <td class="Body" width="25%">{PAYMENT_DATE}</td>
+                        <td class="Body" width="35%">{PAYMENT_NOTES}</td>
+                        <td class="Body" width="13%" align="right">{PAYMENT_AMOUNT}</td>
+						<td class="Body" width="9%">&nbsp;</td>
+  </tr>
+ <!-- END PaymentsBL -->
+  <tr>
+                        <td class="Body" width="25%">&nbsp;</td>
+                        <td class="Body" width="35%" align="right"><font class="ReallySmallBody">&nbsp;</font><br/><font color="#999999"><b>Total:</b></font></td>
+                        <td class="Body" width="13%" align="right"><font class="ReallySmallBody">--------------------------</font><br/><b>( - )&nbsp;&nbsp;{PAYMENTS_TOTAL}</b></td>
+						<td class="Body" width="9%">&nbsp;</td>
+  </tr>
+</table>
+<!-- END HidePaymentsBL -->
+{EMPTY_MESSAGE}
+
+<! ------------------------ -->
+	

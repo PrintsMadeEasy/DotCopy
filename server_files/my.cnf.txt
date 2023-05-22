@@ -1,0 +1,48 @@
+[mysqld]
+#datadir=/var/lib/mysql
+#socket=/var/lib/mysql/mysql.sock
+log-bin
+binlog-do-db=dot_db
+tmpdir=/var/lib/mysql_binlog
+server-id=1
+max_connections=400
+max_connect_errors=10
+max_allowed_packet=99M
+thread_concurrency=16
+log-error=/var/log/mysql-errors.log
+key_buffer=2000M
+join_buffer=10M
+read_buffer_size = 2M
+sort_buffer_size = 8M
+read_rnd_buffer_size = 32M
+table_cache=1500
+query_cache_type = 1
+query_cache_limit=548576
+query_cache_size=100M
+record_buffer=7M
+thread_cache = 100
+#log-slow-queries = /var/lib/mysql_binlog/MysqlSlowQuery.log
+#long_query_time = 4
+max_heap_table_size=1500M
+tmp_table_size=1500M
+innodb_data_home_dir = /var/lib/mysql/InnoDB
+innodb_log_group_home_dir = /var/lib/mysql/InnoDB
+innodb_file_per_table=1
+ssl-ca = /var/lib/mysql/ca.crt
+ssl-cert = /var/lib/mysql/server.crt
+ssl-key = /var/lib/mysql/server.key
+
+
+[client]
+ssl-ca = /var/lib/mysql/ca.crt
+ssl-cert = /var/lib/mysql/server.crt
+ssl-key = /var/lib/mysql/server.key
+
+
+
+[mysqld_safe]
+err-log=/var/log/mysqld.log
+log-error=/var/log/mysql-errors.log
+set-variable = tmpdir=/var/lib/mysql_binlog
+pid-file=/var/run/mysqld/mysqld.pid
+timezone = America/Los_Angeles

@@ -1,0 +1,190 @@
+<html>
+<head>
+<title>Admin</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<script type="text/javascript" src="./library/admin_library.js"></script>
+<script type="text/javascript" src="./library/api_dot.js"></script>
+<script type="text/javascript" src="./library/general_lib.js"></script>
+<script type="text/javascript" src="./library/api_chat.js"></script>
+<script type="text/javascript" src="./library/api_chat_for_admin.js"></script>
+
+<script language="javascript">
+
+function RemovePhoto(domainId){
+	if(confirm("Do you really want to delete this photo?"))
+		document.location = "ad_chat_setup.php?action=removeCsrThumbImage&domainId=" + domainId + "&form_sc={FORM_SECURITY_CODE}";
+}
+
+function checkForm(domainID){
+
+	if(document.getElementById("penName_" + domainID).value == ""){
+		alert("The pen name can not be blank.");
+		return false;
+	}
+
+	return true;
+}
+
+function changeThreadLimit(newLimit){
+	document.location = "ad_chat_setup.php?action=changeOpenThreadLimit&threadLimit=" + newLimit + "&form_sc={FORM_SECURITY_CODE}";
+}
+
+function DeletePleaseWait(pleaseWaitID){
+	if(confirm("Are you sure that you want to delete this message?"))
+		document.location = "./ad_chat_setup.php?form_sc={FORM_SECURITY_CODE}&action=deletePleaseWaitMsg&pleaseWaitId=" + pleaseWaitID;
+}
+
+
+
+
+</script>
+<script type="text/javascript" src="./library/customer_service.js"></script>
+
+<link rel="stylesheet" type="text/css" href="library/calendar/themes/winter.css"/>
+<script type="text/javascript" src="library/calendar/src/utils.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar.js"></script>
+<script type="text/javascript" src="library/calendar/lang/calendar-en.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar-setup.js"></script>
+<script type="text/javascript" src="library/formatDate.js"></script>
+</head>
+<body bgcolor="#FFFFFF" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="">
+<div align="center">
+{HEADER}
+&nbsp;
+<br/>
+
+<table width="760" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td class="Body">
+
+
+
+
+
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="22%"><strong>Chat Setup</strong></td>
+    <td width="20%" class="SmallBody">Thread Limit <select name="threadLimit" onChange="changeThreadLimit(this.value);">{THREAD_LIMIT_SELECT}</select></td>
+    <td width="29%" align="right" class="SmallBody"><input type="radio" id="csrStatus_online" name="csrStatus" value="online" onClick="setStatusOnline();"> Online &nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" id="csrStatus_offline" name="csrStatus" value="offline" onClick="setStatusOffline()"> Offline</td>
+  </tr>
+</table>
+
+
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td bgcolor="#3366CC"><img src="./images/transparent.gif" border="0" width="2" height="4" alt="" /></td>
+</tr>
+</table>
+<br/>
+
+
+
+
+<!-- BEGIN DomainRowBL -->
+<form name="defaultProfileForm" action="ad_chat_setup.php" style="display:inline;" enctype="multipart/form-data" method="post" onSubmit="return checkForm({DOMAIN_ID});">
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+<input type="hidden" name="action" value="saveCsrSetup" />
+<input type="hidden" name="domainId" value="{DOMAIN_ID}" />
+<br/>
+<br/>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td class="LargeBody">{DOMAIN_LOGO} <strong>{DOMAIN_NAME}</strong></td>
+    <td align="right"><input type="submit" value="Save Values" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" /></td>
+  </tr>
+</table>
+<img  src="./images/greypixel.gif" width="760" height="1" alt="" /><br/><img  src="./images/transparent.gif" width="5" height="3" alt="" />
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#3366CC">
+  <tr>
+    <td>
+
+<table width="100%" border="0" cellspacing="1" cellpadding="4">
+
+
+<tr>
+<td width="144" class="SmallBody" bgcolor="#ddeeff"><strong>Pen Name</strong></td>
+<td width="218" class="SmallBody" bgcolor="#ddeeff"><strong>Greeting Message</strong></td>
+<td width="211" class="SmallBody" bgcolor="#ddeeff"><strong>Sign Off Message</strong></td>
+<td width="150" class="SmallBody" bgcolor="#ddeeff"><strong>Pen-Name Photo</strong></td>
+</tr>
+
+ <tr>
+    <td class="SmallBody" bgcolor="#f3f3f3"><input id="penName_{DOMAIN_ID}" type="text" name="penName" value="{PEN_NAME}" maxlength="255" /></td>
+ 	<td class="SmallBody" bgcolor="#f3f3f3"><input type="text" name="greetingMsg" value="{GREETING_MSG}" maxlength="255" /></td>
+	<td class="SmallBody" bgcolor="#f3f3f3"><input type="text" name="signOffMsg" value="{SIGN_OFF_MSG}" maxlength="255" /></td>
+	<td class="SmallBody" bgcolor="#f3f3f3" align="center"><input type="file" name="csrPhoto" style="width:170px;" /><br>
+{EXISTING_PHOTO}</td>
+  </tr>
+
+</table>
+
+	</td>
+  </tr>
+</table>
+<br>
+
+
+
+Add a new &quot;Please Wait&quot; message. Will be picked up in random order.<br>
+
+<input type="text" name="pleaseWaitMessage" value="" style="width:500px;" />
+
+<br>
+<br>
+<font class="SmallBody">
+{PLEASE_WAIT_MESSAGES}
+</font>
+
+<br><br>
+
+<div style="background-color:#F3f3f3; border:solid; border-color:#ADC4CF; border-width:1px; padding:5px; font-size:10px;">
+{CHAT_TYPES}
+</div>
+
+ </form>
+ <br/>
+<br/>
+<br/>
+
+<!-- END DomainRowBL -->
+
+
+
+
+<br/>&nbsp;<br/>
+<br/>
+<br/>
+<br/>
+<br/><br/>
+<br/>
+<br/>
+<br/>
+
+
+</td>
+</tr>
+</table>
+
+<br/>
+</td>
+</tr>
+</table>
+<br/>
+<br/>
+
+<table width="760" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="360" class="NavColor"><img src="./images/footer.gif" border="0" width="350" height="16" usemap="#footer" alt="" /></td>
+	<td width="400" align="right" class="NavColor"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+  </tr>
+</table>
+<font class="copyright"> </font>
+</div>
+&nbsp;
+<script type="text/javascript" src="./library/ImageMap-footer.js"></script>
+</body>
+</html>

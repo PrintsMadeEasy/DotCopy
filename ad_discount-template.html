@@ -1,0 +1,148 @@
+<html>
+<head>
+<title>Customer Discount</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+
+<script language="javascript">
+
+	//Make an array of the images we want to preload for the mouse-overs.
+	arImageSrc = new Array (
+		"./images/button-go-d.gif",
+		"./images/button-cancel-blue-d.gif",
+		"./images/button-createtask-d.gif"
+	)
+
+	//Preload images.
+	arImageList = new Array ();
+	for (counter in arImageSrc) {
+		arImageList[counter] = new Image();
+		arImageList[counter].src = arImageSrc[counter];
+	}
+
+
+function CheckCustomerDiscount(){
+	var DiscountPercent = document.forms["discount"].discountpercent.value;
+	var AffiliateName = document.forms["discount"].affiliatename.value;
+
+	if(DiscountPercent == "0"){
+		if(AffiliateName != ""){
+			alert ("If the discount is 0 then the Affiliate Name must be blank.");
+			return false;
+		}
+	}
+	if(AffiliateName == ""){
+		if(DiscountPercent !== "0"){
+			alert ("If the Affiliate Name is blank then the discount should be 0.");
+			return false;
+		}
+	}
+	return true;
+}
+</script>
+
+</head>
+
+<body bgcolor="#3366CC" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="" > <!-- Close this window in 60 seconds -->
+<img  src="./images/transparent.gif" border="0" width="1" height="10" alt="" /><br/>
+<div align="center">
+<table bgcolor="#EEEEEE" width="420" cellpadding="0" cellspacing="0" border="0">
+
+<tr>
+<td align="center" class="Body" bgcolor="#CCCCCC"><b>Customer Discount</b></td>
+
+<tr>
+<td align="center">
+<table bgcolor="#EEEEEE" width="96%" cellpadding="0" cellspacing="0" border="0">
+
+<tr>
+
+<td class="Body"> &nbsp;
+<form name="discount" action="ad_discount.php" onsubmit="return CheckCustomerDiscount();">
+<input type="hidden" name="action" value="customerdiscount" />
+<input type="hidden" name="customerid" value="{CUSTOMERID}" />
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+<font class="OptionNames"><b>Affiliate Name</b></font>
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td><img src="./images/transparent.gif" border="0" width="1" height="2" alt="" /></td>
+</tr>
+<tr>
+<td bgcolor="#999999"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+</tr>
+<tr>
+<td><img src="./images/transparent.gif" border="0" width="1" height="2" alt="" /></td>
+</tr>
+</table>
+
+
+<input type="text" name="affiliatename" value="{AF_NAME}" style="width:170px;" />
+
+<br/><br/>
+<font class="OptionNames"><b>Discount</b></font>
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td><img src="./images/transparent.gif" border="0" width="1" height="2" alt="" /></td>
+</tr>
+<tr>
+<td bgcolor="#999999"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+</tr>
+<tr>
+<td><img src="./images/transparent.gif" border="0" width="1" height="2" alt="" /></td>
+</tr>
+</table>
+<select name="discountpercent" class="SelectBox">
+{DISCOUNT}
+</select>
+&nbsp;<br/><br/><br/>
+
+<font class="OptionNames"><b>Expiration Date</b></font>
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td><img src="./images/transparent.gif" border="0" width="1" height="2" alt="" /></td>
+</tr>
+<tr>
+<td bgcolor="#999999"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+</tr>
+<tr>
+<td><img src="./images/transparent.gif" border="0" width="1" height="2" alt="" /></td>
+</tr>
+</table>
+
+<select name="monthexpiration" class="SelectBox">
+{MONTHDROPDOWN}
+</select>
+&nbsp;
+<select name="yearexpiration" class="SelectBox">
+{YEARDROPDOWN}
+</select>
+<br/><br/>
+<div align="right">
+<input type="submit" name="xx" value="Update" class="AdminButton" onmouseover="this.style.background='#ffeeaa';" onmouseout="this.style.background='#FFFFDD';" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<input type="button" name="xx" value="Cancel" class="AdminButton" onmouseover="this.style.background='#ffeeaa';" onmouseout="this.style.background='#FFFFDD';" onclick="self.close();" />
+</div>
+
+</form>
+
+</td>
+</tr>
+<tr>
+<td ><img src="./images/transparent.gif" border="0" width="1" height="5" alt="" /></td>
+</tr>
+</table>
+</td>
+</tr>
+
+
+<tr>
+<td><img src="images/header-editoptions-fade-bot.gif" width="420" alt="" /></td>
+</tr>
+</table>
+
+
+</div>
+
+
+</body>
+</html>

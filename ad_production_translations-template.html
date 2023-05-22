@@ -1,0 +1,91 @@
+<html>
+<head>
+<title>Rack Translations</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+
+<script language="javascript">
+
+	//Make an array of the images we want to preload for the mouse-overs.
+	arImageSrc = new Array (
+		"./images/button-go-d.gif",
+		"./images/button-closewindow-blue-d.gif",
+		"./images/button-sendmessage-blue-d.gif"
+	)
+
+	//Preload images.
+	arImageList = new Array ();
+	for (counter in arImageSrc) {
+		arImageList[counter] = new Image();
+		arImageList[counter].src = arImageSrc[counter];
+	}
+
+
+
+
+</script>
+
+</head>
+
+<body bgcolor="#3366CC" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="" >
+<img  src="./images/transparent.gif" border="0" width="1" height="10" alt="" /><br/>
+<div align="center">
+<table bgcolor="#EEEEEE" width="400" cellpadding="0" cellspacing="0" border="0">
+
+<tr>
+<td bgcolor="#666666" class="Body" align="center"><img  src="./images/transparent.gif" border="0" width="1" height="3" alt="" /><br/><font color="#FFFFFF"><b>Rack Location Translations</b></font><br/><img src="./images/transparent.gif" border="0" width="1" height="3" alt="" /></td>
+
+<tr>
+<td class="Body">
+
+
+<table width="100%" border="0" cellspacing="10" cellpadding="3">
+
+
+  <tr>
+			<td class="SmallBody">Each line number corresponds to an ID. <br/>For example: Line 2 in the &quot;Column Translation&quot; box would be used any time column #2 was referenced. If you don't enter details, then default (non tranlated) values will be returned.{MESSAGE}</td>
+  </tr>
+
+</table>
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td align="right" class="Body"><input type="button" name="xx" value="Save" class="AdminButton" onmouseover="this.style.background='#ffeeaa';" onmouseout="this.style.background='#FFFFDD';" onclick="document.forms['translations'].submit();" /><img src="./images/transparent.gif" border="0" width="15" height="1" alt="" /></td>
+  </tr>
+</table>
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<form name="translations" action="./ad_production_translations.php">
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+<input type="hidden" name="savechanges" value="true" />
+  <tr>
+  <td class="SmallBody" width="2%">&nbsp;</td>
+   <td class="SmallBody"><b>Racks</b><br/><textarea name="racks" class="admininput" style="width:100px; height:130px;">{RACKS}</textarea></td>
+<td class="SmallBody"><b>Rows</b><br/><textarea name="rows" class="admininput" style="width:100px; height:130px;">{ROWS}</textarea></td>
+<td class="SmallBody"><b>Columns</b><br/><textarea name="columns" class="admininput" style="width:100px; height:130px;">{COLUMNS}</textarea></td>
+  </tr>
+ </form>
+</table>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+
+   <tr>
+    <td class="Body" align="center" bgcolor="#CCCCCC"><img src="./images/transparent.gif" width="2" height="2" alt="" /></td>
+  </tr>
+</table>
+
+
+ </td>
+</tr>
+
+
+<tr>
+<td><img src="images/header-editoptions-fade-bot.gif" width="400" alt="" /></td>
+</tr>
+</table>
+
+</div>
+
+
+</body>
+</html>

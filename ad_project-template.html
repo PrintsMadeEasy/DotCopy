@@ -1,0 +1,813 @@
+<html>
+<head>
+<title>Admin</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<script language="javascript">
+
+	//Make an array of the images we want to preload for the mouse-overs.
+	arImageSrc = new Array (
+		"./images/button-go-d.gif",
+		"./images/button-sendmessage-d.gif",
+		"./images/button-customerreceipt-d.gif",
+		"./images/button-shippinglabel-d.gif",
+		"./images/button-viewartwork-d.gif",
+		"./images/button-createtask2-d.gif"
+
+	)
+
+	//Preload images.
+	arImageList = new Array ();
+	for (counter in arImageSrc) {
+		arImageList[counter] = new Image();
+		arImageList[counter].src = arImageSrc[counter];
+	}
+
+
+	function makeNewWindow2(address){
+		newWindow = window.open(address, "sub", "height=395,width=375,directories=no,location=no,menubar=no,scrollbars=no,status=no,toolbar=no,resizable=no");
+		newWindow.focus();
+	}
+
+	function SubmitForm(){
+		if(document.forms["writethread"].message.value==""){
+			alert("Please type a message before sending.");
+		}
+		else{
+			document.forms["writethread"].submit();
+		}
+	}
+
+
+	function AdminEditArtWork(){
+		var address = "./ad_proof_artwork.php?projectid={PROJECTID}";
+		document.location = address;
+	}
+
+	function makeNewWindow3(address){
+		newWindow = window.open(address, "manedit", "height=610,width=570,directories=no,location=no,menubar=no,scrollbars=yes,status=no,toolbar=no,resizable=no");
+		newWindow.moveTo((self.screenLeft + self.screen.width/4),(self.screenTop + self.screen.height/4));
+		newWindow.focus();
+	}
+	function makeNewWindow4(address){
+		newWindow = window.open(address, "sub5", "height=300,width=430,directories=no,location=no,menubar=no,scrollbars=yes,status=no,toolbar=no,resizable=no");
+		newWindow.moveTo((self.screenLeft + self.screen.width/4),(self.screenTop + self.screen.height/4));
+		newWindow.focus();
+	}
+
+	function CreateRePrint(){
+
+		var RePrintType = document.forms["reprint"].reprinttype.value;
+		var RePrintReason = document.forms["reprint"].reprintreason.value;
+
+		if(RePrintType == ""){
+			alert("Select a Reprint Type.");
+		}
+		else if(RePrintReason == ""){
+			alert("Select a Reprint Reason.");
+		}
+		else{
+			document.forms["reprint"].action = "./ad_reprint_create.php";
+			document.forms["reprint"].submit();
+		}
+
+	}
+
+	function MoveProjectToOtherOrder(){
+		var NewOrderNumber = document.forms["MoveProject"].moveorder.value;
+
+		if(NewOrderNumber.search(/^\d+-$/) == -1){
+			alert("Your order number must contain a dash after the number.\nThis verifies you are associating this project with a main order number and not another project.")
+		}
+		else{
+			document.location="./ad_moveproject.php?projectid={PROJECTID}&neworder=" + NewOrderNumber + "&form_sc={FORM_SECURITY_CODE}";
+		}
+		return false;
+
+	}
+
+	function UpdateNote(ViewName){
+
+		if( {JS_MULTIPLE_PROJECTS} ){
+			if(confirm("Do you want this note to be copied to every project in the order?\n\nOK = Save to all projects in order.\nCancel = Save to this project only.")){
+
+				if(ViewName == "admin")
+					document.forms["adminmessageform"].notetype.value = "order";
+				else if(ViewName == "production")
+					document.forms["productionmessageform"].notetype.value = "order";
+				else
+					alert("Illegal View Name with UpdateNote.");
+			}
+		}
+		else{
+			document.forms["adminmessageform"].notetype.value = "project";
+			document.forms["productionmessageform"].notetype.value = "project";
+		}
+	}
+
+
+	function CloseUser(ThreadID, PipedIDlist){
+		document.location = "./ad_actions.php?returl={CURRENTURL}&action=markmessageread&messagelist=" + PipedIDlist + "&form_sc={FORM_SECURITY_CODE}";
+	}
+
+
+	function ChangeReprintReason(ReprintVal, ReprintID){
+		document.location = "./ad_project.php?form_sc={FORM_SECURITY_CODE}&returl={CURRENTURL}&action=updatereprintreason&reprintreason=" + ReprintVal + "&projectorderid=" + ReprintID;
+
+	}
+	function LinkToProject(ProjectID){
+		if(ProjectID != "first"){
+			document.location = "./ad_project.php?projectorderid=" + ProjectID;
+		}
+	}
+
+	function PDFView(){
+
+		var ProfileName = document.forms["pdf_generate"].pdfprofile.value;
+		var ShowLines = GetRadioButtonValue("document.forms['pdf_generate'].showlines");
+
+		var DataMerge = GetRadioButtonValue("document.forms['pdf_generate'].datamerge");
+
+		var address = "./pdf_launch.php?forward=ad_display_pdf.php%3Fprojectrecord={PROJECTID}%26pdfprofile=" + ProfileName + "%26viewtype=proof%26showlines=" + ShowLines + "%26showDataMerge=" + DataMerge;
+
+		newWindow = window.open(address, "pdfpreviewProof", "height=500,width=700,directories=no,location=no,menubar=no,scrollbars=yes,status=no,toolbar=no,resizable=yes");
+		newWindow.moveTo((self.screenLeft + self.screen.width/9),(self.screenTop + self.screen.height/9));
+		newWindow.focus();
+
+	}
+
+	function WarnStatusChange(){
+
+		var CurrentStatusChar = "{CURRENT_STATUS}";
+		var NewStatus = document.forms["artworkstatusform"].newstatus.value;
+
+		if(CurrentStatusChar == "Q" || CurrentStatusChar == "T" || CurrentStatusChar == "E" || CurrentStatusChar == "B"){
+			if(!confirm("Are you sure that you want to change the Status on this Project?\n\nOnce the status becomes Queued, Printed, Plated, or Boxed...\nit is recommended to Cancel this project and then issue a reprint.\nOtherwise it could cause confusion in production. \n")){
+				document.forms["artworkstatusform"].newstatus.value = CurrentStatusChar;
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	function ShowShedule(){
+		var address = "./ad_schedule.php?view=small";
+		newWindow = window.open(address, "calendar", "height=500,width=800,directories=no,location=no,menubar=no,scrollbars=yes,status=no,toolbar=no,resizable=yes");
+		newWindow.focus();
+	}
+
+
+	function CompleteOrder(ProjectID){
+		if(confirm("Are you sure that you want to manually complete this Project?\n\nIt is recomended that you complete orders through the Shipping import/export batch process.")){
+			document.location = "./ad_openorders.php?form_sc={FORM_SECURITY_CODE}&action=completeorder&projectid=" + ProjectID;
+		}
+	}
+	function PossiblyChangeRowColorAfterHiding(projectNum){
+		//changeRowColor(projectNum, "#ddee99");
+	}
+	function PossiblyChangeRowColorWhileShowing(projectNum){
+		//changeRowColor(projectNum, "#ddcc99");
+	}
+	
+	function ViewClipboard(ProjectID){
+		var address = "./clipboard.php?view=proof&projectid=" +  ProjectID + "&sidenumber=0";
+
+		newWindow = window.open(address, "sub", "height=650,width=770,directories=no,location=no,menubar=no,scrollbars=yes,status=no,toolbar=no,resizable=yes");
+		newWindow.moveTo((self.screenLeft + self.screen.width/9),(self.screenTop + self.screen.height/9));
+		newWindow.focus();
+	}
+</script>
+<script type="text/javascript" src="./library/open_orders.js"></script>
+<script type="text/javascript" src="./library/admin_library.js"></script>
+<link rel="stylesheet" type="text/css" href="library/calendar/themes/winter.css"/>
+<script type="text/javascript" src="library/calendar/src/utils.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar.js"></script>
+<script type="text/javascript" src="library/calendar/lang/calendar-en.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar-setup.js"></script>
+<script type="text/javascript" src="library/formatDate.js"></script>
+</head>
+<body bgcolor="#FFFFFF" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="">
+<div align="center">
+{HEADER}
+&nbsp;
+<table width="760" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td class="Body">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td valign="top" class="Body"><font class="SubSectionHeader"><font class="Body">&nbsp;Order # {ORDERNO_HEADER}</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font><font class="SmallBody">Ordered: {DATEORDERED}</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>{CUSTOMER_DISPLAY}</b>
+<br/><img  src="./images/transparent.gif" height="10" width="10" alt="" /><br/>
+<a href="./ad_users_orders.php?byuser={CUSTOMER_ID}" class="BlueRedLink">Total Projects by User - {CUSTOMER_PROJECTS}</a>
+
+                <!-- BEGIN CanceledBL -->
+				<br/>&nbsp;
+                <table width="250" border="0" bgcolor="FF9999" cellspacing="0" cellpadding="2">
+                  <tr>
+                    <td class="Body">This order has been canceled. &nbsp;&nbsp;<font size="3" color="#FF0000">X</font></td>
+                  </tr>
+                </table>
+                <!-- END CanceledBL -->
+</td>
+    <td  align="right" valign="top" class="SubSectionHeader"><a class="BlueRedLink" href="./ad_jumptoorder.php?command=previousproject&projectorderid={PROJECT_RECORD}">&lt; Previous</a>&nbsp;&nbsp;
+<a class="BlueRedLink" href="./ad_jumptoorder.php?command=nextproject&projectorderid={PROJECT_RECORD}">Next &gt;</a></td>
+  </tr>
+</table>
+&nbsp;
+<!-- BEGIN HideReprintMessageBL -->
+&nbsp;
+<table width="40%" border="0" cellspacing="0" cellpadding="1">
+  <tr>
+    <td bgcolor="#FF66CC"><table width="100%" border="0" cellspacing="0" cellpadding="3">
+  <tr>
+    <td bgcolor="#FFDDEE"><table width="100%" border="0" cellspacing="0" cellpadding="2">
+  <tr>
+    <td bgcolor="#FFFFFF" class="SmallBody" align="center">This is a re-print of <a href="./ad_project.php?projectorderid={REPRINT_FROM}" class="BlueRedLink">P{REPRINT_FROM}</a></td>
+  </tr>
+    <tr>
+    <td bgcolor="#FFFFFF" class="SmallBody" >Reason:
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td bgcolor="#EEEEEE" class="SmallBody">{REPRINT_NOTES}</td>
+  </tr>
+</table>
+	</td>
+  </tr>
+</table>
+	</td>
+  </tr>
+</table>
+	</td>
+  </tr>
+</table>
+<!-- END HideReprintMessageBL -->
+&nbsp;
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+            <td class="Body" valign="top" width="62%">
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td class="Body" valign="top">			<font class="AdminLabel">Project
+              Options </font><img src="./images/transparent.gif" height="1" width="45" alt="" />
+
+<!-- BEGIN HideEditProductOptionsBL -->
+			  <input type="button" name="Generate" value="Edit" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" onClick="AdminEditOptions({PROJECTID}, false, '{CURRENTURL_ENCODED}');" />
+<!-- END HideEditProductOptionsBL -->
+			  <br/>
+            <img  src="./images/blackpixel.gif" height="1" width="190" alt="" /><br/><img  src="./images/transparent.gif" height="7" width="1" alt="" /><br/><u>{PRODUCT_NAME_EXT}</u><br/>{INFO_TABLE}
+
+			<br/><br/></td>
+    <td class="Body" valign="top">
+<font class="AdminLabel">Status</font><br/>
+             <img  src="./images/blackpixel.gif" height="1" width="230" alt="" /><br/><img src="./images/transparent.gif" height="4" width="1" alt="" /><table width="100%" border="0" cellspacing="0" cellpadding="0">
+ 			<form name="artworkstatusform" action="./ad_actions.php" onSubmit="return WarnStatusChange();">
+			<input type="hidden" name="returnurl" value="{CURRENTURL}" />
+			<input type="hidden" name="action" value="StatusChange" />
+			<input type="hidden" name="projectid" value="{PROJECT_RECORD}" />
+			<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+  <tr>
+                  <td class="Body" valign="top" width="100%">
+
+	<!-- BEGIN HideStatusChangeBL -->
+<select name="newstatus" class="AdminDropDown" {STATUS_DISABLED}>
+{STATUS_OPTIONS}
+</select>
+<input type="submit" name="xx" value="Change" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';"  {STATUS_DISABLED} />
+<!-- END HideStatusChangeBL -->
+</td></tr></form></table>
+<br/><br/>
+
+
+
+
+<input type="button" name="xx" value="Status History" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" onClick="ViewStatusHistory({MAIN_ORDERID}, {PROJECT_RECORD})" /><br/><br/></td>
+  </tr>
+</table>
+
+
+
+
+<table width="98%" border="0" cellspacing="2" cellpadding="1">
+<!-- BEGIN StatusBL -->
+  <tr>
+    <td class="ReallySmallBody" bgcolor="#DDDDFF">{STATUS}</td>
+	<td class="ReallySmallBody" bgcolor="#DDDDFF">{DATE}</td>
+	<td class="ReallySmallBody" bgcolor="#DDDDFF">By: {NAME}</td>
+  </tr>
+ <!-- END StatusBL -->
+</table>
+
+
+
+			</td>
+
+            <td valign="top" width="38%" class="Body" >
+<!-- BEGIN RemoveFromOrderBL -->
+			<font class="AdminLabel">Remove
+              from Order</font> #{MAIN_ORDERID}<br/>
+              <img  src="./images/blackpixel.gif" height="1" width="190" alt="" /><br/><img  src="./images/transparent.gif" height="5" width="1" alt="" /><br/>
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<form name="active" method="GET" action="./ad_project_activation.php">
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+<input type="hidden" name="returnurl" value="{CURRENTURL}" />
+<input type="hidden" name="projectid" value="{PROJECTID}" />
+
+  <tr>
+    <td>
+
+
+			  <input type="Submit" name="orderactive" value="{ACTIVELABEL}" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" />
+
+	</td>
+  </tr>
+ 			  </form>
+</table>
+<img src="./images/transparent.gif" height="7" width="1" alt="" />
+<!-- BEGIN HideMoveProjectBL -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+			  <form name="MoveProject" onSubmit="return MoveProjectToOtherOrder();">
+			  <input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+  <tr>
+    <td><input type="text" name="moveorder" value="" style="width:60;" class="SmallInputBox" /> <input type="button" name="xx" value="Move Project" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" onClick="MoveProjectToOtherOrder();" /></td>
+  </tr>
+  			  </form>
+</table>
+<!-- END HideMoveProjectBL -->
+
+<!-- END RemoveFromOrderBL -->
+
+<br/><br/><font class="AdminLabel">Guaranteed Dates</font><br/>
+              <img  src="./images/blackpixel.gif" height="1" width="190" alt="" /><br/><img  src="./images/transparent.gif" height="5" width="1" alt="" /><br/>
+{DUETODAY}
+<font class="SmallBody">Ship Date:</font> {EST_SHIP_DATE}<br/>
+<font class="SmallBody">Arrival Date:</font> {EST_ARRIV_DATE}<br/><img  src="./images/transparent.gif" height="7" width="1" alt="" /><br/>
+<font class="SmallBody">Ship Method:</font> {SHIP_METHOD}<br/>
+<font class="SmallBody">Ship To:</font> {SHIP_CITY}, {SHIP_STATE}, {SHIP_COUNTRY}
+
+<!-- BEGIN HideManualCompleteBL -->
+<br/><br/><br/>
+<input type="button" name="shipped" value="Manually Complete Project" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" onClick="CompleteOrder('{PROJECTID}');" />
+<!-- END HideManualCompleteBL -->
+		    </td>
+  </tr>
+</table>
+
+<br/><br/>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+            <td class="Body" valign="top" width="32%"><font class="AdminLabel">Customer
+              Artwork </font><br/>
+              <img  src="./images/blackpixel.gif" height="1" width="230" alt="" /><br/><img  src="./images/transparent.gif" height="8" width="1" alt="" /><br/>
+
+<img  src="./images/transparent.gif" height="5" width="1" alt="" /><br/>
+<!-- BEGIN ProofArtworkBL -->
+<input type="button" name="Generate" value="Proof Artwork" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" onClick="AdminEditArtWork();" />&nbsp;
+
+<br/>
+<!-- END ProofArtworkBL -->
+
+<!-- BEGIN ManualEditBL -->
+<img  src="./images/transparent.gif" height="5" width="1" alt="" /><br/>
+<input type="button" name="Generate" value="Manual Edit" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" onClick="javascript:makeNewWindow3('./draw_artwork_edit_manual.php?projectrecord={PROJECTID}&viewtype=admin');" />
+<br/>
+
+<!-- END ManualEditBL -->
+
+<!-- BEGIN ClipboardBL -->
+<img  src="./images/transparent.gif" height="5" width="1" alt="" /><br/>
+<input type="button" name="Generate" value="Clipboard" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" onClick="ViewClipboard({PROJECTID});" />
+<br/>
+<!-- END ClipboardBL -->
+
+<div  class="hiddenDHTMLwindow" id="Pnum{PROJECTID}" onMouseOver="this.style.cursor='pointer'" onMouseOut="this.style.cursor='default'">
+<span style='visibility:hidden; position:absolute; left:170px; top:60' id='artwPreviewSpan{PROJECTID}'></span>
+</div><img  src="./images/transparent.gif" border="0" width="1" height="10" alt="" /><br/><input type="button" name="Generate" value="View Artwork" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" onClick="lastArtworkPreviewProjectNum={PROJECTID}; fetchAndDisplayArtPrev({PROJECTID}, false); " />
+<br/>
+<img src="./images/transparent.gif" border="0" width="1" height="20" alt="" />
+
+<table width="95%" border="0" cellspacing="0" cellpadding="1" bgcolor="#999999">
+<form name="copyrightEmailForm" action="ad_copyrightTemplateResend.php">
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+<input type="hidden" name="forceProjectID" value="{PROJECTID}" />
+<input type="hidden" name="orderNumber" value="{ORDERID}" />
+<input type="hidden" name="returl" value="{CURRENTURL}" />
+
+  <tr>
+    <td><table width="100%" border="0" cellspacing="0" cellpadding="2">
+  <tr>
+    <td bgcolor="#EEEEEE" class="ReallySmallBody">
+	Force a Copyright Email to be sent (with this artwork). Add a Balance Adjustment on the Order manually (if needed).
+	<br/>
+<input type="radio" name="sendEmailToCustomerFlag" value="no" checked="checked" /> Send the Copyright Email to me only.<br/>
+<input type="radio" name="sendEmailToCustomerFlag" value="yes" /> Send the Email to me &amp; the Customer.</td>
+  </tr>
+   <tr>
+    <td bgcolor="#EEEEEE" class="ReallySmallBody" align="right"><a href="javascript:document.forms['copyrightEmailForm'].submit();" class="BlueRedLink">Send</a></td>
+	</tr>
+</table>
+</td>
+  </tr>
+  </form>
+</table>
+
+
+
+
+			</td>
+            <td valign="top" width="36%" class="Body" >
+
+
+
+
+
+
+
+			<font class="AdminLabel">PDF
+              Generation</font><br/>
+             <img  src="./images/blackpixel.gif" height="1" width="240" alt="" /><br/><img  src="./images/transparent.gif" height="5" width="1" alt="" /><br/><table width="100%" border="0" cellspacing="0" cellpadding="0">
+<form name="pdf_generate">
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+
+
+
+  <tr>
+                  <td class="Body" valign="top">
+<table width="240" border="0" cellspacing="0" cellpadding="1" bgcolor="#333333">
+  <tr>
+    <td><table width="100%" border="0" cellspacing="0" cellpadding="4" bgcolor="#EEEEEE">
+  <tr>
+    <td class="SmallBody">
+
+	<!-- BEGIN PDFprofileBL -->
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td class="SmallBody" valign="top">&nbsp;<br/>{PDFPROFILE_DROPDOWN} </td>
+	<td class="SmallBody"><input type="button" name="xx" value="Go" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" onclick='PDFView();' /></td>
+  </tr>
+</table>
+&nbsp;<br>
+<font class="SmallBody"><b>Show Lines?</b></font><br/><input type="radio" name="showlines" value="yes" /> Yes &nbsp;&nbsp;&nbsp;<input type="radio" name="showlines" value="no" checked /> No<br/>
+	<font class="SmallBody"><b>Data Merge?</b></font><br/><input type="radio" name="datamerge" value="true" /> Yes &nbsp;&nbsp;&nbsp;<input type="radio" name="datamerge" value="" checked /> No
+
+	<!-- END PDFprofileBL -->
+
+	<!-- BEGIN NoPDFbl -->
+	<br/><br/>
+
+
+	No PDF Settings Yet.
+	<!-- END NoPDFbl -->
+
+
+	</td>
+  </tr>
+</table>
+</td>
+  </tr>
+</table>
+</td>
+  </tr>
+  </form>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+     </td>
+            <td valign="top" width="32%" class="Body" >
+              <!-- BEGIN multipleOrdersBL -->
+              <font class="AdminLabel">Multiple Projects Ordered</font><br/>
+<img  src="./images/blackpixel.gif" height="1" width="210" alt="" /><br/><img  src="./images/transparent.gif" height="4" width="1" alt="" /><br/>
+{MULTI_ORDERS_LINKS}
+
+<!-- BEGIN HideDropDownProjectLink -->
+<select class="AdminDropDown" style="font-size:10px;" name="projectlist" onChange="LinkToProject(this.value);">
+{PROJECT_LIST}
+</select>
+<!-- END HideDropDownProjectLink -->
+
+<!-- END multipleOrdersBL -->
+
+			  </td>
+  </tr>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<br/>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+            <td width="50%"><font class="AdminLabel">Tasks</font>&nbsp;&nbsp;</td>
+            <td width="50%" align="right"><input type="button" name="Generate" value="New Task" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" onClick="MakeNewTask('project', {PROJECT_RECORD}, true);" /></td>
+  </tr>
+</table>
+
+              <img  src="./images/blackpixel.gif" height="1" width="760" alt="" /><br/><img  src="./images/transparent.gif" height="5" width="1" alt="" /><br/>
+{TASKS}
+
+<br/>
+<br/>
+<br/>
+
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0" >
+<tr>
+            <td class="Body" width="98%" valign="top">
+<font class="AdminLabel">Message Threads</font>&nbsp;&nbsp;&nbsp;<input type="button" name="xx" onClick="SendInternalMessage('project', {PROJECT_RECORD}, false);" value="Create New" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" />
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td ><img src="./images/transparent.gif" height="2" width="2" alt="" /></td>
+  </tr>
+  <tr>
+    <td bgcolor="#000000"><img src="./images/transparent.gif" height="1" width="1" alt="" /></td>
+  </tr>
+  <tr>
+    <td ><img src="./images/transparent.gif" height="5" width="5" alt="" /></td>
+  </tr>
+</table>
+<!-- BEGIN MessageThreadBL -->
+<table width="100%" border="0" cellspacing="0" cellpadding="1" bgcolor="#333333">
+  <tr>
+    <td><table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td bgcolor="#FFFFFF" class="SmallBody" style="background-image: url(./images/admin/header-message.png); background-repeat: no-repeat;">
+
+	<table width="100%" border="0" cellspacing="0" cellpadding="2">
+  <tr>
+                              <td class="SmallBody" width="53%"><b>Subject:</b><br/>
+                                <font class="ReallySmallBody">{THREAD_SUB}</font></td>
+                              <td class="SmallBody" width="47%" align="center"> <a href="javascript:ReplyToInternalMessage('{THREADID}');" class="BlueRedLink">Reply</a> 
+                              
+                          <!-- BEGIN CloseMessageLinkBL -->
+                              <br/><a href='javascript:CloseUser("{THREADID}", "{UNREAD_MESSAGE_IDS}")' class='BlueRedLink'>Close</a>
+                          <!-- END CloseMessageLinkBL -->
+  
+                              </td>
+  </tr>
+</table>
+	</td>
+  </tr>
+</table></td>
+  </tr>
+</table>
+
+			{MESSAGE_BLOCK}<br/>
+<!-- END MessageThreadBL -->
+			</td>
+
+<td valign="top" width="1%" align="right"><img src="./images/transparent.gif" height="10" width="10" alt="" /></td>
+
+<td valign="top" width="1%" align="left">
+<font class="AdminLabel">Project Notes </font>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td ><img src="./images/transparent.gif" height="2" width="2" alt="" /></td>
+  </tr>
+  <tr>
+    <td bgcolor="#000000"><img src="./images/transparent.gif" height="1" width="1" alt="" /></td>
+  </tr>
+  <tr>
+    <td ><img src="./images/transparent.gif" height="5" width="5" alt="" /></td>
+  </tr>
+</table>
+
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0" >
+<tr>
+
+<!-- BEGIN AdminMessageBL  -->
+    <td valign="top" width="14%" align="right">&nbsp; </td>
+    <td width="38%" valign="top">
+      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+<form name="adminmessageform" action="./ad_actions.php" onSubmit="UpdateNote('admin')">
+			<input type="hidden" name="returl" value="{CURRENTURL}" />
+			<input type="hidden" name="notetype" value="project" />
+			<input type="hidden" name="projectid" value="{PROJECT_RECORD}" />
+			<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+			<input type="hidden" name="action" value="MessageAdmin" />
+  <tr>
+    <td>
+
+<table width="200 border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td class="Body"><font color="#000000">Admin</font></td>
+    <td align="right"><input type="submit" name="xx" value="Update" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" /></td>
+  </tr>
+</table>
+
+
+
+
+                      <textarea name="adminmessage" style="width:200px; height:90px; background-color:{MESSAGECOLOR_ADMIN}; font-size:11;" wrap="VIRTUAL">{ADMIN_MESSAGE}</textarea>
+                    </td>
+  </tr>
+ 			  </form>
+</table>
+
+
+&nbsp;
+
+
+
+</td>
+<!-- END AdminMessageBL  -->
+    <td valign="top" width="12%" align="right">&nbsp; </td>
+
+    <td valign="top" width="36%" align="right">
+      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+<form name="productionmessageform" action="./ad_actions.php" onSubmit="UpdateNote('production')">
+			<input type="hidden" name="returl" value="{CURRENTURL}" />
+			<input type="hidden" name="notetype" value="project" />
+			<input type="hidden" name="projectid" value="{PROJECT_RECORD}" />
+			<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+						<input type="hidden" name="action" value="MessageProduction" />
+  <tr>
+    <td>
+
+<table width="200 border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td class="Body"><font color="#000000">Production</font></td>
+    <td align="right"><input type="submit" name="xx" value="Update" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" /></td>
+  </tr>
+</table>
+
+
+
+
+              <textarea name="productionmessage" style="width:200px; height:90px; background-color:{MESSAGECOLOR_PRODUCTION}; font-size:11;" wrap="VIRTUAL">{PRODUCTION_MESSAGE}</textarea>
+
+	</td>
+  </tr>
+ 			  </form>
+</table>
+
+
+
+
+
+
+
+
+			</td>
+            </tr>
+</table>
+
+
+
+
+
+              </td>
+            </tr>
+</table>
+
+<br/>
+
+
+
+<!-- BEGIN CreateReprintBL -->
+<font class="AdminLabel">Create a Re-print</font>&nbsp;&nbsp;<font class="ReallySmallBody">(Defaults to same shipping method.)</font><br/><img  src="./images/blackpixel.gif" height="1" width="760" alt="" /><br/><img  src="./images/transparent.gif" height="5" width="1" alt="" /><br/>
+		<table width="100%" border="0" cellspacing="0" cellpadding="1" bgcolor="#999999">
+  <tr>
+    <td><table width="100%" border="0" cellspacing="0" cellpadding="3" bgcolor="#EEEEEE">
+	<form name="reprint">
+	<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+  <tr>
+                    <td class="Body" width="42%">
+                      <input type="hidden" name="returl" value="ad_order.php?projectorderid={PROJECT_RECORD}" />
+		<input type="hidden" name="projectrecord" value="{PROJECT_RECORD}" />
+
+<select class="AdminDropDown" name="reprinttype">
+			<option value="">-- Select a Re-print Type --</option>
+			  <option value="P">Company Reprint (S&amp;H Free)</option>
+			  <option value="H">Company Reprint (Customer Pays S&amp;H)</option>
+			  <option value="C">Customer Reprint (50% plus S&amp;H)</option>
+			  <option value="F">Customer Reprint (No Discount)</option>
+			  </select>
+</td>
+                    <td class="Body" width="30%">
+                      <select class="AdminDropDown" name="reprintreason">
+<option value="">-- What is the reason? --</option>
+{REPRINT_REASON_CHOICES}
+</select>
+</td>
+                    <td class="Body" width="28%">
+                      <input type="button" name="Generate" value="Create Re-print" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" onClick="CreateRePrint();" />
+                    </td>
+  </tr>
+  </form>
+</table></td>
+  </tr>
+</table>
+&nbsp;
+<!-- END CreateReprintBL -->
+<!-- BEGIN EmptyRePrintBL -->
+<br/>
+<br/>
+<font class="AdminLabel">Re-prints Already Issued </font>
+<br/><img  src="./images/blackpixel.gif" height="1" width="760" alt="" /><br/><img  src="./images/transparent.gif" height="5" width="1" alt="" /><br/>
+<table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#999999">
+  <tr>
+    <td><table width="100%" border="0" cellspacing="1" cellpadding="3">
+
+  <tr bgcolor="#FFDDFF">
+                  <td class="SmallBody" width="10%">ID</td>
+                  <td class="SmallBody" width="13%">Created</td>
+
+                  <td class="SmallBody" width="13%">C. Shipping</td>
+				  <td class="SmallBody" width="11%">Ship Method</td>
+				  <td class="SmallBody" width="12%">C. Discount</td>
+
+				  <td class="SmallBody" width="13%">V. Subtotal</td>
+				  <td class="SmallBody" width="28%">Reason</td>
+
+  </tr>
+    <form >
+    <input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+  <!-- BEGIN rePrintBl -->
+
+
+   <tr bgcolor="#F0ECF0">
+                    <td class="SmallBody" width="10%" align="center">{RP_DESC}</td>
+                    <td class="SmallBody" width="13%">{RP_CREATED}</td>
+
+                    <td class="SmallBody" width="13%">{S_START} ${RP_C_SHIP} {S_END}</td>
+				    <td class="SmallBody" width="11%">{S_START} {RP_SHIP_M} {S_END}</td>
+
+
+                    <td class="SmallBody" width="12%">{S_START} {RP_C_DISC} {S_END}</td>
+                    <td class="SmallBody" width="13%">{S_START} ${RP_V_SUB} {S_END}</td>
+				    <td class="SmallBody" width="28%">
+                      <!-- BEGIN UpdateReprintNoteBL -->
+<select class="AdminDropDown" name="reprintreason" onChange="ChangeReprintReason(this.value, {ID_REPRINT});">
+{REPRINT_ITEM_REASON_CHOICES}
+</select>
+
+                      <!-- END UpdateReprintNoteBL -->
+                    </td>
+
+  </tr>
+
+  <!-- END rePrintBl -->
+   </form>
+</table></td>
+  </tr>
+</table>
+<!-- END EmptyRePrintBL -->
+
+        &nbsp;<br/><br/>
+{MAILING_BATCH}
+
+<br/>&nbsp;<br/></td>
+</tr>
+</table>
+<table width="760" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="360" class="NavColor"><img src="./images/footer.gif" border="0" width="350" height="16" usemap="#footer" alt="" /></td>
+	<td width="400" align="right" class="NavColor"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+  </tr>
+</table>
+<font class="copyright"> </font>
+</div>
+&nbsp;
+<script type="text/javascript" src="./library/ImageMap-footer.js"></script>
+</body>
+</html>

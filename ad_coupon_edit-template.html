@@ -1,0 +1,409 @@
+<HTML>
+<HEAD>
+<TITLE>{TITLE}</TITLE>
+<link rel="stylesheet" href="./library/stylesheet.css" type="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<SCRIPT language="javascript">
+
+	function CheckForm(){
+		var ErrorMsg = "";
+
+		FormObj = document.forms["couponForm"];
+
+		if(FormObj.Code.value.search(/^[^0]+[\dA-Za-z\-]+$/) == -1)
+			ErrorMsg += "* The Coupon Code must only contain letter and numbers and it may not begin with a zero (hyphens are OK).\n";
+		if(FormObj.Code.value.search(/^X/) != -1)
+			ErrorMsg += "* The Coupon Code may not begin with X\n";
+		if(FormObj.Name.value.search(/^\s*$/) != -1)
+			ErrorMsg += "* The description can not be left blank.\n";
+
+
+		if(FormObj.DiscountPercent.value.search(/^\d+$/) == -1)
+			ErrorMsg += "* The Discount Percent must be numeric.\n";
+		else{
+			if(parseFloat(FormObj.DiscountPercent.value) > 100)
+				ErrorMsg += "* The Discount Percent may not be greater than 100.\n";
+		}
+
+		if(FormObj.MaxAmount.value.search(/^(0|\d+|\d+\.\d{1,2})$/) == -1)
+			ErrorMsg += "* Max amount must be an integer or decimal value.  For no Max Amount, enter 0.\n";
+
+		if(FormObj.MinimumSubtotal.value.search(/^(0|\d+|\d+\.\d{1,2})$/) == -1)
+			ErrorMsg += "* Minimum Subtotal must be an integer or decimal value.  For no minimum, enter 0.\n";
+
+		if(FormObj.MaximumSubtotal.value.search(/^(\d*|\d+\.\d{1,2})$/) == -1 || FormObj.MaximumSubtotal.value == "0")
+			ErrorMsg += "* Maximum Subtotal must be an integer or decimal value (not zero).  For no maximum, leave blank.\n";
+
+		if(FormObj.ProjectMinQuantity.value.search(/^\d+$/) == -1)
+			ErrorMsg += "* Minumum Project Quantity must be an integer.  For no minumum set to zero.\n";
+
+		if(FormObj.ProjectMaxQuantity.value.search(/^\d*$/) == -1 || FormObj.ProjectMaxQuantity.value == "0")
+			ErrorMsg += "* Maximum Project Quantity must be an integer (not zero).  For no maximum, leave blank.\n";
+
+		if(FormObj.ShippingDiscount.value.search(/^(0|\d+|\d+\.\d{1,2})$/) == -1)
+			ErrorMsg += "* Shipping Discount amount must be an integer or decimal value.  For no Shipping Discount, enter 0.\n";
+
+		if(FormObj.UsageLimit.value.search(/^\d*$/) == -1)
+			ErrorMsg += "* Usage Limit must be a positive value.\n";
+
+		if(FormObj.WithinFirstOrders.value.search(/^\d*$/) == -1)
+			ErrorMsg += "* Within First Orders value must be a positive value.\n";
+
+		if(FormObj.SalesLink.value.search(/^\d*$/) == -1)
+			ErrorMsg += "* Sales Link must be a positive number, or just left blank.\n";
+
+		if(FormObj.ExpireDate.value != ""){
+			if(FormObj.ExpireDate.value.search(/^(\d{2}\/\d{2}\/\d{2,4})*$/) == -1)
+				ErrorMsg += "* The date is not in the right format.\n";
+		}
+
+		if(FormObj.OptionName.value != "" || FormObj.OptionChoices.value != ""){
+			if(FormObj.OptionName.value == "" || FormObj.OptionChoices.value == "")
+				ErrorMsg += "* If you are adding a new Option Name / Choice, both fields may not be blank.\n";
+		}
+
+
+		if(ErrorMsg != ""){
+			alert(ErrorMsg);
+			return false;
+		}
+
+		if(FormObj.ProjectMaxQuantity.value != "" && parseInt(FormObj.ProjectMaxQuantity.value) < parseInt(FormObj.ProjectMinQuantity.value)){
+			alert("* The maximum project quantity can not be less than the minimum.\n");
+			return false;
+		}
+
+		if(FormObj.MaximumSubtotal.value != "" && parseFloat(FormObj.MaximumSubtotal.value) < parseFloat(FormObj.MinimumSubtotal.value)){
+			alert("* The maximum subtotal can not be less than the minimum.\n");
+			return false;
+		}
+
+		return true;
+
+	}
+
+	function DeleteChoice(OptionName, OptionChoice){
+
+		if(confirm("Are you sure that you want to delete the option...\n\n" + OptionName + " - " + OptionChoice + "\n\nYou will lose any unsaved changes since this page has loaded.")){
+			document.location = "./ad_coupon_edit.php?view=edit&Code={CP_CODE}&form_sc={FORM_SECURITY_CODE}&Cmd=DeleteOptionChoice&OptionName=" + escape(OptionName) + "&OptionChoice=" + escape(OptionChoice);
+		}
+	}
+	
+	function DeleteNoDiscountForChoice(OptionName, OptionChoice){
+
+		if(confirm("Are you sure that you want to delete the option for which discounts do not apply...\n\n" + OptionName + " - " + OptionChoice + "\n\nYou will lose any unsaved changes since this page has loaded.")){
+			document.location = "./ad_coupon_edit.php?view=edit&Code={CP_CODE}&form_sc={FORM_SECURITY_CODE}&Cmd=DeleteNoDiscountOptionChoice&NoDiscOptionName=" + escape(OptionName) + "&NoDiscOptionChoice=" + escape(OptionChoice);
+		}
+	}
+	
+	
+	
+</SCRIPT>
+</HEAD>
+<BODY bgcolor="#3366CC" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="window.resizeTo(638,665);">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<FORM method="post" name="couponForm" action="./ad_coupon_edit.php" onsubmit="return CheckForm();">
+	<input type="hidden" name="Cmd" value="{COMMAND}" />
+	<input type="hidden" name="view" value="{VIEW}" />
+	<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+	<!-- BEGIN EditInfoBL -->
+	<input type="hidden" name="Code" value="{CP_CODE}" />
+	<!-- END EditInfoBL -->
+  <tr>
+    <td align="center"><img src="images/transparent.gif" width="10" height="10" alt="" /><table  border="0" cellspacing="0" cellpadding="0" bgcolor="#cccccc" width="580">
+  <tr>
+    <td>
+	    <TABLE class="Body" width="100%" align="center" cellpadding="5" cellspacing="1" border="0">
+          <TR>
+			<TD colspan="2" align="center" height="20" bgcolor="#CCCCCC" style="background-image: url(./images/admin/header-shipping.png); background-repeat: no-repeat;">
+				<FONT color="#000000"><B>{TITLE}</B>
+			</FONT></TD>
+		</TR>
+		<TR>
+			<TD colspan="2" class="Error" bgcolor="#EEEEEE">&nbsp;&nbsp;{ERROR_TEXT}</TD>
+		</TR>
+		  <TR >
+            <TD align="right" width="141" bgcolor="#eeeeee">Code:&nbsp;</TD>
+
+            <TD width="416" bgcolor="#eeeeee">
+              <!-- BEGIN NewCodeBL -->
+              <input type="text" class="InputBox" name="Code" value="{CP_CODE}" maxlength="20" style="width:120px; background-color:#FFFFFF" />
+				<!-- END NewCodeBL -->
+				<!-- BEGIN CodeROBL --><B>{CP_CODE}</B><!-- END CodeROBL -->
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			&nbsp;&nbsp;
+			    <input type="checkbox" name="IsActive" value="TRUE" {ACTIVE} />
+				Active &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				<input type="checkbox" name="ActReq" value="TRUE" {ACTREQ} />Needs Activation
+
+		</TD>
+		</TR>
+		  <TR >
+            <TD align="right" width="141" bgcolor="#eeeeee">Short Description:&nbsp;</TD>
+
+            <TD width="416" bgcolor="#eeeeee">
+              <input type="text" class="InputBox" name="Name" value="{CP_NAME}" maxlength="120" style="width:210px; background-color:#FFFFFF" />
+			</TD>
+		</TR>
+		  <TR >
+            <TD align="right" width="141" bgcolor="#eeeeee">Category:&nbsp;</TD>
+
+            <TD width="416" bgcolor="#eeeeee"> {CATEGORYSELS} </TD>
+		</TR>
+
+          <TR>
+            <TD align="right" width="141" bgcolor="#eeeeee">Products:&nbsp;<br/><font class="SmallBody">(discount applied to)</font>&nbsp;</TD>
+
+            <TD width="416" bgcolor="#eeeeee">
+              <select name="ProductIDs[]" height="6" size="6" class="AdminDropDown" multiple >
+	  {PRODUCTIDSSEL}
+	  </select>
+	  <br/><font class="ReallySmallBody" > (Discounts will only be applied to products selected in this list.)</font>
+	</TD>
+		</TR>
+          <TR>
+            <TD align="right" width="141" bgcolor="#eeeeee">Product Bundle:&nbsp;</TD>
+
+            <TD width="416" bgcolor="#eeeeee">
+              <select name="ProductBundleIDs[]" height="6" size="6" class="AdminDropDown" multiple >
+	  {PRODUCTBUNDLESEL}
+	  </select>
+	  <br/>
+                    <font class="ReallySmallBody">Coupon will not work unless
+                    all of these Products are in the user's shopping cart.</font>
+                  </TD>
+		</TR>
+          <TR>
+            <TD align="right" width="141" bgcolor="#eeeeee" nowrap="nowrap">Product Options:&nbsp;<br/><nobr><font class="ReallySmallBody">Must match for coupon to work:</font>&nbsp;</nobr></TD>
+
+            <TD width="416" bgcolor="#eeeeee">
+			<table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#DDDDEE">
+  <tr>
+    <td font class="SmallBody">&nbsp;&nbsp;<b>Add a New Option / Choice(s) Entry</b></td>
+  </tr>
+</table>
+             <table width="100%" border="0" cellspacing="0" cellpadding="3" bgcolor="#DDDDDD">
+
+   <tr>
+    <td class="SmallBody" valign="top">Option Name<br/><input type="text" class="InputBox" name="OptionName" value="" maxlength="20" style="width:150px;" /></td>
+	<td class="SmallBody" valign="top">Option Choice(s)<br/><input type="text" class="InputBox" name="OptionChoices" value="" maxlength="40" style="width:200px;" /><br/><font class="ReallySmallBody">(Separate multiple choices with commas.)</font></td>
+  </tr>
+</table>
+&nbsp;
+
+<!-- BEGIN EmptyProductOptionsBL -->
+<br/>
+<font class="SmallBody"><b>Current Option / Choice Entries</b></font>
+<table width="80%" border="0" cellspacing="0" cellpadding="0" bgcolor="#FFCCCC">
+  <tr>
+    <td>
+<table width="100%" border="0" cellspacing="1" cellpadding="2">
+<!-- BEGIN OptionNamesBl -->
+  <tr>
+                              <td class="SmallBody" width="45%" bgcolor="#e6e6e6" valign="top">{OPTION_NAME}</td>
+	                          <td class="SmallBody" width="55%" bgcolor="#e6e6e6" valign="top">{OPTION_CHOICES}</td>
+  </tr>
+ <!-- END OptionNamesBl -->
+</table>
+</td>
+  </tr>
+</table>
+<!-- END EmptyProductOptionsBL -->
+
+	  <br/><font class="ReallySmallBody">Product options that must be selected in order for the coupon to be effective. <br/>
+No options listed means there are no requirements.<br/>Coupon won't work on products that don't have Option Name/Choices listed here.<br/>Multiple Choices for an Option Name require the order to match at least one choice.<br/><img src="images/transparent.gif" width="1" height="1" alt="" /></font></TD>
+		</TR>
+		
+<TR>
+            <TD align="right" width="141" bgcolor="#eeeeee">Product Options:&nbsp;<br/><font class="ReallySmallBody">Discounts don't apply to:</font>&nbsp;</TD>
+
+            <TD width="416" bgcolor="#eeeeee">
+			<table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#DDDDEE">
+  <tr>
+    <td font class="SmallBody">&nbsp;&nbsp;<b>Add a New Option / Choice(s) Entry</b></td>
+  </tr>
+</table>
+             <table width="100%" border="0" cellspacing="0" cellpadding="3" bgcolor="#DDDDDD">
+
+   <tr>
+    <td class="SmallBody" valign="top">Option Name<br/><input type="text" class="InputBox" name="NoDiscOptionName" value="" maxlength="20" style="width:150px;" /></td>
+	<td class="SmallBody" valign="top">Option Choice(s)<br/><input type="text" class="InputBox" name="NoDiscOptionChoices" value="" maxlength="40" style="width:200px;" /><br/><font class="ReallySmallBody">(Separate multiple choices with commas.)</font></td>
+  </tr>
+</table>
+&nbsp;
+
+<!-- BEGIN EmptyNoDiscountProductOptionsBL -->
+<br/>
+<font class="SmallBody"><b>Current Option / Choice Entries</b></font>
+<table width="80%" border="0" cellspacing="0" cellpadding="0" bgcolor="#FFCCCC">
+  <tr>
+    <td>
+<table width="100%" border="0" cellspacing="1" cellpadding="2">
+<!-- BEGIN OptionNamesNoDiscountBl -->
+  <tr>
+                              <td class="SmallBody" width="45%" bgcolor="#e6e6e6" valign="top">{NODISC_OPTION_NAME}</td>
+	                          <td class="SmallBody" width="55%" bgcolor="#e6e6e6" valign="top">{NODISC_OPTION_CHOICES}</td>
+  </tr>
+ <!-- END OptionNamesNoDiscountBl -->
+</table>
+</td>
+  </tr>
+</table>
+<!-- END EmptyNoDiscountProductOptionsBL -->
+
+	  <br/><font class="ReallySmallBody">If a project has certain options selected that match an entry here, then the discount of the coupon will not apply to that selection.  For example, if &quot;Postage Type - First Class&quot; is added here and the discount is 50% off, then the discount will only appy to the printing, no discount will be given for the cost of postage. <br/><img src="images/transparent.gif" width="1" height="1" alt="" /></font></TD>
+		</TR>
+		
+		  <TR>
+            <TD align="right" width="141" bgcolor="#eeeeee">Discount %:&nbsp;</TD>
+
+            <TD width="416" bgcolor="#eeeeee">
+              <input type="text" class="InputBox" name="DiscountPercent" value="{CP_DISCOUNT}" maxlength="3" style="width:40px; background-color:#FFFFFF" />
+			</TD>
+		</TR>
+		  <TR>
+            <TD align="right" width="141" bgcolor="#eeeeee">Max Discount $:&nbsp;</TD>
+
+            <TD width="416" bgcolor="#eeeeee">
+              <input type="text" class="InputBox" name="MaxAmount" value="{MAX_AMOUNT}" maxlength="6" style="width:60px; background-color:#FFFFFF" />
+			 &nbsp;&nbsp;&nbsp; <input type="radio" name="MaxDiscType" value="order" {MAX_DISC_TYPE_ORDER} /><font class="ReallySmallBody">Order Level &nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" name="MaxDiscType" value="project" {MAX_DISC_TYPE_PROJECT} />Project Level&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" name="MaxDiscType" value="quantity" {MAX_DISC_TYPE_QUANTITY} />Per Quantity</font>
+			  <br/>
+			  <SPAN class="ReallySmallBody"> (An amount that the discount % is limited to. Use 0 for no limit.)</SPAN>
+			</TD>
+		</TR>
+
+
+		  <TR >
+            <TD align="right" width="141" bgcolor="#eeeeee">S&amp;H Discount $:&nbsp;</TD>
+
+            <TD width="416" bgcolor="#eeeeee">
+              <input type="text" class="InputBox" name="ShippingDiscount" value="{SH_DISCOUNT}" maxlength="6" style="width:60px; background-color:#FFFFFF" /><SPAN class="ReallySmallBody"> (An amount to be subtracted from the S&amp;H charges.)</SPAN>
+			</TD>
+		</TR>
+
+		  <TR >
+            <TD align="right" width="141" bgcolor="#eeeeee">Min Subtotal:&nbsp;</TD>
+
+            <TD width="416" bgcolor="#eeeeee">
+              <input type="text" class="InputBox" name="MinimumSubtotal" value="{MIN_SUBTOTAL}" maxlength="7" style="width:60px; background-color:#FFFFFF" /><SPAN class="ReallySmallBody"> (Minimum amount in shopping cart before the coupon will work.)</SPAN>
+			</TD>
+		</TR>
+		  <TR >
+            <TD align="right" width="141" bgcolor="#eeeeee">Max Subtotal:&nbsp;</TD>
+
+            <TD width="416" bgcolor="#eeeeee">
+              <input type="text" class="InputBox" name="MaximumSubtotal" value="{MAX_SUBTOTAL}" maxlength="7" style="width:60px; background-color:#FFFFFF" /><SPAN class="ReallySmallBody"> (Coupon won't work if shopping cart subtotal is greater than this.)</SPAN>
+			</TD>
+		</TR>
+
+
+		  <TR >
+            <TD align="right" width="141" bgcolor="#eeeeee">Min Project Qty:&nbsp;</TD>
+
+            <TD width="416" bgcolor="#eeeeee">
+              <input type="text" class="InputBox" name="ProjectMinQuantity" value="{MIN_QUANTITY}" maxlength="7" style="width:60px; background-color:#FFFFFF" /><SPAN class="ReallySmallBody"> (Coupon only applies to projects with quantities greater than or equal.)</SPAN>
+			</TD>
+		</TR>
+		  <TR >
+            <TD align="right" width="141" bgcolor="#eeeeee">Max Project Qty:&nbsp;</TD>
+
+            <TD width="416" bgcolor="#eeeeee">
+              <input type="text" class="InputBox" name="ProjectMaxQuantity" value="{MAX_QUANTITY}" maxlength="7" style="width:60px; background-color:#FFFFFF" /><SPAN class="ReallySmallBody"> (Coupon only applies to projects with quantities less than or equal.)</SPAN>
+			</TD>
+		</TR>
+
+		  <TR>
+            <TD align="right" width="141" bgcolor="#eeeeee">Usage Limit:&nbsp;</TD>
+
+            <TD width="416" bgcolor="#eeeeee">
+              <input type="text" class="InputBox" name="UsageLimit" value="{CP_USAGELIMIT}" maxlength="2" style="width:40px; background-color:#FFFFFF" />
+			    <SPAN class="ReallySmallBody">(Leave blank if unlimited use)</SPAN>
+			</TD>
+		</TR>
+
+
+		  <TR>
+            <TD align="right" width="141" bgcolor="#eeeeee">Within First Orders:&nbsp;</TD>
+
+            <TD width="416" bgcolor="#eeeeee">
+              <input type="text" class="InputBox" name="WithinFirstOrders" value="{CP_WITHINFIRSTORDERS}" maxlength="2" style="width:40px; background-color:#FFFFFF" />
+			    <SPAN class="ReallySmallBody">(Coupon must be used within the first X number of orders by the Customer)</SPAN>
+			</TD>
+		</TR>
+
+
+
+		  <TR>
+            <TD  align="right" width="141" bgcolor="#eeeeee">Expiration Date:&nbsp;</TD>
+
+            <TD width="416" bgcolor="#eeeeee">
+              <input type="text" class="InputBox" name="ExpireDate" value="{CP_EXPIREDATE}"  maxlength="20" style="width:150px; background-color:#FFFFFF" />
+				<SPAN class="ReallySmallBody">(Leave blank if no expiration) MM/DD/YY</SPAN>
+			</TD>
+		</TR>
+		  <TR>
+            <TD align="right" width="141" bgcolor="#eeeeee">Comments:&nbsp;</TD>
+
+            <TD width="416" bgcolor="#eeeeee">
+              <input type="text" class="InputBox" name="Comments" value="{CP_COMMENTS}" maxlength="200" style="width:310px; background-color:#FFFFFF" />
+			</TD>
+		</TR>
+
+
+          <TR>
+            <TD align="right" width="141" bgcolor="#eeeeee">Proofing Alert:&nbsp;</TD>
+
+            <TD width="416" bgcolor="#eeeeee">
+              <input type="text" class="InputBox" name="ProofingAlert" value="{CP_PROOFINGALERT}" maxlength="200" style="width:310px; background-color:#FFFFFF" />
+			</TD>
+		</TR>
+          <TR>
+            <TD align="right" width="141" bgcolor="#eeeeee">Production Alert:&nbsp;</TD>
+
+            <TD width="416" bgcolor="#eeeeee">
+              <input type="text" class="InputBox" name="ProductionNote" value="{CP_PRODUCTIONNOTE}" maxlength="200" style="width:310px; background-color:#FFFFFF" />
+			</TD>
+		</TR>
+		<!-- BEGIN AdminSalesLink -->
+		  <TR>
+            <TD  align="right" width="141" bgcolor="#eeeeee">Sales Link:&nbsp;</TD>
+
+            <TD width="416" bgcolor="#eeeeee">
+              <input type="text" class="InputBox" name="SalesLink" value="{CP_SALESLINK}"  maxlength="20" style="width:110px; background-color:#FFFFFF" />
+				<SPAN class="ReallySmallBody">(The Account Number of a Sales Person)</SPAN>
+			</TD>
+		</TR>
+		<!-- END AdminSalesLink -->
+		<!-- BEGIN GeneralSalesLink -->
+		  <TR>
+            <TD  align="right" width="141" bgcolor="#eeeeee">Sales Link:&nbsp;</TD>
+
+            <TD width="416" class="SmallBody" bgcolor="#eeeeee"><img  src="./images/transparent.gif" width="5" height="5" alt="" /><br/>
+        &nbsp;&nbsp;{SALES_LINK_MESSAGE} <br/>
+        <img src="./images/transparent.gif" width="5" height="5" alt="" /></TD>
+		</TR>
+		<!-- END GeneralSalesLink -->
+
+    </TABLE>
+</td>
+  </tr>
+  <tr>
+  <td bgcolor="#EEEEEE" align="center">			    <HR size="1" width="95%" >
+				<input type="submit" value="Save" class="AdminButton" onmouseover="this.style.background='#ffeeaa';" onmouseout="this.style.background='#FFFFDD';" />
+				  &nbsp;&nbsp;
+				<input type="button" value="Cancel" class="AdminButton" onmouseover="this.style.background='#ffeeaa';" onmouseout="this.style.background='#FFFFDD';" onclick="window.close();" /></td>
+  </tr>
+</table>
+	<table width="500" border="0" cellspacing="0" cellpadding="0" align="center">
+  <tr>
+    <td><img src="images/header-editoptions-fade-bot.gif" width="580" alt="" /></td>
+  </tr>
+</table>
+
+</td>
+  </tr>
+  </FORM>
+</table>
+</BODY>
+</HTML>

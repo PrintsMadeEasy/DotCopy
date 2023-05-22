@@ -1,0 +1,1027 @@
+<html>
+<head>
+<title>Admin</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<script language="javascript">
+
+	//Make an array of the images we want to preload for the mouse-overs.
+	arImageSrc = new Array (
+		"./images/admin/icon_shipping-open.png"
+	)
+
+	//Preload images.
+	arImageList = new Array ();
+	for (counter in arImageSrc) {
+		arImageList[counter] = new Image();
+		arImageList[counter].src = arImageSrc[counter];
+	}
+	function MoveToNewShipment(ShipmentLinkID, Quantity){
+		alert("This feature has temporarily been disabled.");
+		return;
+
+
+		var Result = prompt("How many would you like to move into a new shipment?", Quantity);
+		if(Result){
+			if(Result.search(/^\d+$/) == -1){
+				alert("Invalid Quantity");
+			}
+			else if(parseInt(Result) > parseInt(Quantity)){
+				alert("The quantity you are trying to move is too large.");
+			}
+			else if(parseInt(Result) == 0){
+				alert("The quantity must be greater than Zero.");
+			}
+			else{
+				document.location = "./ad_order.php?action=movetonewshipment&form_sc={FORM_SECURITY_CODE}&orderno={MAIN_ORDERID}&shipmentlink=" + ShipmentLinkID + "&quantity=" + Result + "&returl={CURRENTURL_ENCODED}";
+			}
+		}
+	}
+
+	function ChangeShipmentMethodItem(ShipmentID, ShipmentValue){
+		if(confirm("Are you sure that you want to change the shipment method of this pacakge?\n\nNormally this is done by changing the master shipping method.")){
+			document.location = "./ad_order.php?action=changeshipmentmethod&form_sc={FORM_SECURITY_CODE}&orderno={MAIN_ORDERID}&shipmentid=" + ShipmentID + "&shippingmethod=" + ShipmentValue + "&returl={CURRENTURL_ENCODED}";
+		}
+		else{
+			document.location = document.location;
+		}
+	}
+	function ChangePackageWeight(ShipmentID, Weight){
+			document.location = "./ad_order.php?action=changepackageweight&form_sc={FORM_SECURITY_CODE}&orderno={MAIN_ORDERID}&shipmentid=" + ShipmentID + "&weight=" + Weight + "&returl={CURRENTURL_ENCODED}";
+
+	}
+	
+	function ResetShipments(){
+			document.location = "./ad_order.php?action=resetShipment&form_sc={FORM_SECURITY_CODE}&orderno={MAIN_ORDERID}&returl={CURRENTURL_ENCODED}";
+	}
+	
+	function merchantWindow(address){
+		newWindow = window.open(address, "merchant", "height=695,width=780,directories=no,location=no,menubar=yes,scrollbars=yes,status=no,toolbar=yes,resizable=yes");
+	}
+
+	function ShowLoginLink(text){
+		document.formlink.loginlink.value = text;
+	}
+
+	function ChangeShippingAddress(){
+		document.forms["shippingaddressform"].submit();
+	}
+	function UpdateInvoiceMessage(){
+
+		var InvoiceMessage = document.forms["invoicemessageform"].invoicemessage.value;
+
+		if(InvoiceMessage.length > 60){
+			alert("The invoice message can not exceed 60 characters.");
+			return false;
+		}
+		else{
+			return true;
+		}
+	}
+
+	function makeNewAdjusmentWindow(){
+		var address = "./ad_adjustment_create.php?orderno={MAIN_ORDERID}";
+		newWindow = window.open(address, "subwindow34", "height=380,width=450,directories=no,location=no,menubar=no,scrollbars=no,status=no,toolbar=no,resizable=no");
+		newWindow.focus();
+	}
+
+	function ShowShedule(){
+		var address = "./ad_schedule.php?view=small";
+		newWindow = window.open(address, "calendar", "height=500,width=800,directories=no,location=no,menubar=no,scrollbars=yes,status=no,toolbar=no,resizable=yes");
+		newWindow.focus();
+	}
+
+
+	function ChangeShippingTotal(ShippingTotal){
+		if(ShippingTotal.search(/^\d+(\.\d{1,2})?$/) == -1){
+			alert("Fix the shipping total first.");
+		}
+		else{
+			 document.location = "./ad_order.php?action=changeshippingtotal&form_sc={FORM_SECURITY_CODE}&orderno={MAIN_ORDERID}&returl={CURRENTURL_ENCODED}&shippingtotal=" + ShippingTotal;
+		}
+	}
+
+	function ShippingAddressHistory(){
+		newWindow = window.open("./ad_shippingaddresshistory.php?orderid={MAIN_ORDERID}", "shippingaddresshistory", "height=295,width=490,directories=no,location=no,menubar=no,scrollbars=yes,status=no,toolbar=no,resizable=no");
+		newWindow.focus();
+	}
+
+
+	function makeNewWindow2(address){
+		newWindow = window.open(address, "subwindow2", "height=395,width=375,directories=no,location=no,menubar=no,scrollbars=no,status=no,toolbar=no,resizable=no");
+		newWindow.focus();
+	}
+	function makeNewWindow4(address){
+		newWindow = window.open(address, "subwindow4", "height=425,width=450,directories=no,location=no,menubar=no,scrollbars=yes,status=yes,toolbar=no,resizable=no");
+		newWindow.focus();
+	}
+
+	function CombineShipments(){
+		alert("This feature has temporarily been disabled.");
+		return;
+
+		var ShipmentIDList = GetCheckedIDs();
+		if(ShipmentIDList){
+			document.location = "./ad_order.php?action=combineshipments&form_sc={FORM_SECURITY_CODE}&orderno={MAIN_ORDERID}&shipmentidlist=" + ShipmentIDList + "&returl={CURRENTURL_ENCODED}";
+		}
+	}
+
+	function GetCheckedIDs(){
+
+		var ChboxObj = document.shipmentlist.sid;
+		var counter = 0;
+		var ReturnStr = "";
+
+		for(var i=0; i < (ChboxObj.length); i++){
+
+			if(ChboxObj[i].checked == true){
+				//Pipe separated string of ShipmentIDs
+				ReturnStr += ChboxObj[i].value + "|";
+				counter++;
+			}
+		}
+
+		if(counter < 2){
+			alert("At least 2 shipments must be marked.");
+			return false;
+		}
+		else{
+			return ReturnStr;
+		}
+	}
+
+	function RefreshShippingMethods(){
+		var shippingAddress = "ad_shippingmethods_refresh.php?orderno={MAIN_ORDERID}"
+		newWindow = window.open(shippingAddress, "refreshShippingMethods", "height=240,width=420,directories=no,location=no,menubar=no,scrollbars=no,status=yes,toolbar=no,resizable=no");
+		newWindow.focus();
+
+
+	}
+
+
+	function LinkToProject(ProjectID){
+		document.location = "./ad_project.php?projectorderid=" + ProjectID;
+	}
+
+	//Allways increate a global variable  to ensure that the fly open layer is always on top
+	var ZindexCouter = 5;
+
+	//divShow  --- True means show layer, false means hide it
+	function showProjectInfo(ProjectNumber, divShow) {
+
+		var spanname = "projectlayer" + ProjectNumber;
+		var spanname2 = "projecthistory" + ProjectNumber;
+		var divname = "projectdiv" + ProjectNumber;
+
+		if (divShow) {
+			ZindexCouter++;
+			ZindexCouter++;
+
+			document.all(spanname).style.visibility = "visible";
+			document.all(spanname).style.zIndex = ZindexCouter;
+			document.all(spanname2).style.visibility = "visible";
+			document.all(spanname2).style.zIndex = ZindexCouter + 1;
+			document.all(divname).style.zIndex = ZindexCouter + 2;
+		}
+		else{
+			document.all(spanname).style.visibility = "hidden";
+			document.all(spanname2).style.visibility = "hidden";
+		}
+
+	}
+
+	function showShipMethodHistory(divShow) {
+
+		var spanname = "ShippingMethodHistorySpan";
+		var divname = "ShippingMethodHistoryDiv";
+
+		if (divShow) {
+			ZindexCouter++;
+			ZindexCouter++;
+
+			document.all(spanname).style.visibility = "visible";
+			document.all(spanname).style.zIndex = ZindexCouter;
+			document.all(divname).style.zIndex = ZindexCouter + 2;
+		}
+		else{
+			document.all(spanname).style.visibility = "hidden";
+
+		}
+	}
+
+	function CloseUser(ThreadID, PipedIDlist){
+		document.location = "./ad_actions.php?returl={CURRENTURL}&form_sc={FORM_SECURITY_CODE}&action=markmessageread&messagelist=" + PipedIDlist + "&form_sc={FORM_SECURITY_CODE}";
+	}
+
+
+	function AddReturnedPackageMessage(NotifyID){
+		var TheMessage = prompt("Enter a message that you would like to record about this order.", "");
+
+		if(!TheMessage || TheMessage == "")
+			return;
+
+		document.forms["newMessageForm"].notificationid.value = NotifyID;
+		document.forms["newMessageForm"].message.value = TheMessage;
+		document.forms["newMessageForm"].submit();
+	}
+
+	function CloseReturnedPackageNotification(NotifyID){
+		if(confirm("Are you sure that you want to close this Returned Package Notification?")){
+			document.location = "./ad_returnedpackages.php?action=closenotification&form_sc={FORM_SECURITY_CODE}&returnurl={CURRENTURL_ENCODED}&notificationid=" + NotifyID;
+		}
+	}
+
+	function EstOrderDateYesterday(){
+		document.forms["shipdatechange"].month.value = "{YESTERDAY_MONTH}";
+		document.forms["shipdatechange"].day.value = "{YESTERDAY_DAY}";
+		document.forms["shipdatechange"].year.value = "{YESTERDAY_YEAR}";
+	}
+	function EstOrderDateToday(){
+		document.forms["shipdatechange"].month.value = "{TODAY_MONTH}";
+		document.forms["shipdatechange"].day.value = "{TODAY_DAY}";
+		document.forms["shipdatechange"].year.value = "{TODAY_YEAR}";
+	}
+	function EstOrderDateMorning(){
+		document.forms["shipdatechange"].hour.value = "7";
+		document.forms["shipdatechange"].minute.value = "00";
+		document.forms["shipdatechange"].ampm.value = "am";
+	}
+	function EstOrderDateAfternoon(){
+		document.forms["shipdatechange"].hour.value = "4";
+		document.forms["shipdatechange"].minute.value = "00";
+		document.forms["shipdatechange"].ampm.value = "pm";
+	}
+
+	function ShippingCalculator(){
+		var shippingCalcaddress = "./ad_shippingcalculator.php?zip={SHIPPING_ZIP}&state={SHIPPING_STATE_ENCODED}&country={SHIPPING_COUNTRY}&shippingChoiceID={CUSTOMER_SHIPPING_CHOICEID}&city={SHIPPING_CITY_ENCODED}&isResidential={IS_RESIDENTIAL_SHIPPING}&productID={DEFAULT_PRODUCTID_SHIPPING_CALCULATOR}&quantity={DEFAULT_QUANTITY_SHIPPING_CALCULATOR}"
+		newWindow = window.open(shippingCalcaddress, "shippingcalc", "height=230,width=630,directories=no,location=no,menubar=no,scrollbars=no,status=yes,toolbar=no,resizable=no");
+		newWindow.focus();
+	}
+
+	function PossiblyChangeRowColorAfterHiding(projectNum){
+		//changeRowColor(projectNum, "#ddee99");
+	}
+	function PossiblyChangeRowColorWhileShowing(projectNum){
+		//changeRowColor(projectNum, "#ddcc99");
+	}
+
+	function resendCopyrightTemplateEmail(){
+		if(confirm("Are you sure that you want to resend the Copyright Tempalte Email to the user?\n\nWe will also copy you on this email."))
+			document.location = "./ad_copyrightTemplateResend.php?orderNumber={MAIN_ORDERID}&returl={CURRENTURL_ENCODED}";
+	}
+
+</script>
+<script type="text/javascript" src="./library/customer_service.js"></script>
+<script type="text/javascript" src="./library/admin_library.js"></script>
+<script type="text/javascript" src="./library/open_orders.js"></script>
+
+
+<link rel="stylesheet" type="text/css" href="library/calendar/themes/winter.css"/>
+<script type="text/javascript" src="library/calendar/src/utils.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar.js"></script>
+<script type="text/javascript" src="library/calendar/lang/calendar-en.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar-setup.js"></script>
+<script type="text/javascript" src="library/formatDate.js"></script>
+
+<style type="text/css">
+
+A.ShippingCalcLink 	{ font-size:12px; color:#666666;  font-family:Arial,Helvetica,sans-serif; font-weight:normal;  text-decoration:none}
+A.ShippingCalcLink:visited { color: #333333; }
+A.ShippingCalcLink:link { color: #333333; }
+A.ShippingCalcLink:hover { color: #0000FF; text-decoration:underline}
+
+</style>
+</head>
+<body bgcolor="#FFFFFF" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="">
+<div align="center">
+{HEADER}
+&nbsp;
+<table width="760" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td class="Body">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+            <td valign="top" class="Body" width="21%"><font class="SmallBody"><font color="#333333"><b>&nbsp;Order:
+              #{ORDERNO_HASHED}</b></font></font> </td>
+	        <td valign="top" class="SmallBody" width="24%"><b>Ordered:</b>&nbsp;&nbsp;{DATEORDERED}
+            </td>
+	        <td valign="top" class="SmallBody" width="33%">
+              <select class="AdminDropDown" style="font-size:10px;" name="projectlist" onChange="LinkToProject(this.value);">
+{PROJECT_LIST}
+</select>
+	</td>
+            <td  align="right" valign="top" class="SubSectionHeader" width="22%"><a class="BlueRedLink" href="./ad_jumptoorder.php?command=previousorder&orderno={MAIN_ORDERID}">&lt;
+              Previous</a>&nbsp;&nbsp; <a class="BlueRedLink" href="./ad_jumptoorder.php?command=nextorder&orderno={MAIN_ORDERID}">Next
+              &gt;</a></td>
+  </tr>
+</table>
+&nbsp;
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+            <td class="Body" valign="top" width="32%"><font class="AdminLabel">Shipping
+              Address </font><img  src="./images/transparent.gif" height="3" width="10" alt="" /><a href="javascript:ShippingAddressHistory();" class="blueredlink">History</a><br/>
+              <img  src="./images/blackpixel.gif" height="1" width="190" alt="" /><br/><img  src="./images/transparent.gif" height="4" width="1" alt="" /><br/>
+		<table width="100%" border="0" cellspacing="0" cellpadding="0">
+
+			  <form name="shippingaddressform" action="./ad_order.php">
+			  <input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+			  
+  <tr><td class="Body">
+			<input type="hidden" name="orderno" value="{MAIN_ORDERID}" />
+			<input type="hidden" name="action" value="changeshippingaddress" />
+			<input type="hidden" name="returnurl" value="{CURRENTURL}" />
+                      <!-- BEGIN US_ShippingBL -->
+                      <img  src="./images/tab-shipping-US.png" width="182" height="15" border="" usemap="#Map" alt="" /><br/>
+		<font class="ReallySmallBody" style="font-size:9px;">Company</font><br/>
+			<input type="text" name="shippingcompany" value="{SHIPPING_COMPANY}" style="font-size:12px; color:#000000;  font-family:Arial,Helvetica,sans-serif; border-width:1; border-color:#cccccc; border-style:solid; width: 180px; text-align:left; background-color:#f6f6f6;" {ADDRESS_READONLY} /><br/>
+			<font class="ReallySmallBody" style="font-size:9px;">Name</font><br/>
+			<input type="text" name="shippingname" value="{SHIPPING_NAME}" style="font-size:12px; color:#000000;  font-family:Arial,Helvetica,sans-serif; border-width:1; border-color:#cccccc; border-style:solid; width: 180px; text-align:left; background-color:#f6f6f6;" {ADDRESS_READONLY} /><br/>
+			<input type="text" name="shippingaddress" value="{SHIPPING_ADDRESS}" style="font-size:12px; color:#000000;  font-family:Arial,Helvetica,sans-serif; border-width:1; border-color:#cccccc; border-style:solid; width: 180px; text-align:left; background-color:#f6f6f6;" {ADDRESS_READONLY} />
+			<br/>
+              <input type="text" name="shippingaddress2" value="{SHIPPING_ADDRESS_TWO}" style="font-size:12px; color:#000000;  font-family:Arial,Helvetica,sans-serif; border-width:1; border-color:#cccccc; border-style:solid; width: 180px; text-align:left; background-color:#f6f6f6;" {ADDRESS_READONLY} /><br/>
+			  <input type="text" name="shippingcity" value="{SHIPPING_CITY}" style="font-size:12px; color:#000000;  font-family:Arial,Helvetica,sans-serif; border-width:1; border-color:#cccccc; border-style:solid; width: 133px; text-align:left; background-color:#f6f6f6;" {ADDRESS_READONLY} />, <input type="text" maxlength="2" name="shippingstate" value="{SHIPPING_STATE}" style="font-size:12px; color:#000000;  font-family:Arial,Helvetica,sans-serif; border-width:1; border-color:#cccccc; border-style:solid; width: 40px; text-align:left; background-color:#f6f6f6;" {ADDRESS_READONLY} />
+              <br/><input type="text" name="shippingzip" value="{SHIPPING_ZIP}" style="font-size:12px; color:#000000;  font-family:Arial,Helvetica,sans-serif; border-width:1; border-color:#cccccc; border-style:solid; width: 113px; text-align:left; background-color:#f6f6f6;" {ADDRESS_READONLY} />
+
+			<!-- BEGIN ShippingChangeButtonBL -->
+			  <input type="button" name="xx" value="Change" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" onClick="ChangeShippingAddress();" />
+			<!-- END ShippingChangeButtonBL -->
+			<br/><font class="ReallySmallBody"><input type="radio" name="residentialflag" value="Y" {ADDRESS_READONLY} {SHIPPING_RESIDENTIAL_CHECKED} /> Residential &nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" name="residentialflag" value="N" {ADDRESS_READONLY} {SHIPPING_COMMERCIAL_CHECKED} /> Commercial</font>
+			<input type="hidden" name="shippingcountry" value="US" />
+                      <!-- END US_ShippingBL -->
+                      <!-- BEGIN INT_ShippingBL -->
+                      <img  src="./images/tab-shipping-INTL.png" width="182" height="15" border="" usemap="#Map2" alt="" /><br/>
+			<font class="ReallySmallBody" style="font-size:9px;">Company</font><br/>
+			<input type="text" name="shippingcompany" value="{SHIPPING_COMPANY}" style="font-size:12px; color:#000000;  font-family:Arial,Helvetica,sans-serif; border-width:1; border-color:#cccccc; border-style:solid; width: 180px; text-align:left; background-color:#f6f6f6;" {ADDRESS_READONLY} /><br/>
+			<font class="ReallySmallBody" style="font-size:9px;">Name</font><br/>
+			<input type="text" name="shippingname" value="{SHIPPING_NAME}" style="font-size:12px; color:#000000;  font-family:Arial,Helvetica,sans-serif; border-width:1; border-color:#cccccc; border-style:solid; width: 180px; text-align:left; background-color:#f6f6f6;" {ADDRESS_READONLY} /><br/>
+              <font class="ReallySmallBody" style="font-size:9px;">Address</font><br/>
+			  <input type="text" name="shippingaddress" value="{SHIPPING_ADDRESS}" style="font-size:12px; color:#000000;  font-family:Arial,Helvetica,sans-serif; border-width:1; border-color:#cccccc; border-style:solid; width: 180px; text-align:left; background-color:#f6f6f6;" {ADDRESS_READONLY} /><br/>
+              <font class="ReallySmallBody" style="font-size:9px;">Address 2</font><br/>
+			  <input type="text" name="shippingaddress2" value="{SHIPPING_ADDRESS_TWO}" style="font-size:12px; color:#000000;  font-family:Arial,Helvetica,sans-serif; border-width:1; border-color:#cccccc; border-style:solid; width: 180px; text-align:left; background-color:#f6f6f6;" {ADDRESS_READONLY} /><br/>
+			  <font class="ReallySmallBody" style="font-size:9px;">City</font><br/>
+			  <input type="text" name="shippingcity" value="{SHIPPING_CITY}" style="font-size:12px; color:#000000;  font-family:Arial,Helvetica,sans-serif; border-width:1; border-color:#cccccc; border-style:solid; width: 180px; text-align:left; background-color:#f6f6f6;" {ADDRESS_READONLY} /><br/>
+			  <font class="ReallySmallBody" style="font-size:9px;">State / Province</font><br/>
+			  <input type="text" maxlength="50" name="shippingstate" value="{SHIPPING_STATE}" style="font-size:12px; color:#000000;  font-family:Arial,Helvetica,sans-serif; border-width:1; border-color:#cccccc; border-style:solid; width: 180px; text-align:left; background-color:#f6f6f6;" {ADDRESS_READONLY} /><br/>
+              <font class="ReallySmallBody" style="font-size:9px;">Postal Code</font><br/>
+			  <input type="text" name="shippingzip" value="{SHIPPING_ZIP}" style="font-size:12px; color:#000000;  font-family:Arial,Helvetica,sans-serif; border-width:1; border-color:#cccccc; border-style:solid; width: 113px; text-align:left; background-color:#f6f6f6;" {ADDRESS_READONLY} />
+			<br/><img  src="./images/transparent.gif" width="3" height="6" alt="" /><br/>
+                      <select name="shippingcountry" class="AdminDropDown" {ADDRESS_READONLY}>{COUNTRIES_DROPDOWN}</select>
+				<br/><font class="ReallySmallBody"><input type="radio" name="residentialflag" value="Y" {ADDRESS_READONLY} {SHIPPING_RESIDENTIAL_CHECKED} /> Residential &nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" name="residentialflag" value="N" {ADDRESS_READONLY} {SHIPPING_COMMERCIAL_CHECKED} /> Commercial</font>
+
+                      <!-- BEGIN ShippingChangeButtonBL -->
+                      <br/>
+                      <img  src="./images/transparent.gif" width="3" height="3" alt="" /><br/><input type="button" name="xx" value="Change" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" onClick="ChangeShippingAddress();" />
+			<!-- END ShippingChangeButtonBL -->
+<!-- END INT_ShippingBL -->
+
+
+</td></tr>
+</form>
+</table>
+		    </td>
+            <td valign="top" width="68%" class="Body" >
+	<!-- BEGIN EmptyShipmentMessageBL -->
+	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><font class="AdminLabel">Shipments</font></td>
+    <td align="right">&nbsp;</td>
+  </tr>
+</table>
+
+             <img  src="./images/blackpixel.gif" height="1" width="515" alt="" /><br/><img src="./images/transparent.gif" height="4" width="1" alt="" /><table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td bgcolor="#000066"><table width="100%" border="0" cellspacing="1" cellpadding="0">
+  <tr>
+                  <td class="Body" valign="top"  bgcolor="#CCCCCC" style="background-image: url(./images/admin/header-shipping.png); background-repeat: no-repeat;">
+
+
+<table width="100%" border="0" cellspacing="0" cellpadding="1">
+  <tr>
+  	                          <td class="Body" width="1%"><img src="./images/transparent.gif" height="1" width="1" alt="" /></td>
+                              <td class="Body" width="36%"><b>Project(s)</b></td>
+                              <td class="Body" width="23%"><b>Carrier Method</b></td>
+                              <td class="Body" width="25%"><b>Tracking</b></td>
+                              <td class="Body" width="15%"><b>Package</b></td>
+  </tr>
+</table>
+
+</td>
+  </tr>
+    <tr>
+                  <td class="Body" valign="top"  bgcolor="#FFFFFF" style="background-image: url(./images/admin/table-shipping.png); background-repeat:">
+
+
+<table width="100%" border="0" cellspacing="0" cellpadding="1">
+<form name="shipmentlist">
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+<!-- BEGIN ShipmentsBL -->
+  <tr>
+  <td class="Body" width="1%"><table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+                                    <td class="SmallBody">{CX}</td>
+</tr>
+</table></td>
+                              <td class="Body" width="36%">
+                                <table width="100%" border="0" cellspacing="0" cellpadding="0">
+<!-- BEGIN ProjectShipmentsBL -->
+  <tr>
+                                    <td class="SmallBody" width="20%">
+<div  class="hiddenDHTMLwindow" id="Pnum{SHP_PID}">
+                                        <div id="projectdiv{SHP_LINK_ID}" class="hiddenDHTMLwindow" onMouseOver="showProjectInfo({SHP_LINK_ID}, true);" onMouseOut="showProjectInfo({SHP_LINK_ID}, false);">
+                                          <nobr><a href="./ad_project.php?projectorderid={SHP_PID}" class="BlueRedLinkRecord">P{SHP_PID}</a>{ART}{ARTWORKLINK}</nobr>
+                                          <span style="visibility:hidden; left:-217px; top:-65" id="projectlayer{SHP_LINK_ID}">
+                                          <table width="215" border="0" cellspacing="0" cellpadding="2" bgcolor="#CC6600" style='-moz-opacity:60%;filter:progid:DXImageTransform.Microsoft.dropShadow(Color=#999999,offX=3,offY=3)'>
+                                            <tr>
+                                              <td>
+                                                <table width="100%" border="0" cellspacing="0" cellpadding="4" bgcolor="#FFFFFF">
+                                                  <tr>
+                                                    <td class="SmallBody" align="center" style="background-image: url(./images/admin/arrival_time_back.png); background-repeat: no-repeat;"><u>Guaranteed
+                                                      Dates</u><br/>
+                                                      <img  src="./images/transparent.gif" height="6" width="1" alt="" /><br/>
+                                                      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                                        <tr>
+                                                          <td class="SmallBody" width="30%"><b>Ship:</b></td>
+                                                          <td class="ReallySmallBody" width="70%">{EST_SHIP_DATE}
+                                                            <font color="#FF0000">{DUETODAY}</font><br/>
+                                                            <img src="./images/transparent.gif" height="6" width="1" alt="" /></td>
+                                                        </tr>
+                                                        <tr>
+                                                          <td class="SmallBody"><b>Arrival:</b></td>
+                                                          <td class="ReallySmallBody">{EST_ARRIV_DATE}</td>
+                                                        </tr>
+                                                      </table>
+                                                      <font class="ReallySmallBody"><font color="#ff0000">{LATE_MESSAGE}</font></font>
+                                                      <br/>
+                                                      <img src="./images/transparent.gif" height="4" width="1" alt="" /></td>
+                                                  </tr>
+                                                </table>
+                                              </td>
+                                            </tr>
+                                          </table>
+                                          </span> <span style="visibility:hidden; left:-217px; top:53" id="projecthistory{SHP_LINK_ID}">
+                                          <table width="270" border="0" cellspacing="0" cellpadding="2" bgcolor="#990000" style='-moz-opacity:60%;filter:progid:DXImageTransform.Microsoft.dropShadow(Color=#999999,offX=3,offY=3)'>
+                                            <tr>
+                                              <td>
+                                                <table width="100%" border="0" cellspacing="0" cellpadding="6" bgcolor="#FFFFFF">
+                                                  <tr>
+                                                    <td class="ReallySmallBody">{PROJECT_HISTORY}
+                                                    </td>
+                                                  </tr>
+                                                </table>
+                                              </td>
+                                            </tr>
+                                          </table>
+                                          </span></div></div>
+
+									</td>
+                                    <td class="ReallySmallBody" width="75%" align="left">&nbsp;{P_Q}
+<!-- BEGIN ShipmentBreakBL -->
+<a href="javascript:MoveToNewShipment('{SHP_LINK_ID}', '{P_Q}');"><img src="./images/admin/icon_shipping-closed.png" onMouseOver="this.src='./images/admin/icon_shipping-open.png';" onMouseOut="this.src='./images/admin/icon_shipping-closed.png';" border="0" width="19" height="19" align="absmiddle" alt="" /></a>
+<!-- END ShipmentBreakBL -->
+
+</td>
+  </tr>
+<!-- END ProjectShipmentsBL -->
+</table>
+{LARGE_SHIPMENT_MESSAGE}
+							  </td>
+
+                              <td class="ReallySmallBody" width="23%"><font color='#000000'>{SHIPPING_METHOD}</font>
+
+</td>
+                              <td class="SmallBody" width="25%">{TRACKING}</td>
+                          <td class="SmallBody" width="14%">
+<!-- BEGIN PackageWeightBL -->
+<select class="AdminDropDown" style="font-size:9px" name="packageweight" onChange="ChangePackageWeight({SHIPMENT_ID}, this.value);">
+{PACKAGE_WEIGHTS}
+</select>
+<!-- END PackageWeightBL -->
+						  </td>
+  </tr>
+  <tr bgcolor="#CCCCCC">
+                                <td width="1%"><img src="./images/transparent.gif" height="1" width="1" alt="" /></td>
+                                <td width="31%"><img src="./images/transparent.gif" height="1" width="1" alt="" /></td>
+                                <td width="23%"><img src="./images/transparent.gif" height="1" width="1" alt="" /></td>
+                                <td width="26%"><img src="./images/transparent.gif" height="1" width="1" alt="" /></td>
+                                <td width="19%"><img src="./images/transparent.gif" height="1" width="1" alt="" /></td>
+  </tr>
+<!-- END ShipmentsBL -->
+  </form>
+</table>
+
+</td>
+  </tr>
+</table>
+
+	</td>
+  </tr>
+</table>
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<form name="mastershippingmethod" action="./ad_order.php">
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+<input type="hidden" name="returnurl" value="{CURRENTURL}" />
+<input type="hidden" name="orderno" value="{MAIN_ORDERID}" />
+<input type="hidden" name="action" value="customershippingmethod" />
+  <tr>
+    <td class="Body">
+
+<!-- BEGIN HideCombineButtonBL --><img src="./images/transparent.gif" height="1" width="3" alt="" /><img src="./images/admin/arrow-up-left.png" height="18" width="38" alt="" /><input type="button" name="xx" value="Combine" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" onClick="CombineShipments();" /><!-- END HideCombineButtonBL -->
+
+</td>
+    <td class="SmallBody" align="right"><img src="./images/transparent.gif" height="3" width="1" alt="" /><table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+  	<td class="SmallBody" width="29%" align="right">&nbsp;</td>
+                          <td class="SmallBody" width="70%" align="right">
+                            <div id="ShippingMethodHistoryDiv" class="hiddenDHTMLwindow" onMouseOver="showShipMethodHistory(true);" onMouseOut="showShipMethodHistory( false);">
+                              <a href="#" class="DullLink">Customer Shipping Choice</a>
+                              <font color="#BBBBBB" style="font-size:14px;">&gt;
+                              &nbsp;&nbsp;</font> <span style="visibility:hidden; left:-160px; top:16" id="ShippingMethodHistorySpan">
+                              <table width="320" border="0" cellspacing="0" cellpadding="2" bgcolor="#990000" style='-moz-opacity:60%;filter:progid:DXImageTransform.Microsoft.dropShadow(Color=#999999,offX=3,offY=3)'>
+                                <tr>
+                                  <td>
+                                    <table width="100%" border="0" cellspacing="0" cellpadding="6" bgcolor="#FFFFFF">
+                                      <tr>
+                                        <td class="ReallySmallBody">{SHIPPING_METHOD_HISTORY}
+                                        </td>
+                                      </tr>
+                                    </table>
+                                  </td>
+                                </tr>
+                              </table>
+                              </span></div>
+
+
+	</td>
+	                      <td class="SmallBody" width="1%"><nobr>
+                            <!-- BEGIN CustomerShippingChangeBL -->
+                            <select class="AdminDropDown" name="shippingChoiceID">
+{CUSTOMER_SHIPPING_OPTIONS}
+</select>&nbsp;<input type="submit" name="xx" value="Change" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" />
+<!-- END CustomerShippingChangeBL -->
+	</nobr></td>
+  </tr>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+</td>
+  </tr>
+  </form>
+</table>
+
+              <!-- BEGIN ShippingMethodNotFoundBL -->
+              <font class="error"><br/>The Shipping Choice previously selected on this order is no longer available.<br/></font>
+              <!-- END ShippingMethodNotFoundBL -->
+              <!-- END EmptyShipmentMessageBL -->
+            </td>
+
+  </tr>
+</table>
+
+&nbsp;
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+            <td class="Body" valign="top" width="41%"><font class="AdminLabel">Pricing</font><br/>
+              <img  src="./images/blackpixel.gif" height="1" width="270" alt="" /><br/><img  src="./images/transparent.gif" height="8" width="1" alt="" /><br/>
+<!-- BEGIN CouponBL -->
+<table width="250" border="0" cellspacing="0" cellpadding="1" bgcolor="FFCC99">
+  <tr>
+    <td>
+                    <table width="100%" border="0" cellspacing="0" cellpadding="2" bgcolor="#FFeef3">
+                      <tr>
+    <td class="SmallBody">Coupon: <b>{COUPON_CODE}</b>
+	<br/><img  src="./images/transparent.gif" height="5" width="1" alt="" /><br/>
+	{COUPON_DESC}
+	</td>
+  </tr>
+</table></td>
+  </tr>
+</table>
+&nbsp;
+<!-- END CouponBL -->
+
+<!-- BEGIN BannerClickBl -->
+
+<div style="width:260px; height:150px; overflow:auto; background-color:#eef3FF; border:solid; border-width:1px; border-color:#99CCFF; padding:2px;">
+<font color="#006633">{IP_ADDRESS}</font><br><u>From:</u> <font class="ReallySmallBody">{BANNER_FROM_DOMAIN}</font>
+	<br/><u>Keywords:</u> <font class="ReallySmallBody" style="color:#660000">{BANNER_FROM_KW}</font>
+	{BANNER_CLICK_HISTORY}
+</div>
+&nbsp;
+<!-- END BannerClickBl -->
+
+<table width="270" cellpadding="0" cellspacing="0" border="0" bgcolor="#339966">
+                <tr>
+                  <td>
+                    <table width="100%" cellpadding="0" cellspacing="1" border="0">
+	<!-- BEGIN CustomerTotalsBL -->
+                      <tr>
+                        <td width="50%" class="SmallBody" align="left" bgcolor="#F6FFF6">&nbsp;Customer
+                          Subtotal</td>
+                        <td width="50%" class="SmallBody" align="left" bgcolor="#F6FFF6">&nbsp;${C_SUB}</td>
+                      </tr>
+                      <!-- BEGIN DiscountBL -->
+                      <tr>
+                          <td width="50%" class="SmallBody" align="left" bgcolor="#F6FFF6">&nbsp;Customer
+                            Discount</td>
+                          <td width="50%" class="SmallBody" align="left" bgcolor="#F6FFF6">&nbsp;${C_DISC}</td>
+                      </tr>
+                      <!-- END DiscountBL -->
+                      <!-- BEGIN CustomerShippingBL -->
+                      <form name="changeshippingtotal" onSubmit="return false;">
+                      <input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+                        <tr>
+                          <td width="50%" class="SmallBody" align="left" bgcolor="#F6FFF6">&nbsp;<a href="javascript:ShippingCalculator();" class="BlueRedLink">Customer
+                            Shipping</a></td>
+                          <td width="50%" class="SmallBody" align="left" bgcolor="#F6FFF6">
+                            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                            <tr>
+                                <td class="SmallBody" width="55%">&nbsp;$<input type="text" name="shippingtotal" value="{C_SHIP}" style="font-size:12px; color:#000000;  font-family:Arial,Helvetica,sans-serif; border-width:0; border-color:#66cc66; border-style:solid; width: 50px; text-align:left; background-color:#eeFFee;" {SHIPPING_QUOTE_READONLY} /></td>
+                                <td class="SmallBody" width="45%">
+								<!-- BEGIN HideShippingChangeButton -->
+                                  <input type="button" name="xx" value="Change" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" onClick="ChangeShippingTotal(document.forms['changeshippingtotal'].shippingtotal.value);" />
+								  <!-- END HideShippingChangeButton -->
+                              </td>
+                            </tr>
+                          </table>
+
+                          </td>
+                        </tr>
+                      </form>
+                      <!-- END CustomerShippingBL -->
+                      <!-- BEGIN taxBL -->
+                      <tr>
+                        <td width="50%" class="SmallBody" align="left" bgcolor="#F6FFF6">&nbsp;Customer
+                          Tax</td>
+                        <td width="50%" class="SmallBody" align="left" bgcolor="#F6FFF6">&nbsp;${C_TAX}</td>
+                      </tr>
+                      <!-- END taxBL -->
+                      <tr>
+                        <td width="50%" class="SmallBody" align="left" bgcolor="#ddFFdd">&nbsp;<b>Customer
+                          Grand Total</b></td>
+                        <td width="50%" class="SmallBody" align="left" bgcolor="#ddFFdd">&nbsp;${C_GRAND}</td>
+                      </tr>
+	<!-- END CustomerTotalsBL -->
+
+			<!-- BEGIN VendorTotalBL -->
+                      <tr>
+                        <td width="50%" class="SmallBody" align="left" bgcolor="#F6FFF6">&nbsp;{VENDOR_SUB_TITLE}</td>
+                        <td width="50%" class="SmallBody" align="left" bgcolor="#F6FFF6">&nbsp;${V_SUB}</td>
+                      </tr>
+			<!-- END VendorTotalBL -->
+		<!-- BEGIN OrderIncomeBL -->
+                      <tr>
+                        <td width="50%" class="SmallBody" align="left" bgcolor="#F6FFF6">&nbsp;Order
+                          Income</td>
+                        <td width="50%" class="SmallBody" align="left" bgcolor="#F6FFF6">&nbsp;${INCOME}</td>
+                      </tr>
+		<!-- END OrderIncomeBL -->
+                    </table>
+                  </td>
+                </tr>
+              </table>
+<img  src="./images/transparent.gif" height="8" width="1" alt="" /><br/><img  src="./images/blackpixel.gif" height="1" width="270" alt="" /><br/><img  src="./images/transparent.gif" height="8" width="1" alt="" /><br/>
+
+<!-- BEGIN MerchantButtonBL -->
+<input type="button" name="xx" value="Merchant" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" onClick="merchantWindow('https://account.authorize.net/ui/themes/anet/merch.app?page=welcome&sub=signin&MerchantLogin=1089295903062A&Password=KJ4L3dffj3')" />
+<!-- END MerchantButtonBL -->
+
+<!-- BEGIN PaypalButtonBL -->
+<input type="button" name="xx" value="Paypal" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" onClick="merchantWindow('https://www.paypal.com')" />
+<!-- END PaypalButtonBL -->
+
+<!-- BEGIN InvoiceButtonBL -->
+              <input type="button" name="xx2" value="Invoice" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" onClick="document.location='./customer_receipts.php?orderid={MAIN_ORDERID}&viewtype=admin';" />
+<!-- END InvoiceButtonBL -->
+
+<!-- BEGIN BillingButtonBL -->
+<input type="button" name="xx" value="Billing" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" onClick="javascript:makeNewWindow2('./ad_creditcard_customer.php?orderid={MAIN_ORDERID}&email={CUSTOMER_EMAIL}&phone={PHONE}')" />
+<!-- END BillingButtonBL -->
+
+<!-- BEGIN ItemizedButtonBL -->
+<input type="button" name="xx" value="Itemized" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" onClick="makeNewWindow4('./ad_itemlist.php?orderno={MAIN_ORDERID}')" />
+<!-- END ItemizedButtonBL -->
+
+			</td>
+            <td valign="top" width="59%" class="Body" >
+<!-- BEGIN HideAdjusmentSectionBL -->
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td class="AdminLabel">Balance Adjusments / Refunds</td>
+    <td align="right">
+
+<!-- BEGIN AdjustmentButtonBL -->
+	<input type="button" name="xx" value="New" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" onClick="makeNewAdjusmentWindow();" />
+<!-- END AdjustmentButtonBL -->
+</td>
+  </tr>
+</table>
+
+
+              <img  src="./images/blackpixel.gif" height="1" width="447" alt="" /><br/><img  src="./images/transparent.gif" height="5" width="1" alt="" /><br/>
+<!-- BEGIN HideAdjustmentTableBL -->
+
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#6699FF">
+                <tr>
+                  <td>
+                    <table width="100%" cellpadding="0" cellspacing="1" border="0">
+                        <tr>
+                          <td width="17%" class="SmallBody" align="left" bgcolor="#ddddff">&nbsp;&nbsp;&nbsp;Vendor</td>
+                          <td width="17%" class="SmallBody" align="left" bgcolor="#ddddff">&nbsp;&nbsp;&nbsp;Customer</td>
+                          <td width="51%" class="SmallBody" align="left" bgcolor="#ddddff">&nbsp;&nbsp;&nbsp;Reason</td>
+                          <td width="15%" class="SmallBody" align="center" bgcolor="#ddddff">&nbsp;</td>
+                        </tr>
+                        <!-- BEGIN AdjustmentBL -->
+                        <tr>
+                          <td width="17%" class="SmallBody" align="center" bgcolor="#EEF3FF">{V_PRICE}</td>
+                          <td width="17%" class="SmallBody" align="center" bgcolor="#EEF3FF">{C_PRICE}</td>
+                          <td width="51%" class="SmallBody" align="left" bgcolor="#EEF3FF">&nbsp;&nbsp;{ADJ_DESC}</td>
+
+                          <td width="15%" class="SmallBody" align="center" bgcolor="#EEF3FF">{DATE}</td>
+	                    </tr>
+                        <!-- END AdjustmentBL -->
+                    </table>
+                  </td>
+                </tr>
+              </table>
+<!-- END HideAdjustmentTableBL -->
+
+<br/><br/>
+
+<!-- END HideAdjusmentSectionBL -->
+
+
+<font class="AdminLabel">Customer Information</font><img  src="./images/transparent.gif" height="1" width="90" alt="" /><br/>
+              <img  src="./images/blackpixel.gif" height="1" width="420" alt="" /><br/><img  src="./images/transparent.gif" height="5" width="1" alt="" /><br/>
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+
+
+  <tr>
+                  <td class="ReallySmallBody" width="31%" valign="top"><u>Billing Info.</u><br/>{BILLING_INFO}<br/><br/>{PAYMENT_DESC}{CUST_RATING}</td>
+                  <td class="SmallBody" width="27%"><a href="./ad_users_orders.php?byuser={CUSTOMER_ID}"  class="BlueRedLink">Total Projects - {CUSTOMER_PROJECTS}</a><br/><img  src="./images/transparent.gif" width="5" height="5" alt="" /><br/>
+					<a href="./ad_users_search.php?customerid={CUSTOMER_ID}"  class="BlueRedLink">User Info</a>{USER_CHATS}<br/><img  src="./images/transparent.gif" width="5" height="5" alt="" /><br/>
+<!-- BEGIN HideLoginLink -->
+<a href="javascript:ShowLoginLink('{LOGIN_LINK}');"  class="BlueRedLink">Login Link</a>
+<!-- END HideLoginLink -->
+
+{CUSTOMER_SERVICE_LINK}
+
+{ACCOUNT_LINK}
+<br/><img  src="./images/transparent.gif" height="5" width="5" alt="" /><br/>
+<a class="blueredlink" href="javascript:CustomerMemo({CUSTOMER_ID}, true)">{MEMOS}</a>
+
+</td>
+                  <td class="SmallBody" width="42%" valign="top">
+<form name="invoicemessageform" action="./ad_order.php" onSubmit="return UpdateInvoiceMessage();" style="display:inline;">
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+<input type="hidden" name="returnurl" value="{CURRENTURL}" />
+<input type="hidden" name="orderno" value="{MAIN_ORDERID}" />
+<input type="hidden" name="action" value="updateinvoicemessage" />
+				  <font color="#000000">Invoice Message</font><img src="./images/transparent.gif" height="1" width="25" alt="" />
+
+<!-- BEGIN HideUpdateInvoiceMessageBL -->
+				  <input type="submit" name="xx" value="Update" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" />
+<!-- END HideUpdateInvoiceMessageBL -->
+                    <textarea name="invoicemessage" style="font-size:12px; width:180px; height:55px; background-color:{MESSAGECOLOR_INVOICE}" wrap="VIRTUAL" {CUSTOMER_INVOICE_READONLY}>{INVOICE_MESSAGE}</textarea>
+  </form>
+                    <br>
+<br>
+<form name="shippinginstructionsform" action="./ad_order.php" style="display:inline;">
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+<input type="hidden" name="returnurl" value="{CURRENTURL}" />
+<input type="hidden" name="orderno" value="{MAIN_ORDERID}" />
+<input type="hidden" name="action" value="updateshippinginstructions" />
+				  <font color="#000000">Shipping Notes</font><img src="./images/transparent.gif" height="1" width="25" alt="" />
+
+<!-- BEGIN HideShippingInstructionsBL -->
+				  <input type="submit" name="xx" value="Update" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" />
+<!-- END HideShippingInstructionsBL -->
+                    <textarea name="shippingInstructions" style="font-size:12px; width:180px; height:55px; background-color:{MESSAGECOLOR_SHIPPING}" wrap="VIRTUAL" {SHIPPING_INSTRUCTIONS_READONLY}>{SHIPPING_INSTRUCTIONS}</textarea>
+                 </form>   
+                    </td>
+  </tr>
+
+</table>
+			 </td>
+
+  </tr>
+</table>
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<form name="formlink">
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+  <tr>
+    <td align="left">
+<input type="text" name="loginlink" value="" class="WhiteBox" style="width:750; color:#990000; font-size:12px; " readonly />
+<br/>&nbsp;
+</td>
+  </tr>
+  </form>
+</table>
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+            <td width="50%"><font class="AdminLabel">Tasks</font>&nbsp;&nbsp;</td>
+            <td width="50%" align="right"><input type="button" name="Generate" value="New Task" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" onClick="MakeNewTask('order', {MAIN_ORDERID}, true);" /></td>
+  </tr>
+</table>
+
+              <img  src="./images/blackpixel.gif" height="1" width="760" alt="" /><br/><img  src="./images/transparent.gif" height="5" width="1" alt="" /><br/>
+{TASKS}
+
+<br/>
+<br/>
+<br/>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><font class="AdminLabel">Message Threads</font></td>
+    <td align="right"><input type="button" name="xx" onClick="SendInternalMessage('order', {MAIN_ORDERID}, false);" value="Create New" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" /></td>
+  </tr>
+</table>
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td ><img src="./images/transparent.gif" height="2" width="2" alt="" /></td>
+  </tr>
+  <tr>
+    <td bgcolor="#000000"><img src="./images/transparent.gif" height="1" width="1" alt="" /></td>
+  </tr>
+  <tr>
+    <td ><img src="./images/transparent.gif" height="5" width="5" alt="" /></td>
+  </tr>
+</table>
+<!-- BEGIN MessageThreadBL -->
+<table width="100%" border="0" cellspacing="0" cellpadding="1" bgcolor="#333333">
+  <tr>
+    <td><table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td bgcolor="#FFFFFF" class="SmallBody" style="background-image: url(./images/admin/header-message.png); background-repeat: no-repeat;">
+
+	<table width="100%" border="0" cellspacing="0" cellpadding="2">
+  <tr>
+                              <td class="SmallBody" width="53%"><b>Subject:</b><br/>
+                                <font class="ReallySmallBody">{THREAD_SUB}</font></td>
+                              <td class="SmallBody" width="47%" align="center"> <a href="javascript:ReplyToInternalMessage('{THREADID}');" class="BlueRedLink">Reply</a> 
+                              
+                          <!-- BEGIN CloseMessageLinkBL -->
+                              <br/><a href='javascript:CloseUser("{THREADID}", "{UNREAD_MESSAGE_IDS}")' class='BlueRedLink'>Close</a>
+                          <!-- END CloseMessageLinkBL -->
+
+                              </td>
+  </tr>
+</table>
+	</td>
+  </tr>
+</table></td>
+  </tr>
+</table>
+
+			{MESSAGE_BLOCK}<br/>
+<!-- END MessageThreadBL -->
+<br/><br/><br/>
+
+
+
+ <!-- BEGIN EmptyReturnedItemsBL -->
+<font class="AdminLabel">Returned Package(s)</font>
+<img  src="./images/greypixel.gif" border="0" width="742" height="1" alt="" /><br/>
+<img  src="./images/transparent.gif" border="0" width="1" height="10" alt="" /><br/>
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#333333">
+  <tr>
+    <td><table width="100%" border="0" cellspacing="1" cellpadding="2">
+  <tr bgcolor="#336699">
+	              <td class="Body" width="83%"><font color="#FFFFFF">Messages</font></td>
+	              <td class="Body" width="17%"><font color="#FFFFFF">Commands</font></td>
+  </tr>
+ <!-- BEGIN returnedItemsBL -->
+   <tr bgcolor="#F3F3F3">
+	              <td class="SmallBody" width="83%">{MESSAGES}</td>
+	              <td class="SmallBody" width="17%">{RETURNED_PACKAGE_COMM}</td>
+  </tr>
+  <!-- END returnedItemsBL -->
+</table></td>
+  </tr>
+</table>
+
+ <form name="newMessageForm" action="./ad_returnedpackages.php">
+ <input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+ <input type="hidden" name="action" value="newmessage" />
+  <input type="hidden" name="notificationid" value="" />
+  <input type="hidden" name="message" value="" />
+  <input type="hidden" name="returnurl" value="{CURRENTURL}" />
+ </form>
+<br/><br/><br/><br/>
+ <!-- END EmptyReturnedItemsBL -->
+
+
+
+<!-- BEGIN HideCustomerServiceBL -->
+
+<font class="AdminLabel">Customer Service </font><br/><img  src="./images/blackpixel.gif" height="1" width="760" alt="" /><br/><img  src="./images/transparent.gif" height="5" width="1" alt="" /><br/>
+<!-- BEGIN EmptyCSInquiriesBL -->
+<table width="100%" border="0" cellspacing="0" cellpadding="1" bgcolor="#666699">
+  <tr>
+    <td><table width="100%" border="0" cellspacing="1" cellpadding="3">
+  <tr>
+                  <td bgcolor="#ddddee" class="SmallBody" width="5%">Date</td>
+                  <td bgcolor="#ddddee" class="SmallBody" width="16%">Subject</td>
+	              <td bgcolor="#ddddee" class="SmallBody" width="69%">Message</td>
+				  <td bgcolor="#ddddee" class="SmallBody" width="10%">&nbsp;</td>
+  </tr>
+  <!-- BEGIN csInquiriesBL -->
+   <tr>
+                  <td bgcolor="#FFFFFF" class="SmallBody" width="5%">{CS_DATE}</td>
+                  <td bgcolor="#FFFFFF" class="SmallBody" width="16%">{CS_SUBJECT}</td>
+	              <td bgcolor="#FFFFFF" class="SmallBody" width="69%">{CS_ATTACHMENTS}{CS_MESSAGE}</td>
+				  <td bgcolor="#FFFFFF" class="SmallBody" width="10%" align="center">{CS_SNDMSG}</td>
+  </tr>
+   <!-- END csInquiriesBL -->
+</table></td>
+  </tr>
+</table>
+<br/><br/>
+
+<!-- END EmptyCSInquiriesBL -->
+<input type="button" name="Generate" value="New Customer Service Item" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" onClick="document.location='./ad_actions.php?action=newcsitem&orderno={MAIN_ORDERID}&returl={CURRENTURL}&form_sc={FORM_SECURITY_CODE}'" />
+<br/>
+
+
+
+<br/>&nbsp;<br/>
+<!-- END HideCustomerServiceBL -->
+
+<!-- BEGIN HideSpeedUpOrderBL -->
+<br/><br/>
+{ORDERFROMDATE}
+        <font class="SmallBody">This will recalculate the guaranteed Ship Dates and
+          Arrival Dates for all projects within the order.<br/>Setting the Date Ordered to a day in the past can cause some or all projects within this order to show up as &quot;Due Today&quot;.<br/>Drop Down values default to the actual Order Date.</font><br/><img src="./images/transparent.gif" width="5" height="5" alt="" /><table width="100%" border="0" cellspacing="0" cellpadding="0">
+<form name="shipdatechange" method="get" action="./ad_order.php">
+<input type="hidden" name="action" value="RecalculateShipDate" />
+<input type="hidden" name="orderno" value="{MAIN_ORDERID}" />
+<input type="hidden" name="returl" value="{CURRENTURL}" />
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+  <tr>
+    <td class="SmallBody"><b>As if Order was placed &gt;</b> {SHIPDATE_MONTH_SEL} {SHIPDATE_DAY_SEL} {SHIPDATE_YEAR_SEL}&nbsp;&nbsp;-&nbsp;&nbsp;{SHIPDATE_HOUR_SEL} <b>:</b> {SHIPDATE_MIN_SEL} {SHIPDATE_AMPM_SEL}&nbsp;&nbsp;<input type="submit" name="Generate" style="width:210px;" value="Recalculate Ship &amp; Arrival Dates" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" />
+	<br/><a class="blueredlink" href="javascript:EstOrderDateYesterday();">Yesterday</a>, &nbsp;&nbsp;<a class="blueredlink" href="javascript:EstOrderDateToday();">Today</a> &nbsp;&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;&nbsp;<a class="blueredlink" href="javascript:EstOrderDateMorning();">Morning</a>, &nbsp;&nbsp;<a class="blueredlink" href="javascript:EstOrderDateAfternoon();">Afternoon</a>
+	</td>
+  </tr>
+  </form>
+</table>
+
+
+		&nbsp;&nbsp;
+		<br/><br/>
+        <!-- END HideSpeedUpOrderBL -->
+
+<!-- BEGIN HideMakeUrgentBL -->
+<br/><br/>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<form name="priority">
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+  <tr>
+    <td class="SmallBody">        <font class="SmallBody">This is useful for Production when there is not enough time to print all orders Due Today.  </font><br/>
+		<input type="radio" name="priority" value="noturgent" onClick="document.location='./ad_order.php?action=noturgent&form_sc={FORM_SECURITY_CODE}&orderno={MAIN_ORDERID}&returl={CURRENTURL}'" {PRIORITY_NORMAL} /> <b>Normal</b>
+		&nbsp;&nbsp;&nbsp;
+		<input type="radio" name="priority" value="urgent" onClick="document.location='./ad_order.php?action=urgent&form_sc={FORM_SECURITY_CODE}&orderno={MAIN_ORDERID}&returl={CURRENTURL}'" {PRIORITY_URGENT} /> <b>Urgent</b>
+
+		&nbsp;&nbsp;
+		<br/><br/>&nbsp;</td>
+  </tr>
+  </form>
+</table>
+
+        <!-- END HideMakeUrgentBL -->
+      </td>
+</tr>
+</table>
+<table width="760" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="360" class="NavColor"><img src="./images/footer.gif" border="0" width="350" height="16" usemap="#footer" alt="" /></td>
+	<td width="400" align="right" class="NavColor"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+  </tr>
+</table>
+<font class="copyright"> </font>
+</div>
+&nbsp;
+<script type="text/javascript" src="./library/ImageMap-footer.js"></script>
+<map name="Map">
+  <area shape="rect" coords="94,0,196,25" href="{CURRENTURL}&showshippingcountry=int">
+</map>
+<map name="Map2">
+  <area shape="rect" coords="-34,0,90,51" href="{CURRENTURL}&showshippingcountry=US">
+</map>
+</body>
+</html>

@@ -1,0 +1,354 @@
+
+# This is for WHITE LISTING in extreme cases of a DOS attack.
+# Or it is useful just to get some breathing room to work on the server.
+
+
+echo
+echo
+echo
+echo
+echo
+
+echo [[[ Flushing Tables ]]]
+iptables -F
+echo [[[      Done       ]]]
+
+
+echo
+echo White Listing IPs
+
+iptables -A INPUT -p all -s 74.62.46.166 -j ACCEPT
+iptables -A INPUT -p all -s 69.63.86.138 -j ACCEPT
+iptables -A INPUT -p all -s 66.112.75.100 -j ACCEPT
+iptables -A INPUT -p all -s 66.112.75.100 -j ACCEPT
+iptables -A INPUT -p all -s 99.122.84.136 -j ACCEPT
+iptables -A INPUT -p all -s 108.66.163.29 -j ACCEPT
+iptables -A INPUT -p all -s 72.161.5.176 -j ACCEPT
+iptables -A INPUT -p all -s 173.22.115.29 -j ACCEPT
+iptables -A INPUT -p all -s 70.141.193.225 -j ACCEPT
+iptables -A INPUT -p all -s 173.28.254.219 -j ACCEPT
+iptables -A INPUT -p all -s 76.0.3.43 -j ACCEPT
+iptables -A INPUT -p all -s 99.28.125.244 -j ACCEPT
+iptables -A INPUT -p all -s 75.40.205.54 -j ACCEPT
+iptables -A INPUT -p all -s 74.62.46.166 -j ACCEPT
+iptables -A INPUT -p all -s 127.0.0.1 -j ACCEPT
+iptables -A INPUT -p all -s 10.0.0.2 -j ACCEPT
+iptables -A INPUT -p all -s 10.0.0.1 -j ACCEPT
+iptables -A INPUT -p all -s 98.119.33.208 -j ACCEPT
+iptables -A INPUT -p all -s 108.89.30.135 -j ACCEPT
+
+# Open up PC.com 100%
+iptables -A INPUT -p tcp -d 10.0.0.6 -j ACCEPT
+
+
+
+
+echo
+echo ========= Configure Proxy Addresses =========
+
+
+
+iptables -A INPUT -p tcp -d 10.0.0.34 --dport 2082 -j DROP
+iptables -A INPUT -p tcp -d 10.0.0.34 --dport 2087 -j DROP
+iptables -A INPUT -p tcp -d 10.0.0.34 --dport 3306 -j DROP
+iptables -A INPUT -p tcp -d 10.0.0.8 -s 72.51.37.43 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.8 -s 74.62.46.165 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.8 -s 69.174.242.72 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.8 -j DROP
+iptables -A INPUT -p tcp -d 10.0.0.5 -s 173.244.167.18 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.5 -s 173.244.167.21 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.5 -s 207.182.130.20 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.5 -s 72.51.35.167 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.5 -s 108.243.154.57 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.5 -j DROP
+iptables -A INPUT -p tcp -d 10.0.0.10 -s 205.214.232.19 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.10 -s 99.3.185.223 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.10 -s 74.62.46.165 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.10 -s 190.120.231.16 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.10 -s 190.120.230.87 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.10 -s 190.120.229.70 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.10 -s 208.109.254.57 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.10 -s 108.243.154.57 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.10 -j DROP
+iptables -A INPUT -p tcp -d 10.0.0.13 -s 205.214.232.19 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.13 -s 99.3.185.223 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.13 -s 74.62.46.166 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.13 -s 69.63.86.138 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.13 -s 69.174.249.47 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.13 -s 72.51.37.43 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.13 -s 99.122.84.83 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.13 -s 108.66.163.29 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.13 -s 72.51.35.167 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.13 -s 108.243.154.57 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.13 -j DROP
+iptables -A INPUT -p tcp -d 10.0.0.18 -s 205.214.232.19 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.18 -s 99.3.185.223 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.18 -s 74.62.46.166 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.18 -s 69.63.86.138 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.18 -s 99.122.84.83 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.18 -s 108.66.163.29 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.18 -s 108.243.154.57 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.18 -j DROP
+iptables -A INPUT -p tcp -d 10.0.0.20 -s 205.214.232.19 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.20 -s 99.3.185.223 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.20 -s 74.62.46.166 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.20 -s 69.63.86.138 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.20 -s 99.122.84.83 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.20 -s 190.120.230.87 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.20 -s 190.120.231.16 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.20 -s 190.120.229.70 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.20 -s 108.66.163.29 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.20 -s 208.109.254.57 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.20 -s 108.243.154.57 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.20 -j DROP
+iptables -A INPUT -p tcp -d 10.0.0.19 -s 205.214.232.19 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.19 -s 99.3.185.223 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.19 -s 74.62.46.166 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.19 -s 69.63.86.138 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.19 -s 99.122.84.83 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.19 -s 173.244.167.18 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.19 -s 108.66.163.29 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.19 -s 72.51.35.167 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.19 -s 108.243.154.57 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.19 -j DROP
+iptables -A INPUT -p tcp -d 10.0.0.15 -s 205.214.232.19 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.15 -s 99.3.185.223 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.15 -s 74.62.46.166 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.15 -s 69.63.86.138 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.15 -s 99.122.84.83 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.15 -s 173.244.167.19 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.15 -s 173.244.167.18 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.15 -s 108.66.163.29 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.15 -s 72.51.35.167 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.15 -s 108.243.154.57 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.15 -j DROP
+iptables -A INPUT -p tcp -d 10.0.0.17 -s 76.74.152.195 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.17 -s 72.51.37.43 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.17 -s 205.214.232.19 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.17 -s 99.3.185.223 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.17 -s 74.62.46.166 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.17 -s 69.63.86.138 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.17 -s 99.122.84.83 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.17 -s 108.66.163.29 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.17 -s 72.51.38.88 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.17 -s 108.243.154.57 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.17 -j DROP
+iptables -A INPUT -p tcp -d 10.0.0.22 -s 205.214.232.19 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.22 -s 99.3.185.223 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.22 -s 74.62.46.166 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.22 -s 69.63.86.138 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.22 -s 99.122.84.83 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.22 -s 108.66.163.29 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.22 -s 108.243.154.57 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.22 -j DROP
+iptables -A INPUT -p tcp -d 10.0.0.32 -s 205.214.232.19 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.32 -s 99.3.185.223 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.32 -s 74.62.46.166 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.32 -s 69.63.86.138 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.32 -s 99.122.84.83 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.32 -s 109.123.98.140 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.32 -s 108.66.163.29 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.32 -s 108.243.154.57 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.32 -j DROP
+iptables -A INPUT -p tcp -d 10.0.0.28 -s 205.214.232.19 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.28 -s 99.3.185.223 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.28 -s 74.62.46.166 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.28 -s 69.63.86.138 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.28 -s 99.122.84.83 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.28 -s 109.123.98.140 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.28 -s 108.66.163.29 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.28 -s 209.236.68.76 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.28 -s 209.236.74.5 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.28 -s 69.174.242.72 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.28 -s 208.109.254.57 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.28 -s 108.243.154.57 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.28 -j DROP
+iptables -A INPUT -p tcp -d 10.0.0.25 -s 205.214.232.19 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.25 -s 99.3.185.223 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.25 -s 74.62.46.166 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.25 -s 69.63.86.138 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.25 -s 99.122.84.83 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.25 -s 109.123.98.140 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.25 -s 108.66.163.29 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.25 -s 72.51.37.43 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.25 -s 76.74.154.185 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.25 -s 72.51.35.167 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.25 -s 108.243.154.57 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.25 -j DROP
+iptables -A INPUT -p tcp -d 10.0.0.26 -s 205.214.232.19 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.26 -s 99.3.185.223 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.26 -s 74.62.46.166 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.26 -s 69.63.86.138 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.26 -s 99.122.84.83 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.26 -s 109.123.98.140 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.26 -s 108.66.163.29 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.26 -s 209.236.75.202 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.26 -s 209.236.68.203 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.26 -s 69.174.242.72 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.26 -s 108.243.154.57 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.26 -j DROP
+echo CarMagnets.com
+# Carmagnets
+iptables -A INPUT -p tcp -d 10.0.0.12 -s 205.214.232.19 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.12 -s 99.3.185.223 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.12 -s 74.62.46.166 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.12 -s 69.63.86.138 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.12 -s 99.122.84.83 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.12 -s 109.123.98.140 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.12 -s 108.66.163.29 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.12 -s 209.236.68.76 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.12 -s 69.174.242.72 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.12 -s 108.243.154.57 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.12 -j DROP
+echo BusinessHolidayCards.com
+# BusinessHolidayCards
+iptables -A INPUT -p tcp -d 10.0.0.21 -s 205.214.232.19 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.21 -s 99.3.185.223 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.21 -s 74.62.46.166 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.21 -s 69.63.86.138 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.21 -s 99.122.84.83 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.21 -s 109.123.98.140 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.21 -s 108.66.163.29 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.21 -s 209.236.68.89 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.21 -s 209.236.68.75 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.21 -s 69.174.242.72 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.21 -s 108.243.154.57 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.21 -j DROP
+echo ChristmasPhotoCards.com
+# ChristmasPhotoCards
+iptables -A INPUT -p tcp -d 10.0.0.24 -s 205.214.232.19 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.24 -s 99.3.185.223 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.24 -s 74.62.46.166 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.24 -s 69.63.86.138 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.24 -s 99.122.84.83 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.24 -s 109.123.98.140 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.24 -s 108.66.163.29 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.24 -s 190.120.230.87 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.24 -s 190.120.231.16 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.24 -s 190.120.229.70 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.24 -s 208.109.254.57 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.24 -s 108.243.154.57 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.24 -j DROP
+echo FlyerPrinting.com
+# FlyerPrinting
+iptables -A INPUT -p tcp -d 10.0.0.14 -s 205.214.232.19 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.14 -s 99.3.185.223 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.14 -s 74.62.46.166 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.14 -s 69.63.86.138 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.14 -s 99.122.84.83 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.14 -s 109.123.98.140 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.14 -s 108.66.163.29 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.14 -s 209.236.68.89 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.14 -s 209.236.68.75 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.14 -s 69.174.242.72 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.14 -s 208.109.254.57 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.14 -s 108.243.154.57 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.14 -j DROP
+echo HolidayGreetingCards.com
+# HolidayGreetingCards
+iptables -A INPUT -p tcp -d 10.0.0.16 -s 205.214.232.19 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.16 -s 99.3.185.223 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.16 -s 74.62.46.166 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.16 -s 69.63.86.138 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.16 -s 99.122.84.83 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.16 -s 109.123.98.140 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.16 -s 108.66.163.29 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.16 -s 209.236.75.202 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.16 -s 50.22.2.226 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.16 -s 50.22.135.2 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.16 -s 173.244.167.18 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.16 -s 207.182.130.18 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.16 -s 72.51.35.167 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.16 -s 108.243.154.57 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.16 -j DROP
+echo SaveTheDatePostcards.com
+# SaveTheDatePostcards
+iptables -A INPUT -p tcp -d 10.0.0.36 -s 205.214.232.19 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.36 -s 99.3.185.223 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.36 -s 74.62.46.166 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.36 -s 69.63.86.138 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.36 -s 99.122.84.83 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.36 -s 190.120.230.87 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.36 -s 190.120.231.16 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.36 -s 190.120.229.70 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.36 -s 208.109.254.57 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.36 -s 108.243.154.57 -j ACCEPT
+iptables -A INPUT -p tcp -d 10.0.0.36 -j DROP
+
+echo =========          done             =========
+
+
+
+
+
+
+
+
+
+
+# The DOS Blacklisting happens after the proxies have been granted access.
+
+
+
+
+echo +++ Dont cut off the Search Engines +++
+
+#-- GoogleBot
+iptables -A INPUT -p all -s 66.249.0.0 -j ACCEPT
+iptables -A INPUT -p all -s 64.233.0.0 -j ACCEPT
+iptables -A INPUT -p all -s 66.102.0.0 -j ACCEPT
+iptables -A INPUT -p all -s 72.14.0.0 -j ACCEPT
+iptables -A INPUT -p all -s 74.125.0.0 -j ACCEPT
+iptables -A INPUT -p all -s 209.85.0.0 -j ACCEPT
+iptables -A INPUT -p all -s 216.239.0.0 -j ACCEPT
+#-MSN Bot
+iptables -A INPUT -p all -s 64.4.0.0 -j ACCEPT
+iptables -A INPUT -p all -s 65.52.0.0 -j ACCEPT
+iptables -A INPUT -p all -s 207.46.0.0 -j ACCEPT
+iptables -A INPUT -p all -s 207.68.0.0 -j ACCEPT
+#-Yahoo
+iptables -A INPUT -p all -s 8.12.0.0 -j ACCEPT
+iptables -A INPUT -p all -s 66.196.0.0 -j ACCEPT
+iptables -A INPUT -p all -s 66.228.0.0 -j ACCEPT
+iptables -A INPUT -p all -s 67.195.0.0 -j ACCEPT
+iptables -A INPUT -p all -s 68.142.0.0 -j ACCEPT
+iptables -A INPUT -p all -s 72.30.0.0 -j ACCEPT
+iptables -A INPUT -p all -s 74.6.0.0 -j ACCEPT
+iptables -A INPUT -p all -s 202.160.0.0 -j ACCEPT
+iptables -A INPUT -p all -s 209.191.0.0 -j ACCEPT
+
+
+
+
+
+
+#---- In Extrem cases you can uncoment the following commands and move to White Listing.
+iptables -A INPUT -p tcp -d 10.0.0.2 --dport 443 -j ACCEPT
+iptables -A INPUT -p all -j DROP
+
+
+echo 
+echo
+echo ^^^^^^^^ Restarting IP Tables ^^^^^^^^^^
+service iptables save
+service iptables stop
+service iptables start
+echo ^^^^^^^^      Done             ^^^^^^^^^^
+
+
+
+# Installing new IP Tables will make Apache hang.  
+# The web server must be restarted.
+
+# Fortunately, browsers in the middle of a request will not receive a broken signal 
+# for any reason as a result of this script running (waiting only).
+
+echo 
+echo +-+-+ Restarting Apache +-+-+
+
+/usr/local/apache2_2/bin/apachectl restart
+
+echo ==== Done ====
+echo
+
+

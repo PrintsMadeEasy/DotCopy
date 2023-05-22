@@ -1,0 +1,301 @@
+<html>
+<head>
+<title>Admin</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<script language="javascript">
+
+	//Make an array of the images we want to preload for the mouse-overs.
+	arImageSrc = new Array (
+		"./images/button-go-d.gif",
+		"./images/button-sendmessage-u.gif"
+	)
+
+	//Preload images.
+	arImageList = new Array ();
+	for (counter in arImageSrc) {
+		arImageList[counter] = new Image();
+		arImageList[counter].src = arImageSrc[counter];
+	}
+	function SelectPeriodTypeTimeFrame( state )
+	{
+		document.all.TimeFrame.disabled = !state;
+		document.all.DateRangeStartDay.disabled = state;
+		document.all.DateRangeStartMonth.disabled = state;
+		document.all.DateRangeStartYear.disabled = state;
+		document.all.DateRangeEndDay.disabled = state;
+		document.all.DateRangeEndMonth.disabled = state;
+		document.all.DateRangeEndYear.disabled = state;
+	}
+
+	function InitializeTimeFields()
+	{
+		var periodTimeFrame = {PERIODISTIMEFRAME};
+		document.all.TimeFrame.disabled = !periodTimeFrame;
+		document.all.DateRangeStartDay.disabled = periodTimeFrame;
+		document.all.DateRangeStartMonth.disabled = periodTimeFrame;
+		document.all.DateRangeStartYear.disabled = periodTimeFrame;
+		document.all.DateRangeEndDay.disabled = periodTimeFrame;
+		document.all.DateRangeEndMonth.disabled = periodTimeFrame;
+		document.all.DateRangeEndYear.disabled = periodTimeFrame;
+	}
+
+	function hl(e)
+	{
+		e.style.textDecoration='underline';
+	}
+	function dl(e)
+	{
+		e.style.textDecoration='none';
+	}
+	
+	function ConfirmStatusChangeForUser(){
+		if(confirm("Are you sure that you want to change the status on Behalf of {USERID_FOR_SCHEDULE_NAME}")){
+			document.forms["ChangeStatus"].submit();
+		}
+		else{
+			document.location = document.location;
+		}
+		
+	}
+	
+	
+	function ShowProofsFromUser(FromUserID){
+		var ProofWindowURL = "./ad_proofing_byuser.php?starttime={STARTTIMESTAMP}&endtime={ENDTIMESTAMP}&CsReportURL={RETURN_URL_ENCODED}&csUserID=" + FromUserID;
+		newWindow = window.open(ProofWindowURL, "proofsbyuser", "height=620,width=270,directories=no,location=no,menubar=no,scrollbars=yes,status=yes,toolbar=no,resizable=yes");
+		newWindow.focus();
+	}
+
+</script>
+<script type="text/javascript" src="library/admin_library.js"></script>
+
+<script type="text/javascript" src="./library/customer_service.js"></script>
+<link rel="stylesheet" type="text/css" href="library/calendar/themes/winter.css"/>
+<script type="text/javascript" src="library/calendar/src/utils.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar.js"></script>
+<script type="text/javascript" src="library/calendar/lang/calendar-en.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar-setup.js"></script>
+<script type="text/javascript" src="library/formatDate.js"></script>
+</head>
+<body bgcolor="#FFFFFF" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="">
+<div align="center">
+{HEADER}
+&nbsp;
+<table width="760" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td class="Body">
+<!-- Inner Body  -->
+
+
+				<FORM name="ReportOptions" method="get" >
+				<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+				<input type="hidden" name="view" value="{VIEW_TYPE}" />
+				<input type="hidden" name="UserIdForSchedule" value="{USER_ID_SCHEDULE}" />
+				<input type="hidden" name="calendarProxyField" value="" id="calendarField" onChange="calendarDateRangeChanged(this.value)" />
+					<TABLE width="100%" border="0" cellspacing="0" cellpadding="2" bgcolor="#999999">
+						<TR>
+							<TD>
+								<TABLE width="100%" border="0" cellspacing="2" cellpadding="0" bgcolor="#EEEEEE" >
+									<TR>
+										<TD class="SmallBodyBold" width="8%">&nbsp;&nbsp;Report Period:</TD>
+										<TD class="SmallBodyBlack" width="49%">
+											<input type="radio" name="PeriodType" class="SmallBody" value="TIMEFRAME" onClick="SelectPeriodTypeTimeFrame( true );"
+											{PERIODTYPETIMEFRAME} />
+											{TIMEFRAMESELS}<img src="./images/transparent.gif" border="0" width="30" height="1" /><img alt='Calendar' align='absmiddle' src='./images/calendar5.gif' border='0' id='calendarDateRange'  onmouseover="this.style.cursor='pointer'" onMouseOut="this.style.cursor='default'" />
+										</TD>
+									</TR>
+									<TR>
+										<TD class="SmallBodyBold" width="8%"></TD>
+										<TD class="SmallBodyBlack" width="49%" >
+											<input type="radio" name="PeriodType"  class="SmallBody" value="DATERANGE" onClick="SelectPeriodTypeTimeFrame( false );"
+											{PERIODTYPEDATERANGE} />
+											{DATERANGESELS}
+										</TD>
+									</TR>
+									<TR>
+								</TABLE>
+							</TD>
+						</TR>
+					</TABLE>
+				<TABLE width="100%" border="0" cellspacing="0" cellpadding="0">
+					<TR>
+						<TD colspan="2"><img src="./images/transparent.gif" border="0" width="1" height="4" alt="" /></TD>
+					</TR>
+					<TR>
+						<TD width="59%">&nbsp;</TD>
+						<TD width="41%" align="center">
+							<input type="button" value="Refresh" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" onClick="document.ReportOptions.submit();" />
+						</TD>
+					</TR>
+				</TABLE>
+			</FORM>
+
+
+
+
+
+<!-- BEGIN EmptyResults -->
+<!-- BEGIN ReportBody -->
+<font class="SmallBody">Report between <br/><b>{START_REPORT_DESCRIPTION} 12:00 am PST</b> and <b>{END_REPORT_DESCRIPTION} 11:59:59 pm PST</b></font><br/>&nbsp;
+<table width="100%" border="0" cellspacing="0" cellpadding="1" bgcolor="#666699">
+  <tr>
+    <td><table width="100%" border="0" cellspacing="2" cellpadding="5">
+  <tr>
+                  <td bgcolor="#ddddee" class="SmallBody" width="18%">Name</td>
+                  <td bgcolor="#ddddee" class="SmallBody" width="23%">Number of 
+                    Correspondences</td>
+                  <td bgcolor="#ddddee" class="SmallBody" width="12%">Memos</td>
+	              
+	              <td bgcolor="#ddddee" class="SmallBody" width="13%">Artwork Proofs</td>
+				  <td bgcolor="#ddddee" class="SmallBody" width="12%">Artwork Goofs</td>
+				  <td bgcolor="#ddddee" class="SmallBody" width="22%">Amount of Time Worked</td>
+  </tr>
+  <!-- BEGIN performanceBL -->
+   <tr>
+                  <td bgcolor="#f3f3ff" class="SmallBody" width="18%">{NAME}</td>
+                  <td bgcolor="#f3f3ff" class="SmallBody" width="23%">{NO_RESPONSES}{CHATS}</td>
+				  <td bgcolor="#f3f3ff" class="SmallBody" width="12%">{NUM_MEMOS}</td>
+	              
+	              <td bgcolor="#f3f3ff" class="SmallBody" width="13%">{PROOFS}</td>
+				  <td bgcolor="#f3f3ff" class="SmallBody" width="12%">{GOOFS}</td>
+				  <td bgcolor="#f3f3ff" class="SmallBody" width="22%">{HOURS_WORKED} 
+                    hours&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <em>({MINUTES_WORKED} minutes)</em></td>
+
+  </tr>
+   <!-- END performanceBL -->
+</table></td>
+  </tr>
+</table>
+<br/>
+
+<font class="SmallBody"><font color="#FF0000">*</font> <i>Number of Correspondences</i> is only incremented if there are 2 or more messages. </font>
+<br/><br/>
+
+<!-- END ReportBody -->
+
+<b>Auto Proofed Projects:</b> {AUTO_PROOFS}<br>
+<b>Auto Proofed Orders:</b> {AUTO_PROOFS_ORDERS}
+<br/><br/>
+<!-- BEGIN ShowGoofsBL -->
+<a href='{CURRENT_URL}&showGoofs=yes' class="BlueRedLink">Show Goofs</a>
+<!-- END ShowGoofsBL -->
+
+
+<br/><br/><br/><br/>
+
+<!-- BEGIN MyScheduleHeaderBasicBL -->
+<b>My Schedule</b>
+<!-- END MyScheduleHeaderBasicBL -->
+
+
+<!-- BEGIN MyScheduleHeaderAdminBL -->
+<b>View Schedule for . . . </b> &nbsp;&nbsp;&nbsp;<select name="chooseemployee" class="admininput" onChange="document.forms['ReportOptions'].UserIdForSchedule.value = this.value; document.forms['ReportOptions'].submit();">
+{EMPLOYEE_LIST}
+</select>
+<!-- END MyScheduleHeaderAdminBL -->
+
+<!-- BEGIN ScheduleBL -->
+<br/><img src="./images/transparent.gif" border="0" width="1" height="4" alt="" /><table width="600" border="0" cellspacing="0" cellpadding="1" bgcolor="#99CCBB">
+  <tr>
+    <td><table width="100%" border="0" cellspacing="2" cellpadding="5">
+  <tr>
+                  <td bgcolor="#ddddee" class="SmallBody" width="25%">Timestamp</td>
+                  <td bgcolor="#ddddee" class="SmallBody" width="53%">Description</td>
+	              <td bgcolor="#ddddee" class="SmallBody" width="22%">Minutes  
+                    Accumulated</td>
+  </tr>
+  <!-- BEGIN StatusDescBL -->
+   <tr onMouseOver="hl(this)" onMouseOut="dl(this)">
+                  <td bgcolor="#f3f3ff" class="SmallBody" width="25%">{STATUS_TIME}</td>
+                  <td bgcolor="#{STATUS_COLOR}" class="SmallBody" width="53%">{STATUS_DESC}</td>
+	              {HIDE_ROW_START}<td bgcolor="#f3f3ff" class="SmallBody" width="22%" rowspan={ROWSPAN}>{MINUTES_ACCUM}</td>{HIDE_ROW_END}
+
+  </tr>
+   <!-- END StatusDescBL -->
+</table></td>
+  </tr>
+</table><img  src="./images/transparent.gif" border="0" width="1" height="4" alt="" /><br/>
+<font class="SmallBody"><b>Total time worked within this period: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {TOTAL_HOURS_WORKED} 
+                    hours&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <em>({TOTAL_MINUTES_WORKED} minutes)</em></b></font>
+<br/>
+<br/><br/><br/>
+        <font class="SmallBody"><font color="#FF0000">*</font> It is possible 
+        that the grand total of minutes may be off by 1 or 2 (+ or -) relative to adding 
+        each time slot up individually. <br/>
+        &nbsp;&nbsp;&nbsp;This is caused by rounding imperfections.  The grand total is more accurate. </font>
+<!-- END ScheduleBL -->
+<!-- END EmptyResults -->
+
+<br/><br/><br/>
+
+
+<!-- BEGIN ChangeStatusForAnotherUserBL -->
+<form name="ChangeStatus" action="./ad_actions.php">
+<input type="hidden" name="action" value="ChangeAttendanceStatus" />
+<input type="hidden" name="overrideuser" value="{USER_ID_SCHEDULE}" />
+<input type="hidden" name="returl" value="{RETURN_URL}" />
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+
+<b>Change the Status for {USERID_FOR_SCHEDULE_NAME}</b><br/><img  src="./images/transparent.gif" border="0" width="1" height="5" alt="" /><br/>
+<select name="StatusChar" class="admininput" onChange="ConfirmStatusChangeForUser();">
+{USER_STATUS_CHOICES}
+</select>
+</form>
+<!-- END ChangeStatusForAnotherUserBL -->
+
+<br/><br/><br/><br/><br/>
+
+<!-- Inner Body  END -->
+</td>
+</tr>
+</table>
+<table width="760" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="360" class="NavColor"><img src="./images/footer.gif" border="0" width="350" height="16" usemap="#footer" alt="" /></td>
+	<td width="400" align="right" class="NavColor"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+  </tr>
+</table>
+<font class="copyright"> </font>
+</div>
+&nbsp;
+<script type="text/javascript" src="./library/ImageMap-footer.js"></script>
+<script type="text/javascript">InitializeTimeFields()</script>
+<script>
+	function calendarDateRangeChanged(newDateForRange){
+	
+		var calendarDate = new Date(Date.parse(newDateForRange));
+		
+		SelectPeriodTypeTimeFrame( false );
+		
+		document.forms["ReportOptions"].DateRangeStartYear.value = calendarDate.getFullYear();
+		document.forms["ReportOptions"].DateRangeEndYear.value = calendarDate.getFullYear();
+		document.forms["ReportOptions"].DateRangeStartMonth.value =  (calendarDate.getMonth() + 1);
+		document.forms["ReportOptions"].DateRangeEndMonth.value =  (calendarDate.getMonth() + 1);
+		document.forms["ReportOptions"].DateRangeStartDay.value =  (calendarDate.getDate());
+		document.forms["ReportOptions"].DateRangeEndDay.value =  (calendarDate.getDate());
+		
+		SetRadioButtonValue("document.forms['ReportOptions'].PeriodType", "DATERANGE");
+	}
+	
+	
+		var cal = new Zapatec.Calendar.setup({
+
+		inputField     :    "calendarField",     // id of the input field
+		singleClick    :    false,     // require two clicks to submit
+		ifFormat       :    '%a, %e %b %Y %H:%M:%S',     //  of the input field
+		timeFormat     : 	"12",
+		ampm           :    false,
+		showsTime      :    false,     // show time as well as date
+		button         :    "calendarDateRange",  // trigger button
+		timeInterval   :    10,
+		floating	   : 	true,
+		position	   : 	[190, 140],
+		date	       :	new Date("{START_REPORT_DATE_STRING}")
+		});
+		
+
+		
+</script>
+</body>
+</html>

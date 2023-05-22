@@ -1,0 +1,178 @@
+<html>
+<head>
+<title>Admin</title>
+<LINK REL=stylesheet HREF="./library/stylesheet.css" TYPE="text/css">
+<LINK REL="SHORTCUT ICON" HREF="/favicon.ico">
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+
+<script type="text/javascript" src="./library/admin_library.js"></script>
+<script type="text/javascript" src="./library/general_lib.js"></script>
+<link rel="stylesheet" type="text/css" href="library/calendar/themes/winter.css"/>
+<script type="text/javascript" src="library/calendar/src/utils.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar.js"></script>
+<script type="text/javascript" src="library/calendar/lang/calendar-en.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar-setup.js"></script>
+<script type="text/javascript" src="library/formatDate.js"></script>
+</head>
+<body bgcolor="#FFFFFF" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="">
+<div align="center">
+{HEADER}
+
+<table width="760" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td class="body">
+
+<br><br>
+
+<table width="100%" border="0" cellspacing="0" cellpadding="1">
+  <tr>
+    <td width="80%"><font class="LargeBody" color="#336699"><b><img src='./domain_logos/{DOMAIN_LOGO}' border='0'> Email Message: {LAST_EDITED}</b></font></td>
+	<form enctype="plain/text" action="./ad_emailNotifyMessageEdit.php" method="GET">
+	<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}">
+	<input type="hidden" name="messageid" value="{MESSAGEID}" />
+	<input type="hidden" name="view" value="edit" />
+	<input type="hidden" name="action" value="sendemail" />
+	<td width="20%" align="right">
+	<input type="submit" value="Send Testmail" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" /></td>
+	</form>
+  </tr>
+</table>
+
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
+	<tr>
+	<td bgcolor="#3366CC"><img src="./images/transparent.gif" border="0" width="2" height="4"></td>
+	</tr>
+</table>
+
+<form enctype="plain/text" action="./ad_emailNotifyMessageList.php" method="GET">
+<input type="hidden" name="view" value="list">
+<input type="submit" value="Back to Listing" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" />
+</form>
+
+<br />
+<br />
+
+<form name="editEmailMessageForms" method="post">
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}">
+<input type="hidden" name="update_type" value="{UPDATE_TYPE}">
+<input type="hidden" name="action" value="save">
+<input type="hidden" name="view" value="list">
+<input type="hidden" name="ishtml" value="html">
+	
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+	<tr>
+		<td>
+		<input type="text" name="subject" value="{SUBJECT}" style="width:765px; font-size:10px; font-family:Arial, Helvetica, sans-serif;">
+		<br><br>
+		<textarea name="body" rows="30" cols="180" style="font-size:10px; font-family:Arial, Helvetica, sans-serif;">{BODY}</textarea>
+		</td>
+	</tr>
+	<tr><td height="12"></td></tr>	
+	<tr>
+	<td>
+		<input type="checkbox" name="active" value="active" {ACTIVE} style="font-size:8px; font-family:Arial, Helvetica, sans-serif;"> Active&nbsp;&nbsp;
+	</td>
+	</tr>
+	<tr><td height="12"></td></tr>	
+	<tr>
+	<td>Run between 	
+		{START_MONTH_SELECT}&nbsp;&nbsp;	
+		<input align='absmiddle' type='text' name='startday' value='{START_DAY}' class='' style='width:28px; height=22px;' maxlength='2'>&nbsp;&nbsp;	
+		{START_YEAR_SELECT}
+		&nbsp;&nbsp;-&nbsp;&nbsp;
+		{END_MONTH_SELECT}&nbsp;&nbsp;	
+		<input align='absmiddle' type='text' name='endday' value='{END_DAY}' class='' style='width:28px; height=22px;' maxlength='2'>&nbsp;&nbsp;	
+		{END_YEAR_SELECT}
+	</td>
+	</tr>
+	<tr><td height="12"></td></tr>	
+	<tr>
+	<td>	
+		From Name <input align='absmiddle' type='text' name='fromname' value='{FROMNAME}' class='' style='width:200px; height=22px;' maxlength='50'>&nbsp;&nbsp;	
+		From Email <input align='absmiddle' type='text' name='fromemail' value='{FROMEMAIL}' class='' style='width:200px; height=22px;' maxlength='50'>&nbsp;&nbsp;	
+	</td>
+	</tr>
+	
+
+	<tr>
+	<td align="Right"><input type="submit" value="Save Changes" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" /></td>
+	</tr>
+	
+</table>
+</form>
+
+<br>
+<!-- BEGIN TrackImageOKBL -->
+<b><font color="#00FF00">Tracking image OK</font></b>
+<br>
+<!-- END TrackImageOKBL -->
+<!-- BEGIN TrackImageMissingBL -->
+ <b><font color="FF0000">Tracking image missing:</font> &lt;img src=&quot;{TRACK}&quot; height=&quot;1&quot; width=&quot;1&quot; /&gt;</b>
+<br>
+<!-- END TrackImageMissingBL -->
+<!-- BEGIN UnsubscribeOKBL -->
+<b><font color="#00FF00">Unsubscribe link OK</font></b>
+<br>
+<!-- END UnsubscribeOKBL -->
+<!-- BEGIN UnsubscribeMissingBL -->
+ <b><font color="FF0000">Unsubscribe link missing:</font> &lt;a href=&quot;{UNSUBSCRIBE}&quot;&gt;Unsubscribe&lt;/a&gt;</b>
+<br>
+<!-- END UnsubscribeMissingBL -->
+<!-- BEGIN OrderLinkOKBL -->
+<b><font color="#00FF00">Order link OK</font></b>
+<br>
+<!-- END OrderLinkOKBL -->
+<!-- BEGIN OrderLinkMissingBL -->
+ <b><font color="FF0000">No order link</font> &lt;a href=&quot;{ORDERLINK}&quot;&gt;Order now!&lt;/a&gt;</b>
+<br>
+<!-- END OrderLinkMissingBL -->
+<!-- BEGIN HttpLinkAlertBL -->
+ <br><b><font color="FF0000">Warning: HTML contains a direct link !</font></b>
+<br>
+<!-- END HttpLinkAlertBL -->
+<br>
+
+<!-- BEGIN UploadBL -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">  
+<form enctype="multipart/form-data" action="ad_emailNotifyMessageEdit.php?action=upload&messageid={MESSAGEID}" method="POST">
+<tr>   
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+<input type="hidden" name="MAX_FILE_SIZE" value="1000000" />
+<td width="15%">Add Picture</td>
+<td width="65%"><input name="attachedfile" type="file" size="70" /> </td>
+<td width="20%" align="right"><input type="submit" value="Upload Picture" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" /></td>
+</tr>
+</form>
+</table>
+<!-- END UploadBL -->
+<br>
+
+<!-- BEGIN showPicturesBL -->
+<table width="100%" border="0" cellspacing="2" cellpadding="0">         
+<tr>
+	<td width="35%" align="left">&lt;img src=&quot;{Picture{PICTUREID}}&quot; /&gt;&nbsp;&nbsp; {PICTUREINTEXT}</td> 
+	<td width="25%" align="leftr"><a href='javascript:OpenEmailNotifyDetailPicturePopup({PICTUREID},{WIDTH},{HEIGHT},false)'><img src="./customer_attachments/{PICTURELINK}" style="border-style: none"></a></td>
+	<td width="40%" align="left"><a href="./ad_emailNotifyMessageEdit.php?action=deletepic&messageid={MESSAGEID}&picid={PICTUREID}">Remove Picture {PICTUREID}</a></td>
+</tr>
+</table>
+<!-- END showPicturesBL -->
+
+<br>
+
+</td>
+</tr>
+</table>
+
+
+<table width="760" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="360" class="NavColor"><img src="./images/footer.gif" border="0" width="350" height="16" usemap="#footer"></td>
+	<td width="400" align="right" class="NavColor"><img src="./images/transparent.gif" border="0" width="1" height="1"></td>
+  </tr>
+</table>
+<font class="copyright"> </font>
+</div>
+&nbsp;
+<script type="text/javascript" src="./library/ImageMap-footer.js"></script>
+</body>
+</html>

@@ -1,0 +1,227 @@
+<html>
+<head>
+<title>Admin</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<script language="javascript">
+
+	//Make an array of the images we want to preload for the mouse-overs.
+	arImageSrc = new Array (
+		"./images/button-cancel-d.gif",
+		"./images/button-savetemplate-d.gif"
+	)
+
+	//Preload images.
+	arImageList = new Array ();
+	for (counter in arImageSrc) {
+		arImageList[counter] = new Image();
+		arImageList[counter].src = arImageSrc[counter];
+	}
+
+	function ChooseFileForUpload(NumberOfColors){
+
+		var win2=window.open("./upload_image.php?&dpi={ARTDPI}&projectid={TEMPLATEID}&editorview={EDITOR_VIEW}&numbercolors=" + NumberOfColors, "uploadimage", "width=505, height=515, toolbar=0, locaction=0, directories=0, status=0, menubar=0, scrollbars=0, resizeable=0, copyhistory=0");
+		win2.moveTo((self.screenLeft + self.screen.width/4),(self.screenTop + self.screen.height/4));
+		win2.focus();
+	}
+
+	var DL_CMP = true;
+	function DownloadsComplete(){
+		DL_CMP = true;
+	}
+
+	function SwitchSides(SideNumber){
+		alert(SideNumber);
+	}
+
+	function UpdateFieldValuesFromFlash(fieldNumber, TextMessage){
+		//
+	}
+	function DeleteField(fieldNumber){
+		//
+	}
+
+	function UpdateTextLayerInFlash(FieldNumber){
+		//
+	}
+
+	text   = '<SCRIPT LANGUAGE=VBScript\> \n';
+	text += 'Sub drawtech_FSCommand(ByVal command, ByVal args)\n';
+	text += '  call drawtech_DoFSCommand(command, args)\n';
+	text += 'end sub\n';
+	text += '</SCRIPT\> \n';
+	document.write(text);
+
+	function drawtech_DoFSCommand(command, args) {
+
+		if (command == "TextUpdateCompleted") {
+			TextLayerUpdated = true;
+		}
+		else if (command == "ChooseFileForUpload") {
+			ChooseFileForUpload(args);
+		}
+		else if (command == "UpdateListener") {
+			UpdateListener();
+		}
+		else if (command == "DownloadsComplete") {
+			DownloadsComplete();
+		}
+		else if (command == "XMLparsed") {
+			XMLparsed();
+		}
+	}
+
+
+	var XMLparsingComplete = false;
+	var TextLayerUpdated = true;
+
+	function TextUpdateCompleted(){
+		TextLayerUpdated = true;
+	}
+
+	function XMLparsed(){
+		XMLparsingComplete = true;
+	}
+
+
+	function ConinueToNextStep(Save){
+		if(Save == "yes"){
+			document.location = "./artwork_update.php?projectrecord={TEMPLATEID}&viewtype={EDITOR_VIEW}&redirect={TEMPLATE_SAVE_URL_ENCODED}&form_sc={FORM_SECURITY_CODE}";
+		}
+		else{
+			document.location = "./ad_templates.php?productid={PRODUCTID}&categorytemplate={CATEGORYTEMPLATE}&templateview={EDITOR_VIEW}&searchkeywords={SEARCH_WORDS_ENCODED}&offset={OFFSET}";
+		}
+	}
+	function CancelChangesToTemplate(){
+		var CloseThisWindow = "{CLOSE_WINDOW_AFTER}";
+		if(CloseThisWindow != ""){
+			self.close();
+		}
+		else{
+			document.location = "./ad_templates.php?productid={PRODUCTID}&categorytemplate={CATEGORYTEMPLATE}&templateview={EDITOR_VIEW}&searchkeywords={SEARCH_WORDS_ENCODED}&offset={OFFSET}";
+		}
+	}
+
+	function InsertImage(rasterImageID, vectorImageID){
+		var MovieObj2 = window.document.drawtech;
+		MovieObj2.SetVariable("ext_ImageID", rasterImageID);
+		MovieObj2.SetVariable("ext_VectorImageID", vectorImageID);
+		MovieObj2.SetVariable("external_command", "InsertImage");
+	}
+	function UploadArtWork(){
+		var MovieObj2 = window.document.drawtech;
+		MovieObj2.SetVariable("external_command", "Finish");
+	}
+	function WarningMessage(Message){
+		var MovieObj2 = window.document.drawtech;
+		MovieObj2.SetVariable("ext_WarningMessage", Message);
+		MovieObj2.SetVariable("external_command", "Warning");
+	}
+	function ChooseFileForUploadMac(NumberOfColors,Identify){
+		var win2=window.open("./upload_image.php?projectid={TEMPLATEID}&editorview={EDITOR_VIEW}&dpi={ARTDPI}&numbercolors=" + NumberOfColors + "&identify=" + Identify, "uploadimage", "width=620, height=530, toolbar=0, locaction=0, directories=0, status=0, menubar=0, scrollbars=0, resizeable=0, copyhistory=0");
+		win2.moveTo((self.screenLeft + 200),(self.screenTop));
+		win2.focus();
+	}
+
+	function StartAdmin(){
+
+		if(!XMLparsingComplete){
+			setTimeout("StartAdmin()",200);
+			return;
+		}
+		var MovieObj2 = window.document.drawtech;
+		MovieObj2.SetVariable("/adminswitch:Password", "go");
+		MovieObj2.TPlay("/adminswitch");
+
+	}
+
+	function ShowSymbols(){
+		var win2=window.open("./symbols.html", "symbols", "width=400, height=530, toolbar=0, locaction=0, directories=0, status=0, menubar=0, scrollbars=1, resizeable=0, copyhistory=0");
+		win2.focus();
+	}
+
+
+	function UpdateListener(){
+		//
+	}
+
+
+	StartAdmin();
+
+
+
+</script>
+
+
+<link rel="stylesheet" type="text/css" href="library/calendar/themes/winter.css"/>
+<script type="text/javascript" src="library/calendar/src/utils.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar.js"></script>
+<script type="text/javascript" src="library/calendar/lang/calendar-en.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar-setup.js"></script>
+<script type="text/javascript" src="library/formatDate.js"></script>
+</head>
+<body bgcolor="#FFFFFF" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0"  onLoad="">
+<div align="center">
+{HEADER}
+&nbsp;
+<table width="760" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td class="Body">
+<!-- Inner Body  -->
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td bgcolor="#666666"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+</tr>
+<tr>
+    <td align="right" bgcolor="#BBBBBB" class="Body" valign="middle">
+	<!-- BEGIN HideHTMLbuttonsBL -->
+      <a href="javascript:CancelChangesToTemplate();"><img src="./images/button-cancelchanges-grey-u.gif" onmouseover="this.src='./images/button-cancelchanges-grey-d.gif';" onmouseout="this.src='./images/button-cancelchanges-grey-u.gif';" border="0"  width="120" height="25" align="absmiddle" alt="" /></a>
+      &nbsp;&nbsp;&nbsp; <a onclick="UploadArtWork();"><img src="./images/button-savetemplate-u.gif" onmouseover="this.src='./images/button-savetemplate-d.gif';" onmouseout="this.src='./images/button-savetemplate-u.gif';" border="0" width="118" height="25" align="absmiddle" alt="" /></a>
+      <img src="./images/transparent.gif" border="0" width="10" height="28" alt="" /> <!-- END HideHTMLbuttonsBL -->
+	  </td>
+</tr>
+<tr>
+    <td bgcolor="#666666"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+</tr>
+<tr>
+    <td align="center" bgcolor="#EEEEEE"><img  src="./images/transparent.gif" border="0" width="1" height="5" alt="" /><br/>
+<OBJECT classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="https://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=7,0,19,0" width="740" height="650" id="drawtech" align="middle">
+<param name="allowScriptAccess" value="sameDomain" />
+<param name="movie" value="./DotEditingTool.swf?macuser={MACUSER}&macstate={MACSTATE}&GuideMargin={GUIDE_MARGIN}" />
+<param name="quality" value="high" />
+<param name="bgcolor" value="#ffffff" />
+<embed src="./DotEditingTool.swf?macuser={MACUSER}&macstate={MACSTATE}&GuideMargin={GUIDE_MARGIN}" quality="high" bgcolor="#ffffff" width="740" height="650" name="drawtech" align="middle" allowScriptAccess="sameDomain" type="application/x-shockwave-flash" pluginspage="https://www.macromedia.com/go/getflashplayer" /></embed>
+</OBJECT>
+<br/>
+<img src="./images/transparent.gif" border="0" width="1" height="20" alt="" />
+</td>
+</tr>
+</table>
+<!-- Inner Body  END -->
+</td>
+</tr>
+</table>
+<table width="760" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="360" class="NavColor"><img src="./images/footer.gif" border="0" width="350" height="16" usemap="#footer" alt="" /></td>
+	<td width="400" align="right" class="NavColor"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+  </tr>
+</table>
+<font class="copyright"> </font>
+</div>
+&nbsp;
+<script type="text/javascript" src="./library/ImageMap-footer.js"></script><br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+
+</body>
+</html>

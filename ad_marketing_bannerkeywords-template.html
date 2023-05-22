@@ -1,0 +1,139 @@
+<html>
+<head>
+<title>CPC Searched Keyword Analyzer</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+
+<script language="javascript">
+
+	//Make an array of the images we want to preload for the mouse-overs.
+	arImageSrc = new Array (
+		"./images/button-go-d.gif",
+		"./images/button-closewindow-blue-d.gif",
+		"./images/button-sendmessage-blue-d.gif"
+	)
+
+
+	function hl(e)
+	{
+		e.style.color='#990000';
+		e.style.textDecoration='underline';
+	}
+	function dl(e)
+	{
+		e.style.color='black';
+		e.style.textDecoration='none';
+	}
+	
+
+
+</script>
+
+<style type="text/css">
+ .isHighlighted { background-color: #FFDDDD; }
+ .notHighlighted { background-color: #E3E3FF; }
+
+A.proofLink 	{ font-size:10px; color:#333333; font-family:Arial,Helvetica,sans-serif;  text-decoration:none}
+A.proofLink:visited { color: #990000; }
+A.proofLink:link { color: #333333; }
+A.proofLink:hover { color: #0000FF;  text-decoration:underline}
+
+</style>
+
+</head>
+
+<body bgcolor="#3366CC" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="" >
+<img  src="./images/transparent.gif" border="0" width="1" height="10" alt="" /><br/>
+<div align="center">
+<table bgcolor="#EEEEEE" width="600" cellpadding="0" cellspacing="0" border="0">
+
+<tr>
+<td bgcolor="#cccccc" class="SmallBody" align="center" style="background-image: url(./images/admin/header-shipping.png); background-repeat: no-repeat;"><img  src="./images/transparent.gif" border="0" width="1" height="3" alt="" /><br/><font color="#333333">Tracking Code: <b>{BANNER_NAME}</b></font><br/><img src="./images/transparent.gif" border="0" width="1" height="3" alt="" /></td>
+
+<tr>
+<td align="center" class="Body"><img src="./images/transparent.gif" border="0" width="8" height="8" alt="" /><table width="95%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+            <td class="SmallBody">Total of {BANNER_CLICKS} clicks between<br/>{START_DATE} <b>--</b> {END_DATE}<br/><br/>
+			This shows what keywords were looked up at a Search Engine before clicking on our advertisement.  This may not be configured for all types of CPC engines.  Also, some people have configured the security settings in their browsers to prevent us from learning their search phrase.   Therefore the number or search phrases found will almost always be less than the number of clicks a particular tracking code has received.   <br/><br/>
+			<!-- BEGIN StartDateWarning -->
+			<font color="#990000">The Purchases / Conversion figures can not be trusted because the start date of this report begins before Dec 26, 2006.<br/>
+			&nbsp;</font>
+			<!-- END StartDateWarning -->
+			</td>
+  </tr>
+</table>
+
+<!-- BEGIN NoKeywordResultsBL -->
+
+
+
+
+<table width="100%" border="0" cellspacing="8" cellpadding="3">
+
+  <tr>
+              <td class="SmallBody" bgcolor="#CCCCEE" width="52%"><b>Search Phrase</b></td>
+              <td class="SmallBody" bgcolor="#CCCCEE" width="15%"><b>Count</b></td>
+	          <td class="SmallBody" bgcolor="#CCCCEE" width="16%"><strong>Purchases</strong></td>
+			  <td class="SmallBody" bgcolor="#CCCCEE" width="17%"><strong>Conversion</strong></td>
+  </tr>
+<!-- BEGIN KeywordsBL -->
+  <tr onmouseover="hl(this)" onmouseout="dl(this)">
+              <td class="ReallySmallBody" width="52%">{PHRASE}</td>
+	          <td class="SmallBody" width="15%">{PCOUNT}</td>
+			  <td class="SmallBody" width="16%">{PPURCHASES}</td>
+			  <td class="SmallBody" width="17%">{PCONVERSION}</td>
+  </tr>
+ <!-- END KeywordsBL -->
+
+</table>
+&nbsp;
+
+
+
+
+<!-- END NoKeywordResultsBL -->
+
+
+<!-- BEGIN NoDomainsResultsBL -->
+
+
+<table width="100%" border="0" cellspacing="8" cellpadding="3">
+
+  <tr>
+              <td class="SmallBody" bgcolor="#CCCCEE" width="52%"><b>Domain</b></td>
+              <td class="SmallBody" bgcolor="#CCCCEE" width="15%"><b>Count</b></td>
+	          <td class="SmallBody" bgcolor="#CCCCEE" width="16%"><strong>Purchases</strong></td>
+			  <td class="SmallBody" bgcolor="#CCCCEE" width="17%"><strong>Conversion</strong></td>
+  </tr>
+<!-- BEGIN DomainsBL -->
+  <tr onmouseover="hl(this)" onmouseout="dl(this)">
+              <td class="ReallySmallBody" width="52%">{DOMAIN}</td>
+	          <td class="SmallBody" width="15%">{DCOUNT}</td>
+			  <td class="SmallBody" width="16%">{DPURCHASES}</td>
+			  <td class="SmallBody" width="17%">{DCONVERSION}</td>
+  </tr>
+ <!-- END DomainsBL -->
+</table>
+&nbsp;
+
+
+
+
+<!-- END NoDomainsResultsBL -->
+
+<br/><br/>
+</td>
+</tr>
+
+
+<tr>
+<td><img src="images/header-editoptions-fade-bot.gif" width="600" alt="" /></td>
+</tr>
+</table>
+
+</div>
+
+
+</body>
+</html>

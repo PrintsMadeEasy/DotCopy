@@ -1,0 +1,48 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Untitled Document</title>
+</head>
+
+<body>
+<div id="load_me" style="padding-left:10px; padding-right:10px;">
+<div>
+<style>
+.headerRow {font-family:Arial, Helvetica, sans-serif; font-size:14px; font-weight:bold;}
+.assignedRow {font-family:Arial, Helvetica, sans-serif; font-size:14px; font-weight:normal; background-color:#E9EEFC}
+.unassignedRow {font-family:Arial, Helvetica, sans-serif; font-size:14px; font-weight:normal;}
+</style>
+
+<!-- BEGIN CSRresults -->
+<table width="100%" border="0" cellspacing="3" cellpadding="0">
+  <tr class="headerRow">
+    <td>CSR Real Name</td>
+    <td>CSR Pen Name</td>
+    <td>Status</td>
+    <td align="right">Command</td>
+  </tr>
+  <!-- BEGIN CsrBL -->
+  <tr class="{ROW_CLASS}" onmouseover="this.style.textDecoration='underline';" onmouseout="this.style.textDecoration='none';">
+    <td>{CSR_REAL_NAME}</td>
+    <td>{CSR_PEN_NAME}</td>
+    <td>{CSR_STATUS}</td>
+    <td align="right">{COMMAND}</td>
+  </tr>
+  <!-- END CsrBL -->
+</table>
+&nbsp;
+<br />
+<div style="font-family:Arial, Helvetica, sans-serif; font-size:10px; background-color:#F3f3F3; border:solid; border-color:#E3E3E3; border-width:1px; color:#555555;"><font color="#990000">*</font> You can transfer a chat thread to any CSR which is online.<br />
+&nbsp;&nbsp;&nbsp;If the CSR is busy, the customer will get automatic messages on an interval letting them know <br />
+&nbsp;&nbsp;&nbsp;they are waiting in a transfer queue (until the assigned CSR types their first message).</div>
+<br />
+<!-- END CSRresults -->
+<!-- BEGIN EmptyResults -->
+There are not any CSR's online within the Chat System.<br />
+<!-- END EmptyResults -->
+&nbsp;
+</div>
+</div>
+</body>
+</html>

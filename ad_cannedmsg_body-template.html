@@ -1,0 +1,318 @@
+<html>
+<head>
+<title>Untitled Document</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+
+
+<script>
+
+	//If the Message ID is null then we create a new message
+	function AddOrEditMessage(TheMsgID, View){
+		var TheAddress = "./ad_cannedmsg_edit.php?categoryid={CATEGORYID}&messageid=" + TheMsgID + "&view=" + View;
+		newWindow = window.open(TheAddress, "EditCannedMessage", "height=425,width=390,directories=no,location=no,menubar=no,scrollbars=no,status=no,toolbar=no,resizable=no");
+		newWindow.focus();
+	}
+
+	//Pass in a blank category name if we are adding a new category
+	//If it is not blank then it means we are going to editing the existing category name
+	function AddOrdEditCategoryName(CategoryDefault){
+
+		var NewCategoryName = prompt("What should the new the category name be?", CategoryDefault);
+
+		if(!NewCategoryName){
+			return;
+		}
+		else{
+			//trim the white space
+			NewCategoryName = NewCategoryName.replace(/^\s+/, "");
+			NewCategoryName = NewCategoryName.replace(/\s+$/, "");
+
+			if(NewCategoryName == ""){
+				alert("Please enter a category name first");
+				return;
+			}
+		}
+
+		if(CategoryDefault == ""){
+			var TheCommand = "NewCategoryName";
+		}
+		else{
+			var TheCommand = "ChangeCategoryName";
+		}
+
+		document.forms["topmenucommands"].cannedmessagecommand.value = TheCommand;
+		document.forms["topmenucommands"].categoryname.value = NewCategoryName;
+		document.forms["topmenucommands"].submit();
+
+	}
+
+	function DeleteCategory(){
+
+		document.forms["topmenucommands"].returnurl.value = "./ad_cannedmsg.php?categoryid={CATEGRORYPARENTID}";  //Redirect back to the parent category.
+		document.forms["topmenucommands"].cannedmessagecommand.value = "DeleteCategory";
+		document.forms["topmenucommands"].submit();
+	}
+
+	//Will be called from the message pop-up after it has been saved
+	//If TreeUpdated is true we have to refresh the whole tree, otherwise just the edit window
+	function MessageSaved(CatID, MsgID, TreeUpdated, ShowCategoryOnRefresh){
+		if(TreeUpdated)
+			if(ShowCategoryOnRefresh)
+				top.document.location = "./ad_cannedmsg.php?categoryid=" + CatID;
+			else
+				top.document.location = "./ad_cannedmsg.php?messageid=" + MsgID;
+
+		else
+			if(ShowCategoryOnRefresh)
+				document.location = "./ad_cannedmsg_body.php?categoryid=" + CatID;
+			else
+				document.location = "./ad_cannedmsg_body.php?messageid=" + MsgID;
+	}
+
+	function DeleteMessage(TheMsgID){
+		if(confirm("Do you really want to delete this message?")){
+			document.forms["topmenucommands"].returnurl.value = "./ad_cannedmsg.php?categoryid={CATEGORYID}";  //Redirect back to the category that contains the message
+			document.forms["topmenucommands"].messageid.value = TheMsgID;
+			document.forms["topmenucommands"].cannedmessagecommand.value = "DeleteMessage";
+			document.forms["topmenucommands"].submit();
+		}
+	}
+
+	function MoveCategory(){
+		if(confirm("Do you want to move this folder somewhere else?\n\nAfter clicking on 'OK' it will be moved into the next folder on the tree that is clicked. ")){
+			top.TreeFrame.SetMoveCategory('{CATEGORYID}');
+		}
+	}
+	function MoveMessage(TheMsgID){
+		if(confirm("Do you want to move this message into another folder?\n\nAfter clicking on 'OK' it will be moved into the next folder on the tree that is clicked. ")){
+			top.TreeFrame.SetMoveMessage(TheMsgID);
+		}
+	}
+
+	var TreeLoadingRetries = 0;
+	function ChangeTreeState(){
+		if(top.TreeFrame.document.readyState != "complete"){
+			TreeLoadingRetries++;
+
+			if(TreeLoadingRetries > 50)
+				alert("The tree frame does not seem to be loading");
+			else
+				setTimeout("ChangeTreeState()",200);
+
+			return;
+		}
+
+		top.TreeFrame.openTreeItem ('{NODE_TYPE}', '{NODE_ID}');
+
+	}
+	{CHANGETREE}
+
+</script>
+
+<style type="text/css">
+A.MessageLink 	{ font-size:11px; color:#FFFFEE;  font-family:Arial,Helvetica,sans-serif; }
+A.MessageLink:visited { color: #FFFFEE; }
+A.MessageLink:link { color: #FFFFEE; }
+A.MessageLink:hover { color: #000000; }
+
+A.Heirarchy 	{ font-size:14px; color:#336699;  font-family:Arial,Helvetica,sans-serif; }
+A.Heirarchy:visited { color: #336699; }
+A.Heirarchy:link { color: #336699; }
+A.Heirarchy:hover { color: #cc0000; }
+
+</style>
+</head>
+
+<body bgcolor="#D5DFE5" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" >
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="1%"><img src="./images/transparent.gif" width="15" height="15" alt="" /></td>
+	<td class="Body">
+<img  src="./images/transparent.gif" width="15" height="7" alt="" /><br/>
+<font class="SmallBody" style="font-size:14px;">{ANCESTORS}</font>
+<br/><img src="./images/transparent.gif" width="15" height="7" alt="" />
+<!-- BEGIN RootFolderBL -->
+
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="8FB7DF">
+  <tr>
+    <td width="1%"><img src="./images/tree/category-corner-l.gif" width="15" height="50" alt="" /></td>
+	<td width="98%">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td bgcolor="#000066"><img src="./images/transparent.gif" width="1" height="1" alt="" /></td>
+  </tr>
+   <tr>
+    <td class="Body"><nobr><img src="./images/tree/folderopen.gif"  align="absmiddle" alt="" /><img src="./images/transparent.gif" width="1" height="48" align="absmiddle" alt="" /><font color="#FFFFFF"><b>You are at the root.</b></font> &nbsp; &nbsp; &nbsp;<a href="javascript:AddOrdEditCategoryName('');">Add a Folder</a></nobr></td>
+  </tr>
+   <tr>
+    <td bgcolor="#000066"><img src="./images/transparent.gif" width="1" height="1" alt="" /></td>
+  </tr>
+</table>
+	</td>
+	<td width="1%"><img src="./images/tree/category-corner-r.gif" width="15" height="50" alt="" /></td>
+  </tr>
+</table>
+
+
+
+
+
+
+
+
+<br/><br/>
+<!-- END RootFolderBL -->
+
+
+
+
+<!-- BEGIN CategoryBL -->
+
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="8FB7DF">
+  <tr>
+    <td width="1%"><img src="./images/tree/category-corner-l.gif" width="15" height="50" alt="" /></td>
+	<td width="98%">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td bgcolor="#000066"><img src="./images/transparent.gif" width="1" height="1" alt="" /></td>
+  </tr>
+   <tr>
+    <td class="Body">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="95%" class="Body" nowrap><img src="./images/tree/folderopen.gif"  align="absmiddle" alt="" /><img src="./images/transparent.gif" width="1" height="48" align="absmiddle" alt="" /><font color="#FFFFFF"><b>{CATEGORYNAME}</b></nobr></td>
+    <td width="5%">
+<table width="180" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+                            <td class="ReallySmallBody" width="90"><a href="javascript:AddOrdEditCategoryName('{CATEGORYNAME_JS}');" class="BlueRedLink" style="font-size:10">Rename
+                              Folder</a> <br/><img  src="./images/transparent.gif" width="1" height="5" alt="" /><br/>
+	<a href="javascript:MoveCategory();" class="BlueRedLink" style="font-size:10">Move Folder</a>
+	</td>
+                            <td class="ReallySmallBody" width="90"><a href="javascript:AddOrdEditCategoryName('');" class="BlueRedLink" style="font-size:10">Add
+                              a Sub-Folder</a> <br/><img  src="./images/transparent.gif" width="1" height="5" alt="" /><br/>
+	<a href="javascript:AddOrEditMessage('', 'category');" class="BlueRedLink" style="font-size:10">Add Message</a>
+	</td>
+  </tr>
+
+</table>
+
+
+
+
+	</td>
+  </tr>
+</table>
+
+</td>
+  </tr>
+   <tr>
+    <td bgcolor="#000066"><img src="./images/transparent.gif" width="1" height="1" alt="" /></td>
+  </tr>
+</table>
+	</td>
+	<td width="1%"><img src="./images/tree/category-corner-r.gif" width="15" height="50" alt="" /></td>
+  </tr>
+</table>
+
+
+
+<!-- BEGIN Command_RemoveCategory_BL -->
+<table width="100%" border="0" cellspacing="0" cellpadding="1">
+  <tr>
+    <td class="Body"><br/><br/>
+<font class="Body">This folder is empty.  <a href="javascript:DeleteCategory();" class="blueredlink">Click here</a> to delete.</font></td>
+  </tr>
+</table>
+
+
+<!-- END Command_RemoveCategory_BL -->
+<br/>
+
+<br/>
+
+<!-- END CategoryBL -->
+
+
+
+
+<!-- BEGIN HideSubCategoryBL -->
+<table width="100%" border="0" cellspacing="0" cellpadding="1">
+  <tr>
+    <td class="Body"><b>Sub-folders</b><br/><img  src="./images/transparent.gif" width="1" height="10" alt="" /><br/>
+
+<!-- BEGIN SubCategoryBL -->
+
+<a href="./ad_cannedmsg_body.php?categoryid={SUB_CATID}&changetree=true" class="blueredlink"><font style="font-size:16px">{SUB_CATNAME}</font></a><br/><img  src="./images/transparent.gif" width="1" height="7" alt="" /><br/>
+<!-- END SubCategoryBL -->
+<br/><br/></td>
+    <td class="Body" align="right" valign="top">
+	<!-- BEGIN HideUpLevelLinkBL -->
+	<a href="./ad_cannedmsg_body.php?categoryid={CATEGRORYPARENTID}&changetree=true" class="blueredlink">Go Up a Level ^</a>
+	<!-- END HideUpLevelLinkBL -->
+	</td>
+  </tr>
+</table>
+
+
+<!-- END HideSubCategoryBL -->
+
+
+<!-- BEGIN HideUpLevelLinkForMessageNoCatBL -->
+<table width="100%" border="0" cellspacing="0" cellpadding="1">
+  <tr>
+    <td class="Body" align="right" valign="top">	
+	<a href="./ad_cannedmsg_body.php?categoryid={CATEGRORYPARENTID}&changetree=true" class="blueredlink">Go Up a Level ^</a><br/>&nbsp;
+	</td>
+  </tr>
+</table>
+<!-- END HideUpLevelLinkForMessageNoCatBL -->
+
+
+
+
+<!-- BEGIN MessageBL -->
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#333333">
+  <tr>
+    <td><table width="100%" border="0" cellspacing="1" cellpadding="3">
+  <tr>
+    <td bgcolor="#999999" class="Body"><font color="#FFFFFF"><b>{MSG_TITLE}</b></font></td>
+  </tr>
+   <tr>
+    <td bgcolor="#CCCCCC" class="SmallBody">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td align="right" class="SmallBody"><a href="javascript:AddOrEditMessage({MSG_ID}, '{MESSAGE_VIEW}');" class="MessageLink">Edit</a> &nbsp;&nbsp; <a href="javascript:MoveMessage({MSG_ID});" class="MessageLink">Move</a> &nbsp;&nbsp; <a href="javascript:DeleteMessage({MSG_ID});" class="MessageLink">Delete</a></td>
+  </tr>
+</table>
+	{MSG_DATA}</td>
+  </tr>
+</table></td>
+  </tr>
+</table>
+&nbsp;
+<br/><br/>
+
+<!-- END MessageBL -->
+
+
+</td>
+	<td width="1%"><img src="./images/transparent.gif" width="15" height="15" alt="" /></td>
+  </tr>
+</table>
+
+<form name="topmenucommands" target="_top" action="ad_cannedmsg.php" >
+<input type="hidden" name="cannedmessagecommand" value="" />
+<input type="hidden" name="categoryname" value="" />
+<input type="hidden" name="categoryid" value="{CATEGORYID}" />
+<input type="hidden" name="messageid" value="{MESSAGEID}" />
+<input type="hidden" name="returnurl" value="./ad_cannedmsg.php?categoryid={CATEGORYID}" />
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+</form>
+
+</body>
+</html>

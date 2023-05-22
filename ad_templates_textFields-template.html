@@ -1,0 +1,94 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Template Text Fields</title>
+<link rel="stylesheet" href="./library/stylesheet.css" type="text/css" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+
+<script language="javascript">
+
+
+	function SaveChanges(){
+		document.forms["fieldnamesform"].submit();
+	}
+	function CancelChanges(){
+		top.closeCurrentTextFieldWindow();
+	}
+
+
+</script>
+
+</head>
+
+<body bgcolor="#3366CC" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="">
+<img  src="./images/transparent.gif" border="0" width="1" height="10" alt="" /><br/>
+<div align="center">
+<table bgcolor="#EEEEEE" width="530" cellpadding="0" cellspacing="0" border="0">
+
+<tr>
+<td bgcolor="#CCCCCC" align="center" class="Body" style="background-image: url(./images/admin/header-shipping.png); background-repeat: no-repeat;">
+<table width="100%" border="0" cellspacing="0" cellpadding="3">
+	<tr>
+		<td align="center"><b>Text Fields On Template Artwork</b></td>
+		<td align="center"><input type="button" name="xx" value="Save Changes" class="AdminButton" onmouseover="this.style.background='#ffeeaa';" onmouseout="this.style.background='#FFFFDD';" onclick="SaveChanges()"; />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="button" name="xx" value="Cancel" class="AdminButton" onmouseover="this.style.background='#ffeeaa';" onmouseout="this.style.background='#FFFFDD';" onclick="CancelChanges();" /></td>
+	</tr>
+</table>
+
+
+
+
+
+</td>
+
+<tr>
+<tr>
+<td bgcolor="#666666" align="center" class="Body"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+
+<tr>
+<td align="center">
+
+<table width="96%" border="0" cellspacing="0" cellpadding="0">
+<form name="fieldnamesform" action="./ad_templates_textFields.php">
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+<input type="hidden" name="templateID" value="{TEMPLATE_ID}" />
+<input type="hidden" name="templateArea" value="{TEMPLATE_AREA}" />
+<input type="hidden" name="action" value="save" />
+  <tr>
+              <td class="SmallBody" align="left"><img  src="./images/transparent.gif" width="5" height="5" alt="" /><img  src="./images/transparent.gif" width="5" height="15" alt="" /><br/>
+
+
+ <!-- BEGIN TextLayerBL -->
+				  {SIDE_DESC}
+				  Field Name: <input type="text" name="field_{SIDENUMBER}_{LEVEL}" value="{FIELD}" class="SavedProjectsNote" maxlength="50" style="width:200px; font-size:12px; color:#333333;" />
+                  <img  src="./images/transparent.gif" width="45" height="1" alt="" />Position: <input type="text" name="sort_{SIDENUMBER}_{LEVEL}" value="{SORT}" class="SavedProjectsNote" maxlength="3" style="width:40px; font-size:12px; color:#333333;" /><br/><img  src="./images/transparent.gif" width="1" height="4" alt="" /><br/>
+
+				  <table width="100%" border="0" cellspacing="0" cellpadding="1" bgcolor="#CCCCCC">
+  <tr>
+    <td><table width="100%" border="0" cellspacing="0" cellpadding="4">
+  <tr>
+    <td class="SmallBody" bgcolor="#DDDDDD">{TEXT_LAYER}</td>
+  </tr>
+</table>
+</td>
+  </tr>
+</table>
+				  <br/><br/>
+ <!-- END TextLayerBL -->
+              </td>
+  </tr>
+ </form>
+</table>
+</td>
+</tr>
+
+
+<tr>
+<td><img src="images/header-editoptions-fade-bot.gif" width="530" alt="" /></td>
+</tr>
+</table>
+
+
+</div>
+
+</body>
+</html>

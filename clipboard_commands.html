@@ -1,0 +1,599 @@
+<html>
+<head>
+<title>Untitled Document</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+
+<script language="javascript">
+
+
+
+	var ImageStatus1 = "transfer";
+	var ImageStatus2 = "blank";
+	var ClipboardStatus = "new";
+	var TransferLinkIDs = "";
+
+	var TopFramesetRetURL = "clipboard.php%3fprojectid={PROJECTID}%26view={VIEW}%26sidenumber={SIDENUMBER}"
+
+	var HighlightColor1 = "#FFFFCC";
+	var HighlightColor2 = "#EEFFCC";
+	var NormalColor = "#EEEEEE";
+
+	var LinkColorArr = new Array("#FFCCCC", "#CCFFCC", "#CCCCFF", "#FFFFCC", "#FFCCFF", "#CCFFFF", "#FFFF99", "#FF99FF","#99FFFF", "#9999FF", "#99FF99", "#FF9999");
+	var LinkIndex = 0;
+
+	var ClipboardTransferID = 0;
+
+	var TransferHelpText = "First select a layer from the clipboard.<br/>Then match it to a layer on the Active Document.<br/>Repeat for as many links that are needed."
+
+	var ArtworkCopy = {ARTWORKCOPY};
+	var DifferentProductIDforCopy = {DIFFERENTPRODUCTID};
+
+	if(ArtworkCopy){
+		ImageStatus2 = "import";
+	}
+	else{
+		ImageStatus2 = "blank";
+	}
+
+	var ImageLocations = new Array()
+	ImageLocations["transfer"]="clipboard_btn_transfer";
+	ImageLocations["copydoc"]="clipboard_btn_cp_doc";
+	ImageLocations["copyclip"]="clipboard_btn_cp_clip";
+	ImageLocations["apply"]="clipboard_btn_apply";
+	ImageLocations["cancel"]="clipboard_btn_cancel";
+	ImageLocations["replace"]="clipboard_btn_replace";
+	ImageLocations["blank"]="clipboard_btn_blank";
+	ImageLocations["remove"]="clipboard_btn_remove";
+	ImageLocations["attcopy"]="clipboard_btn_attcopy";
+	ImageLocations["attcancel"]="clipboard_btn_attcancel";
+	ImageLocations["imagereplace"]="clipboard_btn_imagereplace";
+	ImageLocations["import"]="clipboard_btn_import";
+
+
+	var MousOverStr = "-h.jpg";
+	var MousOutStr = ".jpg";
+	var ImgPrefix = "./images/";
+
+
+	//Preload images.
+	arImageList = new Array ();
+	arImageListHL = new Array ();
+	for (counter in ImageLocations) {
+		arImageList[counter] = new Image();
+		arImageListHL[counter] = new Image();
+		arImageList[counter].src = ImgPrefix + ImageLocations[counter] + MousOutStr;
+		arImageListHL[counter].src = ImgPrefix + ImageLocations[counter] + MousOverStr;
+	}
+
+
+	function SwitchSides(SideNumber){
+		top.location = "./clipboard.php?projectid={PROJECTID}&view={VIEW}&sidenumber=" + SideNumber;
+	}
+
+
+	//--------
+	function OverImage1(){
+		document.images.command_img_1.src = ImgPrefix + ImageLocations[ImageStatus1] + MousOverStr;
+	}
+	function LeaveImage1(){
+		document.images.command_img_1.src = ImgPrefix + ImageLocations[ImageStatus1] + MousOutStr;
+	}
+	function OverImage2(){
+		document.images.command_img_2.src = ImgPrefix + ImageLocations[ImageStatus2] + MousOverStr;
+	}
+	function LeaveImage2(){
+		document.images.command_img_2.src = ImgPrefix + ImageLocations[ImageStatus2] + MousOutStr;
+	}
+	//----------
+
+	function ResetImages(){
+		LeaveImage1();
+		LeaveImage2();
+	}
+
+
+	function CopyAttribute(AttValue){
+
+		if(AttValue != "" && ImageStatus1 == "attcancel"){
+
+			var ActiveTextClickCnt = GetClickCount("text", "active");
+			if(confirm("Are you sure that you want to copy --- " + AttValue + " --- \n to " + GetWordLayers(ActiveTextClickCnt) + " on the active document?")){
+				var ActiveCheckBoxIDStr = GetCheckedIDsFromWindow("active");
+
+				AttValue = AttValue.replace(/#/, "%23");  //URL encode for the hash sign
+				top.location = "./clipboard_actions.php?command=copyattribute&projectid={PROJECTID}&form_sc={FORM_SECURITY_CODE}&view={VIEW}&sidenumber={SIDENUMBER}&active_ids=" + ActiveCheckBoxIDStr +  "&returl=" + TopFramesetRetURL + "&attribute=" + AttValue;
+			}
+		}
+	}
+
+	function Command1(){
+		if(ImageStatus1 == "transfer"){
+			ImageStatus1 = "cancel";
+			ImageStatus2 = "blank";
+			ResetImages();
+			HelpText(TransferHelpText);
+
+			DisableEnableCheckBoxes("text", "active", true);
+			DisableEnableCheckBoxes("image", "active", true);
+
+		}
+		else if(ImageStatus1 == "cancel"){
+			ImageStatus1 = "transfer";
+			ImageStatus2 = "blank";
+			ResetImages();
+			HelpText("");
+
+			TransferLinkIDs = "";
+
+			DisableEnableCheckBoxes("text", "active", false);
+			DisableEnableCheckBoxes("image", "active", false);
+			DisableEnableCheckBoxes("text", "clipboard", false);
+			DisableEnableCheckBoxes("image", "clipboard", false);
+
+			ActivateLayers("text", "active", false);
+			ActivateLayers("image", "active", false);
+			ActivateLayers("text", "clipboard", false);
+			ActivateLayers("image", "clipboard", false);
+
+			HightlightAllLayerBackgroundsChecked();
+		}
+		else if(ImageStatus1 == "attcancel"){
+			ChangeAll("clipboard", "text", false);
+		}
+		else if(ImageStatus1 == "replace"){
+			var ActiveCheckBoxIDStr = GetCheckedIDsFromWindow("active");
+			var ClipBoardCheckBoxIDStr = GetCheckedIDsFromWindow("clipboard");
+			top.location = "./clipboard_actions.php?command=replace&projectid={PROJECTID}&form_sc={FORM_SECURITY_CODE}&view={VIEW}&sidenumber={SIDENUMBER}&active_ids=" + ActiveCheckBoxIDStr +  "&returl=" + TopFramesetRetURL + "&clipboard_ids=" + ClipBoardCheckBoxIDStr;
+
+		}
+		else if(ImageStatus1 == "copyclip"){
+			var CheckBoxIDStr = GetCheckedIDsFromWindow("active");
+			top.location = "./clipboard_actions.php?command=copyclip&projectid={PROJECTID}&form_sc={FORM_SECURITY_CODE}&view={VIEW}&sidenumber={SIDENUMBER}&active_ids=" + CheckBoxIDStr +  "&returl=" + TopFramesetRetURL;
+		}
+		else if(ImageStatus1 == "copydoc"){
+			var CheckBoxIDStr = GetCheckedIDsFromWindow("clipboard");
+			top.location = "./clipboard_actions.php?command=copydoc&projectid={PROJECTID}&form_sc={FORM_SECURITY_CODE}&view={VIEW}&sidenumber={SIDENUMBER}&clipboard_ids=" + CheckBoxIDStr +  "&returl=" + TopFramesetRetURL;
+		}
+	}
+	function Command2(){
+
+		if(ImageStatus2 == "remove"){
+			var CheckBoxIDStr = GetCheckedIDsFromWindow("clipboard");
+			top.location = "./clipboard_actions.php?command=remove&projectid={PROJECTID}&form_sc={FORM_SECURITY_CODE}&view={VIEW}&sidenumber={SIDENUMBER}&clipboard_ids=" + CheckBoxIDStr +  "&returl=" + TopFramesetRetURL;
+		}
+		else if(ImageStatus2 == "apply"){
+			top.location = "./clipboard_actions.php?command=apply&projectid={PROJECTID}&form_sc={FORM_SECURITY_CODE}&view={VIEW}&sidenumber={SIDENUMBER}&transfer_ids=" + TransferLinkIDs +  "&returl=" + TopFramesetRetURL;
+		}
+		else if(ImageStatus2 == "import"){
+
+			if(DifferentProductIDforCopy){
+				if(!confirm("You will be importing Artwork belonging to a different Product.\nThe canvas area will be adjusted and all layers resized accordingly."))
+					return;
+			}
+
+			top.location = "./clipboard_actions.php?command=importartwork&projectid={PROJECTID}&form_sc={FORM_SECURITY_CODE}&view={VIEW}&returl=" + TopFramesetRetURL;
+		}
+		else if(ImageStatus2 == "imagereplace"){
+			var CheckBoxIDStr = GetCheckedIDsFromWindow("active");
+			top.location = "./clipboard_imagereplace.php?projectid={PROJECTID}&view={VIEW}&sidenumber={SIDENUMBER}&layerid=" + CheckBoxIDStr +  "&returl=" + TopFramesetRetURL;
+		}
+		else if(ImageStatus2 == "attcopy"){
+			ImageStatus1 = "attcancel";
+			ImageStatus2 = "blank";
+			ResetImages();
+			var ActiveTextClickCnt = GetClickCount("text", "active");
+			HelpText("Select any attribute within a drop down menu (active document or clipboard). <br/>It will copy that single attribute to " + GetWordLayers(ActiveTextClickCnt) + " on the active document.");
+
+			DisableEnableCheckBoxes("text", "active", true);
+			DisableEnableCheckBoxes("image", "active", true);
+			DisableEnableCheckBoxes("text", "clipboard", true);
+			DisableEnableCheckBoxes("image", "clipboard", true);
+
+		}
+
+
+
+
+	}
+
+	function HelpText(TheText){
+		document.all.helptext.innerHTML = TheText;
+	}
+
+
+	function NewClick(FromWindow, FromGroup, FromID){
+		var ActiveTextClickCnt = GetClickCount("text", "active");
+		var ActiveImageClickCnt = GetClickCount("image", "active");
+		var ClipboardTextClickCnt = GetClickCount("text", "clipboard");
+		var ClipboardImageClickCnt = GetClickCount("image", "clipboard");
+
+		if(ImageStatus1 == "cancel"){
+
+			var ActiveLayerCount = ActiveTextClickCnt + ActiveImageClickCnt;
+			var ClipboardCount = ClipboardTextClickCnt + ClipboardImageClickCnt;
+
+
+			if(ActiveLayerCount + ClipboardCount == 0){
+				DisableEnableCheckBoxes("text", "clipboard", false);
+				DisableEnableCheckBoxes("image", "clipboard", false);
+				DisableEnableCheckBoxes("text", "active", false);
+				DisableEnableCheckBoxes("image", "active", false);
+				HelpText(TransferHelpText);
+			}
+			else if(ActiveLayerCount / ClipboardCount != 1){
+
+				ImageStatus1 = "cancel";
+				ImageStatus2 = "blank";
+				ResetImages();
+				HelpText("Select a layer in the active document that you want to apply the attributes to.");
+
+				DisableEnableCheckBoxes("text", "clipboard", true);
+				DisableEnableCheckBoxes("image", "clipboard", true);
+				DisableEnableCheckBoxes("text", "active", false);
+				DisableEnableCheckBoxes("image", "active", false);
+
+				SetCheckBoxDisabled(FromWindow, FromGroup, FromID, false);
+
+				ClipboardTransferID = FromID;
+
+				if(FromGroup == "text"){
+					DisableAllCheckedLayers("active", "text");
+					DisableEnableCheckBoxes("image", "active", true);
+				}
+				else if(FromGroup == "image"){
+					DisableAllCheckedLayers("active", "image");
+					DisableEnableCheckBoxes("text", "active", true);
+				}
+
+
+			}
+			else{
+				ImageStatus1 = "cancel";
+				ImageStatus2 = "apply";
+				ResetImages();
+
+				HelpText("Apply transformations between " + GetWordLayers(ActiveLayerCount) + ".<br/>Does not transfer contents, just attributes.<br/>EX: Size, location, rotation, style.");
+
+				DisableEnableCheckBoxes("text", "clipboard", false);
+				DisableEnableCheckBoxes("image", "clipboard", false);
+				DisableEnableCheckBoxes("text", "active", true);
+				DisableEnableCheckBoxes("image", "active", true);
+
+				DisableAllCheckedLayers("clipboard", "text");
+				DisableAllCheckedLayers("clipboard", "image");
+
+				if(GetCheckBoxObjectChecked(FromWindow, FromGroup, FromID)){
+					ShowLinkBetweenLayers(FromID, ClipboardTransferID);
+				}
+			}
+		}
+		else{
+
+			//Set to -1 for initialization
+			if(FromID != -1){
+				var CellStyleObj = GetCellStyleObject(FromWindow, FromID);
+				var CheckboxValue = GetCheckBoxObjectChecked(FromWindow, FromGroup, FromID);
+				CellStyleObj.backgroundColor = GetHighlightColor(FromWindow, CheckboxValue);
+
+			}
+
+			if(ActiveTextClickCnt + ActiveImageClickCnt + ClipboardTextClickCnt + ClipboardImageClickCnt == 0 ){
+				ImageStatus1 = "transfer";
+
+				if(ArtworkCopy){
+					ImageStatus2 = "import";
+				}
+				else{
+					ImageStatus2 = "blank";
+				}
+				ResetImages();
+				HelpText("");
+			}
+			if((ActiveImageClickCnt == 1) &&(ActiveTextClickCnt + ClipboardTextClickCnt + ClipboardImageClickCnt == 0) ){
+				ImageStatus1 = "copyclip";
+				ImageStatus2 = "imagereplace";
+				ResetImages();
+				HelpText("Only 1 image has been selected on the active document.<br/>You can copy it to the clipboard or replace it with an image from your computer.");
+			}
+			else if(ActiveTextClickCnt != 0 && ActiveImageClickCnt == 0 && ClipboardTextClickCnt + ClipboardImageClickCnt == 0 ){
+				ImageStatus1 = "copyclip";
+				ImageStatus2 = "attcopy";
+				ResetImages();
+				HelpText("Copy " + GetWordLayers(ActiveTextClickCnt) + " from the active document to the clipboard. <br/>Or copy a single attribute to all of the layers that are selected.");
+			}
+			else if(ActiveTextClickCnt + ActiveImageClickCnt == 0 && ClipboardTextClickCnt + ClipboardImageClickCnt != 0 ){
+				ImageStatus1 = "copydoc";
+				ImageStatus2 = "remove";
+				ResetImages();
+				HelpText("Copy " + GetWordLayers(ClipboardTextClickCnt + ClipboardImageClickCnt) + " from the clipboard to the active document. <br/>Or remove  " + GetWordLayers(ClipboardTextClickCnt + ClipboardImageClickCnt) + " from the clipboard.");
+			}
+			else if(ActiveTextClickCnt + ActiveImageClickCnt != 0 && ClipboardTextClickCnt + ClipboardImageClickCnt == 0 ){
+				ImageStatus1 = "copyclip";
+				ImageStatus2 = "blank";
+				ResetImages();
+				HelpText("Copy " + GetWordLayers(ActiveTextClickCnt + ActiveImageClickCnt) + " to the clipboard.");
+			}
+			else if(ActiveTextClickCnt + ActiveImageClickCnt != 0 && ClipboardTextClickCnt + ClipboardImageClickCnt != 0 ){
+				ImageStatus1 = "replace";
+				ImageStatus2 = "blank";
+				ResetImages();
+				HelpText("Replace " +  GetWordLayers(ActiveTextClickCnt + ActiveImageClickCnt) + " on active document with " + GetWordLayers(ClipboardTextClickCnt + ClipboardImageClickCnt) + " from the clipboard.");
+			}
+		}
+	}
+
+	function GetHighlightColor(WindowType, BoolVal){
+
+		if(BoolVal){
+			if(WindowType == "clipboard"){
+				return HighlightColor1;
+			}
+			else if(WindowType == "active"){
+				return HighlightColor2;
+			}
+			else{
+				alert("There is a problem with the window type.");
+			}
+		}
+		else{
+			return NormalColor;
+		}
+	}
+
+	function GetPlural(SomeInt){
+		if(SomeInt > 1){
+			return "s"
+		}
+		else{
+			return "";
+		}
+	}
+	function GetWordLayers(SomeInt){
+		return SomeInt + " layer" + GetPlural(SomeInt);
+	}
+
+	function DisableEnableCheckBoxes(LayerType, WindowType, BoolFlag){
+		CheckBoxArr = GetCheckBoxArr(LayerType, WindowType);
+
+		for(i=0; i<CheckBoxArr.length; i++){
+			CheckBoxArr[i].disabled = BoolFlag;
+		}
+	}
+
+
+	function ActivateLayers(LayerType, WindowType, BoolFlag){
+		CheckBoxArr = GetCheckBoxArr(LayerType, WindowType);
+
+		for(i=0; i<CheckBoxArr.length; i++){
+			CheckBoxArr[i].checked = BoolFlag;
+		}
+	}
+
+
+	function GetClickCount(LayerType, WindowType){
+		var clickCount = 0;
+		CheckBoxArr = GetCheckBoxArr(LayerType, WindowType);
+		for(i=0; i<CheckBoxArr.length; i++){
+			if(CheckBoxArr[i].checked){
+				clickCount++;
+			}
+		}
+		return clickCount;
+	}
+
+	function DisableAllCheckedLayers(WindowType, LayerType){
+		var CheckBoxArr = GetCheckBoxArr(LayerType, WindowType);
+		for(i=0; i<CheckBoxArr.length; i++){
+			if(CheckBoxArr[i].checked){
+				CheckBoxArr[i].disabled = true;
+			}
+		}
+	}
+
+	function GetCheckBoxArr(LayerType, WindowType){
+
+		var DocumentObject = GetDocumentObject(WindowType);
+
+		var CheckBoxArr2 = new Array();
+
+		if(LayerType == "both"){
+			var CheckBoxArr = DocumentObject.forms["textlayers"].textcheck
+			var CheckBoxArr2 = DocumentObject.forms["imagelayers"].imagecheck
+		}
+		else if(LayerType == "text"){
+			var CheckBoxArr = DocumentObject.forms["textlayers"].textcheck
+		}
+		else if(LayerType == "image"){
+			var CheckBoxArr = DocumentObject.forms["imagelayers"].imagecheck
+		}
+		else{
+			alert("Invalid Layer Type: " + LayerType);
+		}
+
+
+
+		var retArr = new Array();
+		for(i=0; i<CheckBoxArr.length; i++){
+			if(CheckBoxArr[i].type == "checkbox"){
+				retArr.push(CheckBoxArr[i]);
+			}
+		}
+		for(i=0; i<CheckBoxArr2.length; i++){
+			if(CheckBoxArr2[i].type == "checkbox"){
+				retArr.push(CheckBoxArr2[i]);
+			}
+		}
+
+
+		return retArr;
+
+	}
+
+	function GetDocumentObject(WindowType){
+
+		if(WindowType == "active"){
+			var ThisDocObj = top.ActiveDocumentFrame.document
+		}
+		else if(WindowType == "clipboard"){
+			var ThisDocObj = top.ClipboardFrame.document
+		}
+		else{
+			alert("Invalid Window Type: " + WindowType);
+			return null;
+		}
+		return ThisDocObj;
+	}
+
+	function ClickOnLayerBox(LayerType, WindowType, LayerID){
+
+		var CheckBoxObj = GetCheckBoxObject(WindowType, LayerType, LayerID);
+
+		if(!CheckBoxObj.disabled){
+			CheckBoxObj.checked = !CheckBoxObj.checked;
+			NewClick(WindowType, LayerType, LayerID);
+
+		}
+	}
+
+	function GetCheckBoxObject(WindowType, LayerType, LayerID){
+
+		CheckBoxArr = GetCheckBoxArr(LayerType, WindowType);
+
+		for(i=0; i<CheckBoxArr.length; i++){
+			if(CheckBoxArr[i].value == LayerID){
+				return CheckBoxArr[i];
+			}
+		}
+	}
+
+	function GetCellStyleObject(WindowType, LayerID){
+
+		var DocumentObject = GetDocumentObject(WindowType);
+		var CellObj = eval("DocumentObject.getElementById(\"layerback" + LayerID + "\")");
+		return CellObj.style;
+	}
+
+
+	function SetCheckBoxDisabled(WindowType, LayerType, LayerID, BoolFlag){
+		var CheckBoxObj = GetCheckBoxObject(WindowType, LayerType, LayerID);
+		CheckBoxObj.disabled = BoolFlag;
+	}
+	function GetCheckBoxObjectChecked(WindowType, LayerType, LayerID){
+		var CheckBoxObj = GetCheckBoxObject(WindowType, LayerType, LayerID);
+		return CheckBoxObj.checked;
+	}
+
+	function ChangeAll(WindowType, LayerType, BoolFlag){
+
+		if(LayerType == "both"){
+			ActivateLayers("image", WindowType, BoolFlag);
+			ActivateLayers("text", WindowType, BoolFlag);
+		}
+		else{
+			ActivateLayers(LayerType, WindowType, BoolFlag);
+		}
+
+		DisableEnableCheckBoxes("text", "active", false);
+		DisableEnableCheckBoxes("image", "active", false);
+		DisableEnableCheckBoxes("text", "clipboard", false);
+		DisableEnableCheckBoxes("image", "clipboard", false);
+
+		HightlightAllLayerBackgroundsChecked();
+
+		TransferLinkIDs = "";
+
+		ImageStatus1 = "blank";
+		ImageStatus2 = "blank";
+		NewClick(WindowType, LayerType, -1);
+	}
+
+
+	function HightlightAllLayerBackgroundsChecked(){
+		HighltBackgrndCheck("active", "image");
+		HighltBackgrndCheck("active", "text");
+		HighltBackgrndCheck("clipboard", "image");
+		HighltBackgrndCheck("clipboard", "text");
+
+
+	}
+
+	function HighltBackgrndCheck(WindowType, LayerType){
+
+		var CheckBoxArr = GetCheckBoxArr(LayerType, WindowType);
+		for(i=0; i<CheckBoxArr.length; i++){
+			var ThisLayerID = CheckBoxArr[i].value;
+
+			var IfChecked = GetCheckBoxObjectChecked(WindowType, LayerType, ThisLayerID)
+
+			var CellStyleObj = GetCellStyleObject(WindowType, ThisLayerID);
+			CellStyleObj.backgroundColor = GetHighlightColor(WindowType, IfChecked);
+		}
+	}
+
+	function ShowLinkBetweenLayers(ActiveLayerID, ClipboardLayerID){
+		var LinkColor = LinkColorArr[LinkIndex];
+		LinkIndex++;
+
+		if(LinkIndex >= LinkColorArr.length){
+			LinkIndex = 0;
+		}
+
+		var CellBackObj_Active = GetCellStyleObject("active",  ActiveLayerID);
+		var CellBackObj_Clipboard = GetCellStyleObject("clipboard",  ClipboardLayerID);
+
+		CellBackObj_Active.backgroundColor = LinkColor;
+		CellBackObj_Clipboard.backgroundColor = LinkColor;
+
+		var CheckBoxObj_Active = GetCheckBoxObject("active", "both", ActiveLayerID);
+		var CheckBoxObj_Clipboard = GetCheckBoxObject("clipboard", "both", ClipboardLayerID);
+
+		CheckBoxObj_Active.checked = true;
+		CheckBoxObj_Clipboard.checked = true;
+
+		TransferLinkIDs += ClipboardLayerID + "-" + ActiveLayerID + "|";
+
+	}
+
+	function GetCheckedIDsFromWindow(WindowType){
+
+		var retStr = "";
+		var CheckBoxArr = GetCheckBoxArr("both", WindowType);
+		for(i=0; i<CheckBoxArr.length; i++){
+			if(CheckBoxArr[i].checked){
+				retStr += CheckBoxArr[i].value + "|";
+			}
+		}
+		return retStr;
+
+	}
+
+</script>
+</head>
+
+
+
+<body bgcolor="#3366CC" text="#000000" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="ResetImages();">
+<table width="100%" border="0" cellspacing="0" cellpadding="0" height="60">
+  <tr>
+    <td valign="top"><a href="javascript:Command1();"><img src="./images/transparent.gif" border="0" name="command_img_1" onmouseover="OverImage1();" onmouseout="LeaveImage1();" alt="" /></a><a href="javascript:Command2();"><img src="./images/transparent.gif" border="0" name="command_img_2" onmouseover="OverImage2();" onmouseout="LeaveImage2();" alt="" /></a></td>
+    <td class="SmallBody" align="center"><font color="#FFFF99"><div id="helptext">&nbsp;</div></font></td>
+    <td class="SmallBody" valign="top" align="right">
+	<table width="280" border="0" cellspacing="0" cellpadding="0" height="60">
+	<tr>
+	<td style="background-image: url(./images/clipboard_header-back.jpg); background-repeat: no-repeat;" valign="top"><img src="./images/transparent.gif" height="12" width="12" alt="" /><table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+          <td width="17" class="SmallBody">&nbsp;</td>
+          <td width="253" class="SmallBody"><b><font color="000000">Document Layers:</font></b>&nbsp;&nbsp;&nbsp;&nbsp;<a href='javascript:ChangeAll("active", "both", true);' class="blueredlink">Select All</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href='javascript:ChangeAll("active", "both", false);' class="blueredlink">Clear</a> <br/><img  src="./images/transparent.gif" height="3" width="3" alt="" /><br/><b><font color="000000">Clipboard Layers:</font></b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='javascript:ChangeAll("clipboard", "both", true);' class="blueredlink">Select All</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href='javascript:ChangeAll("clipboard", "both", false);' class="blueredlink">Clear</a></td>
+  </tr>
+</table>
+	</td>
+	</tr>
+	</table>
+	</td>
+
+
+  </tr>
+</table>
+</body>
+</html>

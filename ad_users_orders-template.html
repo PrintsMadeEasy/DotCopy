@@ -1,0 +1,338 @@
+<html>
+<head>
+<title>Admin</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<script language="javascript">
+
+	//Make an array of the images we want to preload for the mouse-overs.
+	arImageSrc = new Array (
+		"./images/button-go-d.gif",
+		"./images/button-go-grey-u.gif",
+		"./images/button-hasbeenshipped-u.gif"
+
+	)
+
+	//Preload images.
+	arImageList = new Array ();
+	for (counter in arImageSrc) {
+		arImageList[counter] = new Image();
+		arImageList[counter].src = arImageSrc[counter];
+	}
+
+	function makeNewWindow(address){
+		newWindow = window.open(address, "sub", "height=360,width=375,directories=no,location=no,menubar=no,scrollbars=no,status=no,toolbar=no,resizable=no");
+		newWindow.focus();
+	}
+
+	function SearchTasks(){
+		var StartMonth = parseInt(document.tasks.startmonth.value);
+		var EndMonth = parseInt(document.tasks.endmonth.value);
+		var StartYear = parseInt(document.tasks.startyear.value);
+		var EndYear = parseInt(document.tasks.endyear.value);
+		var Keywords = document.tasks.keywords.value;
+
+		//Trim Whitespaces of of keywords
+		Keywords = Keywords.replace(/^\s+/, "");
+		Keywords = Keywords.replace(/\s+$/, "");
+		document.tasks.keywords.value = Keywords;
+
+		if(Keywords.length < 3 && Keywords.length != 0){
+			alert("If you choose to search for messages by keywords you must have at least 1 word with a minimum of 3 characters.");
+			return false;
+		}
+
+		if(StartYear > EndYear){
+			alert("Year values are not in range.");
+			return false;
+		}
+		else if(StartYear == EndYear){
+			if(StartMonth > EndMonth){
+				alert("Month values are not in range.");
+				return false;
+			}
+			else{
+				document.tasks.submit();
+			}
+		}
+		else{
+			document.tasks.submit();
+		}
+	}
+
+	//Allways increment a global variable  to ensure that the fly open layer is always on top
+	var ZindexCouter = 5;
+
+	//divShow  --- True means show layer, false means hide it
+	function showStatusHistory(ProjectNumber, divShow) {
+
+		var spanname = "projectlayer" + ProjectNumber;
+		var divname = "projectdiv" + ProjectNumber;
+
+		if (divShow) {
+			ZindexCouter++;
+			ZindexCouter++;
+
+			document.all(spanname).style.visibility = "visible";
+			document.all(spanname).style.zIndex = ZindexCouter;
+			document.all(divname).style.zIndex = ZindexCouter + 1;
+		}
+		else{
+			document.all(spanname).style.visibility = "hidden";
+		}
+
+	}
+
+	function ShowNumberClicked(){
+		var ProjectCount = GetSelectedProjectCount();
+		if(ProjectCount == 1){
+			var Plural = ""
+		}
+		else{
+			Plural = "s"
+		}
+		document.all.NumberOfProjectsSelected.innerHTML = "<font color='#990000'>" + ProjectCount + " project" + Plural + " selected</font>";
+	}
+
+	function CreateRePrint(){
+
+		var RePrintType = document.forms["reprint"].reprinttype.value;
+		var RePrintReason = document.forms["reprint"].reprintreason.value;
+
+		if(RePrintType == ""){
+			alert("Select a Reprint Type.");
+		}
+		else if(RePrintReason == ""){
+			alert("Select a Reprint Reason.");
+		}
+		else if(GetSelectedProjectCount() == 0){
+			alert("Select 1 or more projects to reprint.");
+		}
+		else{
+
+			document.forms["reprint"].projectids.value = GetProjectNumbersFromCheckboxes();
+			document.forms["reprint"].action = "./ad_reprint_create.php";
+			document.forms["reprint"].submit();
+		}
+
+	}
+	function PossiblyChangeRowColorAfterHiding(projectNum){
+		changeRowColor(projectNum, "#ddee99");
+	}
+	function PossiblyChangeRowColorWhileShowing(projectNum){
+		changeRowColor(projectNum, "#ddcc99");
+	}
+
+</script>
+<script type="text/javascript" src="./library/admin_library.js"></script>
+<script type="text/javascript" src="./library/open_orders.js"></script>
+
+
+<link rel="stylesheet" type="text/css" href="library/calendar/themes/winter.css"/>
+<script type="text/javascript" src="library/calendar/src/utils.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar.js"></script>
+<script type="text/javascript" src="library/calendar/lang/calendar-en.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar-setup.js"></script>
+<script type="text/javascript" src="library/formatDate.js"></script>
+</head>
+<body bgcolor="#FFFFFF" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="">
+<div align="center">
+{HEADER}
+<table width="760" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td class="Body"><!-- Inner Body  --><div id="NumberOfProjectsSelected" class="error" align="left">&nbsp;</div><img src="./images/transparent.gif" border="0" width="5" height="7" alt="" /><!-- BEGIN EmptyMessageBL -->{CUST_RATE}<img src="./images/transparent.gif" border="0" width="5" height="5" alt="" /><table width="100%" border="0" cellspacing="0" cellpadding="1" bgcolor="#999999">
+  <tr>
+    <td>
+	<table width="100%" border="0" cellspacing="0" cellpadding="1" bgcolor="#FFFFEE">
+  <tr>
+    <td class="SmallBody">Total {RESULT_DESC} orders for {CUSTOMERNAME}<img src="./images/transparent.gif" border="0" width="20" height="5" alt="" /><a class="BlueRedLinkRecord" href="./ad_users_search.php?username=&email=&usersearch=&customerid={CUSTOMERID}">User Info.</a><img src="./images/transparent.gif" border="0" width="40" height="5" alt="" />{CUSTOMER_SERVICE_LINK}<img src="./images/transparent.gif" border="0" width="40" height="5" alt="" /><a class="BlueRedLinkRecord" href="javascript:CustomerMemo({CUSTOMERID}, true)">{MEMOS}</a><img src="./images/transparent.gif" border="0" width="15" height="5" alt="" /><a class="BlueRedLinkRecord" href="javascript:MakeNewTask('user', {CUSTOMERID}, true);">Task{T_COUNT}</a><img src="./images/transparent.gif" border="0" width="15" height="5" alt="" /><a href="javascript:SendInternalMessage('user', {CUSTOMERID}, true);" class='BlueRedLinkRecord'>Msg</a></td>
+  </tr>
+</table>	</td>
+  </tr>
+</table>
+&nbsp;<br/>&nbsp;
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<form name="batchwindow" method="post" action="./ad_batchwindow_new.php">
+<input type="hidden" name="projectlist" value="" />
+<input type="hidden" name="viewtype" value="admin" />
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+</form>
+  <tr>
+<td>
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td class="Body"><img src="./images/arrow-down-left-corner.png" align="absmiddle" alt="" /><input type="button" name="xxxx" value="New Batch Window" class="AdminButton" onmouseover="this.style.background='#ffeeaa';" onmouseout="this.style.background='#FFFFDD';" onclick="NewBatchWindow();" />
+
+	<!-- BEGIN CreateRePrintBL2 -->
+	<img src="./images/transparent.gif" border="0" width="20" height="5" alt="" />or
+	<!-- END CreateRePrintBL2 -->	</td>
+    <td align="right">
+
+	<!-- BEGIN CreateRePrintBL -->
+
+	<table width="50%" border="0" cellspacing="0" cellpadding="1" bgcolor="#999999">
+  <tr>
+    <td><table width="100%" border="0" cellspacing="0" cellpadding="4" bgcolor="#FFDDFF">
+	<form name="reprint">
+	<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+  <tr>
+                    <td class="Body" width="42%">
+                      <input type="hidden" name="returl" value="ad_users_orders.php?byuser={CUSTOMERID}" />
+					  <input type="hidden" name="projectids" value="" />
+
+<select class="AdminDropDown" name="reprinttype">
+			<option value="">-- Create a Re-print --</option>
+			  <option value="P">Company Reprint (S&amp;H Free)</option>
+			  <option value="H">Company Reprint (Customer Pays S&amp;H)</option>
+			  <option value="C">Customer Reprint (50% plus S&amp;H)</option>
+			  <option value="F">Customer Reprint (No Discount)</option>
+			  </select></td>
+                    <td class="Body" width="30%">
+                      <select class="AdminDropDown" name="reprintreason">
+<option value="">-- What is the reason? --</option>
+{REPRINT_REASON_CHOICES}
+</select></td>
+                    <td class="Body" width="28%">
+                      <input type="button" name="Generate" value="Create" class="AdminButton" onmouseover="this.style.background='#ffeeaa';" onmouseout="this.style.background='#FFFFDD';" onclick="CreateRePrint();" />                    </td>
+  </tr>
+  </form>
+</table></td>
+  </tr>
+</table>
+
+<!-- END CreateRePrintBL --></td>
+  </tr>
+</table></td>
+  </tr>
+</table>
+<form name="openorders">
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+<!-- BEGIN MultiPageBL -->
+&nbsp;
+<table width="100%" border="0" cellspacing="0" cellpadding="1" class="NavColor">
+  <tr>
+    <td>
+	<table width="100%" border="0" cellspacing="0" cellpadding="1" bgcolor="#ddeeff">
+  <tr>
+    <td>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="50%" class="SmallBody"><img  src="./images/transparent.gif" border="0" width="1" height="3" alt="" /><br/>
+                            <font color="#000000">Total of {RESULT_DESC} orders.</font><br/>
+                            <img src="./images/transparent.gif" border="0" width="2" height="3" alt="" /></td>
+<td width="50%" align="right" class="SmallBody"><font color="#000000">{NAVIGATE}</font></td>
+</tr>
+</table>	</td>
+  </tr>
+</table>	</td>
+  </tr>
+</table>
+
+ <!-- END MultiPageBL -->
+<!-- BEGIN ordersBL -->
+&nbsp;
+<input type="hidden" name="chkbx" value="" />
+<table width="100%" border="0" cellspacing="0" cellpadding="1" bgcolor="#666666">
+  <tr>
+    <td><table width="100%" border="0" cellspacing="0" cellpadding="2">
+  <tr bgcolor="#AAAAAA">
+                    <td class="SmallBody" width="35%">&nbsp;<font color="#FFFFFF"><b>Order Date:</b>
+                      &nbsp;&nbsp;&nbsp;{ORDER_DATE} - {ORDER_TIME}</font></td>
+                    <td class="SmallBody" width="15%">{SHIPPING_METHOD}</td>
+                    <td class="ReallySmallBody" width="50%"><font class="SmallBody"><b>Ship TO:</b>&nbsp;&nbsp;</font><font color="#000000"> {SHIP_ADDRESS}</font></td>
+  </tr>
+</table></td>
+  </tr>
+</table>
+
+
+<!-- BEGIN projectSummaryBL -->
+        <table width="100%" border="0" cellspacing="0" cellpadding="3" >
+          <tr bgcolor="{ROW_COLOR}" id="TR{PROJECTID}">
+		  <td width="3%" class="SmallBody"><input type="checkbox" name="chkbx" value="{PROJECTID}" onclick="HltRow(this); ShowNumberClicked();" /></td>
+            <td width="29%" class="SmallBody"><div  class="hiddenDHTMLwindow" id="Pnum{PROJECTID}"><a href="./ad_order.php?orderno={ORDERNO}" class="BlueRedLinkRecord">{ORDERNO}</a>
+              - <a href="./ad_project.php?projectorderid={PROJECTID}" class="BlueRedLinkRecord">P{PROJECTID}</a> {ART} {PROOF}
+
+              {REPRINT}{PREVIEWED}</div></td>
+            <td width="38%" class="SmallBody">{ORDER_SUMMARY}</td>
+            <td width="30%" class="SmallBody" align="right">
+	<div id="projectdiv{PROJECTID}" class="hiddenDHTMLwindow" onmouseover="showStatusHistory({PROJECTID}, true);" onmouseout="showStatusHistory({PROJECTID}, false);" >
+<table width="200" border="0" cellspacing="0" cellpadding="0">
+
+   <tr>
+    <td class="SmallBody" width="80"><b>Status:</b></td>
+    <td class="SmallBody" width="120">{STATUS}	</td>
+  </tr>
+  <tr>
+    <td class="SmallBody"><b>Status Date:</b></td>
+    <td class="SmallBody">{STATUS_DATE}</td>
+  </tr>
+</table>
+                  <span style="visibility:hidden; left:-195px; top:-3" id="projectlayer{PROJECTID}">
+                  <table width="270" border="0" cellspacing="0" cellpadding="2" bgcolor="#990000">
+                    <tr>
+                      <td>
+                        <table width="100%" border="0" cellspacing="0" cellpadding="6" bgcolor="#FFFFFF">
+                          <tr>
+                            <td class="ReallySmallBody">{STATUS_HISTORY} </td>
+                          </tr>
+                        </table>                      </td>
+                    </tr>
+                  </table>
+                  </span> </div>			</td>
+          </tr>
+        </table>
+<table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#AAAAAA">
+  <tr>
+    <td><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+  </tr>
+</table>
+<!-- END projectSummaryBL -->
+<img src="./images/transparent.gif" border="0" width="1" height="25" alt="" />
+<!-- END ordersBL -->
+<!-- BEGIN SecondMultiPageBL -->
+<table width="100%" border="0" cellspacing="0" cellpadding="1" class="NavColor">
+  <tr>
+    <td><table width="100%" border="0" cellspacing="0" cellpadding="1" bgcolor="#ddeeff">
+      <tr>
+        <td><table width="100%" border="0" cellspacing="0" cellpadding="0">
+          <tr>
+            <td width="50%" class="SmallBody"><img  src="./images/transparent.gif" border="0" width="1" height="3" alt="" /><br/>
+                    <font color="#000000">Total of {RESULT_DESC} orders.</font><br/>
+                    <img src="./images/transparent.gif" border="0" width="2" height="3" alt="" /></td>
+            <td width="50%" align="right" class="SmallBody"><font color="#000000">{NAVIGATE}</font></td>
+          </tr>
+        </table></td>
+      </tr>
+    </table></td>
+  </tr>
+</table>
+<!-- END SecondMultiPageBL -->
+</form>
+<br/>&nbsp;<br/>
+<br/>
+
+{TASKS}<br/>
+
+<br/>&nbsp;
+<!-- Inner Body  END --></td>
+</tr>
+</table>
+<table width="760" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="360" class="NavColor"><img src="./images/footer.gif" border="0" width="350" height="16" usemap="#footer" alt="" /></td>
+	<td width="400" align="right" class="NavColor"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+  </tr>
+</table>
+<font class="copyright"> </font>
+</div>
+&nbsp;
+<script>
+document.onmousemove = followMouse;
+</script>
+<script type="text/javascript" src="./library/ImageMap-footer.js"></script>
+</body>
+</html>

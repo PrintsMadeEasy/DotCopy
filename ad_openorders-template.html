@@ -1,0 +1,378 @@
+<html>
+<head>
+<title>Admin</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<script language="javascript">
+
+	//Make an array of the images we want to preload for the mouse-overs.
+	arImageSrc = new Array (
+		"./images/button-go-d.gif",
+		"./images/button-go-grey-d.gif",
+		"./images/button-hasbeenshipped-d.gif",
+		"./images/button-createtask2-d.gif"
+
+	)
+
+	//Preload images.
+	arImageList = new Array ();
+	for (counter in arImageSrc) {
+		arImageList[counter] = new Image();
+		arImageList[counter].src = arImageSrc[counter];
+	}
+
+	function makeNewWindow(address){
+		newWindow = window.open(address, "sub", "height=360,width=375,directories=no,location=no,menubar=no,scrollbars=no,status=no,toolbar=no,resizable=no");
+		newWindow.focus();
+	}
+	function makeNewWindow2(address){
+		newWindow = window.open(address, "sub", "height=395,width=375,directories=no,location=no,menubar=no,scrollbars=no,status=no,toolbar=no,resizable=no");
+		newWindow.focus();
+	}
+	function makeNewWindow3(address){
+		newWindow3 = window.open(address, "newwin3", "height=695,width=575,directories=no,location=no,menubar=no,scrollbars=yes,status=no,toolbar=no,resizable=yes");
+		newWindow3.focus();
+	}
+
+
+
+
+
+	// Will reset the checkboxes within the open order queue and then reselect them based upon the query form
+	// It will return the ProjectID List of the results
+	function ClearMarkAndReturnProjectQuery(){
+			checkboxes_clear();
+			checkboxes_mark();
+			return GetProjectNumbersFromCheckboxes();
+	}
+
+	// Clears out the hidden input fields for the multi batch PDF submission
+	function ClearMultiBatchForm(){
+		for(i=1; i<=10; i++){
+			var InputObj1 = eval("document.forms['MultiBatchPdfForm'].projectlist" + i);
+			var InputObj2 = eval("document.forms['MultiBatchPdfForm'].filename" + i);
+			InputObj1.value="";
+			InputObj2.value="";
+		}
+		document.forms['MultiBatchPdfForm'].pdfprofile.value = "";
+	}
+
+	function Message_Artwork(Message){
+		alert("Admin Message\n_______________\n\n" + Message);
+	}
+	function Message_Shipment(Message){
+		alert("Production Message\n_______________\n\n" + Message);
+	}
+
+	function PH(orderID, projectID){
+		ViewStatusHistory(orderID, projectID);
+	}
+
+	var ShippingMethodsArr = Array({SHIPPING_TYPES_ARR});
+	var ProjectStatusArr = Array({PROJECTS_STATUS_ARR});
+	var ProjectQuantitiesArr = Array({PROJECTS_QUANTITIES_ARR});
+
+	//This will be a multi dimensional array
+	//The first level matches the number of checkboxes
+	//The second level has the product options.  The first element is always the product ID, the remaining elements sequentially alternate... like..... Prod Option, Prod Choice, Prod Option, Prod Choice
+	var Prod_Opt_Arr = Array();
+	{PROD_OPTIONS_ARR}
+
+
+	function PossiblyChangeRowColorAfterHiding(projectNum){
+		changeRowColor(projectNum, "#ddee99");
+	}
+	function PossiblyChangeRowColorWhileShowing(projectNum){
+		changeRowColor(projectNum, "#ddcc99");
+	}
+
+
+
+
+</script>
+<script type="text/javascript" src="./library/api_dot.js"></script>
+<script type="text/javascript" src="./library/admin_library.js"></script>
+<script type="text/javascript" src="./library/open_orders.js"></script>
+
+
+
+<link rel="stylesheet" type="text/css" href="library/calendar/themes/winter.css"/>
+<script type="text/javascript" src="library/calendar/src/utils.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar.js"></script>
+<script type="text/javascript" src="library/calendar/lang/calendar-en.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar-setup.js"></script>
+<script type="text/javascript" src="library/formatDate.js"></script>
+
+
+</head>
+<body bgcolor="#FFFFFF" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" >
+<div align="center">
+{HEADER}
+&nbsp;
+<table width="760" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td class="Body">
+<!-- Inner Body  -->
+
+
+<!-- BEGIN OrderLimiterBL -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td align="center">
+<table width="60%" border="0" cellspacing="0" cellpadding="1" bgcolor="#669933">
+  <tr>
+    <td><table width="100%" border="0" cellspacing="0" cellpadding="3" bgcolor="#ccff66">
+  <tr>
+    <td><table width="100%" border="0" cellspacing="0" cellpadding="3" bgcolor="#FFFFFF">
+  <tr>
+    <td class="SmallBody" align="center">The list of open orders is being restricted. <a href="./ad_openorders.php?form_sc={FORM_SECURITY_CODE}&action=removelimiter" class="blueredlink">Click here</a> to show all open orders.</td>
+  </tr>
+</table>
+</td>
+  </tr>
+</table></td>
+  </tr>
+</table>
+</td>
+  </tr>
+</table>
+<!-- END OrderLimiterBL -->
+
+
+<br/>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+            <td width="19%"><font class="AdminLabel">Order Selection</font></td>
+            <td width="81%" align="right" class="SmallBody"><!-- BEGIN EmptyQueryFormLinkBL --><span id="queryFormShowLink"><a href="#" onClick="showQueryBox(true);">Show Query Form</a></span><!-- END EmptyQueryFormLinkBL --></td>
+  </tr>
+</table><img  src="./images/blackpixel.gif" border="0" width="760" height="1" alt="" /><br/>
+<!-- BEGIN EmptyOrdersBL -->
+
+<span id="queryFormVisibleLayer" style='visibility:visible; position:relative;'>&nbsp;</span>
+<span id="queryFormHiddenLayer" style='visibility:visible; position:absolute; top:-1000; left:50;' >
+<form name="CheckBoxQuery">
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+<font class="SmallBody"><b>Automatic CheckBox Selection (for Batch Windows)</b></font>
+<table width="100%" border="0" cellspacing="0" cellpadding="2" bgcolor="#999999">
+  <tr>
+    <td><table width="100%" border="0" cellspacing="1" cellpadding="4" >
+  <tr bgcolor="#EEEEEE">
+                  <td class="SmallBody" width="28%" valign="top"><b>Status</b>
+                    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td class="SmallBody" valign="top"><input type="checkbox" name="statustype" value="N" checked /> New<br/>
+<input type="checkbox" name="statustype" value="P" checked /> Proofed<br/>
+<input type="checkbox" name="statustype" value="H" checked /> On Hold<br/>
+<input type="checkbox" name="statustype" value="L" checked /> Artwork Help<br/>
+<input type="checkbox" name="statustype" value="W" checked /> Waiting Reply<br/></td>
+    <td class="SmallBody" valign="top"><input type="checkbox" name="statustype" value="T" checked /> Printed<br/>
+<input type="checkbox" name="statustype" value="Q" checked /> Queued<br/>
+<input type="checkbox" name="statustype" value="B" checked /> Boxed<br/>
+<input type="checkbox" name="statustype" value="A" checked /> Art Problem<br/>
+<input type="checkbox" name="statustype" value="E" checked /> Plated<br/>
+<input type="checkbox" name="statustype" value="D" checked /> For Offset<br/>
+</td>
+  </tr>
+</table>
+<br/>
+<input type="button" name="allstatus" value="ALL" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" onClick="AllStatusCheck(true);" />
+&nbsp;&nbsp;
+<input type="button" name="allstatus" value="None" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" onClick="AllStatusCheck(false);" />
+
+	</td>
+	              <td class="SmallBody" width="16%" valign="top"><b>Shipping Priority</b><br/>
+<input type="checkbox" name="shipmentmethod" value="1" checked /> Urgent<br/>
+<input type="checkbox" name="shipmentmethod" value="2" checked /> High<br/>
+<input type="checkbox" name="shipmentmethod" value="3" checked /> Elevated<br/>
+<input type="checkbox" name="shipmentmethod" value="4" checked /> Medium<br/>
+<input type="checkbox" name="shipmentmethod" value="5" checked /> Normal<br/>
+
+</td>
+	              <td class="SmallBody" width="28%" valign="top"><b>Products</b><br/>
+				  {PRODUCT_DROP_DOWN}
+<br/><br/>
+<select name="FirstOption" class="AdminDropDown">
+	</select>
+	<br/>
+<select name="SecondOption" class="AdminDropDown">
+	</select><br/>
+<select name="ThirdOption" class="AdminDropDown">
+	</select>
+				  </td>
+
+                  <td class="SmallBody" width="18%" valign="top"><b>Project # Range</b><br/>
+					  <input type="text" name="loworder" value="" class="SmallInputBox" style="width:50px;" /> Low<br/>
+					   <input type="text" name="highorder" value="" class="SmallInputBox" style="width:50px;" /> High
+					   <br/><br/>
+<b>Quantity Range</b><br/>
+					  <input type="text" name="lowquantity" value="" class="SmallInputBox" style="width:50px;" /> Low<br/>
+					   <input type="text" name="highquantity" value="" class="SmallInputBox" style="width:50px;" /> High
+				    </td>
+				  <td class="SmallBody" width="10%" valign="middle" align="center">
+                    <input type="button" name="clear" value="Clear" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" onClick="checkboxes_clear();" /><br/><br/>
+                     <input type="button" name="clear" value="All" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" onClick="CheckAll();" /><br/><br/>
+                    <input type="button" name="clear" value="Query" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" onClick="checkboxes_mark();" /></td>
+  </tr>
+</table></td>
+  </tr>
+</table>
+</form>
+&nbsp;
+</span>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<form name="batchwindow" method="post" action="./ad_batchwindow_new.php">
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+  <tr>
+<td>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><img src="./images/arrow-down-left-corner.png" align="absmiddle" alt="" /><input type="button" name="shipped" value="New Batch Window" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" onClick="NewBatchWindow();" />
+<input type="hidden" name="projectlist" value="" />
+<input type="hidden" name="viewtype" value="admin" /></td>
+    <td align="right" class="SmallBody">Results Per Page: <select name="projectLimit" class="AdminInput" onChange="changeResultsPerPage(this.value)">{RESULTS_PER_PAGE_OPTIONS}</select></td>
+  </tr>
+</table>
+
+&nbsp;
+</td>
+  </tr>
+ </form>
+</table><form name="openorders"><input type="hidden" name="chkbx" value="" />
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+
+
+<!-- BEGIN MultiPageBL -->
+<table width="100%" border="0" cellspacing="0" cellpadding="1" class="NavColor">
+  <tr>
+    <td>
+	<table width="100%" border="0" cellspacing="0" cellpadding="1" bgcolor="#ddeeff">
+  <tr>
+    <td>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="50%" class="SmallBody"><img  src="./images/transparent.gif" border="0" width="1" height="3" alt="" /><br/>
+                            <font color="#000000">&nbsp; Total of {RESULT_DESC} projects.  <font class="ReallySmallBody" style="color:#000000">Displaying {START_RESULTS_DISP} - {END_RESULTS_DISP}</font></font><br/>
+                            <img src="./images/transparent.gif" border="0" width="2" height="3" alt="" /></td>
+<td width="50%" align="right" class="SmallBody"><font color="#000000">{NAVIGATE}</font></td>
+</tr>
+</table>
+	</td>
+  </tr>
+</table>
+	</td>
+  </tr>
+</table>
+&nbsp;
+ <!-- END MultiPageBL -->
+
+
+<table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#999999">
+<tr>
+<td>
+        <table width="100%" border="0" cellspacing="1" cellpadding="2" >
+          <tr>
+                    <td width="25%" class="Body" bgcolor="#CCCCCC"><font color="#000000">&nbsp;Order
+                      #</font></td>
+                    <td width="23%" class="Body" bgcolor="#CCCCCC"><font color="#000000">&nbsp;Customer</font></td>
+                    <td width="38%" class="Body" bgcolor="#CCCCCC"><font color="#000000">&nbsp;Summary</font></td>
+                    <td width="14%" class="ReallySmallBody" bgcolor="#CCCCCC"><font color="#000000">&nbsp;<strong>{DATE_LABEL}</strong></font></td>
+
+
+          </tr>
+          <!-- BEGIN ordersBL -->
+          <tr bgcolor="{ROW_COLOR}" id="TR{PROJECTID}">
+                    <td width="25%" class="SmallBody"><div  class="hiddenDHTMLwindow" id="Pnum{PROJECTID}">
+                      <input type="checkbox" name="chkbx" value="{PROJECTID}" onClick="HltRow(this);" />&nbsp;&nbsp;<a {ORD_SUM_HOVER} href="./ad_order.php?orderno={ORDERNO}" class="BlueRedLinkRecord">{ORDERNODSP}</a> - <a href="./ad_project.php?projectorderid={PROJECTID}" class="BlueRedLinkRecord">P{PROJECTID}</a>{ART}{SALESREP}{CPN}{SHP}{PREVIEWED}{ORD_SUM_SPAN}</div>{AFFILIATE}{S_I}</td>
+                    <td width="23%" class="ReallySmallBody">
+                      <a href="javascript:Cust({CUSTID});" class="BlueRedLinkRecSM">{CUSTOMER}</a>{CUST_RATING}{DISCOUNT}
+<!-- BEGIN TaskMemoBL -->
+	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td align="right" class="ReallySmallBody">{CS}&nbsp;&nbsp;<a href="javascript:CustomerMemo({CUSTID}, false)" class="BlueRedLinkRecSM">{MEMO}</a>&nbsp;<a href="javascript:MakeNewTask('user', {CUSTID}, false)" class="BlueRedLinkRecSM" >Task{T_COUNT}</a>&nbsp;</td>
+  </tr>
+</table>
+<!-- END TaskMemoBL -->
+</td>
+                    <td width="38%" class="ReallySmallBody" style="color:#000000">{ORDER_SUMMARY}</td>
+                    <td width="14%" class="ReallySmallBody" style="color:#222222">{ORDER_DATE}<div class="hiddenDHTMLwindow" id='DprojHist{PROJECTID}'>
+					<span style='visibility:hidden; position:absolute; left:-455px; top:-35' id='projHist{PROJECTID}'></span>
+					&nbsp;
+                      <a href='javascript:PH({ORDERNO}, {PROJECTID});' onmouseover='showProjH({PROJECTID}, true);' onmouseout='showProjH({PROJECTID}, false);' style="text-decoration:none">{STATUS}</a></div>{ADMIN_MSG}{PROD_MSG}{TRACK}{ARRIV}</td>
+
+          </tr>
+          <!-- END ordersBL -->
+        </table>
+		</td>
+		</tr>
+		</table>
+
+
+<!-- BEGIN SecondMultiPageBL -->
+&nbsp;
+	<table width="100%" border="0" cellspacing="0" cellpadding="1" class="NavColor">
+  <tr>
+    <td>
+	<table width="100%" border="0" cellspacing="0" cellpadding="1" bgcolor="#ddeeff">
+  <tr>
+    <td>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="50%" class="SmallBody"><img  src="./images/transparent.gif" border="0" width="1" height="3" alt="" /><br/>
+                            <font color="#000000">&nbsp; Total of {RESULT_DESC} projects. <font class="ReallySmallBody" style="color:#000000">Displaying {START_RESULTS_DISP} - {END_RESULTS_DISP}</font></font><br/>
+                            <img src="./images/transparent.gif" border="0" width="2" height="3" alt="" /></td>
+<td width="50%" align="right" class="SmallBody"><font color="#000000">{NAVIGATE}</font></td>
+</tr>
+</table>
+	</td>
+  </tr>
+</table>
+	</td>
+  </tr>
+</table>
+<!-- END SecondMultiPageBL -->
+
+
+{EMPTY_CHECKBOX_FOR_JS_ARRAY}
+</form>
+<!-- END EmptyOrdersBL -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+
+            <td width="73%" class="Body">{TOTAL_PROJECTS}</td>
+
+            <td width="27%" class="Body">{TOTAL_EXPORT_BOXES}</td>
+  </tr>
+</table>
+		<img src="./images/transparent.gif" border="0" width="540" height="20" alt="" />
+
+
+<br/>
+<br/><br/>
+
+
+<!-- Inner Body  END -->
+</td>
+</tr>
+</table>
+<table width="760" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="360" class="NavColor"><img src="./images/footer.gif" border="0" width="350" height="16" usemap="#footer" alt="" /></td>
+	<td width="400" align="right" class="NavColor"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+  </tr>
+</table>
+<font class="copyright"> </font>
+</div>
+&nbsp;
+<script type="text/javascript" src="./library/ImageMap-footer.js"></script>
+
+<!-- BEGIN EmptyOrdersBL2 -->
+<script>
+// I couldn't get the onload function to work because it was overrided by the Menu Item... so it I had to put it and the end of the page.
+InitializeQueryForm();
+document.onmousemove = followMouse;
+</script>
+<!-- END EmptyOrdersBL2 -->
+
+</body>
+</html>

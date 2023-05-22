@@ -1,0 +1,119 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Template Text Fields</title>
+<link rel="stylesheet" href="./library/stylesheet.css" type="text/css" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+
+<script language="javascript">
+
+
+
+	function CancelChanges(){
+		top.closeCurrentTextFieldWindow();
+	}
+	
+	function RemoveTemplateLinks(templateArea, templateID){
+		if(confirm("Are you sure that you want to delete this template."))
+			document.location = "ad_templates_link.php?action=removeLink&templateArea={TEMPLATE_AREA}&templateID={TEMPLATE_ID}&templateArea_Link=" + templateArea + "&templateID_link=" + templateID + "&form_sc={FORM_SECURITY_CODE}";
+	}
+	
+	function linkToNewProduct(linkToProduct){
+		document.location = "ad_templates_linkSearch.php?view=default&linkTemplateArea={TEMPLATE_AREA}&linkTemplateID={TEMPLATE_ID}&searchProductId=" + linkToProduct;
+	}
+	
+	// Every time we add/delete product links... this will update the HTML Link Description on the parent page.
+	top.updateProductLinksDesc("{TEMPLATE_ID}", "{PRODUCT_LINK_COUNT}");
+
+
+</script>
+
+</head>
+
+<body bgcolor="#3366CC" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="">
+<img  src="./images/transparent.gif" border="0" width="1" height="10" alt="" /><br/>
+<div align="center">
+<table bgcolor="#EEEEEE" width="530" cellpadding="0" cellspacing="0" border="0">
+
+<tr>
+<td bgcolor="#CCCCCC" align="center" class="Body" style="background-image: url(./images/admin/header-shipping.png); background-repeat: no-repeat;">
+<b>Template Links</b>
+</td>
+
+<tr>
+<tr>
+<td bgcolor="#666666" align="center" class="Body"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+
+<tr>
+<td align="center">
+
+<table width="96%" border="0" cellspacing="0" cellpadding="0">
+
+  <tr>
+              <td class="SmallBody" align="left"><img  src="./images/transparent.gif" width="5" height="5" alt="" /><br/>
+<font style="color:#000000"><u><strong>Quick-Edit Fields on This Template</strong></u></font><br />
+<font class="SmallBody" style="color:#663300;">
+ <!-- BEGIN TextFieldsOnTemplateBL -->
+ {TEXT_FIELD_COUNTER}. {TEXT_FIELD_NAME}<br />
+ <!-- END TextFieldsOnTemplateBL -->
+</font>
+<br />
+<br />
+
+
+
+<br />
+
+
+ <!-- BEGIN TemplateLinkBL -->
+				  <strong><font style="color:#000000; font-size:18px;">{PRODUCT_NAME}</font></strong>
+				
+
+
+				  <table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#CCCCCC">
+  <tr>
+    <td><table width="100%" border="0" cellspacing="1" cellpadding="4">
+  <tr>
+    <td class="SmallBody" bgcolor="#e3e3e3" width="39%">&nbsp;</td>
+	<td class="ReallySmallBody" bgcolor="#e3e3e3" width="30%"><font style="color:#333333">Matching Fields</font></td>
+	<td class="ReallySmallBody" bgcolor="#e3e3e3" width="30%"><font style="color:#333333">Un-Matched Fields</font></td>
+	<td class="SmallBody" bgcolor="#e3e3e3" align="center" width="1%"></td>
+  </tr>
+  <tr>
+    <td class="SmallBody" bgcolor="#e3e3e3"><img src="{THUMBNAIL_PHOTO}" style="border:solid; border-width:1px; border-color:#000000; margin:6px;" /></td>
+	<td class="SmallBody" bgcolor="#e3e3e3"><font style="color:#339900">{LINKED_FIELDS}</font></td>
+	<td class="SmallBody" bgcolor="#e3e3e3"><font style="color:#993300">{UNLINKED_FIELDS}</font></td>
+	<td class="SmallBody" bgcolor="#e3e3e3" align="center"><a href="javascript:RemoveTemplateLinks('{TEMP_AREA}', {TEMP_ID})">X</a></td>
+  </tr>
+</table>
+</td>
+  </tr>
+</table>
+		&nbsp;		  <br/><br/>
+ <!-- END TemplateLinkBL -->
+ <br />
+
+<br />
+<br />
+<font style="color:#000000"><u><strong>Create a New Link</strong></u></font><br /><img src="images/transparent.gif" width="3" height="3" /><br />
+<select name="newProductlink" onchange="linkToNewProduct(this.value);">
+{PRODUCT_LINK_SELECT}
+</select>
+              </td>
+  </tr>
+
+</table>
+</td>
+</tr>
+
+
+<tr>
+<td><img src="images/header-editoptions-fade-bot.gif" width="530" alt="" /></td>
+</tr>
+</table>
+
+
+</div>
+
+</body>
+</html>

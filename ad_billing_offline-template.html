@@ -1,0 +1,145 @@
+<html>
+<head>
+<title>Admin</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<script language="javascript">
+
+	//Make an array of the images we want to preload for the mouse-overs.
+	arImageSrc = new Array (
+		"./images/button-go-d.gif",
+		"./images/button-go-grey-u.gif",
+		"./images/button-hasbeenshipped-u.gif"
+
+	)
+
+	//Preload images.
+	arImageList = new Array ();
+	for (counter in arImageSrc) {
+		arImageList[counter] = new Image();
+		arImageList[counter].src = arImageSrc[counter];
+	}
+
+
+	function EnterPaymentsReceived(){
+		var address = "./ad_billing_receive.php";
+		newWindow = window.open(address, "billingreceive", "height=400,width=500,directories=no,location=no,menubar=no,scrollbars=yes,status=no,toolbar=no,resizable=yes");
+		newWindow.moveTo((self.screenLeft + self.screen.width/9),(self.screenTop + self.screen.height/9));
+		newWindow.focus();
+	}
+
+	function ShowBalances(ShowFlag){
+		if(ShowFlag)
+			document.location = "./ad_billing_offline.php?view=showbalances";
+		else
+			document.location = "./ad_billing_offline.php?";
+	}
+
+
+</script>
+
+<link rel="stylesheet" type="text/css" href="library/calendar/themes/winter.css"/>
+<script type="text/javascript" src="library/calendar/src/utils.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar.js"></script>
+<script type="text/javascript" src="library/calendar/lang/calendar-en.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar-setup.js"></script>
+<script type="text/javascript" src="library/formatDate.js"></script>
+</head>
+<body bgcolor="#FFFFFF" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="">
+<div align="center">
+{HEADER}
+&nbsp;
+<table width="760" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td class="Body">
+<!-- Inner Body  -->
+<br/>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td class="Body"> <b>{INVOICE_NUM}</b> invoice(s) for <b>{MONTH_READY}</b> are ready for generation.<br/><br/>
+
+ <!-- BEGIN GenerateInvoiceButtonBL -->
+ <form method="get" action="ad_billing_invoices.php" target="invoiceWindow">
+<input type="submit" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" name="Invoices" value="Generate Invoices" />
+{MONTH_SELECT} {YEAR_SELECT}
+ </form>
+ <!-- END GenerateInvoiceButtonBL -->
+
+ </td>
+    <td class="Body" align="right"><input type="button" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" name="Inoices" value="Enter Payments Received" onClick="EnterPaymentsReceived();" /></td>
+  </tr>
+</table>
+
+<br/>
+<br/><br/>
+<!-- BEGIN EmptyLatePeople -->
+The following companies are late with payments.
+  <table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#CCCCCC">
+  <tr>
+    <td><table width="100%" border="0" cellspacing="1" cellpadding="2">
+  <tr>
+                  <td bgcolor="#EEEEEE" class="Body" width="42%"><b>Company</b></td>
+                  <td bgcolor="#EEEEEE" class="Body" width="29%"><b>Credit Usage</b></td>
+                  <td bgcolor="#EEEEEE" class="Body" width="29%"><b>Last Payment</b></td>
+  </tr>
+  <!-- BEGIN LateCompaniesBL -->
+   <tr>
+                  <td bgcolor="#FFFFFF" class="Body" width="42%"><a href="./ad_users_account.php?customerid={CUTOMER_ID}&view=billinghistory&returl=ad_billing_offline.php&retdesc=Corporate+Billing+Page" class="blueredlink">{COMPANY}</a> <font class="ReallySmallBody"> - U{CUTOMER_ID}</font></td>
+                  <td bgcolor="#FFFFFF" class="Body" width="29%">{CREDIT_USAGE}</td>
+                  <td bgcolor="#FFFFFF" class="Body" width="29%">{LAST_PAYMENT}</td>
+  </tr>
+   <!-- END LateCompaniesBL -->
+</table>
+</td>
+  </tr>
+</table>
+<!-- END EmptyLatePeople -->
+
+  <br/><br/>
+  <!-- BEGIN HideBalancesBL -->
+ <input type="button" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" name="ShowBalance" value="Show All Balances" onClick="ShowBalances(true);" />
+ <!-- END HideBalancesBL -->
+  <!-- BEGIN BalancesBL -->
+  <input type="button" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" name="HideBalance" value="Hide Balances" onClick="ShowBalances(false);" />
+  <br/><br/>
+  <b>Total Funds Outstanding:</b> {TOTAL_OUTSTANDING}
+  <br/><br/>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#CCCCEE">
+  <tr>
+    <td><table width="100%" border="0" cellspacing="1" cellpadding="2">
+  <tr>
+                  <td bgcolor="#CCCCEE" class="Body" width="21%"><b>Company</b></td>
+				  <td bgcolor="#CCCCEE" class="Body" width="57%"><b>Last 3 Payments</b></td>
+                  <td bgcolor="#CCCCEE" class="Body" width="22%"><b>Outstanding
+                    Balance</b></td>
+  </tr>
+  <!-- BEGIN CompaniesBalanceBL -->
+   <tr>
+                  <td bgcolor="#FFFFFF" class="Body" width="21%"><a href="./ad_users_account.php?customerid={CUTOMER_ID}&view=billinghistory&returl=ad_billing_offline.php&retdesc=Corporate+Billing+Page" class="blueredlink">{COMPANY}</a><font class="ReallySmallBody"> - U{CUTOMER_ID}</font></td>
+                  <td bgcolor="#FFFFFF" class="SmallBody" width="57%">{LAST_3_PAYMENTS}</td>
+                  <td bgcolor="#FFFFFF" class="Body" width="22%">{CREDIT_USAGE}</td>
+  </tr>
+   <!-- END CompaniesBalanceBL -->
+</table>
+</td>
+  </tr>
+</table>
+<!-- END BalancesBL -->
+
+  <br/><br/><br/><br/>
+<!-- Inner Body  END -->
+</td>
+</tr>
+</table>
+<table width="760" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="360" class="NavColor"><img src="./images/footer.gif" border="0" width="350" height="16" usemap="#footer" alt="" /></td>
+	<td width="400" align="right" class="NavColor"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+  </tr>
+</table>
+<font class="copyright"> </font>
+</div>
+&nbsp;
+</body>
+</html>

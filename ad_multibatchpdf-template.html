@@ -1,0 +1,134 @@
+<html>
+<head>
+<title>Quick Batch</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+
+<script language="javascript">
+
+window.resizeTo(400,450);
+
+function ScriptLoad(){
+
+
+	{JS_ONLOAD}
+
+}
+
+function MarkAsQueued(){
+	document.forms['MultiBatchPdfForm'].view.value='markqueued';
+	document.forms['MultiBatchPdfForm'].submit();
+}
+function DownloadFile(FileName){
+	document.forms['MultiBatchPdfForm'].view.value='download';
+	document.forms['MultiBatchPdfForm'].filename.value = FileName;
+	document.forms['MultiBatchPdfForm'].submit();
+}
+
+function PercentComplete(Percent, QueueName){
+	ShowProgress(QueueName + ": " + Percent + "% complete");
+}
+function ShowProgress(Msg){
+	document.all.percentcomplete.innerHTML = Msg;
+}
+
+</script>
+
+
+</head>
+
+<body bgcolor="#3366CC" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="ScriptLoad();" >
+<img  src="./images/transparent.gif" border="0" width="1" height="10" alt="" /><br/>
+<div align="center">
+<table bgcolor="#EEEEEE" width="300" cellpadding="0" cellspacing="0" border="0">
+
+<tr>
+<td bgcolor="#999999" class="Body" align="center"><img  src="./images/transparent.gif" border="0" width="1" height="3" alt="" /><br/><font color="#FFFFFF"><b>Quick Batch</b></font><br/><img src="./images/transparent.gif" border="0" width="1" height="3" alt="" /></td>
+</tr>
+<tr>
+<td bgcolor="#666666" class="Body" align="center"><img src="./images/transparent.gif" border="0" width="1" height="2" alt="" /></td>
+</tr>
+<tr>
+<td class="Body" align="center">&nbsp;
+
+<br/>
+<!-- BEGIN SpinningWheelBL -->
+<div id="percentcomplete" class="Body">
+Loading...
+</div>
+<br/>
+
+<OBJECT classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="https://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=7,0,19,0" width="250" height="100" id="GeneratingArtwork" align="middle">
+<param name="allowScriptAccess" value="sameDomain" />
+<param name="movie" value="./GeneratingArtwork.swf" />
+<param name="quality" value="high" />
+<param name="bgcolor" value="#ffffff" />
+<embed src="./GeneratingArtwork.swf" quality="high" bgcolor="#ffffff" width="250" height="100" name="GeneratingArtwork" align="middle" allowScriptAccess="sameDomain" type="application/x-shockwave-flash" pluginspage="https://www.macromedia.com/go/getflashplayer" /></embed>
+</OBJECT>
+
+<!-- END SpinningWheelBL -->
+<!-- BEGIN MarkQueuedBL -->
+<br/>
+        Click the button below to acknowledge that you
+         have successfully downloaded the artwork and sent it to the printing press.<br/><br/>
+<input type="button" name="queuedbtn" value="Mark As Queued" onclick="MarkAsQueued();" class="AdminButton" onmouseover="this.style.background='#ffeeaa';" onmouseout="this.style.background='#FFFFDD';" /> or <a class="blueredlink" href="javascript:self.close();">Cancel</a>
+<!-- END MarkQueuedBL -->
+<!-- BEGIN CloseWindowBL -->
+<br/>
+        Batch Completed<br/><br/>
+<input type="button" name="closewin" value="Close Window" onclick="self.close();" class="AdminButton" onmouseover="this.style.background='#ffeeaa';" onmouseout="this.style.background='#FFFFDD';" />
+<!-- END CloseWindowBL -->
+<br/><br/>
+
+
+
+
+
+
+
+</td>
+</tr>
+
+
+<tr>
+<td><img src="images/header-editoptions-fade-bot.gif" width="300" alt="" /></td>
+</tr>
+</table>
+
+
+<form name="MultiBatchPdfForm" method="post" target="top" action="./ad_multibatchpdf.php">
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+<input type="hidden" name="view" value="{VIEW}" />
+<input type="hidden" name="pdfprofile" value="{PDFPROFILE}" />
+<input type="hidden" name="filename" value="" />
+
+<input type="hidden" name="projectlist1" value="{PROJ1}" />
+<input type="hidden" name="projectlist2" value="{PROJ2}" />
+<input type="hidden" name="projectlist3" value="{PROJ3}" />
+<input type="hidden" name="projectlist4" value="{PROJ4}" />
+<input type="hidden" name="projectlist5" value="{PROJ5}" />
+<input type="hidden" name="projectlist6" value="{PROJ6}" />
+<input type="hidden" name="projectlist7" value="{PROJ7}" />
+<input type="hidden" name="projectlist8" value="{PROJ8}" />
+<input type="hidden" name="projectlist9" value="{PROJ9}" />
+<input type="hidden" name="projectlist10" value="{PROJ10}" />
+
+<input type="hidden" name="filename1" value="{FILENAME1}" />
+<input type="hidden" name="filename2" value="{FILENAME2}" />
+<input type="hidden" name="filename3" value="{FILENAME3}" />
+<input type="hidden" name="filename4" value="{FILENAME4}" />
+<input type="hidden" name="filename5" value="{FILENAME5}" />
+<input type="hidden" name="filename6" value="{FILENAME6}" />
+<input type="hidden" name="filename7" value="{FILENAME7}" />
+<input type="hidden" name="filename8" value="{FILENAME8}" />
+<input type="hidden" name="filename9" value="{FILENAME9}" />
+<input type="hidden" name="filename10" value="{FILENAME10}" />
+</form>
+
+
+</div>
+
+
+</body>
+</html>

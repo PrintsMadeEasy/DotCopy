@@ -1,0 +1,337 @@
+
+############    Good luck with a restore ...   I have listed all of the steps bring a server back up if it has been totally wiped clean and restored with Red Hat linux and Cpanel -######################
+############    Keep in mind that stuff is always changing.. hopefully making things easier.  
+############    If you get really stuck there are many revisions of this FILE in CVS... try going back earlier in the file to see more details on some of the problems that I have encountered.... and possibily compiled things from scratch --#
+
+
+*********************   I depreciated this file.... I used to keep a lot of instructions in here.... Try viewing "server_setup.txt" instead.
+
+
+		
+		
+
+	* SetUp Mail accounts...
+	PrintsMadeEasy Email Account	UN: brian
+					PW: check Password File
+
+					UN: dummy
+					PW: 123dummy
+
+					UN: cs_engine
+					UN: cs_test
+					UN: customerservice
+					UN: auto-confirm
+					UN: marketingdata
+						PW: engine
+
+					UN: dupaula
+					PW: slickboy
+
+					UN: susie
+					PW: SUSIEPASS
+					UN: heather
+					PW: ilovepme
+					UN: tammy
+					PW: TammyPass
+					UN: karen
+					PW: ilovepme2
+					UN: paypal
+					PW: ilovepme
+					UN: rachel
+					PW: ilovepme
+					UN: claims
+					PW: ilovepme
+					UN: jami
+					PW: ilovepme
+					UN: chris
+					PW: ilovepme
+					UN: h.hendrix
+					PW: ilovepme
+					UN: craig
+					PW: ilovepme
+					UN: christy
+					PW: ilovepme
+					UN: gina
+					PW: ilovepme
+					UN: whiteman
+					PW: BrianEmailPass
+					UN: b.whiteman
+					PW: 4whiteman2
+					UN: Michael
+					PW: Mic2349fd
+					UN: Ryan
+					PW: Ry834adkj
+					UN: Amanda
+					PW: ilovepme
+					UN: Angel
+					PW: ilovepme
+					UN: Home
+					PW: lsjf454Jk
+					UN: Anne
+					PW: ap8867
+					UN: MikeHughes
+					PW: ilovepme
+					UN: alerts
+					PW: ilovepme
+					UN: denise
+					PW: ilovepme
+					UN: bill
+					PW: JL87jrw9s
+					UN: spy-incoming
+					PW: sjf84%jdlJK
+					UN: spy-outgoing
+					PW: sjf84%jdlJK
+					UN: catchall
+					PW: sldjf23894J
+					UN: affiliate
+					PW: sl3894Jada
+
+					
+	* Remember to send all "un-routed" email to CatchAll@PrintsMadeEasy.com
+	* Setup forwarders..
+		- SalesReps@PrintsMadeEasy -> susie@PrintsMadeEasy
+		- Sales@PrintsMadeEasy -> susie@PrintsMadeEasy
+		- susy@PrintsMadeEasy -> susie@PrintsMadeEasy
+		- bret@PrintsMadeEasy -> bret2008@yahoo.com
+		- Judy@printsmadeeasy.com  -> DuPaula@PrintsMadeEasy.com 
+		- suzy@PrintsMadeEasy.com -> susie@PrintsMadeEasy.com
+		- suzie@printsmadeeasy.com  -> susie@PrintsMadeEasy.com 
+		- webmaster@PrintsMadeEasy.com -> Brian@PrintsMadeEasy.com
+		- privacy@printsmadeeasy.com  -> CustomerService@PrintsMadeEasy.com
+		- customersevice@printsmadeeasy.com -> CustomerService@PrintsMadeEasy.com 
+		- hhendrix@printsmadeeasy.com -> h.hendrix@printsmadeeasy.com
+		- hendrix@printsmadeeasy.com -> h.hendrix@printsmadeeasy.com
+		- heather.hendrix@printsmadeeasy.com -> h.hendrix@printsmadeeasy.com
+		- jamie@PrintsMadeEasy.com -> jami@printsmadeeasy.com
+		- jaimie@PrintsMadeEasy.com -> jami@printsmadeeasy.com
+		- CoustomerService -> CustomerService@PrintsMadeEasy.com
+		- CustomerServices -> CustomerService@PrintsMadeEasy.com
+		- costumerservice -> CustomerService@PrintsMadeEasy.com
+		- customrerservice -> CustomerService@PrintsMadeEasy.com
+		- custumerservice -> CustomerService@PrintsMadeEasy.com
+		- customeservice -> CustomerService@PrintsMadeEasy.com
+		- www.customerservice  -> CustomerService@PrintsMadeEasy.com
+		- Paula@printsmadeeasy.com  -> DuPaula@PrintsMadeEasy.com
+		- dupadeassis@printsmadeeasy.com  -> DuPaula@PrintsMadeEasy.com
+		- b.whiteman@printsmadeeasy.com  -> Brian@DotGraphics.net
+		- ebay@printsmadeeasy.com  -> billbench@msn.com 
+		- denise -> Susie@PrintsMadeEasy.com
+		
+		
+
+
+
+12) Database Replication
+-------------------
+	You can read up if you like at ... 
+	http://www.mysql.com/documentation/mysql/bychapter/manual_MySQL_Database_Administration.html#Replication
+
+
+	Log in Mysql as root.
+
+	Grant permissions on the master so that we have a user named "protectme" with a passoword of "lkjDF3j"
+	GRANT REPLICATION SLAVE ON *.* TO protectme@'%' IDENTIFIED BY 'xxxx' REQUIRE SSL;
+	
+	
+	Shut Down the server Temporarily
+	FLUSH TABLES WITH READ LOCK;
+
+	>>> run   "RESET MASTER" to rest the binary log files.
+
+	Get out of Mysql Prompt (in a new shell window) and take a snap shot of the prints database  ... (need to be in the mysql directory )
+	shell> cd /var/lib/mysql
+	shell> tar -cvf /tmp/mysql-printsma-snapshot.tar ./pme_db
+
+	*** As the database gets to large this may not work becuase of a filesize limit
+	You can copy the database files to a temporary directory... and then use Chmod to give temporary public read access ... then FTP the directory over into a temporary directory on the development server
+	
+
+	Log back into Mysql as root and record the binaryfile name and the position 
+	SHOW MASTER STATUS;
+
+	Now we can unlock the tables
+	UNLOCK TABLES;
+
+
+	---- On the slave database ---
+
+	Ftp the snap shot over to the other server... Then untar within the mysql directory.
+	tar -xvf mysql-printsma-snapshot.tar
+
+
+	We need to give the slave a different server ID than the master... kinda like an IP address
+	Also want to make the slave log any warning associated with network connectivity etc.
+	shell> cd /etc
+	shell> vi my.cnf
+
+	add a line that says......     
+	my.cnf> server-id=2
+	my.cnf> log-warnings
+
+
+
+	Log into Mysql and run the following command...
+	mysql>
+
+	>> "STOP SLAVE"  .... just in case it is still running from before
+	>>> run RESET SLAVE to clear out the binary relay logs
+
+	FLUSH TABLES;
+
+	CHANGE MASTER TO
+	MASTER_HOST='s10.printsmadeeasy.com',
+	MASTER_USER='protectme',
+	MASTER_PASSWORD='xxxxxxx',
+	MASTER_SSL=1,
+	MASTER_LOG_FILE='s10-bin.000001',
+	MASTER_LOG_POS=79;
+	MASTER_SSL_CA = '/var/lib/mysql/ca.crt',
+	MASTER_SSL_CAPATH = '',
+	MASTER_SSL_CERT = '/var/lib/mysql/server.crt',
+	MASTER_SSL_KEY = '/var/lib/mysql/server.key';
+	START SLAVE;
+
+
+	### -- Don forget to change the log position and binary log name in the SQL statement above.
+
+
+	# Add the user CheckDotDB on the slave computer for backups.  Make sure that CheckDotDB has RELOAD privleges so it can do a FLUSH TABLES WITH READ LOCK
+	GRANT RELOAD ON *.* TO CheckDotDB@localhost;
+
+
+13) - Install CVS  (for development server) -
+	Download the source from 
+	http://www.cvshome.org/downloads.html
+
+
+	bunzip2 cvs-1.11.9.tar.bz2
+	tar -xvf cvs-1.11.9.tar
+	cd cvs-1.11.9
+	./configure && make && make install
+
+	-- This will create the CVSROOT in /usr/local/CVSROOT
+	cd /usr/local
+	mkdir cvsroot
+	cvs -d /usr/local/cvsroot init
+
+	-- Edit the startup file to put the CVSROOT in the environment
+	cd /root
+	vi .bashrc
+
+	-- Add the line
+	CVSROOT=/usr/local/cvsroot
+	export CVSROOT
+
+	-- Go to the directory where you want to create the directory from and run the import command
+	cd sourceDirectory
+	cvs import -m "Import Sources" printsmadeeasy/web printsmadeeasy start
+
+	should define a module named "pme" for the repository
+
+	//Check and make sure the port is listenting
+	netstat -nap|less 
+	netstat -nap|grep 2401
+
+	//If the cvs pserver is not listening on the port then you need to find out if inet.conf is working or xinetd.conf 
+	//I am currently on xinetd.conf
+	//add the following to the file
+	service cvspserver
+	{
+		socket_type     = stream
+		protocol        = tcp
+		wait            = no
+		user            = root
+		only_from      = 69.63.86.139 84.227.0.0    #### Here is where you set what IP's have permission to login.   "0" is a wildcard for that octet
+		passenv         = PATH
+		server          = /usr/bin/cvs
+		server_args     = -f --allow-root=/usr/local/cvsroot pserver
+	}
+
+	//look for process open  ... such as inetd.conf
+	ps -auwx | grep inetd
+
+	//restart xinetd with
+	kill -HUP 1065      //1065 is the first column of the process ID command above
+
+
+	# To add a user to the respective repositories... we can have more that one repository.
+	# Within each repository CVS Root you need to 
+	/usr/local/cvs/****Repository_Name****/CVSROOT]
+	
+	# I am not sure why... make make sure that the directory has "other executable" permissions.  It doesn't need world readable / writable though.
+	ls -ld /usr/local/cvs
+	drwxr-x--x
+	
+
+	## Add line for every user that you want to have logged in.  
+	## You can get the Shadow password by creating a dummy user (in linux by "useradd dummyperson ----  passwd dummyperson")  and then copy the the value in the /etc/passwd or /etc/shadow file.
+	## Don't forget to delete the dummy linux user after you are done with the password ("userdel dummyperson")
+
+	brian_dot:XXXpassXXX:cvsuser_dot
+	cristian_dot:XXXpassXXX:cvsuser_dot
+	
+	
+	#-- Notice how I created 2 different users for the CVS repository "brian_dot" and "christian_dot" 
+		These are not Linux users... they are logins for CVS... and you define them in this file.  You should have different passwords for each user.
+	
+	#-- Notice the 3rd parameter in each line.   That is the "linux user" that the login will be run under.
+		For the linux user cvsuser_dot ... I made that user belong to a group "cvsdot".
+		Here are what the permissions look like for that group.  "others" can not read or write to this directory.
+		drwxrwx---   24 root     cvsdot      16384 Feb 10 21:03 web/
+		
+	#-- For every separate repository... I create a linux user and a group specifically for that repository... all of the CVS users for the given repository run under that Linux User.
+	#---  BE SURE ... that when you create a new Linux User (for the CVS repository)... that you make the password really strong...
+	 	I also make sure that that "cvs proxy user" can not login through SSH... with "no shell"
+	 	/etc/passwd
+	 	cvsuser_dot:x:32013:519::/home/cvsuser_dot:/usr/local/cpanel/bin/noshell
+	
+	
+	******************  TO ADD A NEW PERSON TO CVS *****************
+	1) Create the "Dummy User" and and create a password (as described above). Get the password from /etc/shadow and then remove the dummy user.
+	2) Add a line to /usr/local/cvs/Postcards.com/CVSROOT/passwd
+		... add another user for the CVS system. jack_pcc:PASSWORD_FROM_SHADOW_FILE:cvsuser_pcc
+		... the first section before the colon is just made up... it doesn't need to be anywhere else.  Tha last parameter "cvsuser_pcc" must be a common Linux user in the system.  That common CVS Linux user should not have permission to see other repositorys. 
+	3) In WinCVS... click on Admin -> Login ..... And use the CVSROOT: :pserver:jack_pcc@localhost:2401:/usr/local/cvs/Postcards.com
+		... Use the password created from the Dummy User in step #1 (when WinCVS prompts).
+	4) Then go to Remote -> Checkout Module. Pick the module name from the server ... like "Postcards.com".  Use the same CVSROOT.
+		... It doesn't really matter what directory you pick.  You can always move the directory in Windows Explorer afterwords. CVS doesn't use registry.
+	5) Add a real user to Linux.  But you don't need to add them to any groups.  They just need to be logged into the the Shell so that they can login through the CVS Pserver
+		... I call the users something like "briancvs".  You can add them with "briancvs" ... then to "passwd briancvs".
+	
+	
+	
+
+	
+
+
+
+17) Configure Client Key for the PayPal API
+	1) Copy the file "pme_PayPal_cert_key_pem.txt" which is in the "documents" directory protected under CVS
+	2) FTP the file to the server and rename it to ...  pme_PayPal_cert_key.pem
+	3) Run the following command on the pem file
+		openssl pkcs12 -export -inkey pme_PayPal_cert_key.pem -in pme_PayPal_cert_key.pem -out pme_PayPal_cert_key.p12
+		use the password "bigal2121"
+	4) copy the p12 file to the directory /usr/share/ssl
+		cp pme_PayPal_cert_key.p12 /usr/share/ssl/PayPal.p12
+	5) Convert the p12 file into a pem file using this command
+		cd /usr/share/ssl
+		openssl pkcs12 -in PayPal.p12 -out PayPal.pem
+			... use the same password "bigal2121"
+
+	
+16) - If the Server is not responding
+
+	1)  Try rebooting server
+	2)  Check out the Apache Error log at /usr/local/apache/logs/error_log
+	3)  Try restarting the webserver through the WHM at http://www.PrintsMadeEasy.com:2086 
+	4)  SSL connections are logged at /var/log/www.printsmadeeasy.com  and also    /usr/local/apache/logs/ssl_engine_log
+	5)  Run the following command to see what is running on the ports.....  >>  netstat -apne
+	6)  Look for Mysql Errors at....   >> /var/lib/mysql/cpanel.printsmadeeasy.com.err
+	
+17) If the server is overloading... look for httpd processes that are eating up the CPU.
+	.... run the command "lsof -n -T -w -i tcp:80" and find the IP address of the user that started the process
+	.... then cross reference with IP address and a timestamp the the apache log file /usr/local/apache/domlogs/
+	.... Also try running Apache with "extended" status on .... it will show you which scripts are eating up which process ID's.
+	
+
+

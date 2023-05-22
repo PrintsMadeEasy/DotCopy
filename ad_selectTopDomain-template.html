@@ -1,0 +1,145 @@
+<html>
+<head>
+<meta HTTP-EQUIV="refresh" content="250;URL=./ad_home.php" />
+<title>Admin</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<script>
+	//Make an array of the images we want to preload for the mouse-overs.
+	arImageSrc = new Array (
+		"./images/button-change-d.png",
+		"./images/UploadMailingList-b.gif"
+	)
+
+	//Preload images.
+	arImageList = new Array ();
+	for (counter in arImageSrc) {
+		arImageList[counter] = new Image();
+		arImageList[counter].src = arImageSrc[counter];
+	}
+	
+	
+
+	function ajaxRequest(url, vars, callbackFunction) {
+	  var request =  new XMLHttpRequest();
+	  request.open("POST", url, true);
+	  request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+	 
+	  request.onreadystatechange = function() {
+	    if (request.readyState == 4 && request.status == 200) {
+	      if (request.responseText) {
+	        callbackFunction(request.responseText);
+	      }
+	    }
+	  };
+	  request.send(vars);
+	}
+
+	var alreadySelected = false;
+	function SelectTopDomain(topDomainID){
+	
+		// Only click once.
+		if(alreadySelected)
+			return;
+		alreadySelected = true;
+
+		// Show some Eye Candy.
+		document.getElementById("DomainSelectInstructions").innerHTML = "<font style='font-size:18; color:#000099'> Thinking ...</font><br/>";
+
+		setTimeout('postDomainIDToServer("' + topDomainID + '")', 400);
+			
+	}
+
+	function postDomainIDToServer(topDomainID){
+
+		ajaxRequest("ad_selectTopDomain.php", ("action=setTopDomain&topDomainID=" + topDomainID), eventFinishedSettingTopDomain);
+	}
+	
+	function eventFinishedSettingTopDomain(responseText){
+		
+		if(responseText != "OK")
+			alert("Error setting Top Domain ID");
+		else
+			window.location = "{RETURN_URL}";
+	}
+
+
+
+</script>
+<script type="text/javascript" src="./library/admin_library.js"></script>
+<link rel="stylesheet" type="text/css" href="library/calendar/themes/winter.css"/>
+<script type="text/javascript" src="library/calendar/src/utils.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar.js"></script>
+<script type="text/javascript" src="library/calendar/lang/calendar-en.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar-setup.js"></script>
+<script type="text/javascript" src="library/formatDate.js"></script>
+</head>
+<body bgcolor="#FFFFFF" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="">
+<div align="center">
+{HEADER}
+&nbsp;
+<table width="760" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td class="Body"><br/>
+
+
+<div id="DomainSelectInstructions" style='height:80px;'>
+The page that you are trying to access requires that you identify a single Domain.  <br/>
+Select from one of the following choices to temporarily store your selection.<br/>
+Or you can save a single Domain within the Nav Bar.
+</div>
+
+
+
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<!-- BEGIN DomainRowsBL -->
+  <tr>
+    <td class="Body">
+	<!-- BEGIN ColBL_1 -->
+	<a href="javascript:SelectTopDomain({DOMAIN_ID_COL_1})"><img  src="./domain_logos/{DOMAIN_LOGO_COL_1}" border="0" alt="" /></a><br/><a class="BlueRedLink" href="javascript:SelectTopDomain({DOMAIN_ID_COL_1})">{DOMAIN_KEY_COL_1}</a>
+	<!-- END ColBL_1 -->
+	</td>
+    <td class="Body">
+	<!-- BEGIN ColBL_2 -->
+	<a href="javascript:SelectTopDomain({DOMAIN_ID_COL_2})"><img  src="./domain_logos/{DOMAIN_LOGO_COL_2}" border="0" alt="" /></a><br/><a class="BlueRedLink" href="javascript:SelectTopDomain({DOMAIN_ID_COL_2})">{DOMAIN_KEY_COL_2}</a>
+	<!-- END ColBL_2 -->
+	</td>
+    <td class="Body">
+	<!-- BEGIN ColBL_3 -->
+	<a href="javascript:SelectTopDomain({DOMAIN_ID_COL_3})"><img  src="./domain_logos/{DOMAIN_LOGO_COL_3}" border="0" alt="" /></a><br/><a class="BlueRedLink" href="javascript:SelectTopDomain({DOMAIN_ID_COL_3})">{DOMAIN_KEY_COL_3}</a>
+	<!-- END ColBL_3 -->
+	</td>
+    <td class="Body">
+	<!-- BEGIN ColBL_4 -->
+	<a href="javascript:SelectTopDomain({DOMAIN_ID_COL_4})"><img  src="./domain_logos/{DOMAIN_LOGO_COL_4}" border="0" alt="" /></a><br/><a class="BlueRedLink" href="javascript:SelectTopDomain({DOMAIN_ID_COL_4})">{DOMAIN_KEY_COL_4}</a>
+	<!-- END ColBL_4 -->
+	</td>
+	<td class="Body"><img src="./images/transparent.gif" height="90" width="3" alt="" /></td>
+  </tr>
+ <!-- END DomainRowsBL -->
+</table>
+
+<br/>
+
+<br/>
+<br/>
+<br/>
+<br/>
+
+</td>
+</tr>
+</table>
+<table width="760" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="360" class="NavColor"><img src="./images/footer.gif" border="0" width="350" height="16" usemap="#footer" alt="" /></td>
+	<td width="400" align="right" class="NavColor"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+  </tr>
+</table>
+<font class="copyright"> </font>
+</div>
+&nbsp;
+<script type="text/javascript" src="./library/ImageMap-footer.js"></script>
+</body>
+</html>

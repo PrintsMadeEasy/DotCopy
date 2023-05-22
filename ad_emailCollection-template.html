@@ -1,0 +1,135 @@
+<html>
+<head>
+<title>Admin</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<script type="text/javascript" src="./library/admin_library.js"></script>
+<script type="text/javascript" src="./library/general_lib.js"></script>
+<script language="javascript">
+
+
+
+</script>
+
+
+<link rel="stylesheet" type="text/css" href="library/calendar/themes/winter.css"/>
+<script type="text/javascript" src="library/calendar/src/utils.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar.js"></script>
+<script type="text/javascript" src="library/calendar/lang/calendar-en.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar-setup.js"></script>
+<script type="text/javascript" src="library/formatDate.js"></script>
+</head>
+<body bgcolor="#FFFFFF" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="">
+<div align="center">
+{HEADER}
+
+<table width="760" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td class="Body">
+
+<br />
+<br />
+{EMAIL_NOTIFY_TABS}
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td bgcolor="#3366CC"><img src="./images/transparent.gif" border="0" width="2" height="4" alt="" /></td>
+</tr>
+</table>
+<br/>
+
+
+<form name="addEmailForms" method="post">
+<input type="hidden" name="action" value="addemails" />
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+
+<table width="100%" border="0" cellspacing="0" cellpadding="1">
+  <tr>
+    <td width="39%"><font class="LargeBody"><font color="#336699"><b>Add Emails to Collection</b></font></font></td>
+	<td width="48%"> </td>
+    <td width="13%" align="right">
+
+	</td>
+  </tr>
+</table>
+
+
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td bgcolor="#3366CC"><img src="./images/transparent.gif" border="0" width="2" height="4" alt="" /></td>
+</tr>
+</table>
+<br/>
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+
+	<tr>
+		<td>
+		<font class="AdminLabel">Source </font><select name="sourcetype" class="AdminInput">{SOURCE_TYPE}</select>
+		<br/><br/>	
+		<font class="AdminLabel">Description </font> <input type="text" name="description" size="55" value="">
+		
+		<br/><br/>
+		<textarea name="emaillist" rows="30" cols="100" style="font-size:10px; font-family:Arial, Helvetica, sans-serif;"></textarea>
+		</td>
+		
+		<td valign="top" class="Body">
+		
+		<!-- BEGIN SavedMessageBL -->
+		<font class="AdminLabel">Email Addresses Saved</font>
+		<hr/><br/><br/>
+		<font class="LargeBody"><strong>Total Added:</strong> {COUNT_ADDED}<br/><br/></font>		
+		<strong>Total Sumbitted:</strong> {COUNT_SUMBITTED}<br/>
+		<strong>Double Emails:</strong> {COUNT_DOUBLE}<br/>
+		<!-- END SavedMessageBL -->
+		
+		<!-- BEGIN ErrorMessageBL -->
+		<font class="AdminLabel">Email Import Error</font>
+		<hr/><br/><br/>
+		<font class="LargeBody">{ERROR_DESCRIPTION}<br/>
+		<!-- END ErrorMessageBL -->
+		
+		</td>
+	</tr>
+</table>
+
+<br/>
+
+<table width="100%" border="0" cellspacing="0" cellpadding="1">
+  <tr>
+    <td align="right">
+	<input type="submit" name="Add" value="Add Emails" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" />
+	</td>
+  </tr>
+</table>
+</form>
+
+<br/><br/>
+
+<br>
+This form takes a comma separated list of values.  The first field (email) is required.<br>
+
+<font class="ReallySmallBody">
+	<strong>Format:</strong> email, name, companyName, title, address, city, state, zip, country, phone, industryType, sicCode<br><br>
+
+	<strong>Template Variables:</strong> {PERSON_ADDRESS}{PERSON_NAME} {PERSON_TITLE} {PERSON_SICCODE} {PERSON_COMPANY} {PERSON_INDUSTRY}  {PERSON_PHONE}  {PERSON_CITY}  {PERSON_STATE}  {PERSON_ZIP} {PERSON_COUNTRY}
+</font>
+<br>
+<br>
+
+</td>
+</tr>
+</table>
+
+<table width="760" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="360" class="NavColor"><img src="./images/footer.gif" border="0" width="350" height="16" usemap="#footer" alt="" /></td>
+	<td width="400" align="right" class="NavColor"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+  </tr>
+</table>
+<font class="copyright"> </font>
+</div>
+&nbsp;
+<script type="text/javascript" src="./library/ImageMap-footer.js"></script>
+</body>
+</html>

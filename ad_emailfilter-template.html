@@ -1,0 +1,138 @@
+<html>
+<head>
+<title>Email Filters</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+
+<script language="javascript">
+
+	//Make an array of the images we want to preload for the mouse-overs.
+	arImageSrc = new Array (
+		"./images/button-go-d.gif",
+		"./images/button-closewindow-blue-d.gif",
+		"./images/button-sendmessage-blue-d.gif"
+	)
+
+	//Preload images.
+	arImageList = new Array ();
+	for (counter in arImageSrc) {
+		arImageList[counter] = new Image();
+		arImageList[counter].src = arImageSrc[counter];
+	}
+
+
+	function SubmitForm(){
+		if(document.forms[0].message.value==""){
+			alert("Please type a message before sending.");
+		}
+		else if(document.forms[0].subject.value==""){
+			alert("Please type a subject for the message before sending.");
+		}
+		else{
+			document.forms[0].submit();
+		}
+	}
+
+	function SubmitFilters(){
+		var FromFilter = document.forms["filter"].fromfilter.value;
+		var SubjectFilter = document.forms["filter"].subjectfilter.value;
+		var BodyFilter = document.forms["filter"].bodyfilter.value;
+		var FilterAction = document.forms["filter"].filteraction.value;
+
+		if(FilterAction == "blank"){
+			alert("You forgot to select an action.");
+			return;
+		}
+
+		if(FromFilter == "" && SubjectFilter == "" && BodyFilter == ""){
+			alert("You must add some filter text.");
+			return;
+		}
+
+		document.forms["filter"].submit();
+	}
+	function DeleteFilter(FilterID){
+		if(confirm("Do you really want to delete this filter?")){
+			document.location = "./ad_emailfilter.php?returl=ad_emailfilter.php&action=emailfilterdelete&form_sc={FORM_SECURITY_CODE}&filterid=" + FilterID;
+		}
+	}
+
+</script>
+
+</head>
+
+<body bgcolor="#3366CC" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="" >
+<img  src="./images/transparent.gif" border="0" width="1" height="10" alt="" /><br/>
+<div align="center">
+<table bgcolor="#EEEEEE" width="800" cellpadding="0" cellspacing="0" border="0">
+
+<tr>
+<td bgcolor="#666666" class="Body" align="center"><img  src="./images/transparent.gif" border="0" width="1" height="3" alt="" /><br/><font color="#FFFFFF"><b>Email Filters</b></font><br/><img src="./images/transparent.gif" border="0" width="1" height="3" alt="" /></td>
+
+<tr>
+<td align="center" class="Body">
+<table width="100%" border="0" cellspacing="10" cellpadding="3">
+  <tr>
+            <td class="SmallBody" bgcolor="#9999FF" width="25%"><font class="SmallBody"><font color="#FFFFFF">(To &amp; From --- Email or Name)</font></font></td>
+	        <td class="Body" bgcolor="#9999FF" width="25%"><font color="#FFFFFF"><b>Subject</b></font></td>
+	        <td class="Body" bgcolor="#9999FF" width="25%"><font color="#FFFFFF"><b>Body Text</b></font></td>
+			<td class="Body" bgcolor="#9999FF" width="25%"><font color="#FFFFFF"><b>Action</b></font></td>
+  </tr>
+<form name="filter" action="./ad_emailfilter.php">
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+<input type="hidden" name="action" value="addnewfilter" />
+  <tr>
+            <td class="SmallBody" bgcolor="#DDDDFF" width="25%"><input type="text" name="fromfilter" value="" style="background-color:#FFFFFF; width:180; border-width:0; font-size:12px;" class="SmallInputBox" /></td>
+	        <td class="SmallBody" bgcolor="#DDDDFF" width="25%"><input type="text" name="subjectfilter" value="" style="background-color:#FFFFFF; width:180; border-width:0; font-size:12px;" class="SmallInputBox" /></td>
+	        <td class="SmallBody" bgcolor="#DDDDFF" width="25%"><input type="text" name="bodyfilter" value="" style="background-color:#FFFFFF; width:180; border-width:0; font-size:12px;" class="SmallInputBox" /></td>
+			<td class="SmallBody" bgcolor="#DDDDFF" width="25%"><select name="filteraction" class="AdminDropDown" style="background-color:#FFFFFF; width:180; border-width:0; font-size:11px;">
+{ACTION_LIST}
+</select></td>
+  </tr>
+</form>
+</table>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+            <td class="ReallySmallBody" align="center" width="89%">If any field
+              is NOT blank, the search will be narrowed further.<br/>
+              Multiple phrase matches are separated with pipe symbols.  EX: junkword 1|junkword 2|junkword 3|<br/>Filter stops upon the first match.</td>
+            <td align="right" width="11%">
+              <input type="button" name="xx" value="Add" class="AdminButton" onmouseover="this.style.background='#ffeeaa';" onmouseout="this.style.background='#FFFFDD';" onclick="SubmitFilters();" />&nbsp;&nbsp;&nbsp;</td>
+  </tr>
+</table>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td class="Body" align="left"><br/>&nbsp;&nbsp;&nbsp;Current Filters</td>
+  </tr>
+   <tr>
+    <td class="Body" align="center" bgcolor="#CCCCCC"><img src="./images/transparent.gif" width="2" height="2" alt="" /></td>
+  </tr>
+</table>
+<table width="100%" border="0" cellspacing="10" cellpadding="3">
+
+<!-- BEGIN FiltersBL -->
+  <tr>
+            <td class="ReallySmallBody" bgcolor="#DDDDFF" width="25%">{FROM}</td>
+	        <td class="ReallySmallBody" bgcolor="#DDDDFF" width="25%">{SUBJECT}</td>
+	        <td class="ReallySmallBody" bgcolor="#DDDDFF" width="25%">{BODY}</td>
+			<td class="ReallySmallBody" bgcolor="#DDDDFF" width="21%">{ACTION}</td>
+			<td class="SmallBody" bgcolor="#DDDDFF" width="4%" align="center"><a href="javascript:DeleteFilter({FILTERID});">X</a></td>
+  </tr>
+ <!-- END FiltersBL -->
+</table>
+
+ </td>
+</tr>
+
+
+<tr>
+<td><img src="images/header-editoptions-fade-bot.gif" width="800" alt="" /></td>
+</tr>
+</table>
+
+</div>
+
+
+</body>
+</html>

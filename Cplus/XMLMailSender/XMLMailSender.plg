@@ -1,0 +1,42 @@
+<html>
+<body>
+<pre>
+<h1>Erstellungsprotokoll</h1>
+<h3>
+--------------------Konfiguration: XMLMailSender - Win32 Debug--------------------
+</h3>
+<h3>Befehlszeilen</h3>
+Erstellen der temporären Datei  "C:\DOCUME~1\CHRIST~1\LOCALS~1\Temp\RSP480.tmp" mit Inhalten
+[
+/nologo /MDd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_AFXDLL" /D "_MBCS" /Fp"Debug/XMLMailSender.pch" /Yu"stdafx.h" /Fo"Debug/" /Fd"Debug/" /FD /GZ /c 
+"C:\inet\dot\Cplus\XMLMailSender\DKIM.cpp"
+]
+Creating command line "cl.exe @C:\DOCUME~1\CHRIST~1\LOCALS~1\Temp\RSP480.tmp" 
+Erstellen der temporären Datei  "C:\DOCUME~1\CHRIST~1\LOCALS~1\Temp\RSP481.tmp" mit Inhalten
+[
+zlib.lib /nologo /subsystem:windows /incremental:yes /pdb:"Debug/XMLMailSender.pdb" /debug /machine:I386 /out:"Debug/XMLMailSender.exe" /pdbtype:sept 
+.\Debug\BlowFish.obj
+.\Debug\DKIM.obj
+.\Debug\EmailSender.obj
+.\Debug\md5.obj
+.\Debug\Pop3Thread.obj
+.\Debug\SMTPMine.obj
+.\Debug\SMTPServerThread.obj
+.\Debug\StdAfx.obj
+.\Debug\XMLMailSender.obj
+.\Debug\XMLMailSenderDlg.obj
+.\Debug\XMLMailSender.res
+]
+Erstellen der Befehlzeile "link.exe @C:\DOCUME~1\CHRIST~1\LOCALS~1\Temp\RSP481.tmp"
+<h3>Ausgabefenster</h3>
+Kompilierung läuft...
+DKIM.cpp
+Linker-Vorgang läuft...
+
+
+
+<h3>Ergebnisse</h3>
+XMLMailSender.exe - 0 Fehler, 0 Warnung(en)
+</pre>
+</body>
+</html>

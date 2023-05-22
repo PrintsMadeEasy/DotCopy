@@ -1,0 +1,314 @@
+<HTML>
+<HEAD>
+<TITLE>Admin</TITLE>
+<link rel="stylesheet" href="./library/stylesheet.css" type="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<SCRIPT language="javascript">
+	function EditCoupon( code )
+	{
+		if(code == "")
+			var view = "new";
+		else
+			var view = "edit";
+
+		address = "ad_coupon_edit.php?view=" + view + "&Code=" + code;
+		newwindow = window.open(address, "editcouponecode", "height=658,width=650,directories=no,location=no,menubar=no,scrollbars=yes,status=yes,toolbar=no");
+		newwindow.focus();
+	}
+
+	function Refresh()
+	{
+		document.ReportOptions.submit();
+	}
+
+	function RefreshSort( sortColumn )
+	{
+		document.ReportOptions.SortColumn.value = sortColumn;
+		document.ReportOptions.submit();
+	}
+
+	function SelectPeriodTypeTimeFrame( state )
+	{
+		document.all.TimeFrame.disabled = !state;
+		document.all.StartMo.disabled = state;
+		document.all.StartYr.disabled = state;
+		document.all.EndMo.disabled = state;
+		document.all.EndYr.disabled = state;
+	}
+
+	function InitializeFields()
+	{
+		var periodTimeFrame = {PERIODISTIMEFRAME};
+		document.all.TimeFrame.disabled = !periodTimeFrame;
+		document.all.StartMo.disabled = periodTimeFrame;
+		document.all.StartYr.disabled = periodTimeFrame;
+		document.all.EndMo.disabled = periodTimeFrame;
+		document.all.EndYr.disabled = periodTimeFrame;
+	}
+
+	function ShowCouponUsage(CouponCode){
+		newWindow = window.open("./ad_coupons_usage.php?coupon=" + CouponCode, "couponusage", "height=400,width=550,directories=no,location=no,menubar=no,scrollbars=yes,status=no,toolbar=no,resizable=no");
+		newWindow.focus();
+	}
+
+	function NewCategory(){
+		newWindow = window.open("./ad_coupons_addcategory.php", "newcategory", "height=295,width=335,directories=no,location=no,menubar=no,scrollbars=yes,status=no,toolbar=no,resizable=no");
+		newWindow.focus();
+	}
+
+	function AddSalesRepCoupon(){
+		newWindow = window.open("./ad_coupons_salesrep.php", "newsalesrepcode", "height=220,width=610,directories=no,location=no,menubar=no,scrollbars=no,status=no,toolbar=no,resizable=no");
+		newWindow.focus();
+	}
+	
+	function hl(e)
+	{
+		e.style.color='#990000';
+		e.style.textDecoration='underline';
+		e.style.backgroundColor='#DDDDCC';
+	}
+	function dl(e)
+	{
+		e.style.color='black';
+		e.style.textDecoration='none';
+		e.style.backgroundColor='#dddddd';
+	}
+</SCRIPT>
+<style type="text/css">
+A.CouponHeader 	{ font-size:12px; color:#FFFFFF;  font-family:Arial,Helvetica,sans-serif; }
+A.CouponHeader:visited { color: #FFFFFF; }
+A.CouponHeader:link { color: #FFFFFF; }
+A.CouponHeader:hover { color: #CCCC99; }
+</style>
+<link rel="stylesheet" type="text/css" href="library/calendar/themes/winter.css"/>
+<script type="text/javascript" src="library/calendar/src/utils.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar.js"></script>
+<script type="text/javascript" src="library/calendar/lang/calendar-en.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar-setup.js"></script>
+<script type="text/javascript" src="library/formatDate.js"></script>
+</head>
+<BODY bgcolor="#FFFFFF" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<DIV align="center">
+{HEADER}
+&nbsp;
+    <TABLE width="760" cellpadding="0" cellspacing="0" border="0">
+		<TR>
+			<TD class="Body">
+				<!-- Inner Body  -->
+				<TABLE width="100%" border="0" cellspacing="0" cellpadding="0">
+  					<TR>
+            			<TD width="30%"><FONT class="AdminLabel">Coupon Code Management</FONT></TD>
+						<TD width="70%" align="right" class="Error">&nbsp;{MESSAGE}</TD>
+					</TR>
+				</TABLE>
+				<img  src="./images/blackpixel.gif" border="0" width="760" height="1" alt="" /><br/>
+				<FORM name="ReportOptions" method="get" >
+				<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+					<input type="hidden" name="SortColumn" value="{SORTCOLUMN}" />
+					<TABLE width="100%" border="0" cellspacing="0" cellpadding="2" bgcolor="#999999">
+						<TR>
+							<TD>
+								<TABLE width="100%" border="0" cellspacing="2" cellpadding="0" bgcolor="#EEEEEE" >
+									<TR>
+										<TD class="SmallBodyBold" width="10%">Category:</TD>
+
+                    <TD class="SmallBodyBlack" width="31%">{CATEGORYSELS}<br/>&nbsp;</TD>
+
+                    <TD class="SmallBodyBold" width="11%" rowspan="2" valign="middle">Usage Period:</TD>
+
+                    <TD class="SmallBodyBlack" width="48%" rowspan="2" valign="middle">
+                      <input type="radio" name="PeriodType" class="SmallBody" value="TIMEFRAME" onclick="SelectPeriodTypeTimeFrame( true );"
+											{PERIODTYPETIMEFRAME} />
+											{TIMEFRAMESELS}<br/>
+											<input type="radio" name="PeriodType"  class="SmallBody" value="DATERANGE" onclick="SelectPeriodTypeTimeFrame( false );"
+											{PERIODTYPEDATERANGE} />
+											{STARTMOSELS} {STARTYRSELS} - {ENDMOSELS} {ENDYRSELS}
+											<br/><br/>
+											</TD>
+									</TR>
+									<TR>
+										<TD class="SmallBodyBold" width="10%">Limited to<br/>Products:</TD>
+
+                    <TD class="SmallBodyBlack" width="31%">
+                      <select name="productIDsSearch[]" height="4" size="4" class="AdminDropDown" multiple align="absmiddle">{PRODUCTS_SELECT}</select></TD>
+
+									</TR>
+
+									<TR>
+									<tr>
+									<td>&nbsp;</td>
+									<td>&nbsp;</td>
+									<td>&nbsp;</td>
+									<td align="right"><input type="button" value="Refresh Coupon List" class="AdminButton" onmouseover="this.style.background='#ffeeaa';" onmouseout="this.style.background='#FFFFDD';" onclick="document.ReportOptions.submit();" /></td>
+
+									</tr>
+								</TABLE>
+							</TD>
+						</TR>
+					</TABLE>
+				<TABLE width="100%" border="0" cellspacing="0" cellpadding="0">
+
+					<TR>
+
+
+
+              <TD align="right"> &nbsp;<br/>
+                <!-- BEGIN ManageCategoriesButtonBL -->
+                <input type="button" value="Manage Categories" class="AdminButton" onmouseover="this.style.background='#ffeeaa';" onmouseout="this.style.background='#FFFFDD';" onclick="NewCategory();" />&nbsp;&nbsp;
+										<!-- END ManageCategoriesButtonBL -->
+
+
+							<!-- BEGIN HideAddCouponBtnBL -->
+							<input type="button" value="Add Coupon" class="AdminButton" onmouseover="this.style.background='#ffeeaa';" onmouseout="this.style.background='#FFFFDD';" onclick="EditCoupon('');" />&nbsp;&nbsp;<input type="button" value="Add Sales Rep Coupon" class="AdminButton" onmouseover="this.style.background='#ffeeaa';" onmouseout="this.style.background='#FFFFDD';" onclick="AddSalesRepCoupon();" />
+							<!-- END HideAddCouponBtnBL -->
+						</TD>
+					</TR>
+				</TABLE>
+			</FORM>
+				<!-- BEGIN ReportBL -->
+
+			</TD>
+		</TR>
+		<TR>
+			<TD><img src="./images/transparent.gif" border="0" width="1" height="8" alt="" /></TD>
+		</TR>
+		<TR>
+			<TD>
+				<TABLE width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#FFFFFF">
+					<TR>
+						<TD>
+							<TABLE width="100%" border="0" cellspacing="2" cellpadding="4" class="SmallBodyBlack" >
+								<TR bgcolor="#999966" class="SmallBodyBold" >
+									
+                  <TD width="12%" style="background-image: url(./images/header-coupon.png); background-repeat: no-repeat;" class='CouponHeader'><A href="javascript:RefreshSort( 'Code' )" class='CouponHeader'>Code</A> 
+                    {SORT_CODE}</TD>
+									
+                  <TD width="19%" style="background-image: url(./images/header-coupon.png); background-repeat: no-repeat;" class='CouponHeader'><A href="javascript:RefreshSort( 'Name' )" class='CouponHeader'>Description</A> {SORT_NAME}</TD>
+									
+                  <TD width="20%" style="background-image: url(./images/header-coupon.png); background-repeat: no-repeat;" class='CouponHeader'><A href="javascript:RefreshSort( 'DiscountPercent' )" class='CouponHeader'><nobr>Discount 
+                    %</nobr></A>{SORT_DISCOUNT}</TD>
+									
+                  <TD width="18%" style="background-image: url(./images/header-coupon.png); background-repeat: no-repeat;" class='CouponHeader'><font color="#FFFFFF">Limits / Restrictions</font></TD>
+									
+                  <TD width="20%" style="background-image: url(./images/header-coupon.png); background-repeat: no-repeat;" class='CouponHeader'><font color="#FFFFFF">Product Details</font></TD>
+									
+                  <TD width="5%" style="background-image: url(./images/header-coupon.png); background-repeat: no-repeat;" class='CouponHeader' nowrap><nobr><A href="javascript:RefreshSort( 'ActReq' )" class='CouponHeader'>Act.</A> 
+                    {SORT_ACTREQ}</nobr></TD>
+									
+                  <TD width="5%" style="background-image: url(./images/header-coupon.png); background-repeat: no-repeat;"><font color="#FFFFFF">Uses</font></TD>
+
+								</TR>
+								<!-- BEGIN ListCouponLineBL -->
+								<!-- BEGIN ListCategoryLineBL -->
+								<TR bgcolor="#DDDDaa" class="SmallBodyBold">
+									<TD colspan="7">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{CATEGORY}</TD>
+								</TR>
+								<!-- END ListCategoryLineBL -->
+								<TR bgcolor="#DDDDDD"  onmouseover="hl(this)" onmouseout="dl(this)">
+									
+                  <TD width="12%" style="font-size:10px;"> 
+                    <!-- BEGIN EditCouponButtonBL1 -->
+                    <a href="javascript:EditCoupon('{CODE}')" style="font-size:10px;"> 
+                    <!-- END EditCouponButtonBL1 -->
+                    <FONT color="{CODECOLOR}">{CODE_DISP}</FONT> 
+                    <!-- BEGIN EditCouponButtonBL2 -->
+                    </a> 
+                    <!-- END EditCouponButtonBL2 -->
+                  </TD>
+									
+									
+                  <TD width="19%">{NAME}{COMMENTS}</TD>
+									
+                  <TD width="20%">{DISC} {MAX_AMOUNT} {SH_DISCOUNT}</TD>
+									
+                  <TD width="18%">{USAGELIMIT} {EXPIRE} {MIN_SUBTOTAL} {MAX_SUBTOTAL} {MIN_QUANTITY} {MAX_QUANTITY}
+				  
+				  
+				  
+<!-- BEGIN EmptyProductOptionsBL -->
+<br/><img src="./images/transparent.gif" border="0" width="5" height="5" alt="" /><table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#aa99cc">
+  <tr>
+    <td>
+<table width="100%" border="0" cellspacing="1" cellpadding="2">
+  <tr>
+                              <td class="SmallBody" bgcolor="#ddddEE" valign="top" ><font class="ReallySmallBody"><b>Product Options</b><br/>Must match for coupon to work.</font></td>
+  </tr>
+<!-- BEGIN OptionNamesBl -->
+  <tr>
+                              <td class="SmallBodyBlack" bgcolor="#dddddd" valign="top" >{OPTION_NAME}<br/>{OPTION_CHOICES}</td>
+  </tr>
+
+ <!-- END OptionNamesBl -->
+</table>
+</td>
+  </tr>
+</table>
+<!-- END EmptyProductOptionsBL -->
+
+
+
+
+
+
+<!-- BEGIN EmptyNoDiscountProductOptionsBL -->
+<br/><img src="./images/transparent.gif" border="0" width="5" height="5" alt="" /><table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#CCaa99">
+  <tr>
+    <td>
+<table width="100%" border="0" cellspacing="1" cellpadding="2">
+  <tr>
+                              <td class="SmallBody" bgcolor="#EEdddd" valign="top" ><font class="ReallySmallBody"><b>Product Options</b><br/>Discounts don't apply to these.</font></td>
+  </tr>
+<!-- BEGIN NoDiscountOptionNamesBl -->
+  <tr>
+                              <td class="SmallBodyBlack" bgcolor="#dddddd" valign="top" >{NODISC_OPTION_NAME}<br/>{NODISC_OPTION_CHOICES}</td>
+  </tr>
+
+ <!-- END NoDiscountOptionNamesBl -->
+</table>
+</td>
+  </tr>
+</table>
+<!-- END EmptyNoDiscountProductOptionsBL -->
+
+
+
+
+
+				  </TD>
+
+                  <TD width="20%">{PRODUCT_DETAILS} {PRODUCT_BUNDLE}</TD>
+									
+                  <TD width="5%">{ACTREQ}</TD>
+									
+                  <TD width="5%" >{USAGE}</TD>
+								</TR>
+								<!-- END ListCouponLineBL -->
+							</TABLE><img  src="./images/transparent.gif" border="0" width="10" height="10" alt="" /><br/><font class="SmallBody"><font color="#FF0000">*</font> Note: Inactive coupon codes shown in gray, expired shown in red.   Bold coupons are linked to Sales Reps.</font>
+							<!-- END ReportBL -->
+							<!-- BEGIN NoReportBL -->
+							<SPAN class="SmallBodyBold">&nbsp;&nbsp;&nbsp;No Data Found to Generate Report</SPAN>
+							<!-- END NoReportBL -->
+						</TD>
+					</TR>
+				</TABLE>
+				<img src="./images/transparent.gif" border="0" width="540" height="10" alt="" />
+				
+
+				<!-- Inner Body  END -->
+			</TD>
+		</TR>
+	</TABLE>
+	<TABLE width="760" border="0" cellspacing="0" cellpadding="0">
+		<TR>
+			<TD width="360" class="NavColor"><img src="./images/footer.gif" border="0" width="350" height="16" usemap="#footer" alt="" /></TD>
+			<TD width="400" align="right" class="NavColor"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></TD>
+		</TR>
+	</TABLE>
+	<font class="copyright"> </font>
+</DIV>
+&nbsp;
+<SCRIPT type="text/javascript" src="./library/ImageMap-footer.js">InitializeFields()</SCRIPT>
+<SCRIPT type="text/javascript">InitializeFields()</SCRIPT>
+</BODY>
+</HTML>

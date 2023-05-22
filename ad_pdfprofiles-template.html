@@ -1,0 +1,1558 @@
+<html>
+<head>
+<title>Admin</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<script type="text/javascript" src="./library/admin_library.js"></script>
+<script language="javascript">
+
+	var floatNumRegex = /^\s*((\d+(\.\d+)?)|(\.\d+))\s*$/;
+	var floatNumRegexNegative = /^\s*(\-)?((\d+(\.\d+)?)|(\.\d+)\s*)$/;
+	var decimalNumRegex = /^\s*\d+\s*$/;
+	var hexColorCode = /^#([0-9a-fA-F]{3}){2}$/;
+
+ 	function viewProfileByID(profileID){
+		alert("Change to Profile ID: " + profileID);
+		document.location = "./ad_pdfprofiles.php?editProduct={PRODUCTID}&view=editProfile&profileID=" + profileID;
+	}
+	function DeleteProfile(profileID){
+		if(confirm("Are you sure that you want to delete this Profile?\n\nKeep in mind that you can break production routines if external software is linked to this Profile Name. \nYou should make sure that nobody else is using this profile before deleting."))
+			document.location = "./ad_pdfprofiles.php?action=deleteProfile&form_sc={FORM_SECURITY_CODE}&editProduct={PRODUCTID}&profileID=" + profileID;
+	}
+	function DeleteCMYKgroup(cmykBlockID,profileID){
+		if(confirm("Are you sure that you want to delete this CMYK block?"))
+				document.location = "./ad_pdfprofiles.php?action=deleteCmykBlock&form_sc={FORM_SECURITY_CODE}&editProduct={PRODUCTID}&profileID=" + profileID + "&cmykBlockID=" + cmykBlockID;
+	}
+	function DeleteShape(shapeID,profileID,shapeType){
+		if(confirm("Are you sure that you want to delete this " + shapeType + "?"))
+			document.location = "./ad_pdfprofiles.php?action=deleteShape&form_sc={FORM_SECURITY_CODE}&editProduct={PRODUCTID}&profileID=" + profileID + "&shapeID=" + shapeID;
+	}
+
+	function isInArray(array,value) {
+		for (var i=0; i < array.length; i++) {
+			if (array[i] == value)
+				return true;
+		}
+		return false;
+	};
+
+	var htmlForShapSpecificInputGlobal = "";
+	function changeShapeTypeForShape(shapeTypeToAdd){
+
+		if(shapeTypeToAdd == "C"){
+			document.all.shapeValue1_Label.innerHTML = "Radius";
+			document.all.shapeValue2_Label.innerHTML = "&nbsp;";
+
+			// Remember what the HTML had put there before we get rid of it.
+			htmlForShapSpecificInputGlobal = document.all.shapeValue2InputBox.innerHTML;
+			document.all.shapeValue2InputBox.innerHTML = "&nbsp;"
+		}
+		else if(shapeTypeToAdd == "R"){
+			document.all.shapeValue1_Label.innerHTML = "Width";
+			document.all.shapeValue2_Label.innerHTML = "Height";
+
+			// When they switch back to a rectangle... restore the input box that used to be there.
+			document.all.shapeValue2InputBox.innerHTML = htmlForShapSpecificInputGlobal;
+		}
+		else{
+			alert("Illegal Shape Type");
+		}
+	}
+
+
+	var defineMatrixHTMLglobal = "";
+	function ToggleCreateMatrixOrderHTML(){
+
+		if(defineMatrixHTMLglobal == ""){
+			defineMatrixHTMLglobal = document.all.createMatrixOrder.innerHTML;
+			document.all.createMatrixOrder.innerHTML = "&nbsp;";
+			document.all.defineMatrixDiv_Label.innerHTML = "<b><font style='font-size:14px;'>+</font></b>&nbsp;&nbsp;Define Matrix ";
+		}
+		else{
+
+			document.all.createMatrixOrder.innerHTML = defineMatrixHTMLglobal;
+			document.all.defineMatrixDiv_Label.innerHTML = "<b><font style='font-size:16px;'>-</font></b>&nbsp;&nbsp;Hide Matrix";
+			defineMatrixHTMLglobal = "";
+		}
+	}
+
+
+
+	var newShapeHTMLglobal = "";
+	function ToggleCreateNewShapeHTML(){
+
+		if(newShapeHTMLglobal == ""){
+			newShapeHTMLglobal = document.all.addNewShapeDiv.innerHTML;
+			document.all.addNewShapeDiv.innerHTML = "&nbsp;";
+			document.all.addNewShapeDiv_Label.innerHTML = "<b><font style='font-size:14px;'>+</font></b>&nbsp;&nbsp;Create a new Shape ";
+		}
+		else{
+
+			document.all.addNewShapeDiv.innerHTML = newShapeHTMLglobal;
+			document.all.addNewShapeDiv_Label.innerHTML = "<b><font style='font-size:16px;'>-</font></b>&nbsp;&nbsp;Hide new Shape";
+			newShapeHTMLglobal = "";
+		}
+	}
+
+	var newCmykHTMLglobal = "";
+	function ToggleCreateNewCmykHTML(){
+
+		if(newCmykHTMLglobal == ""){
+			newCmykHTMLglobal = document.all.addNewCmykDiv.innerHTML;
+			document.all.addNewCmykDiv.innerHTML = "&nbsp;";
+			document.all.addNewCmykDiv_Label.innerHTML = "<b><font style='font-size:14px;'>+</font></b>&nbsp;&nbsp;Create a new CMYK Group";
+		}
+		else{
+
+			document.all.addNewCmykDiv.innerHTML = newCmykHTMLglobal;
+			document.all.addNewCmykDiv_Label.innerHTML = "<b><font style='font-size:16px;'>-</font></b>&nbsp;&nbsp;Hide new CMYK Group";
+			newCmykHTMLglobal = "";
+		}
+	}
+
+	function confirmChangeProfile(newDefaultProfileName){
+
+		// In case they clicked on the button that is already the default
+		if(newDefaultProfileName == '{DEFAULT_PROFILE_NAME}')
+			return;
+
+		// Set the radio button to the deafult Value if they hit cancel.
+		if(confirm('Are you sure that you want to change the default Profile?\n\nThe default profile should be set to what is most used for production.\nThis allows the system estimate the number of impressions required to \ncomplete jobs among other things.')){
+
+			if(newDefaultProfileName == "Proof"){
+				if(!confirm("You are trying to set the Default Production Profile to 'Proof'.\nAre you sure that you want to do this?\n\nNormally the 'Proof' profile is used for displaying artwork to a customer \nand rarely gets used within a Production Environment.")){
+					SetRadioButtonValue("document.forms['defaultProfileForm'].defaultProfile", "{DEFAULT_PROFILE_NAME}");
+					return;
+				}
+			}
+
+			document.forms['defaultProfileForm'].submit();
+		}
+		else {
+			SetRadioButtonValue("document.forms['defaultProfileForm'].defaultProfile", "{DEFAULT_PROFILE_NAME}");
+		}
+	}
+
+
+	function CheckPDFProfileForm(){
+
+		var ErrorMessage = "";
+
+		var FormObj = document.forms["pdfProfileForm"];
+
+		var transparentPixel = "./images/transparent.gif";
+
+		if({ENABLE_PROFILE_NAMES_CHECK})
+		{
+			var existingProfileNameArrGlobal = new Array({EXISTING_PROFILE_NAMES_ARRAY});
+
+			var profileName = FormObj.profileName.value;
+
+			document.images.img_profileName.src = transparentPixel;
+
+			if(isInArray(existingProfileNameArrGlobal,profileName.toUpperCase())){
+				document.images.img_profileName.src = "./images/error_arrow.gif";
+				ErrorMessage += "*) The Profile Name already exists.\n\n";
+			}
+
+			if(profileName==""){
+				document.images.img_profileName.src = "./images/error_arrow.gif";
+				ErrorMessage += "*) Please enter a Profile Name.\n\n";
+			}
+
+			if(profileName.search(/^\w{3,60}$/) == -1 ) {
+				document.images.img_profileName.src = "./images/error_arrow.gif";
+				ErrorMessage += "*) The Profile Name must be between 3 and 60 characters and it may not contain any spaces or special characters.\n\n";
+			}
+		}
+
+		shapeCounter=0;
+		while(true)
+		{
+			try {
+
+				shapeCounter++;
+
+				eval("document.images.img_X_"+shapeCounter).src = transparentPixel;
+
+				if(eval("FormObj.Shape_X_"+shapeCounter).value.search(floatNumRegexNegative) == -1 ){
+					eval("document.images.img_X_"+shapeCounter).src = "./images/error_arrow.gif";
+					ErrorMessage += "*) The X Coordinate must be a number.\n\n";
+				}
+
+				eval("document.images.img_Y_"+shapeCounter).src = transparentPixel;
+
+				if(eval("FormObj.Shape_Y_"+shapeCounter).value.search(floatNumRegexNegative) == -1 ){
+					eval("document.images.img_Y_"+shapeCounter).src = "./images/error_arrow.gif";
+					ErrorMessage += "*) The Y Coordinate must be a number.\n\n";
+				}
+
+				eval("document.images.img_LineAlpha_"+shapeCounter).src = transparentPixel;
+
+				if(eval("FormObj.Shape_LineAlpha_"+shapeCounter).value.search(decimalNumRegex) == -1 || parseFloat(eval("FormObj.Shape_LineAlpha_"+shapeCounter).value) > 100){
+					eval("document.images.img_LineAlpha_"+shapeCounter).src = "./images/error_arrow.gif";
+					ErrorMessage += "*) The LineAlpha must be a number greater than zero.\n\n";
+				}
+
+				eval("document.images.img_FillAlpha_"+shapeCounter).src = transparentPixel;
+
+				if(eval("FormObj.Shape_FillAlpha_"+shapeCounter).value.search(decimalNumRegex) == -1 || parseFloat(eval("FormObj.Shape_FillAlpha_"+shapeCounter).value) > 100) {
+					eval("document.images.img_FillAlpha_"+shapeCounter).src = "./images/error_arrow.gif";
+					ErrorMessage += "*) The FillAlpha must be a number from zero to 100.\n\n";
+				}
+
+				eval("document.images.img_LineThickness_"+shapeCounter).src = transparentPixel;
+
+				if(eval("FormObj.Shape_LineThickness_"+shapeCounter).value.search(floatNumRegex) == -1 || parseFloat(eval("FormObj.Shape_LineThickness_"+shapeCounter).value) < 0){
+					eval("document.images.img_LineThickness_"+shapeCounter).src = "./images/error_arrow.gif";
+					ErrorMessage += "*) The Line Thickness must be a number from zero to 100.\n\n";
+				}
+
+				eval("document.images.img_LineColor_"+shapeCounter).src = transparentPixel;
+
+				if(eval("FormObj.Shape_LineColor_"+shapeCounter).value.search(hexColorCode) == -1) {
+					eval("document.images.img_LineColor_"+shapeCounter).src = "./images/error_arrow.gif";
+					ErrorMessage += "*) The LineColor does not have the correct format.\n\n";
+				}
+
+				eval("document.images.img_FillColor_"+shapeCounter).src = transparentPixel;
+
+				if(eval("FormObj.Shape_FillColor_"+shapeCounter).value.search(hexColorCode) == -1) {
+					eval("document.images.img_FillColor_"+shapeCounter).src = "./images/error_arrow.gif";
+					ErrorMessage += "*) The FillColor does not have the correct format.\n\n";
+				}
+
+				if(eval("FormObj.Shape_ShapeType_"+shapeCounter).value == "R")	{
+
+					eval("document.images.img_ShapeValue1_"+shapeCounter).src = transparentPixel;
+
+					if(eval("FormObj.Shape_ShapeValue1_"+shapeCounter).value.search(floatNumRegex) == -1 || parseFloat(eval("FormObj.Shape_ShapeValue1_"+shapeCounter).value) < 0.001)
+					{
+						eval("document.images.img_ShapeValue1_"+shapeCounter).src = "./images/error_arrow.gif";
+						ErrorMessage += "*) The Rectangle Width must be a number greater than zero.\n\n";
+					}
+
+					eval("document.images.img_ShapeValue2_"+shapeCounter).src = transparentPixel;
+
+					if(eval("FormObj.Shape_ShapeValue2_"+shapeCounter).value.search(floatNumRegex) == -1 || parseFloat(eval("FormObj.Shape_ShapeValue2_"+shapeCounter).value) < 0.001){
+						eval("document.images.img_ShapeValue2_"+shapeCounter).src = "./images/error_arrow.gif";
+						ErrorMessage += "*) The Rectangle Height must be a number.\n\n";
+					}
+
+					eval("document.images.img_Rotation_"+shapeCounter).src = transparentPixel;
+
+					if(eval("FormObj.Shape_Rotation_"+shapeCounter).value.search(floatNumRegex) == -1 || parseFloat(eval("FormObj.Shape_Rotation_"+shapeCounter).value) >= 360){
+						eval("document.images.img_Rotation_"+shapeCounter).src = "./images/error_arrow.gif";
+						ErrorMessage += "*) The Rectangle Rotation must be a number from zero to 359.\n\n";
+					}
+				}
+
+				if(eval("FormObj.Shape_ShapeType_"+shapeCounter).value == "C")	{
+
+					eval("document.images.img_ShapeValue1_"+shapeCounter).src = transparentPixel;
+
+					if(eval("FormObj.Shape_ShapeValue1_"+shapeCounter).value.search(floatNumRegex) == -1 || parseFloat(eval("FormObj.Shape_ShapeValue1_"+shapeCounter).value) < 0.001){
+						eval("document.images.img_ShapeValue1_"+shapeCounter).src = "./images/error_arrow.gif";
+						ErrorMessage += "*) The Circle Radius must be a number greater than zero.\n\n";
+					}
+				}
+
+			} catch(e) { break; }
+		}
+
+
+		cymkCounter=0;
+		while(true)
+		{
+			try {
+
+				cymkCounter++;
+
+				eval("document.images.img_CMYKblock_X_"+cymkCounter).src = transparentPixel;
+
+				if(eval("FormObj.CMYKblock_X_"+cymkCounter).value.search(floatNumRegexNegative) == -1 ){
+					eval("document.images.img_CMYKblock_X_"+cymkCounter).src = "./images/error_arrow.gif";
+					ErrorMessage += "*) The CMYK X Coordinate must be a number.\n\n";
+				}
+
+				eval("document.images.img_CMYKblock_Y_"+cymkCounter).src = transparentPixel;
+
+				if(eval("FormObj.CMYKblock_Y_"+cymkCounter).value.search(floatNumRegexNegative) == -1 ){
+					eval("document.images.img_CMYKblock_Y_"+cymkCounter).src = "./images/error_arrow.gif";
+					ErrorMessage += "*) The CMYK Y Coordinate must be a number.\n\n";
+				}
+
+				eval("document.images.img_CMYKblock_NumBlocks_"+cymkCounter).src = transparentPixel;
+
+				if(eval("FormObj.CMYKblock_NumBlocks_"+cymkCounter).value.search(decimalNumRegex) == -1 || parseFloat(eval("FormObj.CMYKblock_NumBlocks_"+cymkCounter).value) < 0.001){
+					eval("document.images.img_CMYKblock_NumBlocks_"+cymkCounter).src = "./images/error_arrow.gif";
+					ErrorMessage += "*) The # of CMYK Blocks must be a number greater than zero.\n\n";
+				}
+
+				eval("document.images.img_CMYKblock_BlockWidth_"+cymkCounter).src = transparentPixel;
+
+				if(eval("FormObj.CMYKblock_BlockWidth_"+cymkCounter).value.search(floatNumRegex) == -1 || parseFloat(eval("FormObj.CMYKblock_BlockWidth_"+cymkCounter).value) < 0.001){
+					eval("document.images.img_CMYKblock_BlockWidth_"+cymkCounter).src = "./images/error_arrow.gif";
+					ErrorMessage += "*) The CMYK Block Width must be a number greater than zero.\n\n";
+				}
+
+				eval("document.images.img_CMYKblock_BlockHeight_"+cymkCounter).src = transparentPixel;
+
+				if(eval("FormObj.CMYKblock_BlockHeight_"+cymkCounter).value.search(floatNumRegex) == -1 || parseFloat(eval("FormObj.CMYKblock_BlockHeight_"+cymkCounter).value) < 0.001){
+					eval("document.images.img_CMYKblock_BlockHeight_"+cymkCounter).src = "./images/error_arrow.gif";
+					ErrorMessage += "*) The CMYK Block Height must be a number greater than zero.\n\n";
+				}
+
+				eval("document.images.img_CMYKblock_Spacing_"+cymkCounter).src = transparentPixel;
+
+				if(eval("FormObj.CMYKblock_Spacing_"+cymkCounter).value.search(floatNumRegex) == -1 ){
+					eval("document.images.img_CMYKblock_Spacing_"+cymkCounter).src = "./images/error_arrow.gif";
+					ErrorMessage += "*) The CMYK Spacing must be a number.\n\n";
+				}
+
+				eval("document.images.img_CMYKblock_Rotation_"+cymkCounter).src = transparentPixel;
+
+				if(eval("FormObj.CMYKblock_Rotation_"+cymkCounter).value.search(floatNumRegex) == -1 || parseFloat(eval("FormObj.CMYKblock_Rotation_"+cymkCounter).value) >= 360){
+					eval("document.images.img_CMYKblock_Rotation_"+cymkCounter).src = "./images/error_arrow.gif";
+					ErrorMessage += "*) The CMYK Rotation must be a number from zero to 359.\n\n";
+				}
+
+			} catch(e) { break; }
+		}
+
+		var sheetWidth = FormObj.sheetWidth.value;
+		var sheetHeight = FormObj.sheetHeight.value;
+		var unitWidth = FormObj.unitWidth.value;
+		var unitHeight = FormObj.unitHeight.value;
+		var rows = FormObj.rows.value;
+		var columns = FormObj.columns.value;
+		var horizonalSpacing = FormObj.horizonalSpacing.value;
+		var verticalSpacing = FormObj.verticalSpacing.value;
+		var extraGapRows = FormObj.extraGapRows.value;
+		var extraGapColumns = FormObj.extraGapColumns.value;
+		var extraGapVertical = FormObj.extraGapVertical.value;
+		var extraGapHorizontal = FormObj.extraGapHorizontal.value;
+		var leftMargin = FormObj.leftMargin.value;
+		var bottomMargin = FormObj.bottomMargin.value;
+		var labelX = FormObj.labelX.value;
+		var labelY = FormObj.labelY.value;
+		var extraMaxLimit = FormObj.extraMaxLimit.value;
+		var extraMinQuantity = FormObj.extraMinQuantity.value;
+		var extraPercent = FormObj.extraPercent.value;
+		var bleedUnits = FormObj.bleedUnits.value;
+		var labelRotate = FormObj.labelRotate.value;
+
+		document.images.img_sheetSize.src = transparentPixel;
+		document.images.img_unitSize.src = transparentPixel;
+		document.images.img_gridSize.src = transparentPixel;
+		document.images.img_gridSpacing.src = transparentPixel;
+		document.images.img_extraGapSizes.src = transparentPixel;
+		document.images.img_extraGaps.src = transparentPixel;
+		document.images.img_pageMargins.src = transparentPixel;
+		document.images.img_labelCoordinates.src = transparentPixel;
+		document.images.img_extras.src = transparentPixel;
+		document.images.img_bleedSpacing.src = transparentPixel;
+		
+		if(eval("FormObj.matrix_1_1") != null)
+			document.images.img_matrix.src = transparentPixel;
+
+		if(sheetWidth.search(floatNumRegex) == -1 || parseFloat(sheetWidth) < 0.001 || sheetHeight.search(floatNumRegex) == -1 || parseFloat(sheetHeight) < 0.001){
+			document.images.img_sheetSize.src = "./images/error_arrow.gif";
+			ErrorMessage += "*) The sheet dimensions must be a number greater than zero.\n\n";
+		}
+		if(unitWidth.search(floatNumRegex) == -1 || parseFloat(unitWidth) < 0.001 || unitHeight.search(floatNumRegex) == -1 || parseFloat(unitHeight) < 0.001){
+			document.images.img_unitSize.src = "./images/error_arrow.gif";
+			ErrorMessage += "*) The unit dimensions must be a number greater than zero.\n\n";
+		}
+		if(rows.search(decimalNumRegex) == -1 || parseInt(rows) < 1 || columns.search(decimalNumRegex) == -1 || parseInt(columns) < 1){
+			document.images.img_gridSize.src = "./images/error_arrow.gif";
+			ErrorMessage += "*) The grid dimensions must be a number greater than zero.\n\n";
+		}
+		if(horizonalSpacing.search(floatNumRegex) == -1 || verticalSpacing.search(floatNumRegex) == -1){
+			document.images.img_gridSpacing.src = "./images/error_arrow.gif";
+			ErrorMessage += "*) The grid spacing dimensions must be a number greater or equal zero.\n\n";
+		}
+		if(extraGapHorizontal.search(floatNumRegex) == -1 || extraGapVertical.search(floatNumRegex) == -1){
+			document.images.img_extraGapSizes.src = "./images/error_arrow.gif";
+			ErrorMessage += "*) The Extra Gap Sizes must be a number greater or equal zero.\n\n";
+		}
+		if(extraGapRows.search(floatNumRegex) == -1 || extraGapColumns.search(floatNumRegex) == -1){
+			document.images.img_extraGaps.src = "./images/error_arrow.gif";
+			ErrorMessage += "*) The Extra Gapa must be a number greater or equal zero.\n\n";
+		}
+		if(leftMargin.search(floatNumRegex) == -1 ||  bottomMargin.search(floatNumRegex) == -1){
+			document.images.img_pageMargins.src = "./images/error_arrow.gif";
+			ErrorMessage += "*) The page margins must be a numbers greater or equal zero.\n\n";
+		}
+		if(labelX.search(floatNumRegexNegative) == -1 || labelY.search(floatNumRegexNegative) == -1){
+			document.images.img_labelCoordinates.src = "./images/error_arrow.gif";
+			ErrorMessage += "*) The label coodinates must be numbers.\n\n";
+		}
+		if(labelRotate.search(floatNumRegex) == -1 || parseFloat(labelRotate) >= 360){
+			document.images.img_labelCoordinates.src = "./images/error_arrow.gif";
+			ErrorMessage += "*) The label rotation must be a number from zero to 359.\n\n";
+		}
+		if(extraMaxLimit.search(decimalNumRegex) == -1 ){
+			document.images.img_extras.src = "./images/error_arrow.gif";
+			ErrorMessage += "*) The extra max limit must be a number greater or equal zero.\n\n";
+		}
+		if(extraMinQuantity.search(decimalNumRegex) == -1 ){
+			document.images.img_extras.src = "./images/error_arrow.gif";
+			ErrorMessage += "*) The extra min quantity must be a number greater or equal zero.\n\n";
+		}
+		if(extraPercent.search(floatNumRegexNegative) == -1 ){
+			document.images.img_extras.src = "./images/error_arrow.gif";
+			ErrorMessage += "*) The extra percent must be a number.\n\n";
+		}
+		if(bleedUnits.search(floatNumRegex) == -1){
+			document.images.img_bleedSpacing.src = "./images/error_arrow.gif";
+			ErrorMessage += "*) The Bleed units must be numbers greater or equal zero.\n\n";
+		}
+		
+		
+		// Check the Coversheet Matrix
+		
+		// If the number or Matrix Rows outputed in the HTML are different, then don't bother error checking
+		var totalMatrixRows = 0;
+		while(true){
+			if(eval("FormObj.matrix_"+ (totalMatrixRows+1) +"_1") == null)
+				break;
+			totalMatrixRows++;	
+		}
+		
+		var totalMatrixCols = 0;
+		while(true){
+			if(eval("FormObj.matrix_1_"+ (totalMatrixCols+1)) == null)
+				break;
+			totalMatrixCols++;	
+		}
+		
+		
+		var totalMatrixValues = new Array();
+		var matrixAllBlankFlag = true;
+		
+		if(totalMatrixRows ==  rows && totalMatrixCols == columns){
+		
+			// Record all of matrix values into our array.
+			for(var matrixRowNum = 1;  matrixRowNum<= totalMatrixRows; matrixRowNum++){
+				for(var matrixColNum = 1;  matrixColNum<= totalMatrixCols; matrixColNum++){
+					var matrixValue = eval("FormObj.matrix_"+ matrixRowNum +"_" + matrixColNum).value;
+					totalMatrixValues.push(matrixValue);
+					
+					if(matrixValue != "")
+						matrixAllBlankFlag = false;
+				}
+
+			}
+		
+		}
+
+		var missingMatrixValues = "";
+		var totalMatrixCells = rows * columns;
+		
+		for(var j=1; j<=totalMatrixCells; j++){
+			
+			if(!isInArray(totalMatrixValues, j)){
+				if(missingMatrixValues != "")
+					missingMatrixValues += ", ";
+					
+				missingMatrixValues += j;
+			}
+		}
+		
+		if(missingMatrixValues != "" && !matrixAllBlankFlag){
+			document.images.img_matrix.src = "./images/error_arrow.gif";
+			ErrorMessage += "*) The following values are missing from your Matrix: " + missingMatrixValues + "\n\n";
+		}
+	
+
+		
+		if(ErrorMessage != ""){
+			alert("Fix the following errors.\n--------------------------\n\n" + ErrorMessage);
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+	}
+	
+	function ChangeProfileName(profileID, oldProfileName){
+	
+		var newProfileName = prompt("What do you want to change the Profile Name to?", oldProfileName);
+		
+		if(!newProfileName == null || oldProfileName == newProfileName)
+			return;
+		
+		if(newProfileName.search(/^\w{3,60}$/) == -1 ) {
+			alert("The new Profile Name must be between 3 and 60 characters and it may not contain any spaces or special characters.\n\n");
+		}
+	
+		document.location = "./ad_pdfprofiles.php?action=changeProfileName&profileID="+profileID+"&form_sc={FORM_SECURITY_CODE}&editProduct={PRODUCTID}&newProfileName=" + escape(newProfileName);
+	}
+	
+	function PDFpreview(pdfProfileID){
+
+		var address = "ad_pdfprofile_preview.php?profileID=" + pdfProfileID;
+		newWindow = window.open(address, "pdfProfilePreview" + pdfProfileID, "height=500,width=600,directories=no,location=no,menubar=no,scrollbars=yes,status=yes,toolbar=no,resizable=yes");
+		newWindow.focus();
+	}
+	
+	function editAnotherProduct(theProductID){
+		document.location = "./ad_pdfprofiles.php?view=start&editProduct="+theProductID;
+	}
+	
+	function copyPDFprofile(profileID, profileName){
+	
+		if(confirm("Do you want to copy this profile?\nDefault Profile Name will be...\n______________\n" + profileName + "_COPY\n______________"))
+			document.location = "./ad_pdfprofiles.php?action=copyProfile&profileID="+profileID+"&form_sc={FORM_SECURITY_CODE}&editProduct={PRODUCTID}";
+	}
+
+</script>
+<script type="text/javascript" src="./library/customer_service.js"></script>
+
+<link rel="stylesheet" type="text/css" href="library/calendar/themes/winter.css"/>
+<script type="text/javascript" src="library/calendar/src/utils.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar.js"></script>
+<script type="text/javascript" src="library/calendar/lang/calendar-en.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar-setup.js"></script>
+<script type="text/javascript" src="library/formatDate.js"></script>
+</head>
+<body bgcolor="#FFFFFF" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="">
+<div align="center">
+{HEADER}
+&nbsp;
+<br/>
+
+<table width="760" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td class="Body">
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td  class="SmallBody"><a class="BlueRedLink"href="./ad_product_setup.php?">&lt; Select Another Product</a><img src="./images/transparent.gif" width="45" height="1" align="absmiddle" alt="" />Product Change within PDF Profiles: 
+      <select class="AdminDropDown" style="background-color:#F3F3F3" name="selectAnotherProduct" onChange="editAnotherProduct(this.value)">
+{SELECT_ANOTHER_PRDODUCT_LIST}
+</select></td>
+
+  </tr>
+</table>
+&nbsp;
+<div align="right"><font color="#993300"><strong>{FULL_PRODUCT_NAME}</strong></font></div>
+
+&nbsp;
+<br/><br/>
+
+<!-- BEGIN MainProductTabsBL -->
+{MAIN_PRODUCT_NAV_BAR}
+
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td bgcolor="#3366CC"><img src="./images/transparent.gif" border="0" width="2" height="4" alt="" /></td>
+</tr>
+</table>
+<br/>
+<!-- END MainProductTabsBL -->
+
+
+
+<!-- BEGIN CantChangeVendorBL --><br/>
+<br/>
+<br/>
+
+<table width="100%" border="0" cellspacing="0" cellpadding="1" bgcolor="#996600">
+  <tr>
+    <td>
+<table width="100%" border="0" cellspacing="0" cellpadding="5" bgcolor="#E6E3CA">
+  <tr>
+    <td class="Body">
+		  A Production Piggyback has been defined for this product.<br/>All PDF Profiles (except for &quot;Proof&quot;) for this product will be loaded from... <br/>
+		  <strong>{PRODUCTION_PIGGYBACK_NAME}</strong></td>
+  </tr>
+</table>
+
+	</td>
+  </tr>
+</table>
+<!-- END CantChangeVendorBL -->
+
+
+<!-- BEGIN ProfileStartBL -->
+<br/>
+<!-- BEGIN CreateNewProfileBL -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+  <td><a href="./ad_superpdfprofiles.php" class="BlueRedLink">Super PDF Profiles</a></td>
+    <td align="right"><input type="button" name="Add" value="Create a new PDF Profile" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" onClick="document.location='./ad_pdfprofiles.php?editProduct={PRODUCTID}&view=newProfile'" /></td>
+  </tr>
+</table>
+<!-- END CreateNewProfileBL -->
+
+<!-- BEGIN ExistingProfilesBL -->
+<br/><br/>
+<font class="LargeBody"><font color="#336699"><b>Saved Profiles</b></font>
+<br/><img  src="./images/transparent.gif" width="5" height="7" alt="" /><br/>
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#3366CC">
+  <tr>
+    <td>
+
+<table width="760" border="0" cellspacing="1" cellpadding="4">
+<form name="defaultProfileForm" action="ad_pdfprofiles.php">
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+<input type="hidden" name="action" value="setDefaultProfile" />
+<input type="hidden" name="editProduct" value="{PRODUCTID}" />
+<tr>
+<td width="20" class="SmallBody" bgcolor="#ddeeff">&nbsp;</td>
+<td width="158" class="SmallBody" bgcolor="#ddeeff"><strong>Profile Name</strong></td>
+<td width="112" class="SmallBody" bgcolor="#ddeeff"><strong>Parent Sheet Size</strong></td>
+<td width="93" class="SmallBody" bgcolor="#ddeeff"><strong>Quantity</strong></td>
+<td width="280" class="SmallBody" bgcolor="#ddeeff"><strong>Notes</strong></td>
+<td width="57" class="SmallBody" bgcolor="#ddeeff"><strong> </strong></td>
+</tr>
+ <!-- BEGIN existingProfileNameBL -->
+ <tr>
+    <td class="SmallBody" bgcolor="#f3f3f3">{HIDE_RADIO_BUTTON_START}<input type="radio" name="defaultProfile" value="{PROFILE_NAME}" onClick="confirmChangeProfile(this.value);" {DEFAULT_PROFILE_CHECKED} />{HIDE_RADIO_BUTTON_END}</td>
+    <td class="SmallBody" bgcolor="#f3f3f3"><a href="./ad_pdfprofiles.php?view=editProfile&editProduct={PRODUCTID}&profileID={PROFILE_ID}" class="BlueRedLink">{PROFILE_NAME}</a></td>
+ 	<td class="SmallBody" bgcolor="#f3f3f3">{SHEET_SIZE_WIDTH}&quot; x {SHEET_SIZE_HEIGHT}&quot;</td>
+	<td class="SmallBody" bgcolor="#f3f3f3">{QUANTITY} - <em>({ROWS}x{COLS})</em></td>
+	<td class="SmallBody" bgcolor="#f3f3f3">{PROFILE_NOTES}</td>
+	<td class="SmallBody" bgcolor="#f3f3f3" align="center"><a href='javascript:PDFpreview({PROFILE_ID})' class='BlueRedLink'>Preview</a><br/><img  src="./images/transparent.gif" width="3" height="5" alt="" /><br/><a href="javascript:copyPDFprofile({PROFILE_ID}, '{PROFILE_NAME}')" class="BlueRedLink">Copy</a></td>
+  </tr>
+ <!-- END existingProfileNameBL -->
+ </form>
+</table>
+
+	</td>
+  </tr>
+</table>
+<!-- BEGIN DefaultProfileDescriptionBL -->
+<img src="./images/arrow-up-left.png" align="absmiddle" alt="" /><font class="SmallBody">Default Production Profile</font>
+<!-- END DefaultProfileDescriptionBL -->
+
+<!-- END ExistingProfilesBL -->
+<!-- END ProfileStartBL -->
+<!-- BEGIN MainPDFprofileForm -->
+
+<form name="pdfProfileForm" action="./ad_pdfprofiles.php" method="post" enctype="multipart/form-data" onSubmit="return CheckPDFProfileForm();">
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+<input type="hidden" name="editProduct" value="{PRODUCTID}" />
+
+
+<!-- BEGIN NewProfileHiddenInputs -->
+<input type="hidden" name="action" value="saveNewPDFprofile" />
+<!-- END NewProfileHiddenInputs -->
+
+
+<!-- BEGIN EditProfileHiddenInputs -->
+<input type="hidden" name="action" value="savePDFprofile" />
+<input type="hidden" name="profileID" value="{PROFILE_ID}" />
+<!-- END EditProfileHiddenInputs -->
+
+
+<!-- BEGIN newPDFprofileLabel -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td class="SmallBody"><font class="LargeBody"><font color="#336699"><b>Create a new PDF Profile</b></font></font></td>
+    <td class="SmallBody" align="right"><a href="./ad_pdfprofiles.php?view=start&editProduct={PRODUCTID}" class="BlueRedLink">&lt; All Profiles</a></td>
+  </tr>
+</table>
+<!-- END newPDFprofileLabel -->
+
+
+<!-- BEGIN editPDFprofileLabel -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="31%" class="SmallBody"><font class="LargeBody"><font color="#336699"><b>Edit Profile</b></font></font></td>
+	<td width="18%" class="SmallBody"><a href='javascript:PDFpreview({PROFILE_ID})' class='BlueRedLink'>PDF Preview</a></td>
+    <td width="51%" align="right" class="SmallBody"><a href="./ad_pdfprofiles.php?view=start&editProduct={PRODUCTID}" class="BlueRedLink">&lt; Choose another Profile</a></td>
+  </tr>
+</table>
+<!-- END editPDFprofileLabel -->
+
+
+
+<br/>
+&nbsp;
+<table width="100%" border="0" cellspacing="0" cellpadding="2">
+  <tr> <td colspan="2" bgcolor="DDDDE3"><img src="./images/transparent.gif" border="0" width="1" height="2" alt="" /></td>
+  </tr>
+  <tr>
+            <td width="32%" class="Body" align="right">
+<!-- BEGIN NewProfileNameHintIconBL -->			
+			<img onMouseOver="this.src='./images/question_mark_down.png'; showTheToolTip('helpDiv_newProfileName'); this.style.cursor ='hand';" onMouseOut="hideTheToolTipContainer('helpDiv_newProfileName'); this.src='./images/question_mark_up.png'; " src="./images/question_mark_up.png"  border="0"  align="absmiddle" alt="" /> 
+<!-- END NewProfileNameHintIconBL -->	
+			Profile Name&nbsp;&nbsp;</td>
+            <td width="68%" class="SmallBody">
+<!-- BEGIN NewProfileNameBL -->
+<div><div id="helpDiv_newProfileName" style='background-image: url(./images/tool_tips_back.png);  border:solid; border-color:#660000; border-width:1px; padding:6; filter:progid:DXImageTransform.Microsoft.dropShadow(Color=#999999,offX=3,offY=3)' >
+Enter a unique Profile Name for this product.  <br/>
+It may not contain any spaces or special characters.
+</div> </div>
+<script>
+hideTheToolTipContainer("helpDiv_newProfileName");
+</script>	
+
+<input type="text" name="profileName" value="" class="adminInput" maxlength="60" style="background-color:#F3F3F3; width:250px;" />&nbsp;&nbsp;<img name="img_profileName" src="./images/transparent.gif" height="16" width="22" alt="" />
+<!-- END NewProfileNameBL -->
+
+<!-- BEGIN ExistingProfileNameBL -->
+<font color="#CC6600" style="font-size:16px"><strong>{PROFILE_NAME}</strong></font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<!-- BEGIN DeleteProfileLink --><a href="javascript:DeleteProfile('{PROFILE_ID}');" class="BlueRedLink">Delete</a><!-- END DeleteProfileLink --><img src="./images/transparent.gif" border="0" width="60" height="2" alt="" /><a href="javascript:ChangeProfileName('{PROFILE_ID}', '{PROFILE_NAME}');" class="BlueRedLink">Change Name</a>
+<!-- END ExistingProfileNameBL --></td>
+  </tr>
+  <tr> <td colspan="2" bgcolor="DDDDE3"><img src="./images/transparent.gif" border="0" width="1" height="2" alt="" /></td>
+  </tr>
+
+  <tr>
+       	<td width="32%" class="Body" align="right">
+	<img onMouseOver="this.src='./images/question_mark_down.png'; showTheToolTip('helpDiv_profileNotes'); this.style.cursor ='hand';" onMouseOut="hideTheToolTipContainer('helpDiv_profileNotes'); this.src='./images/question_mark_up.png'; " src="./images/question_mark_up.png"  border="0"  align="absmiddle" alt="" />	
+		<font color="#CCCCCC"><b>Optional</b></font>&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Notes&nbsp;&nbsp;</td>
+       	<td width="68%" class="SmallBody">
+<div><div id="helpDiv_profileNotes" style='background-image: url(./images/tool_tips_back.png); width:450;  border:solid; border-color:#660000; border-width:1px; padding:6; filter:progid:DXImageTransform.Microsoft.dropShadow(Color=#999999,offX=3,offY=3)' >
+		It may be helpful for others if you describe what this profile is used for. 
+</div> </div>
+<script>
+hideTheToolTipContainer("helpDiv_profileNotes");
+</script>			
+
+		<input type="text" name="profileNotes" value="{PROFILE_NOTES}" class="adminInput" maxlength="250" style="background-color:#F3F3F3; width:450px;" /></td>
+  </tr>
+   <tr> <td colspan="2" bgcolor="DDDDE3"><img src="./images/transparent.gif" border="0" width="1" height="2" alt="" /></td>
+   <tr>
+            <td width="32%" class="Body" align="right">
+		<img onMouseOver="this.src='./images/question_mark_down.png'; showTheToolTip('helpDiv_profileSheetSize'); this.style.cursor ='hand';" onMouseOut="hideTheToolTipContainer('helpDiv_profileSheetSize'); this.src='./images/question_mark_up.png'; " src="./images/question_mark_up.png"  border="0"  align="absmiddle" alt="" />	
+			Sheet Size&nbsp;&nbsp;</td>
+            <td width="68%" class="SmallBody">
+<div><div id="helpDiv_profileSheetSize" style='background-image: url(./images/tool_tips_back.png);  border:solid; border-color:#660000; border-width:1px; padding:6; filter:progid:DXImageTransform.Microsoft.dropShadow(Color=#999999,offX=3,offY=3)' >
+			Size of the canvas (in Inches). <br/>
+For most applications, this is the size of the sheet of paper used inside of the printer. 
+
+</div> </div>
+<script>
+hideTheToolTipContainer("helpDiv_profileSheetSize");
+</script>				
+
+<strong>Width:</strong>   <input   type="text" name="sheetWidth" value="{SHEET_WIDTH}" class="adminInput" style=" width:60px; background-color:#F3F3F3;" maxlength="10" /> <font class="ReallySmallBody">Inches</font>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<strong>Height:</strong>   <input type="text" name="sheetHeight" value="{SHEET_HEIGHT}" class="adminInput" style=" width:60px; background-color:#F3F3F3;" maxlength="10" /> <font class="ReallySmallBody">Inches</font>&nbsp;&nbsp;<img name="img_sheetSize" src="./images/transparent.gif" height="16" width="22" alt="" /></td>
+  </tr>
+  <tr> <td colspan="2" bgcolor="DDDDE3"><img src="./images/transparent.gif" border="0" width="1" height="2" alt="" /></td>
+  </tr>
+    <tr>
+            <td width="32%" class="Body" align="right">
+		<img onMouseOver="this.src='./images/question_mark_down.png'; showTheToolTip('helpDiv_profileUnitSize'); this.style.cursor ='hand';" onMouseOut="hideTheToolTipContainer('helpDiv_profileUnitSize'); this.src='./images/question_mark_up.png'; " src="./images/question_mark_up.png"  border="0"  align="absmiddle" alt="" />	
+			Unit Size&nbsp;&nbsp;</td>
+            <td width="68%" class="SmallBody">
+<div><div id="helpDiv_profileUnitSize" style='background-image: url(./images/tool_tips_back.png);  border:solid; border-color:#660000; border-width:1px; padding:6; filter:progid:DXImageTransform.Microsoft.dropShadow(Color=#999999,offX=3,offY=3)' >
+			Size of the individual unit that will be printed (in Inches). <br/>
+For example, if this profile is for business cards, the Unit Size would be 3.5&quot; x 2&quot;
+</div> </div>
+<script>
+hideTheToolTipContainer("helpDiv_profileUnitSize");
+</script>			
+<strong>Width:</strong>   <input   type="text" name="unitWidth" value="{UNIT_WIDTH}" class="adminInput" style=" width:60px; background-color:#F3F3F3;" maxlength="10" />  <font class="ReallySmallBody">Inches</font>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+<strong>Height:</strong>   <input type="text" name="unitHeight" value="{UNIT_HEIGHT}" class="adminInput" style=" width:60px; background-color:#F3F3F3;" maxlength="10" /> <font class="ReallySmallBody">Inches</font>&nbsp;&nbsp;<img name="img_unitSize" src="./images/transparent.gif" height="16" width="22" alt="" />
+<!-- BEGIN ProductSizeMismatchBL -->
+<br/><font class="ReallySmallBody"><font color="#993300">Warning: Unit Size does not match Product Setup: {PRODUCT_WIDTH}&quot; x {PRODUCT_HEIGHT}&quot;</font></font>
+<!-- END ProductSizeMismatchBL -->
+</td>
+
+  </tr>
+  <tr> <td colspan="2" bgcolor="DDDDE3"><img src="./images/transparent.gif" border="0" width="1" height="2" alt="" /></td>
+  </tr>
+    <tr>
+            <td width="32%" class="Body" align="right">
+		<img onMouseOver="this.src='./images/question_mark_down.png'; showTheToolTip('helpDiv_forceAspectRatio'); this.style.cursor ='hand';" onMouseOut="hideTheToolTipContainer('helpDiv_forceAspectRatio'); this.src='./images/question_mark_up.png'; " src="./images/question_mark_up.png"  border="0"  align="absmiddle" alt="" />	
+			Force Unit Size Aspect Ratio&nbsp;&nbsp;</td>
+            <td width="68%" class="SmallBody">
+<div><div id="helpDiv_forceAspectRatio" style='background-image: url(./images/tool_tips_back.png);  border:solid; border-color:#660000; border-width:1px; padding:6; filter:progid:DXImageTransform.Microsoft.dropShadow(Color=#999999,offX=3,offY=3)' >
+			It is possible for the Artwork Canvas Dimensions to change (inside of the Artwork XML definition).  If the Aspect Ratio is forced for this profile, then the PDF will be generated with the exact Unit Size (as specified above).  If the Aspect Ratio is not forced, then the Artworks will be spaced apart using Horizontal/Vertical spacing parameters from this profile.  If you are not sure, then we recommend setting this value to No. 
+</div> </div>
+<script>
+hideTheToolTipContainer("helpDiv_forceAspectRatio");
+</script>				
+
+                <input type="radio" name="forceAspectRatio" value="N" {FORCE_UNIT_SIZE_ASPECT_RATIO_NO} /> No &nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" name="forceAspectRatio" value="Y" {FORCE_UNIT_SIZE_ASPECT_RATIO_YES} />
+                Yes
+&nbsp;&nbsp;&nbsp;</td>
+  </tr>
+  <tr> <td colspan="2" bgcolor="DDDDE3"><img src="./images/transparent.gif" border="0" width="1" height="2" alt="" /></td>
+  </tr>
+     <tr>
+            <td width="32%" class="Body" align="right">
+		<img onMouseOver="this.src='./images/question_mark_down.png'; showTheToolTip('helpDiv_gridSize'); this.style.cursor ='hand';" onMouseOut="hideTheToolTipContainer('helpDiv_gridSize'); this.src='./images/question_mark_up.png'; " src="./images/question_mark_up.png"  border="0"  align="absmiddle" alt="" />	
+			Grid Size&nbsp;&nbsp;</td>
+            <td width="68%" class="SmallBody">
+<div><div id="helpDiv_gridSize" style='background-image: url(./images/tool_tips_back.png);  border:solid; border-color:#660000; border-width:1px; padding:6; filter:progid:DXImageTransform.Microsoft.dropShadow(Color=#999999,offX=3,offY=3)' >
+			The total number of rows and columns (regardless of horizontal/vertical gaps). <br/>
+If there will only be one artwork printed on the page, make the Grid Size 1x1.
+</div> </div>	
+<script>
+hideTheToolTipContainer("helpDiv_gridSize");
+</script>			
+
+<strong>Rows:</strong>   <input   type="text" name="rows" value="{ROWS}" class="adminInput" style=" width:40px; background-color:#F3F3F3;" maxlength="3" />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<strong>Columns:</strong>   <input type="text" name="columns" value="{COLUMNS}" class="adminInput" style=" width:40px; background-color:#F3F3F3;" maxlength="3" />&nbsp;&nbsp;<img name="img_gridSize" src="./images/transparent.gif" height="16" width="22" alt="" /></td>
+  </tr>
+  <tr> <td colspan="2" bgcolor="DDDDE3"><img src="./images/transparent.gif" border="0" width="1" height="2" alt="" /></td>
+  </tr>
+      <tr>
+            <td width="32%" class="Body" align="right">
+		<img onMouseOver="this.src='./images/question_mark_down.png'; showTheToolTip('helpDiv_profileRotation'); this.style.cursor ='hand';" onMouseOut="hideTheToolTipContainer('helpDiv_profileRotation'); this.src='./images/question_mark_up.png'; " src="./images/question_mark_up.png"  border="0"  align="absmiddle" alt="" />	
+			Rotation&nbsp;&nbsp;</td>
+            <td width="68%" class="SmallBody">
+<div><div id="helpDiv_profileRotation" style='background-image: url(./images/tool_tips_back.png);  border:solid; border-color:#660000; border-width:1px; padding:6; filter:progid:DXImageTransform.Microsoft.dropShadow(Color=#999999,offX=3,offY=3)' >
+			Every unit will be rotated on the final PDF, according to this value.  <br/>
+              This  value does not transform the Unit Size or the Canvas Size.
+</div> </div>	
+<script>
+hideTheToolTipContainer("helpDiv_profileRotation");
+</script>			
+
+<select name="rotation" class="AdminDropDown">
+{ROTATION_VALUES}
+</select></td>
+  </tr>
+  <tr> <td colspan="2" bgcolor="DDDDE3"><img src="./images/transparent.gif" border="0" width="1" height="2" alt="" /></td>
+  </tr>
+
+    <tr>
+            <td width="32%" class="Body" align="right">
+		<img onMouseOver="this.src='./images/question_mark_down.png'; showTheToolTip('helpDiv_displayCoversheet'); this.style.cursor ='hand';" onMouseOut="hideTheToolTipContainer('helpDiv_displayCoversheet'); this.src='./images/question_mark_up.png'; " src="./images/question_mark_up.png"  border="0"  align="absmiddle" alt="" />	
+			Display Coversheet&nbsp;&nbsp;</td>
+            <td width="68%" class="SmallBody">
+<div><div id="helpDiv_displayCoversheet" style='background-image: url(./images/tool_tips_back.png);  border:solid; border-color:#660000; border-width:1px; padding:6; filter:progid:DXImageTransform.Microsoft.dropShadow(Color=#999999,offX=3,offY=3)' >
+			Printing a coversheet will show a grid on top of each artwork unit (slot numbers).  In many cases this is a waste of paper.  In other circumstances it is usefull for operators to keep stacks of variable data cards in sequence.
+
+</div> </div>	
+<script>
+hideTheToolTipContainer("helpDiv_displayCoversheet");
+</script>				
+                <input type="radio" name="coverSheet" value="N" {DISPLAY_COVERSHEET_NO} /> No &nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" name="coverSheet" value="Y" {DISPLAY_COVERSHEET_YES} />
+                Yes
+&nbsp;&nbsp;&nbsp;</td>
+  </tr>
+  <tr> <td colspan="2" bgcolor="DDDDE3"><img src="./images/transparent.gif" border="0" width="1" height="2" alt="" /></td>
+  </tr>
+
+    <tr>
+            <td width="32%" class="Body" align="right">
+		<img onMouseOver="this.src='./images/question_mark_down.png'; showTheToolTip('helpDiv_displaySummarySheet'); this.style.cursor ='hand';" onMouseOut="hideTheToolTipContainer('helpDiv_displaySummarySheet'); this.src='./images/question_mark_up.png'; " src="./images/question_mark_up.png"  border="0"  align="absmiddle" alt="" />	
+			Display Summary Sheet &nbsp;&nbsp;</td>
+            <td width="68%" class="SmallBody">
+<div><div id="helpDiv_displaySummarySheet" style='background-image: url(./images/tool_tips_back.png);  border:solid; border-color:#660000; border-width:1px; padding:6; filter:progid:DXImageTransform.Microsoft.dropShadow(Color=#999999,offX=3,offY=3)' >
+			Summary sheets will are useful to describe the contents of a batch that is printed. It will list all of the order numbers and describe the Product Options. This can be useful for tracking if a product is printed in one location and delivered to another vendor for finishing work. . <br/>
+
+</div> </div>	
+<script>
+hideTheToolTipContainer("helpDiv_displaySummarySheet");
+</script>
+                <input type="radio" name="summarySheet" value="N" {DISPLAY_SUMMARY_SHEET_NO} /> No &nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" name="summarySheet" value="Y" {DISPLAY_SUMMARY_SHEET_YES} />
+                Yes
+&nbsp;&nbsp;&nbsp;</td>
+  </tr>
+  <tr> <td colspan="2" bgcolor="DDDDE3"><img src="./images/transparent.gif" border="0" width="1" height="2" alt="" /></td>
+  </tr>
+     <tr>
+            <td width="32%" class="Body" align="right">
+		<img onMouseOver="this.src='./images/question_mark_down.png'; showTheToolTip('helpDiv_showCropMarks'); this.style.cursor ='hand';" onMouseOut="hideTheToolTipContainer('helpDiv_showCropMarks'); this.src='./images/question_mark_up.png'; " src="./images/question_mark_up.png"  border="0"  align="absmiddle" alt="" />	
+			Show Crop Marks &nbsp;&nbsp;</td>
+            <td width="68%" class="SmallBody">
+<div><div id="helpDiv_showCropMarks" style='background-image: url(./images/tool_tips_back.png);  border:solid; border-color:#660000; border-width:1px; padding:6; filter:progid:DXImageTransform.Microsoft.dropShadow(Color=#999999,offX=3,offY=3)' >
+			Crop Marks are important for cutting operators on full bleed rectangular artworks. &quot;Proofs&quot; may not need crop marks shown since Bleed/Safe lines are shown instead. Special shapes, such as envelopes, do not use Crop Marks. Envelopes can use Shape Objects to define spotter marks instead. 
+
+</div> </div>	
+<script>
+hideTheToolTipContainer("helpDiv_showCropMarks");
+</script>			
+                <input type="radio" name="showCropMarks" value="N" {SHOW_CROP_MARKS_NO} /> No &nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" name="showCropMarks" value="Y" {SHOW_CROP_MARKS_YES} />
+                Yes
+&nbsp;&nbsp;&nbsp;</td>
+  </tr>
+   <tr> <td colspan="2" bgcolor="DDDDE3"><img src="./images/transparent.gif" border="0" width="1" height="2" alt="" /></td>
+  </tr>
+     <tr>
+            <td width="32%" class="Body" align="right">
+		<img onMouseOver="this.src='./images/question_mark_down.png'; showTheToolTip('helpDiv_showOutsideOutline'); this.style.cursor ='hand';" onMouseOut="hideTheToolTipContainer('helpDiv_showOutsideOutline'); this.src='./images/question_mark_up.png'; " src="./images/question_mark_up.png"  border="0"  align="absmiddle" alt="" />	
+			Show Outside Border &nbsp;&nbsp;</td>
+            <td width="68%" class="SmallBody">
+<div>
+  <div id="helpDiv_showOutsideOutline" style='background-image: url(./images/tool_tips_back.png);  border:solid; border-color:#660000; border-width:1px; padding:6; filter:progid:DXImageTransform.Microsoft.dropShadow(Color=#999999,offX=3,offY=3)' >
+			Similar to Crop Marks, when this setting is enabled, a hairline rectangle will be drawn on the outside perimeter of the printable area. This is located outside of the bleed area. This can be a useful indicator on slitting equipment to alert operators when the machines are not calibrated correctly. On slitting machines, scrap paper with crop marks may be discarded and artworks with white backgrounds may not give many clues when registration has gone bad. Generally, whenever Crop Marks are enabled, this setting should be as well. </div> 
+</div>	
+<script>
+hideTheToolTipContainer("helpDiv_showOutsideOutline");
+</script>			
+                <input type="radio" name="showOutsideBorder" value="N" {SHOW_OUTSIDE_BORDER_NO} /> No &nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" name="showOutsideBorder" value="Y" {SHOW_OUTSIDE_BORDER_YES} />
+                Yes
+&nbsp;&nbsp;&nbsp;</td>
+  </tr>
+
+  <tr> <td colspan="2" bgcolor="DDDDE3"><img src="./images/transparent.gif" border="0" width="1" height="2" alt="" /></td>
+  </tr>
+    <tr>
+            <td width="32%" class="Body" align="right">
+		<img onMouseOver="this.src='./images/question_mark_down.png'; showTheToolTip('helpDiv_gridSpacing'); this.style.cursor ='hand';" onMouseOut="hideTheToolTipContainer('helpDiv_gridSpacing'); this.src='./images/question_mark_up.png'; " src="./images/question_mark_up.png"  border="0"  align="absmiddle" alt="" />	
+			Grid Spacing&nbsp;&nbsp;</td>
+            <td width="68%" class="SmallBody">
+<div><div id="helpDiv_gridSpacing" style='background-image: url(./images/tool_tips_back.png);  border:solid; border-color:#660000; border-width:1px; padding:6; filter:progid:DXImageTransform.Microsoft.dropShadow(Color=#999999,offX=3,offY=3)' >
+			This will set the distance between each row and column.  If there are 4 rows and 3 columns then there would be 2 horizontal spaces and 3 vertical spaces.  Distance is measured between the &quot;Cut Lines&quot; of each Artwork Unit.  Therefore, adding extra &quot;Bleed&quot; will diminish the perceived spacing. Values are in Picas, decimals are OK.  (72 Picas = 1 inch).<br/>
+
+</div> </div>	
+<script>
+hideTheToolTipContainer("helpDiv_gridSpacing");
+</script>				
+              <strong>Horizontal:</strong>   <input   type="text" name="horizonalSpacing" value="{HORIZONTAL_SPACING}" class="adminInput" style=" width:60px; background-color:#F3F3F3;" maxlength="10" /> <font class="ReallySmallBody">Picas</font>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<strong>Vertical:</strong>   <input type="text" name="verticalSpacing" value="{VERTICAL_SPACING}" class="adminInput" style=" width:60px; background-color:#F3F3F3;" maxlength="10" /> <font class="ReallySmallBody">Picas</font>&nbsp;&nbsp;<img name="img_gridSpacing" src="./images/transparent.gif" height="16" width="22" alt="" /></td>
+  </tr>
+  <tr> <td colspan="2" bgcolor="DDDDE3"><img src="./images/transparent.gif" border="0" width="1" height="2" alt="" /></td>
+  </tr>
+
+    <tr>
+            <td width="32%" class="Body" align="right">
+		<img onMouseOver="this.src='./images/question_mark_down.png'; showTheToolTip('helpDiv_bleed'); this.style.cursor ='hand';" onMouseOut="hideTheToolTipContainer('helpDiv_bleed'); this.src='./images/question_mark_up.png'; " src="./images/question_mark_up.png"  border="0"  align="absmiddle" alt="" />	
+			Bleed&nbsp;&nbsp;</td>
+            <td width="68%" class="SmallBody">
+<div><div id="helpDiv_bleed" style='background-image: url(./images/tool_tips_back.png);  border:solid; border-color:#660000; border-width:1px; padding:6; filter:progid:DXImageTransform.Microsoft.dropShadow(Color=#999999,offX=3,offY=3)' >
+			This will allow artwork to be printed beyond the Cut Line.  Setting this to a higher value than what is specified on the Product Setup will not change artwork and the artwork may not be prepared for it.  It is safe to set the bleed amount on this Profile to the same (or smaller)  compared to the bleed units specified on the Product Setup. Smaller values will cause cropping to occur, relative to the center point of the artwork. Values are in Picas, decimals are OK. (72 Picas = 1 inch).  <br/>
+
+</div> </div>	
+<script>
+hideTheToolTipContainer("helpDiv_bleed");
+</script>			
+              <input   type="text" name="bleedUnits" value="{BLEED_UNITS}" class="adminInput" style=" width:60px; background-color:#F3F3F3;" maxlength="10" /> <font class="ReallySmallBody">Picas</font>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font class="ReallySmallBody">Bleed Units on Product Setup:
+<strong>{PRODUCT_SETUP_BLEED}</strong> picas</font>&nbsp;&nbsp;<img name="img_bleedSpacing" src="./images/transparent.gif" height="16" width="22" alt="" />
+<!-- BEGIN BleedSettingLargerThanProductMsgBL -->
+<br/><font class="ReallySmallBody"><font color="#993300">Warning: The Bleed Setting on this Profile is greater than the Product's Bleed.</font></font>
+<!-- END BleedSettingLargerThanProductMsgBL -->
+</td>
+  </tr>
+   <tr> <td colspan="2" bgcolor="DDDDE3"><img src="./images/transparent.gif" border="0" width="1" height="2" alt="" /></td>
+  </tr>
+    <tr>
+            <td width="32%" class="Body" align="right">
+<img onMouseOver="this.src='./images/question_mark_down.png'; showTheToolTip('helpDiv_ExtraGaps'); this.style.cursor ='hand';" onMouseOut="hideTheToolTipContainer('helpDiv_ExtraGaps'); this.src='./images/question_mark_up.png'; " src="./images/question_mark_up.png"  border="0"  align="absmiddle" alt="" />	
+			Extra Gaps&nbsp;&nbsp;</td>
+            <td width="68%" class="SmallBody">
+<div><div id="helpDiv_ExtraGaps" style='background-image: url(./images/tool_tips_back.png);  border:solid; border-color:#660000; border-width:1px; padding:6; filter:progid:DXImageTransform.Microsoft.dropShadow(Color=#999999,offX=3,offY=3)' >
+			Sometimes the printer is capable of handling larger sheet sizes than the finishing equipment. You can have have an Extra Gap injected every after X number of rows/columns. This can allow you to guillotine cut between the extra gaps or use the extra space for other purposes. If you create an Extra Gap every 3 rows and there are a total of 9 rows, then 2 Extra Gaps will be included. Enter Zero if you don't want this feature.<br/>
+
+</div> </div>	
+<script>
+hideTheToolTipContainer("helpDiv_ExtraGaps");
+</script>			
+              <strong>Every    <input   type="text" name="extraGapRows" value="{EXTRA_GAP_ROWS}" class="adminInput" style=" width:60px; background-color:#F3F3F3;" maxlength="10" /> Rows</strong>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<strong>Every  <input type="text" name="extraGapColumns" value="{EXTRA_GAP_COLUMNS}" class="adminInput" style=" width:60px; background-color:#F3F3F3;" maxlength="10" /> Columns</strong>&nbsp;&nbsp;<img name="img_extraGaps" src="./images/transparent.gif" height="16" width="22" alt="" /></td>
+  </tr>
+
+  <tr> <td colspan="2" bgcolor="DDDDE3"><img src="./images/transparent.gif" border="0" width="1" height="2" alt="" /></td>
+  </tr>
+   <tr>
+            <td width="32%" class="Body" align="right">
+		<img onMouseOver="this.src='./images/question_mark_down.png'; showTheToolTip('helpDiv_GapSizes'); this.style.cursor ='hand';" onMouseOut="hideTheToolTipContainer('helpDiv_GapSizes'); this.src='./images/question_mark_up.png'; " src="./images/question_mark_up.png"  border="0"  align="absmiddle" alt="" />	
+			Extra Gap Sizes &nbsp;&nbsp;</td>
+            <td width="68%" class="SmallBody">
+<div><div id="helpDiv_GapSizes" style='background-image: url(./images/tool_tips_back.png);  border:solid; border-color:#660000; border-width:1px; padding:6; filter:progid:DXImageTransform.Microsoft.dropShadow(Color=#999999,offX=3,offY=3)' >
+			Enter the size of the Extra Gaps in inches. These Extra Gaps are created in addition to the Horizontal/Vertical spacing. <br/>
+
+</div> </div>	
+<script>
+hideTheToolTipContainer("helpDiv_GapSizes");
+</script>				
+              <strong>Horizontal Gap Size  <input   type="text" name="extraGapHorizontal" value="{EXTRA_GAP_HORIZONTAL}" class="adminInput" style=" width:60px; background-color:#F3F3F3;" maxlength="10" /></strong> <font class="ReallySmallBody">Inches</font>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<strong>Vertical Gap Size  <input type="text" name="extraGapVertical" value="{EXTRA_GAP_VERTICAL}" class="adminInput" style=" width:60px; background-color:#F3F3F3;" maxlength="10" /> </strong><font class="ReallySmallBody">Inches</font>&nbsp;&nbsp;<img name="img_extraGapSizes" src="./images/transparent.gif" height="16" width="22" alt="" /></td>
+  </tr>
+  <tr> <td colspan="2" bgcolor="DDDDE3"><img src="./images/transparent.gif" border="0" width="1" height="2" alt="" /></td>
+  </tr>
+   <tr>
+            <td width="32%" class="Body" align="right">
+		<img onMouseOver="this.src='./images/question_mark_down.png'; showTheToolTip('helpDiv_PageMargins'); this.style.cursor ='hand';" onMouseOut="hideTheToolTipContainer('helpDiv_PageMargins'); this.src='./images/question_mark_up.png'; " src="./images/question_mark_up.png"  border="0"  align="absmiddle" alt="" />	
+			Page Margins&nbsp;&nbsp;</td>
+            <td width="68%" class="SmallBody">
+<div><div id="helpDiv_PageMargins" style='background-image: url(./images/tool_tips_back.png);  border:solid; border-color:#660000; border-width:1px; padding:6; filter:progid:DXImageTransform.Microsoft.dropShadow(Color=#999999,offX=3,offY=3)' >
+			The artwrork grid begins plotting at the bottom-left corner of the parent sheet.  <br/>
+The exact coordinates begin on the lower-left corner of the first artwork's &quot;cut line&quot;. 
+
+</div> </div>	
+<script>
+hideTheToolTipContainer("helpDiv_PageMargins");
+</script>			
+              <strong>Left Margin  <input   type="text" name="leftMargin" value="{LEFT_MARGIN}" class="adminInput" style=" width:60px; background-color:#F3F3F3;" maxlength="10" /></strong> <font class="ReallySmallBody">Inches</font>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<strong>Bottom Margin  <input type="text" name="bottomMargin" value="{BOTTOM_MARGIN}" class="adminInput" style=" width:60px; background-color:#F3F3F3;" maxlength="10" /> </strong><font class="ReallySmallBody">Inches</font>&nbsp;&nbsp;<img name="img_pageMargins" src="./images/transparent.gif" height="16" width="22" alt="" /></td>
+  </tr>
+  <tr> <td colspan="2" bgcolor="DDDDE3"><img src="./images/transparent.gif" border="0" width="1" height="2" alt="" /></td>
+  </tr>
+   <tr>
+            <td width="32%" class="Body" align="right">
+		<img onMouseOver="this.src='./images/question_mark_down.png'; showTheToolTip('helpDiv_LabelPosition'); this.style.cursor ='hand';" onMouseOut="hideTheToolTipContainer('helpDiv_LabelPosition'); this.src='./images/question_mark_up.png'; " src="./images/question_mark_up.png"  border="0"  align="absmiddle" alt="" />	
+			Label Position&nbsp;&nbsp;</td>
+            <td width="68%" class="SmallBody">
+<div><div id="helpDiv_LabelPosition" style='background-image: url(./images/tool_tips_back.png);  border:solid; border-color:#660000; border-width:1px; padding:6; filter:progid:DXImageTransform.Microsoft.dropShadow(Color=#999999,offX=3,offY=3)' >
+			A label can be printed in the scrap area of the parent sheet. It will contain the order number and Product Options. This can be useful in production if they are not sure if a sheet should be UV coated, etc. If you don't want a label to show up on the PDF document, just make the Y coordinate a large negative value. Coordinates are measures from the bottom-left corner of the parent sheet. Positive Y values go closer to the top of the sheet. <br/>
+</div> </div>	
+<script>
+hideTheToolTipContainer("helpDiv_LabelPosition");
+</script>			
+              <strong>X coord:  <input   type="text" name="labelX" value="{LABEL_X}" class="adminInput" style=" width:50px; background-color:#F3F3F3;" maxlength="8" /></strong> <font class="ReallySmallBody">Inches</font>
+&nbsp;&nbsp;&nbsp;
+<strong>Y Coord:  <input type="text" name="labelY" value="{LABEL_Y}" class="adminInput" style=" width:50px; background-color:#F3F3F3;" maxlength="8" /> </strong><font class="ReallySmallBody">Inches</font>
+&nbsp;&nbsp;&nbsp;
+<strong>Rotation:  <input type="text" name="labelRotate" value="{LABEL_ROTATION}" class="adminInput" style=" width:40px; background-color:#F3F3F3;" maxlength="3" />
+</strong><font class="ReallySmallBody">(0 &lt;=&gt; 360)</font>
+&nbsp;&nbsp;<img name="img_labelCoordinates" src="./images/transparent.gif" height="16" width="22" alt="" /></td>
+  </tr>
+  <tr> <td colspan="2" bgcolor="DDDDE3"><img src="./images/transparent.gif" border="0" width="1" height="2" alt="" /></td>
+  </tr>
+    <tr>
+            <td width="32%" class="Body" align="right">
+		<img onMouseOver="this.src='./images/question_mark_down.png'; showTheToolTip('helpDiv_ExtraQuantityControl'); this.style.cursor ='hand';" onMouseOut="hideTheToolTipContainer('helpDiv_ExtraQuantityControl'); this.src='./images/question_mark_up.png'; " src="./images/question_mark_up.png"  border="0"  align="absmiddle" alt="" />	
+			Extra Quantity Control&nbsp;&nbsp;</td>
+            <td width="68%" class="SmallBody">
+<div>
+  <div id="helpDiv_ExtraQuantityControl" style='background-image: url(./images/tool_tips_back.png);  border:solid; border-color:#660000; border-width:1px; padding:6; filter:progid:DXImageTransform.Microsoft.dropShadow(Color=#999999,offX=3,offY=3)' >
+			For certain products, it may be necessary to print a larger quantity than is ordered. A good reason for this is when you expect some of the product to go defective during a finishing process (such as converting printed sheets into envelopes).  This setting is only effective for digital printing (not Gang Runs).<br/>
+                <br/>
+              You can specify a percentage of extra to print, and then set a Max Limit on the total extras. For example, you may determine that 3 percent of envelopes get destroyed during the coverting process, but only when the first 1,000 are sent though. After the machine is tuned perfectly for the paper stock, etc, there may be  little defects from that point forward. So you may set a Maximum Limit of 50 extra envelopes. Set Max Limit to zero for no limit. <br/>
+              <br/>
+              You may also set the Extra Percentage to a negative value. That  means less get printed than what was ordered. On very large orders it is unlikey customers will count every piece, and most printers specify final quantities to have a + / - error. This can be usefull if you change your card stock to be thicker, and the full quantity does not fit within a pre-made 5,000 piece box, etc. The Max Limit is always a postive value, but you can use it stop shorting at a certain amount. For example, if the Max Limit is set to 50, the system will never short the customer more than 50, regardless of how large the negative percentage is.<br/>
+              <br/>
+              The Minimum  Quantity means that no Extras will be printed until the Order Quantity reaches that level.  The same goes for negative percentages,  quantity will not be decreased until the order quantity exceeds the minimum.
+               Set Minimum Quantity to zero for no minimum.
+</div> </div>	
+<script>
+hideTheToolTipContainer("helpDiv_ExtraQuantityControl");
+</script>			
+
+                  <strong>Minimum Quantity:  </strong>
+                  <input   type="text" name="extraMinQuantity" value="{EXTRA_MIN_QUANTITY}" class="adminInput" style=" width:60px; background-color:#F3F3F3;" maxlength="7" />
+                  &nbsp;&nbsp;&nbsp;
+                  <strong>Extra:
+                  <input type="text" name="extraPercent" value="{EXTRA_PERCENT}" class="adminInput" style=" width:60px; background-color:#F3F3F3;" maxlength="7" />
+                  %</strong>&nbsp;&nbsp;&nbsp;
+                  <strong>Max Limit :</strong>
+                  <input type="text" name="extraMaxLimit" value="{EXTRA_MAX_LIMIT}" class="adminInput" style=" width:60px; background-color:#F3F3F3;" maxlength="7" />
+                 &nbsp;&nbsp;<img name="img_extras" src="./images/transparent.gif" height="16" width="22" alt="" /></p>
+              </td>
+  </tr>
+  
+  <!-- BEGIN MatrixOrderBlock -->
+  <tr> <td colspan="2" bgcolor="DDDDE3"><img src="./images/transparent.gif" border="0" width="1" height="2" alt="" /></td>
+  </tr>
+   <tr>
+            <td width="32%" class="Body" align="right">
+		<img onMouseOver="this.src='./images/question_mark_down.png'; showTheToolTip('helpDiv_MatrixOrder'); this.style.cursor ='hand';" onMouseOut="hideTheToolTipContainer('helpDiv_MatrixOrder'); this.src='./images/question_mark_up.png'; " src="./images/question_mark_up.png"  border="0"  align="absmiddle" alt="" />	
+			Matrix Order&nbsp;&nbsp;</td>
+            <td width="68%" class="SmallBody">
+<div><div id="helpDiv_MatrixOrder" style='background-image: url(./images/tool_tips_back.png);  border:solid; border-color:#660000; border-width:1px; padding:6; filter:progid:DXImageTransform.Microsoft.dropShadow(Color=#999999,offX=3,offY=3)' >
+			Based upon the rows and columns, define the order of the slot numbers.  These values are used for Gang Runs, and Mailing Batches to determine where each of the stacks are generated. <br/> Example:
+			<br/>
+<strong><font color="#993300">1,4,7,<br/>
+2,5,8,<br/>
+3,6,9,</font></strong>
+
+<br/>
+</div> </div>	
+<script>
+hideTheToolTipContainer("helpDiv_MatrixOrder");
+</script>				
+  <!-- BEGIN EmptyMatrixBlockLink -->
+  <a href="javascript:ToggleCreateMatrixOrderHTML();" class="BlueRedLink"><div id="defineMatrixDiv_Label">Define Matrix Order</div></a>
+   <!-- END EmptyMatrixBlockLink -->
+<div id="createMatrixOrder">
+  
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="1%"><table width="5%" border="0" cellspacing="0" cellpadding="1">
+  <tr>
+    <td bgcolor="#CC99CC">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td bgcolor="#eeeeff">
+<table width="100%" border="0" cellspacing="1" cellpadding="0">
+  <!-- BEGIN MatrixRowBL -->
+  <tr>
+  <!-- BEGIN MatrixValueBL -->
+    <td><input   type="text" name="matrix_{MATRIX_ROW}_{MATRIX_COL}" value="{MATRIX_VALUE}" class="adminInput" style=" width:22px; background-color:#F3F3F3; font-size:10px;" maxlength="3" /> </td>
+  <!-- END MatrixValueBL -->
+  </tr>
+  <!-- END MatrixRowBL -->
+</table>
+	
+	</td>
+  </tr>
+</table>
+	</td>
+  </tr>
+</table>
+</td>
+    <td width="99%"><img name="img_matrix" src="./images/transparent.gif" height="16" width="22" alt="" /></td>
+  </tr>
+</table>
+
+     </div>
+
+<!-- BEGIN EmptyMatrixBlockInit -->
+<script>
+// Start off with the Add Shape menu hidden.
+ToggleCreateMatrixOrderHTML();
+</script> 
+<!-- END EmptyMatrixBlockInit -->
+</td>
+  </tr>
+    <!-- END MatrixOrderBlock -->
+  
+   <tr> <td colspan="2" bgcolor="DDDDE3"><img src="./images/transparent.gif" border="0" width="1" height="2" alt="" /></td>
+  </tr>
+   <tr>
+            <td width="32%" class="Body" align="right">
+		<img onMouseOver="this.src='./images/question_mark_down.png'; showTheToolTip('helpDiv_cmykBlocks'); this.style.cursor ='hand';" onMouseOut="hideTheToolTipContainer('helpDiv_cmykBlocks'); this.src='./images/question_mark_up.png'; " src="./images/question_mark_up.png"  border="0"  align="absmiddle" alt="" />	
+			CMYK Blocks&nbsp;&nbsp;</td>
+            <td width="68%" class="SmallBody">
+<div><div id="helpDiv_cmykBlocks" style='background-image: url(./images/tool_tips_back.png);  border:solid; border-color:#660000; border-width:1px; padding:6; filter:progid:DXImageTransform.Microsoft.dropShadow(Color=#999999,offX=3,offY=3)' >
+			It is useful for printing press operators to have CMYK blocks printed in the scrap areas of the paper.  This will help the figure out if a particular ink us running low.<br/>
+              <br/>
+              CMYK Groups contain 1 or more CMYK blocks. You may control the distance between each block (Spacing), the block width/height.  You can create as many groups as you want and put them on different parts of the sheet.   For example, you may want a group printed across the top of the sheet, and another printed at the bottom of the sheet.<br/>
+<br/>
+Coordinates, Block Width, Block Height, and Spacing are all values measured in inches.
+
+</div> </div>	
+<script>
+hideTheToolTipContainer("helpDiv_cmykBlocks");
+</script>				
+			
+
+
+<a href="javascript:ToggleCreateNewCmykHTML();" class="BlueRedLink"><div id="addNewCmykDiv_Label">Create a new CMYK Group</div></a>
+<div id="addNewCmykDiv">
+<table width="100%" border="0" cellspacing="0" cellpadding="1">
+  <tr>
+    <td bgcolor="#FFcc99">
+
+	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td bgcolor="#FFf6f3">
+
+<table width="100%" border="0" cellspacing="0" cellpadding="2">
+
+  <tr>
+    <td class="ReallySmallBody" nowrap="nowrap">X Coord</td>
+    <td class="ReallySmallBody" nowrap="nowrap">Y Coord</td>
+	<td class="ReallySmallBody" nowrap="nowrap"># of Blocks</td>
+    <td class="ReallySmallBody" nowrap="nowrap">Block Width</td>
+    <td class="ReallySmallBody" nowrap="nowrap">Block Height</td>
+    <td class="ReallySmallBody" nowrap="nowrap">Spacing</td>
+    <td class="ReallySmallBody" nowrap="nowrap">Rotation</td>
+  </tr>
+  <tr>
+    <td class="ReallySmallBody"><input   type="text" name="CMYKblock_X_{MAX_CMYK_COUNTER}" value="" style=" width:40px; background-color:#F3F3F3; font-size:10px; font-family:Arial, Helvetica, sans-serif" maxlength="8" />
+    &quot;&nbsp;<img name="img_CMYKblock_X_{MAX_CMYK_COUNTER}"" src="./images/transparent.gif" height="16" width="22" alt="" /></td>
+    <td class="ReallySmallBody"><input   type="text" name="CMYKblock_Y_{MAX_CMYK_COUNTER}" value="" style=" width:40px; background-color:#F3F3F3; font-size:10px; font-family:Arial, Helvetica, sans-serif" maxlength="8" />
+    &quot;&nbsp;<img name="img_CMYKblock_Y_{MAX_CMYK_COUNTER}"" src="./images/transparent.gif" height="16" width="22" alt="" /></td>
+    <td class="ReallySmallBody"><input   type="text" name="CMYKblock_NumBlocks_{MAX_CMYK_COUNTER}" value="" style=" width:25px; background-color:#F3F3F3; font-size:10px; font-family:Arial, Helvetica, sans-serif" maxlength="2" />
+    &nbsp;<img name="img_CMYKblock_NumBlocks_{MAX_CMYK_COUNTER}"" src="./images/transparent.gif" height="16" width="22" alt="" /></td>
+    <td class="ReallySmallBody"><input   type="text" name="CMYKblock_BlockWidth_{MAX_CMYK_COUNTER}" value="" style=" width:40px; background-color:#F3F3F3; font-size:10px; font-family:Arial, Helvetica, sans-serif" maxlength="8" />
+    &quot;&nbsp;<img name="img_CMYKblock_BlockWidth_{MAX_CMYK_COUNTER}"" src="./images/transparent.gif" height="16" width="22" alt="" /></td>
+    <td class="ReallySmallBody"><input   type="text" name="CMYKblock_BlockHeight_{MAX_CMYK_COUNTER}" value="" style=" width:40px; background-color:#F3F3F3; font-size:10px; font-family:Arial, Helvetica, sans-serif" maxlength="8" />
+    &quot;&nbsp;<img name="img_CMYKblock_BlockHeight_{MAX_CMYK_COUNTER}"" src="./images/transparent.gif" height="16" width="22" alt="" /></td>
+    <td class="ReallySmallBody"><input   type="text" name="CMYKblock_Spacing_{MAX_CMYK_COUNTER}" value="" style=" width:35px; background-color:#F3F3F3; font-size:10px; font-family:Arial, Helvetica, sans-serif" maxlength="8" />
+    &quot;&nbsp;<img name="img_CMYKblock_Spacing_{MAX_CMYK_COUNTER}"" src="./images/transparent.gif" height="16" width="22" alt="" /></td>
+    <td class="ReallySmallBody"><input   type="text" name="CMYKblock_Rotation_{MAX_CMYK_COUNTER}" value="0" style=" width:25px; background-color:#F3F3F3; font-size:10px; font-family:Arial, Helvetica, sans-serif" maxlength="3" />
+    &nbsp;<img name="img_CMYKblock_Rotation_{MAX_CMYK_COUNTER}" src="./images/transparent.gif" height="16" width="22" alt="" /></td>
+  </tr>
+</table>
+</td>
+  </tr>
+</table>
+</td>
+  </tr>
+</table>
+
+</div>
+
+<script>
+// Start off with the Add Shape menu hidden.
+ToggleCreateNewCmykHTML();
+</script>
+
+<!-- BEGIN AllExistingCMYKgroupsBL -->
+&nbsp;<br/>
+
+<strong><u>Existing CMYK Groups</u></strong><br/><img  src="./images/transparent.gif" width="5" height="5" border="0" alt="" /><br/>
+
+<!-- BEGIN ExistingCMYKgroupBL -->
+<table width="100%" border="0" cellspacing="0" cellpadding="1">
+  <tr>
+    <td bgcolor="#cc99FF">
+
+	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td bgcolor="#f6f3FF">
+<table width="100%" border="0" cellspacing="0" cellpadding="2">
+<tr>
+<td colspan="7">Side: <select name="CMYK_SideNum_{CMYK_BLOCK_COUNTER}" style="background-color:#F3F3F3; font-size:9px; font-family:Arial, Helvetica, sans-serif">{CMYK_SIDE_OPTIONS}</select></td>
+</tr>
+  <tr>
+    <td class="ReallySmallBody" nowrap="nowrap">X Coord</td>
+    <td class="ReallySmallBody" nowrap="nowrap">Y Coord</td>
+	<td class="ReallySmallBody" nowrap="nowrap"># of Blocks</td>
+    <td class="ReallySmallBody" nowrap="nowrap">Block Width</td>
+    <td class="ReallySmallBody" nowrap="nowrap">Block Height</td>
+    <td class="ReallySmallBody" nowrap="nowrap">Spacing</td>
+    <td class="ReallySmallBody" nowrap="nowrap">Rotation</td>
+	<td class="ReallySmallBody" nowrap="nowrap">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class="ReallySmallBody"><input   type="text" name="CMYKblock_X_{CMYK_BLOCK_COUNTER}" value="{CMYK_X}" style=" width:40px; background-color:#F3F3F3; font-size:10px; font-family:Arial, Helvetica, sans-serif" maxlength="8" />
+    &quot;&nbsp;<img name="img_CMYKblock_X_{CMYK_BLOCK_COUNTER}" src="./images/transparent.gif" height="16" width="22" alt="" /></td>
+    <td class="ReallySmallBody"><input   type="text" name="CMYKblock_Y_{CMYK_BLOCK_COUNTER}" value="{CMYK_Y}" style=" width:40px; background-color:#F3F3F3; font-size:10px; font-family:Arial, Helvetica, sans-serif" maxlength="8" />
+    &quot;&nbsp;<img name="img_CMYKblock_Y_{CMYK_BLOCK_COUNTER}" src="./images/transparent.gif" height="16" width="22" alt="" /></td>
+    <td class="ReallySmallBody"><input   type="text" name="CMYKblock_NumBlocks_{CMYK_BLOCK_COUNTER}" value="{CMYK_NUMBLOCKS}" style=" width:25px; background-color:#F3F3F3; font-size:10px; font-family:Arial, Helvetica, sans-serif" maxlength="2" />
+    &nbsp;<img name="img_CMYKblock_NumBlocks_{CMYK_BLOCK_COUNTER}" src="./images/transparent.gif" height="16" width="22" alt="" /></td>
+    <td class="ReallySmallBody"><input   type="text" name="CMYKblock_BlockWidth_{CMYK_BLOCK_COUNTER}" value="{CMYK_BLOCKWIDTH}" style=" width:40px; background-color:#F3F3F3; font-size:10px; font-family:Arial, Helvetica, sans-serif" maxlength="8" />
+    &quot;&nbsp;<img name="img_CMYKblock_BlockWidth_{CMYK_BLOCK_COUNTER}" src="./images/transparent.gif" height="16" width="22" alt="" /></td>
+    <td class="ReallySmallBody"><input   type="text" name="CMYKblock_BlockHeight_{CMYK_BLOCK_COUNTER}" value="{CMYK_BLOCKHEIGHT}" style=" width:40px; background-color:#F3F3F3; font-size:10px; font-family:Arial, Helvetica, sans-serif" maxlength="8" />
+    &quot;&nbsp;<img name="img_CMYKblock_BlockHeight_{CMYK_BLOCK_COUNTER}" src="./images/transparent.gif" height="16" width="22" alt="" /></td>
+    <td class="ReallySmallBody"><input   type="text" name="CMYKblock_Spacing_{CMYK_BLOCK_COUNTER}" value="{CMYK_BLOCKSPACING}" style=" width:35px; background-color:#F3F3F3; font-size:10px; font-family:Arial, Helvetica, sans-serif" maxlength="8" />
+    &quot;&nbsp;<img name="img_CMYKblock_Spacing_{CMYK_BLOCK_COUNTER}" src="./images/transparent.gif" height="16" width="22" alt="" /></td>
+    <td class="ReallySmallBody"><input   type="text" name="CMYKblock_Rotation_{CMYK_BLOCK_COUNTER}" value="{CMYK_BLOCKROTATION}" style=" width:25px; background-color:#F3F3F3; font-size:10px; font-family:Arial, Helvetica, sans-serif" maxlength="3" />
+    &nbsp;<img name="img_CMYKblock_Rotation_{CMYK_BLOCK_COUNTER}" src="./images/transparent.gif" height="16" width="22" alt="" /></td>
+	<td class="ReallySmallBody"><a href="javascript:DeleteCMYKgroup('{CMYK_BLOCK_ID}','{PROFILE_ID}')" class="BlueRedLink">X</a></td>
+  </tr>
+</table>
+</td>
+  </tr>
+</table>
+</td>
+  </tr>
+</table>
+&nbsp;
+<!-- END ExistingCMYKgroupBL -->
+<!-- END AllExistingCMYKgroupsBL -->
+
+</td>
+  </tr>
+     <tr> <td colspan="2" bgcolor="DDDDE3"><img src="./images/transparent.gif" border="0" width="1" height="2" alt="" /></td>
+  </tr>
+   <tr>
+	<td width="32%" class="Body" align="right">
+<img onMouseOver="this.src='./images/question_mark_down.png'; showTheToolTip('helpDiv_shapes'); this.style.cursor ='hand';" onMouseOut="hideTheToolTipContainer('helpDiv_shapes'); this.src='./images/question_mark_up.png'; " src="./images/question_mark_up.png"  border="0"  align="absmiddle" alt="" />	
+	Shapes&nbsp;&nbsp;</td>
+	<td width="68%" class="SmallBody">
+<div>
+  <div id="helpDiv_shapes" style='background-image: url(./images/tool_tips_back.png);  border:solid; border-color:#660000; border-width:1px; padding:6; filter:progid:DXImageTransform.Microsoft.dropShadow(Color=#999999,offX=3,offY=3)' >
+	You can draw many shapes on top of the PDF sheet with different colors and sizes for a variety of reasons.  You may want to show customers where holes will be punched out on their artwork. Shapes can be drawn in scrap areas to assist in production, such as &quot;Spotter Marks&quot;. Draw many shapes in a series to create a larger, more complex shape. You can put a Option Limiter on the shape so that it only gets rendered when a match is found on the Option &amp; Choice Name Aliases (as displayed on the Open Order List Screen). For example an Envelope with &quot;Windows - Yes&quot; may want to show a rectangle where the hole will be punched out. <br/>
+	   <br/>
+	   The Local Shape Container holds shapes that will be repeated in the same location for every artwork unit.  Like a Circle in the same position of every business card. The Global Shape Container hold shapes that are drawn 1 time on the entire parent sheet.   Like a rectangle on the top-left portion of the sheet (which contains 20 business cards). <br/>
+<br/>
+0% &quot;Alpha&quot; means invisible, 100% means opaque.  There are currently some limitations with generating opacity on PDF documents as well as RIPing the documents in production.  For that reason, opacity will be rendered on PDF's at 100%.  However,  the Editing Tool may display &quot;Local Shapes&quot; on top of the artwork (with opacity settings), depending on the Option Limiters.  Shapes can assist customers during the design process. The system will automatically check the &quot;Proof&quot; profile (a special profile name) at the time that artwork is being downloaded and will extract any &quot;Local Shapes&quot; off of the profile. <br/>
+<br/>
+The registration points for  rectangles lie on the lower-left corner. For circles, registration is in the center.<br/>
+<br/>
+If multiple shapes overlap, you can control the stacking sequence by putting a prefix in the &quot;Remarks&quot; field.  For example a Remark starting with &quot;A&quot; would be drawn on top of a remark started with &quot;B&quot;.
+
+</div> </div>	
+<script>
+hideTheToolTipContainer("helpDiv_shapes");
+</script>		
+	
+
+<a href="javascript:ToggleCreateNewShapeHTML();" class="BlueRedLink"><div id="addNewShapeDiv_Label">Create a new Shape</div></a>
+<div id="addNewShapeDiv">
+<table width="100%" border="0" cellspacing="0" cellpadding="1">
+  <tr>
+    <td bgcolor="#FFcc99">
+	<table width="100%" border="0" cellspacing="0" cellpadding="2">
+  <tr>
+    <td bgcolor="#FFf6f3" class="ReallySmallBody">
+
+<table width="100%" border="0" cellspacing="0" cellpadding="2">
+  <tr>
+	<td class="ReallySmallBody" nowrap="nowrap">Shape Type</td>
+    <td class="ReallySmallBody" nowrap="nowrap">Which Side</td>
+	<td class="ReallySmallBody" nowrap="nowrap">X Coord</td>
+    <td class="ReallySmallBody" nowrap="nowrap">Y Coord</td>
+    <td class="ReallySmallBody" nowrap="nowrap"><div id="shapeValue1_Label">Width</div></td>
+    <td class="ReallySmallBody" nowrap="nowrap"><div id="shapeValue2_Label">Height</div></td>
+  </tr>
+  <tr>
+     <td class="ReallySmallBody"><select onChange="changeShapeTypeForShape(this.value);" name="Shape_ShapeType_{MAX_SHAPE_COUNTER}" style="background-color:#F3F3F3; font-size:9px; font-family:Arial, Helvetica, sans-serif"><option value="R" selected="selected">Rectangle</option><option value="C">Circle</option></select></td>
+    <td class="ReallySmallBody"><select name="Shape_SideNum_{MAX_SHAPE_COUNTER}" style="background-color:#F3F3F3; font-size:9px; font-family:Arial, Helvetica, sans-serif">{NEW_SHAPE_SIDE_LIST}</select></td>
+    <td class="ReallySmallBody"><input   type="text" name="Shape_X_{MAX_SHAPE_COUNTER}" value="" style=" width:42px; background-color:#F3F3F3; font-size:10px; font-family:Arial, Helvetica, sans-serif" maxlength="8" /> p&nbsp;<img name="img_X_{MAX_SHAPE_COUNTER}" src="./images/transparent.gif" height="16" width="22" alt="" /></td>
+    <td class="ReallySmallBody"><input   type="text" name="Shape_Y_{MAX_SHAPE_COUNTER}" value="" style=" width:38px; background-color:#F3F3F3; font-size:10px; font-family:Arial, Helvetica, sans-serif" maxlength="8" /> p&nbsp;<img name="img_Y_{MAX_SHAPE_COUNTER}" src="./images/transparent.gif" height="16" width="22" alt="" /></td>
+    <td class="ReallySmallBody"><input   type="text" name="Shape_ShapeValue1_{MAX_SHAPE_COUNTER}" value="" style="width:38px; background-color:#F3F3F3; font-size:10px; font-family:Arial, Helvetica, sans-serif" maxlength="8" />
+    p &nbsp;<img name="img_ShapeValue1_{MAX_SHAPE_COUNTER}" src="./images/transparent.gif" height="16" width="22" alt="" /></td>
+    <td class="ReallySmallBody">
+	<div id="shapeValue2InputBox">
+	<input   type="text" name="Shape_ShapeValue2_{MAX_SHAPE_COUNTER}" value="" style=" width:50px; background-color:#F3F3F3; font-size:10px; font-family:Arial, Helvetica, sans-serif" maxlength="8" />
+    p &nbsp;<img name="img_ShapeValue2_{MAX_SHAPE_COUNTER}" src="./images/transparent.gif" height="16" width="22" alt="" /></div></td>
+  </tr>
+</table>
+
+<table width="100%" border="0" cellspacing="0" cellpadding="2">
+  <tr>
+    <td class="ReallySmallBody" nowrap="nowrap">Line Style</td>
+    <td class="ReallySmallBody" nowrap="nowrap">Line Thickness</td>
+	<td class="ReallySmallBody" nowrap="nowrap">Line Color</td>
+    <td class="ReallySmallBody" nowrap="nowrap">Line Alpha</td>
+    <td class="ReallySmallBody" nowrap="nowrap">Fill Color</td>
+    <td class="ReallySmallBody" nowrap="nowrap">Fill Alpha</td>
+  </tr>
+  <tr>
+    <td class="ReallySmallBody"><select name="Shape_LineStyle_{MAX_SHAPE_COUNTER}" style="background-color:#F3F3F3; font-size:9px; font-family:Arial, Helvetica, sans-serif"><option SELECTED value='solid'>Solid</option><option value='dashed'>Dashed</option></select></td>
+    <td class="ReallySmallBody"><input   type="text" name="Shape_LineThickness_{MAX_SHAPE_COUNTER}" value="1" style=" width:30px; background-color:#F3F3F3; font-size:10px; font-family:Arial, Helvetica, sans-serif" maxlength="3" /> picas &nbsp;&nbsp;<img name="img_LineThickness_{MAX_SHAPE_COUNTER}" src="./images/transparent.gif" height="16" width="22" alt="" /></td>
+    <td class="ReallySmallBody"><input   type="text" name="Shape_LineColor_{MAX_SHAPE_COUNTER}" value="#000000" style=" width:55px; background-color:#F3F3F3; font-size:10px; font-family:Arial, Helvetica, sans-serif" maxlength="7" />&nbsp;<img name="img_LineColor_{MAX_SHAPE_COUNTER}" src="./images/transparent.gif" height="16" width="22" alt="" /></td>
+    <td class="ReallySmallBody"><input   type="text" name="Shape_LineAlpha_{MAX_SHAPE_COUNTER}" value="100" style=" width:30px; background-color:#F3F3F3; font-size:10px; font-family:Arial, Helvetica, sans-serif" maxlength="3" />% &nbsp;<img name="img_LineAlpha_{MAX_SHAPE_COUNTER}" src="./images/transparent.gif" height="16" width="22" alt="" /></td>
+    <td class="ReallySmallBody"><input   type="text" name="Shape_FillColor_{MAX_SHAPE_COUNTER}" value="#CCCCCC" style=" width:55px; background-color:#F3F3F3; font-size:10px; font-family:Arial, Helvetica, sans-serif" maxlength="7" />&nbsp;<img name="img_FillColor_{MAX_SHAPE_COUNTER}" src="./images/transparent.gif" height="16" width="22" alt="" /></td>
+    <td class="ReallySmallBody">
+	<input   type="text" name="Shape_FillAlpha_{MAX_SHAPE_COUNTER}" value="100" style=" width:30px; background-color:#F3F3F3; font-size:10px; font-family:Arial, Helvetica, sans-serif" maxlength="3" />% &nbsp;<img name="img_FillAlpha_{MAX_SHAPE_COUNTER}" src="./images/transparent.gif" height="16" width="22" alt="" /></td>
+  </tr>
+</table>
+<img src="./images/transparent.gif" width="5" height="5" alt="" />
+
+<table width="100%" border="0" cellspacing="0" cellpadding="1">
+  <tr>
+    <td width="13%" class="ReallySmallBody" bgcolor="#FFCC99"><table width="100%" border="0" cellspacing="0" cellpadding="1">
+  <tr>
+    <td bgcolor="#FFFFEE" class="ReallySmallBody"><img  src="./images/transparent.gif" width="5" height="4" alt="" /><br/><input type="radio" name="Shape_globalOrLocal_{MAX_SHAPE_COUNTER}" value="G" checked="checked" /> <strong>Global</strong><br/>
+    <input type="radio" name="Shape_globalOrLocal_{MAX_SHAPE_COUNTER}" value="L" /> <strong>Local</strong><br/><img src="./images/transparent.gif" width="5" height="4" alt="" /></td>
+  </tr>
+</table></td>
+    <td width="87%" class="ReallySmallBody">
+	&nbsp;&nbsp;Option Limiter: <input   type="text" name="Shape_OptionLimiter_{MAX_SHAPE_COUNTER}" value="" style=" width:320px; background-color:#F3F3F3; font-size:10px; font-family:Arial, Helvetica, sans-serif" maxlength="200" />
+	<br/><img  src="./images/transparent.gif" width="5" height="5" alt="" /><br/>
+	&nbsp;&nbsp;Remarks: <input   type="text" name="Shape_Remarks_{MAX_SHAPE_COUNTER}" value="" style=" width:360px; background-color:#FFf6f3; font-size:12px; color:#990000; font-weight:bold; font-family:Arial, Helvetica, sans-serif; border-color:#FFCC99; border-top-color:#CCCCFF;  border-style:solid; border-left-color:FFf6f3; border-top-color:FFf6f3; border-right-color:FFf6f3; border-width:thin;" maxlength="200" /></td>
+  </tr>
+</table><img src="./images/transparent.gif" width="5" height="3" alt="" /></td>
+  </tr>
+</table>
+</td>
+  </tr>
+</table>
+</div>
+
+<script>
+// Start off with the Add Shape menu hidden.
+ToggleCreateNewShapeHTML();
+</script>
+
+<!-- BEGIN AllExistingShapesBL -->
+&nbsp;<br/>
+<strong><u>Existing Shapes</u></strong><br/><img  src="./images/transparent.gif" width="5" height="5" border="0" alt="" /><br/>
+<!-- BEGIN AllRectangleShapesBL -->
+<!-- BEGIN RectangleShapeBL -->
+<table width="100%" border="0" cellspacing="0" cellpadding="1">
+  <tr>
+    <td bgcolor="#cc99FF">
+	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td bgcolor="#f6f3FF">
+<table width="100%" border="0" cellspacing="0" cellpadding="2">
+  <tr>
+    <td bgcolor="#f6f3FF" class="ReallySmallBody">
+<table width="100%" border="0" cellspacing="0" cellpadding="2">
+  <tr>
+   <td class="ReallySmallBody" rowspan="2"><img src="./images/icon-rect-description.jpg" width="50" height="35" alt="" />
+   <input type="hidden" name="Shape_ShapeType_{SHAPE_COUNTER}" value="R" /></td>
+   <td class="ReallySmallBody" nowrap="nowrap">Side</td>
+	<td class="ReallySmallBody" nowrap="nowrap">X Coord</td>
+    <td class="ReallySmallBody" nowrap="nowrap">Y Coord</td>
+    <td class="ReallySmallBody" nowrap="nowrap">Width</td>
+    <td class="ReallySmallBody" nowrap="nowrap">Height</td>
+	<td class="ReallySmallBody" nowrap="nowrap">Rotation</td>
+	<td class="ReallySmallBody" nowrap="nowrap">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class="ReallySmallBody"><select name="Shape_SideNum_{SHAPE_COUNTER}" style="background-color:#F3F3F3; font-size:9px; font-family:Arial, Helvetica, sans-serif">{SHAPE_SIDE_OPTIONS}</select></td>
+    <td class="ReallySmallBody"><input   type="text" name="Shape_X_{SHAPE_COUNTER}" value="{SHAPE_X}" style=" width:38px; background-color:#F3F3F3; font-size:10px; font-family:Arial, Helvetica, sans-serif" maxlength="8" /> p<img name="img_X_{SHAPE_COUNTER}" src="./images/transparent.gif" height="16" width="22" alt="" /></td>
+    <td class="ReallySmallBody"><input   type="text" name="Shape_Y_{SHAPE_COUNTER}" value="{SHAPE_Y}" style=" width:38px; background-color:#F3F3F3; font-size:10px; font-family:Arial, Helvetica, sans-serif" maxlength="8" /> p<img name="img_Y_{SHAPE_COUNTER}" src="./images/transparent.gif" height="16" width="22" alt="" /></td>
+    <td class="ReallySmallBody"><input   type="text" name="Shape_ShapeValue1_{SHAPE_COUNTER}" value="{SHAPE_SHAPE_VALUE_1}" style="width:38px; background-color:#F3F3F3; font-size:10px; font-family:Arial, Helvetica, sans-serif" maxlength="8" />
+    p<img name="img_ShapeValue1_{SHAPE_COUNTER}" src="./images/transparent.gif" height="16" width="22" alt="" /></td>
+    <td class="ReallySmallBody"><input   type="text" name="Shape_ShapeValue2_{SHAPE_COUNTER}" value="{SHAPE_SHAPE_VALUE_2}" style=" width:38px; background-color:#F3F3F3; font-size:10px; font-family:Arial, Helvetica, sans-serif" maxlength="8" />
+	p<img name="img_ShapeValue2_{SHAPE_COUNTER}" src="./images/transparent.gif" height="16" width="22" alt="" />
+    </td>
+	<td class="ReallySmallBody"><input   type="text" name="Shape_Rotation_{SHAPE_COUNTER}" value="{SHAPE_ROTATION}" style=" width:30px; background-color:#F3F3F3; font-size:10px; font-family:Arial, Helvetica, sans-serif" maxlength="3" />&nbsp;<img name="img_Rotation_{SHAPE_COUNTER}" src="./images/transparent.gif" height="16" width="22" alt="" /></td>
+	<td class="ReallySmallBody"><a href="javascript:DeleteShape('{SHAPE_ID}','{PROFILE_ID}','Rectangle')" class="BlueRedLink">X</a></td>
+  </tr>
+</table>
+<table width="100%" border="0" cellspacing="0" cellpadding="2">
+  <tr>
+    <td class="ReallySmallBody" nowrap="nowrap">Line Style</td>
+    <td class="ReallySmallBody" nowrap="nowrap">Line Thickness</td>
+	<td class="ReallySmallBody" nowrap="nowrap">Line Color</td>
+    <td class="ReallySmallBody" nowrap="nowrap">Line Alpha</td>
+    <td class="ReallySmallBody" nowrap="nowrap">Fill Color</td>
+    <td class="ReallySmallBody" nowrap="nowrap">Fill Alpha</td>
+  </tr>
+  <tr>
+    <td class="ReallySmallBody"><select name="Shape_LineStyle_{SHAPE_COUNTER}" style="background-color:#F3F3F3; font-size:9px; font-family:Arial, Helvetica, sans-serif">{LINE_STYLE_OPTIONS}</select></td>
+    <td class="ReallySmallBody"><input   type="text" name="Shape_LineThickness_{SHAPE_COUNTER}" value="{SHAPE_LINE_THICKNESS}" style=" width:30px; background-color:#F3F3F3; font-size:10px; font-family:Arial, Helvetica, sans-serif" maxlength="3" /> picas &nbsp;<img name="img_LineThickness_{SHAPE_COUNTER}" src="./images/transparent.gif" height="16" width="22" alt="" /></td>
+    <td class="ReallySmallBody"><input   type="text" name="Shape_LineColor_{SHAPE_COUNTER}" value="{SHAPE_LINE_COLOR}" style=" width:55px; background-color:#F3F3F3; font-size:10px; font-family:Arial, Helvetica, sans-serif" maxlength="7" />&nbsp;<img name="img_LineColor_{SHAPE_COUNTER}" src="./images/transparent.gif" height="16" width="22" alt="" /></td>
+    <td class="ReallySmallBody"><input   type="text" name="Shape_LineAlpha_{SHAPE_COUNTER}" value="{SHAPE_LINE_ALPHA}" style=" width:30px; background-color:#F3F3F3; font-size:10px; font-family:Arial, Helvetica, sans-serif" maxlength="3" />% &nbsp;<img name="img_LineAlpha_{SHAPE_COUNTER}" src="./images/transparent.gif" height="16" width="22" alt="" /></td>
+    <td class="ReallySmallBody"><input   type="text" name="Shape_FillColor_{SHAPE_COUNTER}" value="{SHAPE_FILL_COLOR}" style=" width:55px; background-color:#F3F3F3; font-size:10px; font-family:Arial, Helvetica, sans-serif" maxlength="7" />&nbsp;<img name="img_FillColor_{SHAPE_COUNTER}" src="./images/transparent.gif" height="16" width="22" alt="" /></td>
+    <td class="ReallySmallBody">
+	<input   type="text" name="Shape_FillAlpha_{SHAPE_COUNTER}" value="{SHAPE_FILL_ALPHA}" style=" width:30px; background-color:#F3F3F3; font-size:10px; font-family:Arial, Helvetica, sans-serif" maxlength="3" />% &nbsp;<img name="img_FillAlpha_{SHAPE_COUNTER}" src="./images/transparent.gif" height="16" width="22" alt="" /></td>
+  </tr>
+</table>
+<img src="./images/transparent.gif" width="5" height="5" alt="" />
+<table width="100%" border="0" cellspacing="0" cellpadding="1">
+  <tr>
+    <td width="13%" class="ReallySmallBody" bgcolor="#cc99FF"><table width="100%" border="0" cellspacing="0" cellpadding="1">
+  <tr>
+    <td bgcolor="#f0ecFF" class="ReallySmallBody"><img  src="./images/transparent.gif" width="5" height="4" alt="" /><br/><input type="radio" name="Shape_globalOrLocal_{SHAPE_COUNTER}" value="G" {GLOBAL_CHECKED} /> <strong>Global</strong><br/>
+    <input type="radio" name="Shape_globalOrLocal_{SHAPE_COUNTER}" value="L" {LOCAL_CHECKED} /> <strong>Local</strong><br/><img src="./images/transparent.gif" width="5" height="4" alt="" /></td>
+  </tr>
+</table></td>
+    <td width="87%" class="ReallySmallBody">
+	&nbsp;&nbsp;Option Limiter: <input   type="text" name="Shape_OptionLimiter_{SHAPE_COUNTER}" value="{SHAPE_OPTIONS_LIMITER}" style=" width:320px; background-color:#F3F3F3; font-size:10px; font-family:Arial, Helvetica, sans-serif" maxlength="200" />
+	<br/><img  src="./images/transparent.gif" width="5" height="5" alt="" /><br/>
+	&nbsp;&nbsp;Remarks: <input   type="text" name="Shape_Remarks_{SHAPE_COUNTER}" value="{SHAPE_REMARKS}" style=" width:360px; background-color:#f6f3FF; font-size:12px; color:#990000; font-weight:bold; font-family:Arial, Helvetica, sans-serif; border-color:#CCCCFF ; border-top-color:#CCCCFF;  border-style:solid; border-left-color:f6f3FF; border-top-color:f6f3FF; border-right-color:f6f3FF; border-width:thin;" maxlength="200" /></td>
+  </tr>
+</table>
+</td>
+  </tr>
+</table>
+</td>
+  </tr>
+</table>
+</td>
+  </tr>
+</table>
+&nbsp;
+<!-- END RectangleShapeBL -->
+<!-- END AllRectangleShapesBL -->
+
+<!-- BEGIN AllCircleShapesBL -->
+<!-- BEGIN CircleShapeBL -->
+
+<table width="100%" border="0" cellspacing="0" cellpadding="1">
+  <tr>
+    <td bgcolor="#cc99FF">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td bgcolor="#f6f3FF">
+<table width="100%" border="0" cellspacing="0" cellpadding="2">
+  <tr>
+    <td bgcolor="#f6f3FF" class="ReallySmallBody">
+<table width="100%" border="0" cellspacing="0" cellpadding="2">
+  <tr>
+	<td class="ReallySmallBody" rowspan="2"><img src="./images/icon-circle-description.jpg" width="37" height="35" alt="" />
+	<input type="hidden" name="Shape_ShapeType_{SHAPE_COUNTER}" value="C" /></td>
+    <td class="ReallySmallBody" nowrap="nowrap">Which Side</td>
+	<td class="ReallySmallBody" nowrap="nowrap">X Coord</td>
+    <td class="ReallySmallBody" nowrap="nowrap">Y Coord</td>
+    <td class="ReallySmallBody" nowrap="nowrap">Radius</td>
+    <td class="ReallySmallBody" nowrap="nowrap">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class="ReallySmallBody"><select name="Shape_SideNum_{SHAPE_COUNTER}" style="background-color:#F3F3F3; font-size:9px; font-family:Arial, Helvetica, sans-serif">{SHAPE_SIDE_OPTIONS}</select></td>
+    <td class="ReallySmallBody"><input   type="text" name="Shape_X_{SHAPE_COUNTER}" value="{SHAPE_X}" style=" width:45px; background-color:#F3F3F3; font-size:10px; font-family:Arial, Helvetica, sans-serif" maxlength="8" /> p&nbsp;<img name="img_X_{SHAPE_COUNTER}" src="./images/transparent.gif" height="16" width="22" alt="" /></td>
+    <td class="ReallySmallBody"><input   type="text" name="Shape_Y_{SHAPE_COUNTER}" value="{SHAPE_Y}" style=" width:45px; background-color:#F3F3F3; font-size:10px; font-family:Arial, Helvetica, sans-serif" maxlength="8" /> p&nbsp;<img name="img_Y_{SHAPE_COUNTER}" src="./images/transparent.gif" height="16" width="22" alt="" /></td>
+    <td class="ReallySmallBody"><input   type="text" name="Shape_ShapeValue1_{SHAPE_COUNTER}" value="{SHAPE_SHAPE_VALUE_1}" style="width:45px; background-color:#F3F3F3; font-size:10px; font-family:Arial, Helvetica, sans-serif" maxlength="8" /> p
+    &nbsp;<img name="img_ShapeValue1_{SHAPE_COUNTER}" src="./images/transparent.gif" height="16" width="22" alt="" /></td>
+    <td class="ReallySmallBody"><a href="javascript:DeleteShape('{SHAPE_ID}','{PROFILE_ID}','Circle')" class="BlueRedLink">X</a></td>
+  </tr>
+</table>
+	  <table width="100%" border="0" cellspacing="0" cellpadding="2">
+  <tr>
+    <td class="ReallySmallBody" nowrap="nowrap">Line Style</td>
+    <td class="ReallySmallBody" nowrap="nowrap">Line Thickness</td>
+	<td class="ReallySmallBody" nowrap="nowrap">Line Color</td>
+    <td class="ReallySmallBody" nowrap="nowrap">Line Alpha</td>
+    <td class="ReallySmallBody" nowrap="nowrap">Fill Color</td>
+    <td class="ReallySmallBody" nowrap="nowrap">Fill Alpha</td>
+  </tr>
+  <tr>
+    <td class="ReallySmallBody"><select name="Shape_LineStyle_{SHAPE_COUNTER}" style="background-color:#F3F3F3; font-size:9px; font-family:Arial, Helvetica, sans-serif">{LINE_STYLE_OPTIONS}</select></td>
+    <td class="ReallySmallBody"><input   type="text" name="Shape_LineThickness_{SHAPE_COUNTER}" value="{SHAPE_LINE_THICKNESS}" style=" width:30px; background-color:#F3F3F3; font-size:10px; font-family:Arial, Helvetica, sans-serif" maxlength="3" /> picas &nbsp;<img name="img_LineThickness_{SHAPE_COUNTER}" src="./images/transparent.gif" height="16" width="22" alt="" /></td>
+    <td class="ReallySmallBody"><input   type="text" name="Shape_LineColor_{SHAPE_COUNTER}" value="{SHAPE_LINE_COLOR}" style=" width:55px; background-color:#F3F3F3; font-size:10px; font-family:Arial, Helvetica, sans-serif" maxlength="7" />&nbsp;<img name="img_LineColor_{SHAPE_COUNTER}" src="./images/transparent.gif" height="16" width="22" alt="" /></td>
+    <td class="ReallySmallBody"><input   type="text" name="Shape_LineAlpha_{SHAPE_COUNTER}" value="{SHAPE_LINE_ALPHA}" style=" width:30px; background-color:#F3F3F3; font-size:10px; font-family:Arial, Helvetica, sans-serif" maxlength="3" />% &nbsp;<img name="img_LineAlpha_{SHAPE_COUNTER}" src="./images/transparent.gif" height="16" width="22" alt="" /></td>
+    <td class="ReallySmallBody"><input   type="text" name="Shape_FillColor_{SHAPE_COUNTER}" value="{SHAPE_FILL_COLOR}" style=" width:55px; background-color:#F3F3F3; font-size:10px; font-family:Arial, Helvetica, sans-serif" maxlength="7" />&nbsp;<img name="img_FillColor_{SHAPE_COUNTER}" src="./images/transparent.gif" height="16" width="22" alt="" /></td>
+    <td class="ReallySmallBody">
+	<input   type="text" name="Shape_FillAlpha_{SHAPE_COUNTER}" value="{SHAPE_FILL_ALPHA}" style=" width:30px; background-color:#F3F3F3; font-size:10px; font-family:Arial, Helvetica, sans-serif" maxlength="3" />% &nbsp;<img name="img_FillAlpha_{SHAPE_COUNTER}" src="./images/transparent.gif" height="16" width="22" alt="" /></td>
+  </tr>
+</table>
+<img src="./images/transparent.gif" width="5" height="5" alt="" />
+<table width="100%" border="0" cellspacing="0" cellpadding="1">
+  <tr>
+    <td width="13%" class="ReallySmallBody" bgcolor="#cc99FF"><table width="100%" border="0" cellspacing="0" cellpadding="1">
+  <tr>
+    <td bgcolor="#f0ecFF" class="ReallySmallBody"><img  src="./images/transparent.gif" width="5" height="4" alt="" /><br/><input type="radio" name="Shape_globalOrLocal_{SHAPE_COUNTER}" value="G" {GLOBAL_CHECKED}  /> <strong>Global</strong><br/>
+    <input type="radio" name="Shape_globalOrLocal_{SHAPE_COUNTER}" value="L" {LOCAL_CHECKED}  /> <strong>Local</strong><br/><img src="./images/transparent.gif" width="5" height="4" alt="" /></td>
+  </tr>
+</table></td>
+    <td width="87%" class="ReallySmallBody">
+	&nbsp;&nbsp;Option Limiter: <input   type="text" name="Shape_OptionLimiter_{SHAPE_COUNTER}" value="{SHAPE_OPTIONS_LIMITER}" style=" width:320px; background-color:#F3F3F3; font-size:10px; font-family:Arial, Helvetica, sans-serif" maxlength="200" />
+	<br/><img  src="./images/transparent.gif" width="5" height="5" alt="" /><br/>
+	&nbsp;&nbsp;Remarks: <input   type="text" name="Shape_Remarks_{SHAPE_COUNTER}" value="{SHAPE_REMARKS}" style=" width:360px; background-color:#f6f3FF; font-size:12px; color:#990000; font-weight:bold; font-family:Arial, Helvetica, sans-serif; border-color:#CCCCFF ; border-top-color:#CCCCFF;  border-style:solid; border-left-color:f6f3FF; border-top-color:f6f3FF; border-right-color:f6f3FF; border-width:thin;" maxlength="200" /></td>
+  </tr>
+</table>
+</td>
+  </tr>
+</table>
+</td>
+  </tr>
+</table>
+</td>
+  </tr>
+</table>
+&nbsp;
+
+<!-- END CircleShapeBL -->
+<!-- END AllCircleShapesBL -->
+<!-- END AllExistingShapesBL -->
+
+</td>
+  </tr>
+  <tr> <td colspan="2" bgcolor="DDDDE3"><img src="./images/transparent.gif" border="0" width="1" height="2" alt="" /></td>
+  </tr>
+</table>
+&nbsp;
+<br/>
+<div align="right">
+<input type="submit" name="Add" value="Save Changes" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" />
+</div>
+</form>
+
+<!-- END MainPDFprofileForm -->
+<br/>&nbsp;<br/>
+<br/>
+<br/>
+<br/>
+<br/><br/>
+<br/>
+<br/>
+<br/>
+
+
+</td>
+</tr>
+</table>
+
+<br/>
+</td>
+</tr>
+</table>
+<br/>
+<br/>
+
+<table width="760" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="360" class="NavColor"><img src="./images/footer.gif" border="0" width="350" height="16" usemap="#footer" alt="" /></td>
+	<td width="400" align="right" class="NavColor"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+  </tr>
+</table>
+<font class="copyright"> </font>
+</div>
+&nbsp;
+<script type="text/javascript" src="./library/ImageMap-footer.js"></script>
+</body>
+</html>

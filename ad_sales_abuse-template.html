@@ -1,0 +1,105 @@
+<html>
+<head>
+<title>Sales Rep Abuse</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+
+<script language="javascript">
+
+	//Make an array of the images we want to preload for the mouse-overs.
+	arImageSrc = new Array (
+		"./images/button-go-d.gif",
+		"./images/button-closewindow-blue-d.gif",
+		"./images/button-sendmessage-blue-d.gif"
+	)
+
+	function ShowSalesPerson(SalesUserID){
+	
+		if(window.opener)
+			window.opener.location = "./myaccount_sales.php?view=report&salesrep=" + SalesUserID;
+		else
+			alert("The parent Window has been closed.  You may need to close this pop-up window and re-open it again.");
+	
+	}
+
+
+</script>
+
+</head>
+
+<body bgcolor="#3366CC" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="" >
+<img  src="./images/transparent.gif" border="0" width="1" height="10" alt="" /><br/>
+<div align="center">
+<table bgcolor="#EEEEEE" width="500" cellpadding="0" cellspacing="0" border="0">
+
+<tr>
+<td bgcolor="#999999" class="Body" align="center"><img  src="./images/transparent.gif" border="0" width="1" height="3" alt="" /><br/><font color="#FFFFFF"><b>Sales Rep Abuse</b></font><br/><img src="./images/transparent.gif" border="0" width="1" height="3" alt="" /></td>
+
+<tr>
+<td align="center" class="Body">
+<br/>
+
+<!-- BEGIN NoAbuseBL -->
+<table width="95%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+            <td class="SmallBody"> The following sales reps have given out Sales 
+              Rep Coupons to existing customers. A few here and there are acceptable, 
+              in case the customer forgot to use their coupon on the first try. 
+              Or maybe they saw a commercial and decided to use the coupon after 
+              they have already ordered from us. The Total Orders will put into 
+              context how hard the Sales rep has been working.</td>
+  </tr>
+</table>
+
+
+
+<table width="100%" border="0" cellspacing="8" cellpadding="3">
+  <tr>
+    <td class="SmallBody" bgcolor="#CCCCEE">&nbsp;<b>Sales Name</b></td>
+	<td class="SmallBody" bgcolor="#CCCCEE">&nbsp;<b>Instances</b></td>
+	<td class="SmallBody" bgcolor="#CCCCEE">&nbsp;<b>Total Orders</b></td>
+	<td class="SmallBody" bgcolor="#CCCCEE">&nbsp;<b>Ratio</b></td>
+  </tr>
+<!-- BEGIN AbuseBL -->
+  <tr>
+    <td class="SmallBody" bgcolor="#DDDDFF">&nbsp;<a href="javascript:ShowSalesPerson({SALES_ID})" class="blueredlink">{SALES_NAME}</a></td>
+	<td class="SmallBody" bgcolor="#DDDDFF">&nbsp;{INSTANCES}</td>
+	<td class="SmallBody" bgcolor="#DDDDFF">&nbsp;{TOTALORDERS}</td>
+	<td class="SmallBody" bgcolor="#DDDDFF">&nbsp;{RATIO}%</td>
+  </tr>
+ <!-- END AbuseBL -->
+</table>
+
+<!-- END NoAbuseBL -->
+
+</td>
+</tr>
+
+
+<tr>
+<td><img src="images/header-editoptions-fade-bot.gif" width="500" alt="" /></td>
+</tr>
+</table>
+
+<table width="350" border="0" cellspacing="0" cellpadding="0">
+
+  <tr>
+
+    <td align="center">
+
+<img  src="./images/transparent.gif" border="0" width="1" height="5" alt="" /><br/>
+<a onclick="self.close();" ><img src="./images/button-closewindow-blue-u.gif" onmouseover="this.src='./images/button-closewindow-blue-d.gif';" onmouseout="this.src='./images/button-closewindow-blue-u.gif';" border="0"  align="absmiddle" alt="" /></a>  &nbsp;&nbsp;
+
+
+<br/>
+&nbsp;
+	</td>
+
+  </tr>
+</table>
+</div>
+
+
+</body>
+</html>

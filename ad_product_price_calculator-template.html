@@ -1,0 +1,333 @@
+<html>
+<head>
+<title>Product Price Calculator</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+
+<script type="text/javascript" src="./library/api_dot.js"></script>
+<script type="text/javascript" src="./library/general_lib.js"></script>
+<script language="javascript">
+
+	// Setup a Global Product Object.
+	var prL = new ProductLoader();
+	prL.includeVendors(true);
+
+
+	function updateSubtotal()
+	{
+		var prodObj = prL.getProductObj({PRODUCT_ID});
+
+		document.all.subtotalDiv.innerHTML = "$" + addCommas(prodObj.getSubtotal());
+		document.all.weightDiv.innerHTML = addCommas(prodObj.getTotalWeight(prodObj.selectedOptionsObj)) + " lbs.";
+
+		var vendorTotal1 = parseFloat(prodObj.getVendorTotal(prodObj.selectedOptionsObj, 1));
+		var vendorTotal2 = parseFloat(prodObj.getVendorTotal(prodObj.selectedOptionsObj, 2));
+		var vendorTotal3 = parseFloat(prodObj.getVendorTotal(prodObj.selectedOptionsObj, 3));
+		var vendorTotal4 = parseFloat(prodObj.getVendorTotal(prodObj.selectedOptionsObj, 4));
+		var vendorTotal5 = parseFloat(prodObj.getVendorTotal(prodObj.selectedOptionsObj, 5));
+		var vendorTotal6 = parseFloat(prodObj.getVendorTotal(prodObj.selectedOptionsObj, 6));
+
+		document.all.vendorTotal1.innerHTML = "$" + addCommas(RoundWithTwoDecimals(vendorTotal1));
+		document.all.vendorTotal2.innerHTML = "$" + addCommas(RoundWithTwoDecimals(vendorTotal2));
+		document.all.vendorTotal3.innerHTML = "$" + addCommas(RoundWithTwoDecimals(vendorTotal3));
+		document.all.vendorTotal4.innerHTML = "$" + addCommas(RoundWithTwoDecimals(vendorTotal4));
+		document.all.vendorTotal5.innerHTML = "$" + addCommas(RoundWithTwoDecimals(vendorTotal5));
+		document.all.vendorTotal6.innerHTML = "$" + addCommas(RoundWithTwoDecimals(vendorTotal6));
+
+		var vendorTotals = vendorTotal1 + vendorTotal2 + vendorTotal3 + vendorTotal4 + vendorTotal5 + vendorTotal6;
+
+		document.all.profitDiv.innerHTML = "$" + addCommas(RoundWithTwoDecimals(parseFloat(prodObj.getSubtotal()) - vendorTotals));
+
+
+
+		document.all.vendorTotalsDiv.innerHTML = "$" + addCommas(RoundWithTwoDecimals(vendorTotals));
+	}
+
+
+
+	// Everytime the user picks another quantity choice this will store the setting in the Project Object and update the subtotal.  It does not save the value to the server.
+	function changeQuantity(newQuantity){
+
+		var prodObj = prL.getProductObj({PRODUCT_ID});
+
+		prodObj.selectedOptionsObj.setQuantity(newQuantity);
+
+		updateSubtotal();
+	}
+
+
+
+
+
+	function SelectChoice(optionName, choiceName){
+
+
+		var prodObj = prL.getProductObj({PRODUCT_ID});
+
+
+		prodObj.selectedOptionsObj.setOptionChoice(optionName, choiceName);
+
+		updateSubtotal();
+	}
+
+
+
+
+	// Event called in case there is an error download the Project details.
+	function productLoadingErrorEvent(errCode, errDesc)
+	{
+		document.all.optionDiv.innerHTML = "<font color='#990000'><b>Error:</b><br/><i>" + errCode + "</i> - " + errDesc + "</font>";
+	}
+
+
+
+	function changeQuantityTextInput(quantityValueOriginal){
+
+		// Get rid of non-numbers
+		quantityValue = quantityValueOriginal.replace(/[^0-9]/g, "");
+
+		// Get rid of Zero Prefix
+		quantityValue = quantityValue.replace(/^0+/, "");
+
+		if(quantityValue == "")
+			quantityValue = "0";
+
+
+
+		quantityValue = quantityValue + "";
+		quantityValue = addCommas(quantityValue);
+		if(quantityValueOriginal != quantityValue)
+			document.forms['options'].Quantity.value = quantityValue;
+
+
+		var quantityNoCommas = quantityValue.replace(/,/g, "");
+		changeQuantity(quantityNoCommas);
+	}
+
+
+
+	// Build all of the HTML and form inputs for the Quantity & Options.
+	function displayProductDetails()
+	{
+
+		var prodObj = prL.getProductObj({PRODUCT_ID});
+
+		// Header
+		var outPut = '<table width="100%" cellpadding="2" cellspacing="0" border="0" bgcolor="#AAAAAA">';
+		 outPut +='<form name="options">';
+		 outPut +='<tr><td align="center"><table width="100%" cellpadding="4" cellspacing="0" border="0" bgcolor="#FFFFEE">';
+		 outPut +='<tr><td align="center"><table width="100%" cellpadding="6" cellspacing="0" border="0">';
+		 outPut +='<tr><td valign="top" class="Body">';
+
+
+		//Out put the Quantity Selection
+		if(prodObj.isVariableData())
+		{
+			outPut += '<font color="#660000"><b>Variable Data Quantity</b></font><br/>';
+
+			outPut += '<input type="text" name="Quantity" onKeyUp="changeQuantityTextInput(this.value);" style="font-size:12px; width:70px; face:arial" value="0" maxlength="10" /><br/><br/>';
+		}
+		else
+		{
+			outPut += '<font color="#660000"><b>Quantity Breaks</b></font><br/>';
+
+
+			// Build the drop-down menu for quantity choices
+			outPut += '<select name="Quantity" onChange="changeQuantity(this.value);" style="font-size:12px; face:arial">';
+
+			var quantityChoicesArr = prodObj.getQuantityChoicesArr();
+
+			for(var i=0; i<quantityChoicesArr.length; i++){
+
+				var quantityChoice = quantityChoicesArr[i];
+
+				var quantitySelected = "";
+				if(prodObj.getSelectedQuantity() == quantityChoice)
+					quantitySelected = "selected='selected'";
+
+				outPut += "<option value='"+quantityChoice+"' "+quantitySelected+">" + addCommas(quantityChoice) + "</option>";
+			}
+
+			outPut += '</select><br/><br/>';
+		}
+
+
+
+		var optionNamesArr = prodObj.getOptionNames();
+
+		for(var i=0; i<optionNamesArr.length; i++)
+		{
+			var optionName = optionNamesArr[i];
+
+			var selectedChoiceName = prodObj.getChoiceSelected(optionName);
+
+			outPut += "<b><font color='#660000'>" +  htmlize(optionName) + "</font></b><br/>";
+
+
+			// Set the Class Name for Choices
+			outPut += "<font class='SmallBody'>";
+
+
+			// Now build a group of radio buttons for each choice belonging to this option.
+			var choicesArr = prodObj.getChoiceNamesForOption(optionName);
+
+			for(var x in choicesArr){
+
+				// Show indicators on which Product Option / Choices are hidden.
+				var hiddenDescription = "";
+				if(prodObj.isChoiceIsHidden(optionName, choicesArr[x]))
+					hiddenDescription = "&nbsp;&nbsp;&nbsp;<font class='ReallySmallBody'> <i>(hidden)</i></font>";
+
+
+				var choiceChecked = "";
+				if(selectedChoiceName == choicesArr[x])
+					choiceChecked = "checked='checked'";
+
+				outPut += "<input type='radio' name='option_" + i + "' " + choiceChecked + " value='"+x+"' onclick='SelectChoice(\""+optionName+"\",\""+choicesArr[x]+"\")' /> ";
+
+
+				outPut += htmlize(choicesArr[x]) + hiddenDescription + "<br/>";
+			}
+
+			outPut += "<br/>";
+
+
+			outPut += "</font>";
+
+		}
+
+
+
+		// Footer
+		 outPut += '</td></tr></table></td>';
+		 outPut +='</tr></table></td></tr><tr><td>';
+		 outPut +='<table width="100%" cellpadding="0" cellspacing="0" border="0">';
+		 outPut +='<tr><td align="left" class="SmallBody">';
+		 outPut +='<!-- BEGIN WEIGHT -->';
+		 outPut +='<table cellpadding="1" cellspacing="0" border="0" ><tr><td class="SmallBody" style="color:#333333" nowrap>Weight:&nbsp;&nbsp;</td><td bgcolor="#666666" class="SmallBody"><div style="width:80; background-color:#FFFFCC; font-face:arial; font-size:12px;" id="weightDiv"></div></td><td class="SmallBody">&nbsp;&nbsp;</td></tr></table>';
+		 outPut +='<!-- END WEIGHT -->';
+		 outPut +='</td>';
+		 outPut +='<td align="right" class="Body" class="SmallBody">';
+		 outPut +='<!-- BEGIN VENDOR_TOTAL -->';
+		 outPut +='<table cellpadding="1" cellspacing="0" border="0" ><tr><td class="SmallBody" style="color:#333333" nowrap>Vendors:&nbsp;&nbsp;</td><td bgcolor="#666666" class="SmallBody"><div style="width:80; background-color:#FFFFCC; font-face:arial; font-size:14px;" id="vendorTotalsDiv"></div></td><td class="SmallBody">&nbsp;&nbsp;</td></tr></table>';
+		 outPut +='<!-- END VENDOR_TOTAL -->';
+		 outPut += '</td>';
+
+		 outPut +='<td align="right" class="Body" class="SmallBody">';
+		 outPut +='<!-- BEGIN PROFIT -->';
+		 outPut +='<table cellpadding="1" cellspacing="0" border="0" ><tr><td class="SmallBody" style="color:#333333" nowrap>Profit:&nbsp;&nbsp;</td><td bgcolor="#666666" class="SmallBody"><div style="width:80; background-color:#FFFFCC; font-face:arial; font-size:14px;" id="profitDiv"></div></td><td class="SmallBody">&nbsp;&nbsp;</td></tr></table>';
+		 outPut +='<!-- END PROFIT -->';
+		 outPut += '</td>';
+
+		 outPut +='<td align="right" class="Body" class="SmallBody">';
+		 outPut +='<!-- BEGIN PRICE_TOTAL -->';
+		 outPut +='<table cellpadding="1" cellspacing="0" border="0" ><tr><td class="SmallBody" style="color:#333333" nowrap>Customer:&nbsp;&nbsp;</td><td bgcolor="#666666" class="SmallBody"><div style="width:80; background-color:#FFFFCC; font-face:arial; font-size:14px;" id="subtotalDiv"></div></td><td class="SmallBody">&nbsp;&nbsp;</td></tr></table>';
+		 outPut +='<!-- END PRICE_TOTAL -->';
+		 outPut += '</td>';
+		 outPut +='</tr></table>';
+
+		 outPut +='<!-- BEGIN VENDORS -->';
+		 outPut +='<table width="100%" cellpadding="3" cellspacing="0" border="0">';
+		 outPut +='<tr>';
+		 outPut +='<td class="ReallySmallBody"><font color="#FFFFFF">' + htmlize(prodObj.vendorNamesArr[0]) + '</font></td>';
+		 outPut +='<td class="ReallySmallBody"><font color="#FFFFFF">' + htmlize(prodObj.vendorNamesArr[1]) + '</font></td>';
+		 outPut +='<td class="ReallySmallBody"><font color="#FFFFFF">' + htmlize(prodObj.vendorNamesArr[2]) + '</font></td>';
+		 outPut +='<td class="ReallySmallBody"><font color="#FFFFFF">' + htmlize(prodObj.vendorNamesArr[3]) + '</font></td>';
+		 outPut +='<td class="ReallySmallBody"><font color="#FFFFFF">' + htmlize(prodObj.vendorNamesArr[4]) + '</font></td>';
+		 outPut +='<td class="ReallySmallBody"><font color="#FFFFFF">' + htmlize(prodObj.vendorNamesArr[5]) + '</font></td>';
+		 outPut +='</tr>';
+		 outPut +='<tr>';
+		 outPut +='<td class="ReallySmallBody"><div id="vendorTotal1" class="ReallySmallBody" style="border: 1px #666666 solid; background-color:#FFFFdd; padding:1px; width:50px;"><font color="#333333">' + " " + '</font></div></td>';
+		 outPut +='<td class="ReallySmallBody"><div id="vendorTotal2" class="ReallySmallBody" style="border: 1px #666666 solid; background-color:#FFFFdd; padding:1px; width:50px;"><font color="#333333">' + " " + '</font></div></td>';
+		 outPut +='<td class="ReallySmallBody"><div id="vendorTotal3" class="ReallySmallBody" style="border: 1px #666666 solid; background-color:#FFFFdd; padding:1px; width:50px;"><font color="#333333">' + " " + '</font></div></td>';
+		 outPut +='<td class="ReallySmallBody"><div id="vendorTotal4" class="ReallySmallBody" style="border: 1px #666666 solid; background-color:#FFFFdd; padding:1px; width:50px;"><font color="#333333">' + " " + '</font></div></td>';
+		 outPut +='<td class="ReallySmallBody"><div id="vendorTotal5" class="ReallySmallBody" style="border: 1px #666666 solid; background-color:#FFFFdd; padding:1px; width:50px;"><font color="#333333">' + " " + '</font></div></td>';
+		 outPut +='<td class="ReallySmallBody"><div id="vendorTotal6" class="ReallySmallBody" style="border: 1px #666666 solid; background-color:#FFFFdd; padding:1px; width:50px;"><font color="#333333">' + " " + '</font></div></td>';
+		 outPut +='</tr>';
+		 outPut +='</table>';
+		 outPut +='<!-- END VENDORS -->';
+
+		 outPut +='</td></tr></form></table>';
+
+
+		document.all.optionDiv.innerHTML = outPut;
+
+		// Display the subtotal as soon as the HTML has been outputed.
+		updateSubtotal();
+
+
+	}
+
+
+
+
+
+	// Dont load the project until the HTML has finished downloading.
+	function loadProduct()
+	{
+
+		prL.attachProductLoadedEvent({PRODUCT_ID}, displayProductDetails, this);
+		prL.attatchProductLoadingErrorEvent(productLoadingErrorEvent, this);
+	}
+
+
+
+</script>
+
+
+</head>
+
+<body bgcolor="#3366CC" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="loadProduct()">
+<img  src="./images/transparent.gif" border="0" width="1" height="10" alt="" /><br/>
+<div align="center">
+<table bgcolor="#EEEEEE" width="400" cellpadding="0" cellspacing="0" border="0">
+
+<tr>
+<td bgcolor="#CCCCCC" align="center" class="Body" style="background-image: url(./images/admin/header-shipping.png); background-repeat: no-repeat;">
+<form name="productIDform" action="./ad_product_price_calculator.php">
+<select name="productID" onChange="document.forms['productIDform'].submit();">{PRODUCT_DROPDOWN}</select>
+</form>
+</td>
+
+<tr>
+<tr>
+<td bgcolor="#666666" align="center" class="Body"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+
+<tr>
+<td align="center">
+
+<table width="96%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td class="Body">&nbsp;<div id="optionDiv">
+<font color="#990000">Loading ...</font>
+</div>&nbsp;</td>
+  </tr>
+</table>
+
+</td>
+</tr>
+
+
+<tr>
+<td><img src="images/header-editoptions-fade-bot.gif" height="35" width="620" alt="" /></td>
+</tr>
+</table>
+
+<table width="350" border="0" cellspacing="0" cellpadding="0">
+
+  <tr>
+
+    <td align="center">
+
+<img  src="./images/transparent.gif" border="0" width="1" height="5" alt="" /><br/>
+
+&nbsp;
+	</td>
+
+  </tr>
+</table>
+</div>
+
+</body>
+</html>

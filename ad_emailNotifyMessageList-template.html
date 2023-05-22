@@ -1,0 +1,111 @@
+<html>
+<head>
+<title>Admin</title>
+<LINK REL=stylesheet HREF="./library/stylesheet.css" TYPE="text/css">
+<LINK REL="SHORTCUT ICON" HREF="/favicon.ico">
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<script type="text/javascript" src="./library/admin_library.js"></script>
+<script type="text/javascript" src="./library/general_lib.js"></script>
+<script language="javascript">
+
+</script>
+
+<link rel="stylesheet" type="text/css" href="library/calendar/themes/winter.css"/>
+<script type="text/javascript" src="library/calendar/src/utils.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar.js"></script>
+<script type="text/javascript" src="library/calendar/lang/calendar-en.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar-setup.js"></script>
+<script type="text/javascript" src="library/formatDate.js"></script>
+</head>
+<body bgcolor="#FFFFFF" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="">
+<div align="center">
+{HEADER}
+<table width="760" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td class="body">
+<br/><br/>
+{EMAIL_NOTIFY_TABS}
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td bgcolor="#3366CC"><img src="./images/transparent.gif" border="0" width="2" height="4" alt="" /></td>
+</tr>
+</table>
+<br/>
+
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="100"><font class="LargeBody"><font color="#336699"><b>Email Message List</b></font></font></td>
+    <td width="13%" align="right">
+    <form enctype="plain/text" action="./ad_emailNotifyMessageEdit.php" method="GET">
+	<input type="hidden" name="messageid" value="0" />
+	<input type="hidden" name="view" value="edit" />	
+	<td width="20%" align="right"><input type="submit" value="Add New" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" /></td>
+	</form>
+	</td>
+ 	</tr>
+	<tr>
+	<td bgcolor="#3366CC" colspan="3"><img src="./images/transparent.gif" border="0" width="2" height="4"></td>
+	</tr>
+</table>
+<br>
+
+
+<form name="dateSelection" method="post">
+<input type="hidden" name="view" value="start">
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+	<tr>	
+	<td>Show</td>
+	<td><input type="radio" name="active" value="1" {RADIOACTIVE_1}>Active<input type="radio" name="active" value="2" {RADIOACTIVE_2}>Inactive<input type="radio" name="active" value="3" {RADIOACTIVE_3}>All</td>
+	</tr>
+	<tr height="8"></tr>
+	<tr>
+	<td>Between	</td>
+	<td>	
+		{START_MONTH_SELECT}&nbsp;&nbsp;	
+		<input align='absmiddle' type='text' name='startday' value='{START_DAY}' class='' style='width:28px; height=22px;' maxlength='2'>&nbsp;&nbsp;	
+		{START_YEAR_SELECT}
+		&nbsp;&nbsp;-&nbsp;&nbsp;
+		{END_MONTH_SELECT}&nbsp;&nbsp;	
+		<input align='absmiddle' type='text' name='endday' value='{END_DAY}' class='' style='width:28px; height=22px;' maxlength='2'>&nbsp;&nbsp;	
+		{END_YEAR_SELECT}
+	</td>
+
+	<td width="15%" align="right"><input type="submit" value="Show selection" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" /></td>
+
+</table>
+</form>
+<br>
+
+<table width="100%" border="0" cellspacing="4" cellpadding="1">
+ <!-- BEGIN EmailLinkBL -->
+   <tr>
+    <td width="520"><img src='./domain_logos/{DOMAIN_LOGO}' border='0'> <a href="./ad_emailNotifyMessageEdit.php?messageid={MESSAGE_ID}&view=edit"> {MESSAGE_SUBJECT}</td><td align="left">Created {MESSAGE_CREADATE}</a> <font class="ReallySmallBody"></font></td>
+  </tr>
+  <tr>
+  <td bgcolor="#3366CC" colspan="4"><img src="./images/transparent.gif" border="0" width="2" height="1"></td>
+  </tr>	
+  <tr>  
+    <td width="500"> {PICTURELINK_0}{PICTURELINK_1}{PICTURELINK_2} </td> 
+    <td>Emails sent: {EMAIL_COUNT}<br>Clicks: {CLICK_COUNT}<br>Orders: {ORDER_COUNT}<br>Conversion Rate: {CONV_RATE}<br>Jobs: {JOB_COUNT}<br>Tracking: {TRACKING_COUNT}<br>Last use: {MESSAGE_LASTUSEDDATE}</td>
+  </tr>
+ <tr>  
+    <td height="15"></td> 
+  </tr>
+ <!-- END EmailLinkBL -->
+</table>
+<br>
+
+<table width="760" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="360" class="NavColor"><img src="./images/footer.gif" border="0" width="350" height="16" usemap="#footer"></td>
+	<td width="400" align="right" class="NavColor"><img src="./images/transparent.gif" border="0" width="1" height="1"></td>
+  </tr>
+</table>
+<font class="copyright"> </font>
+</div>
+&nbsp;
+<script type="text/javascript" src="./library/ImageMap-footer.js"></script>
+</body>
+</html>

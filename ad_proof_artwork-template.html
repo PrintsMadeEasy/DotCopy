@@ -1,0 +1,1123 @@
+<html>
+<head>
+<title>Admin</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<script language="javascript">
+
+	//Make an array of the images we want to preload for the mouse-overs.
+	arImageSrc = new Array (
+		"./images/button-cancel-d.gif",
+		"./images/button-savetemplate-d.gif",
+		"./images/admin/strikeout.png",
+		"./images/admin/SaveNewProject_b.gif",
+		"./images/button-change-d.png"
+	)
+
+	//Preload images.
+	arImageList = new Array ();
+	for (counter in arImageSrc) {
+		arImageList[counter] = new Image();
+		arImageList[counter].src = arImageSrc[counter];
+	}
+
+
+
+	var TextLayerUpdated = false;
+	var ListenerIsReady = false;
+
+	//By default, when the page loads, consider the changes saved
+	var ArtworkChangesSavedFlag = true;
+
+	var DL_CMP = false;
+
+	function DownloadsComplete(){
+		DL_CMP = true;
+	}
+
+
+   window.onbeforeunload = bunload;
+   function bunload(){
+
+	   if(ListenerIsReady && !ArtworkChangesSavedFlag){
+	  		mess = "You will lose changes if you leave.";
+	    	return mess;
+	   }
+	}
+
+
+
+
+	function OtherArtworkPopUp(){
+			var toploc = (window.screenTop < 150) ? 0 : window.screenTop - 150;
+
+			var newWindow = window.showModelessDialog("/index.html", "otherartwork", "status=no; dialogTop="+toploc+"px; dialogLeft="+(window.screenLeft + top.document.body.clientWidth - 410)+"px alwaysRaised=yes; resizable=yes; scrollbars=no; dialogHeight=212px; dialogWidth=410px; help=no;");
+			newWindow.focus();
+	}
+
+
+	function ChooseFileForUpload(NumberOfColors){
+
+		var win2=window.open("./upload_image.php?projectid={PROJECTORDERED}&editorview=proof&dpi={ARTDPI}&numbercolors=" + NumberOfColors, "uploadimage", "width=615, height=580, toolbar=0, locaction=0, directories=0, status=0, menubar=0, scrollbars=0, resizeable=0, copyhistory=0");
+		win2.moveTo((self.screenLeft + self.screen.width/4),(self.screenTop + self.screen.height/4));
+		win2.focus();
+	}
+	function EditTemplateForThisArtwork(TemplateID, TemplateView){
+		var TheAddress = "./ad_templates_artwork.php?closwindowafter=true&editorview=" +  TemplateView + "&templateid=" + TemplateID
+		var win63=window.open(TheAddress, "ChangeTemplate", "width=780, height=560, toolbar=0, locaction=0, directories=0, status=0, menubar=0, scrollbars=no, resizeable=0, copyhistory=0");
+	}
+
+	function SwitchSides(SideNumber){
+		alert(SideNumber);
+	}
+
+	function UpdateFieldValuesFromFlash(fieldNumber, TextMessage){
+		//
+	}
+	function DeleteField(fieldNumber){
+		//
+	}
+
+	function UpdateTextLayerInFlash(FieldNumber){
+		//
+	}
+
+	text   = '<SCRIPT LANGUAGE=VBScript\> \n';
+	text += 'Sub drawtech_FSCommand(ByVal command, ByVal args)\n';
+	text += '  call drawtech_DoFSCommand(command, args)\n';
+	text += 'end sub\n';
+	text += '</SCRIPT\> \n';
+	document.write(text);
+
+	function drawtech_DoFSCommand(command, args) {
+
+		if (command == "TextUpdateCompleted") {
+			TextLayerUpdated = true;
+		}
+		else if (command == "MarkChangesSaved") {
+			MarkChangesSaved();
+		}
+		else if (command == "ChooseFileForUpload") {
+			ChooseFileForUpload(args);
+		}
+		else if (command == "MarkUnsavedChanges") {
+			MarkUnsavedChanges();
+		}
+		else if (command == "UpdateListener") {
+			UpdateListener();
+		}
+		else if (command == "DownloadsComplete") {
+			DownloadsComplete();
+		}
+		else if (command == "XMLparsed") {
+			XMLparsed();
+		}
+		else if (command == "SaveChangedInEditor") {
+			if(!ArtworkChangesSavedFlag){
+				SaveArtworkChanges()
+			}
+		}
+
+
+	}
+
+
+	var XMLparsingComplete = false;
+
+	function TextUpdateCompleted(){
+		TextLayerUpdated = true;
+	}
+
+	function XMLparsed(){
+		XMLparsingComplete = true;
+	}
+
+
+	function ConinueToNextStep(Save){
+
+		alert("Shouldnt be in this function.. not for proof mode.");
+	}
+
+	function InsertImage(rasterImageID, vectorImageID){
+		var MovieObj2 = window.document.drawtech;
+		MovieObj2.SetVariable("ext_ImageID", rasterImageID);
+		MovieObj2.SetVariable("ext_VectorImageID", vectorImageID);
+		MovieObj2.SetVariable("external_command", "InsertImage");
+	}
+	function UploadArtWork(){
+		var MovieObj2 = window.document.drawtech;
+		MovieObj2.SetVariable("external_command", "Finish");
+	}
+	function WarningMessage(Message){
+		var MovieObj2 = window.document.drawtech;
+		MovieObj2.SetVariable("ext_WarningMessage", Message);
+		MovieObj2.SetVariable("external_command", "Warning");
+	}
+
+	function StartAdmin(){
+
+		if(!XMLparsingComplete){
+			setTimeout("StartAdmin()",200);
+			return;
+		}
+		var MovieObj2 = window.document.drawtech;
+		MovieObj2.SetVariable("/adminswitch:Password", "proof");
+		MovieObj2.TPlay("/adminswitch");
+
+		{COUPON_ALERT_JS}
+	}
+
+	//This function is called from the Flash editor after download are complete and it is ready to accept external information
+	function UpdateListener(){
+		ListenerIsReady = true;
+	}
+
+	function ViewClipboard(ProjectID){
+		var address = "./clipboard.php?view=proof&projectid=" +  ProjectID + "&sidenumber=0";
+
+		newWindow = window.open(address, "sub", "height=650,width=770,directories=no,location=no,menubar=no,scrollbars=yes,status=no,toolbar=no,resizable=yes");
+		newWindow.moveTo((self.screenLeft + self.screen.width/9),(self.screenTop + self.screen.height/9));
+		newWindow.focus();
+	}
+
+
+	function ModifyVariableData(){
+		var address = "./vardata_modify.php?projectrecord={PROJECTORDERED}&editorview=proof&returnurl=";
+		newWindow = window.open(address, "vardataedit", "height=600,width=800,directories=no,location=no,menubar=no,scrollbars=yes,status=yes,toolbar=no,resizable=yes");
+		newWindow.moveTo((self.screenLeft + self.screen.width/9),(self.screenTop + self.screen.height/9));
+		newWindow.focus();
+	}
+
+	function MarkProjectAsProofed(){
+
+		dateObj = new Date();
+		var NoCache = dateObj.getTime();
+
+		//Load the XML doc from the server.
+		var xmlDoc=getXmlReqObj();
+		xmlDoc.open("GET", "./ad_proof_artwork.php?form_sc={FORM_SECURITY_CODE}&action=markproofed&projectid={PROJECTORDERED}&nocache=" + NoCache, false);
+		xmlDoc.send(null);
+		var xmlResponseTxt = xmlDoc.responseText;
+
+		var ServerResponse = getXMLdataFromTagName(xmlResponseTxt, "success");
+		var ErrorDescription = getXMLdataFromTagName(xmlResponseTxt, "description");
+
+
+		if(ServerResponse == "good"){
+			//Change the value of the proofing button
+			document.forms["ProofingControls"].MarkProofed.value = "Artwork Proofed";
+			ChangeStatusOnScreen("Proofed");
+		}
+		else if(ServerResponse == "bad"){
+
+			//Send a warning into the flash editor
+			alert("Did not save correctly because...\n\n" + ErrorDescription);
+		}
+		else{
+			alert("Did not save correctly for an unknown reason");
+		}
+	}
+
+
+	//Make sure that a section has been made for bleed type on all of the sides... NULL means the drop down is not selected
+	function CheckBleed(){
+		var FormObj = document.forms['pdfsettings'];
+		var RetFlag = true;
+
+		var counter = 0;
+
+		while(eval("FormObj.bleedtype" + counter)){
+			var BleedObj = eval("FormObj.bleedtype" + counter);
+			counter++;
+
+			if(BleedObj.value == ""){
+				RetFlag = false;
+			}
+		}
+		return RetFlag;
+	}
+
+	function ViewPDFproofWithMerge(mailingFlag){
+
+		var address = "./pdf_launch.php?forward=pdf_done.php%3Fprojectid={PROJECTORDERED}%26showDataMerge=true%26view=proof";
+
+		// I dont think we are going to bother with showing a Mailing Mask anymore because the Layer Permissions prevent any problem.
+		//if(mailingFlag)
+		//	address += "%26pdf_profile=ProofMailing";
+
+		if(!CheckBleed()){
+			alert("You forgot to select a bleed type.");
+		}
+		else{
+			newWindow = window.open(address, "pdfpreviewMerge", "height=500,width=700,directories=no,location=no,menubar=no,scrollbars=yes,status=no,toolbar=no,resizable=yes");
+			newWindow.moveTo((self.screenLeft + self.screen.width/9),(self.screenTop + self.screen.height/9));
+			newWindow.focus();
+		}
+	}
+
+	function PDFViewProof(){
+
+		var address = "./pdf_launch.php?forward=ad_display_pdf.php%3Fprojectrecord={PROJECTORDERED}%26pdfprofile=Proof%26viewtype=proof";
+
+		if(!CheckBleed()){
+			alert("You forgot to select a bleed type.");
+		}
+		else{
+			newWindow = window.open(address, "pdfpreviewProof", "height=500,width=700,directories=no,location=no,menubar=no,scrollbars=yes,status=no,toolbar=no,resizable=yes");
+			newWindow.moveTo((self.screenLeft + self.screen.width/9),(self.screenTop + self.screen.height/9));
+			newWindow.focus();
+		}
+	}
+
+	function PDFsaveSettings(){
+
+		if(!CheckBleed()){
+			PDFUnsaved();
+		}
+		else{
+			//Show an icon while the update is in process.. but it will probably go so fast that you dont see it.
+			PDFUnsaved();
+
+			dateObj = new Date();
+			var NoCache = dateObj.getTime();
+
+			var BleedParams = GetBleedSting();
+
+
+			//Load the XML doc from the server.
+			var xmlDoc=getXmlReqObj();
+			xmlDoc.open("GET", "./ad_proof_artwork.php?form_sc={FORM_SECURITY_CODE}&projectid={PROJECTORDERED}&action=savepdfsetting&bleedparams=" +  BleedParams + "&nocache=" + NoCache, false);
+			xmlDoc.send(null);
+			var xmlResponseTxt = xmlDoc.responseText;
+
+			var ServerResponse = getXMLdataFromTagName(xmlResponseTxt, "success");
+			var ErrorDescription = getXMLdataFromTagName(xmlResponseTxt, "description");
+
+
+
+			if(ServerResponse == "good"){
+				//Let the user know that is saved correctly
+				PDFSaved();
+
+				//Since the change has just been saved then reset the bleed sting... so that it thinks this setting is the original
+				OriginalBleedStr = GetBleedSting();
+			}
+			else if(ServerResponse == "bad"){
+
+				//Send a warning into the flash editor
+				alert("Did not save correctly because...\n\n" + ErrorDescription);
+			}
+			else{
+				alert("Did not save correctly for an unknown reason");
+			}
+
+
+
+
+		}
+	}
+
+	//Will return a string with all of the bleed types separated by pipe symbols.
+	//In between each pipe symbol will be the bleed type and rotation
+	//There may be one or more bleeds values because an artwork can have more than one side
+	function GetBleedSting(){
+
+		var ReturnStr = "";
+		var counter = 0;
+		var RotateSetting = "";
+
+		var FormObj = document.forms['pdfsettings'];
+
+		while(eval("FormObj.bleedtype" + counter)){
+			var BleedObj = eval("FormObj.bleedtype" + counter);
+			if(counter > 0){
+				var Flip180Obj = eval("FormObj.flip" + counter);
+				if(Flip180Obj.checked){
+					RotateSetting = 180;
+				}
+				else{
+					RotateSetting = 0;
+				}
+			}
+			else{
+				RotateSetting = 0;
+			}
+			counter++;
+			ReturnStr += BleedObj.value + "-" +  RotateSetting + "|";
+		}
+		return ReturnStr;
+	}
+	function SaveArtworkChanges(){
+
+		//Make the Saved button disapear
+		MarkChangesSaved();
+
+		//Let the flash player know that it is time to save.
+		UploadArtWork();
+	}
+	function CancelArtworkChanges(){
+
+		if(confirm("Are you sure that you want to cancel changes?")){
+			ListenerIsReady = false;  //Set this variable as a trick.. so that we want prompt the user with a duplicate "lose changes" window
+			document.location = "./ad_proof_artwork.php?projectid={PROJECTORDERED}";
+		}
+
+	}
+
+	//This function is called within the Flash editing tool... It is triggered whenever the "undo" button appears
+	function MarkUnsavedChanges(){
+		//Make the Saved button reappear
+		SaveButtonImageObject = document.images.savebutton;
+		SaveButtonImageObject.src = "./images/admin/button_saveartwork.png";
+
+
+		SaveButtonImageObject = document.images.cancelbutton;
+		SaveButtonImageObject.src = "./images/admin/button_cancelartwork.png";
+
+
+		ArtworkChangesSavedFlag = false;
+	}
+
+	//This function is called within the Flash editing tool... It is triggered whenever the "undo" disappears
+	function MarkChangesSaved(){
+		//Make the Saved button reappear
+		SaveButtonImageObject = document.images.savebutton;
+		SaveButtonImageObject.src = "./images/transparent.gif";
+
+		SaveButtonImageObject = document.images.cancelbutton;
+		SaveButtonImageObject.src = "./images/transparent.gif";
+
+		//Make the Back to project button highlighted to unselect the "new" transparent image.
+		//Also that means that they can hit the space bar to launch the new proof
+		document.forms["pdfsettings"].ViewProofButton.focus();
+
+		ArtworkChangesSavedFlag = true;
+	}
+
+
+	//This function is called within the Flash editing tool... It is triggered whenever the "undo" button appears
+	function PDFUnsaved(){
+		//Make the Saved button reappear
+		PDFImageObject = document.images.pdfsaved;
+		PDFImageObject.src = "./images/admin/strikeout.png";
+	}
+	function PDFSaved(){
+		//Make the Saved button reappear
+		PDFImageObject = document.images.pdfsaved;
+		PDFImageObject.src = "./images/transparent.gif";
+	}
+
+	function ChangeBleedSetting(){
+
+		var NewBleedStr = GetBleedSting();
+
+		//Check and see if the settings have changed
+		//We defined OriginalBleedStr at the bottom of this page within script tags... the onLoad() event handler doesn't work with the fly-open menu
+		if(NewBleedStr != OriginalBleedStr){
+			PDFsaveSettings();
+		}
+	}
+
+
+	function OriginalArtwork(){
+		document.location = './ad_proof_artwork.php?form_sc={FORM_SECURITY_CODE}&projectid={PROJECTORDERED}&action=originalartwork';
+	}
+
+	function ReApplyArtworkChanges(){
+
+		if(confirm("This will put the artwork back to the state that it was in\n right before you clicked on the 'Original Artwork' button.\nAny changes that you have made since then will be lost.\nDo you still want to continue?")){
+			document.location = './ad_proof_artwork.php?form_sc={FORM_SECURITY_CODE}&projectid={PROJECTORDERED}&action=reapplyartwork';
+		}
+	}
+
+	var ZindexCouter = 5;
+	function showStatusHistory(divShow) {
+
+		var spanname = "projecthistoryspan";
+		var divname = "projecthistorydiv";
+
+		if (divShow) {
+			ZindexCouter++;
+			ZindexCouter++;
+
+			document.all(spanname).style.visibility = "visible";
+			document.all(spanname).style.zIndex = ZindexCouter;
+			document.all(divname).style.zIndex = ZindexCouter + 1;
+		}
+		else{
+			document.all(spanname).style.visibility = "hidden";
+		}
+
+	}
+
+
+	function showOrderGroup(divShow) {
+
+		var spanname = "ordergroupspan";
+		var divname = "ordergroupdiv";
+
+		if (divShow) {
+			ZindexCouter++;
+			ZindexCouter++;
+
+			document.all(spanname).style.visibility = "visible";
+			document.all(spanname).style.zIndex = ZindexCouter;
+			document.all(divname).style.zIndex = ZindexCouter + 1;
+		}
+		else{
+			document.all(spanname).style.visibility = "hidden";
+		}
+	}
+
+	function showShippingInfo(divShow) {
+
+		var spanname = "shippingspan";
+		var divname = "shippingdiv";
+
+		if (divShow) {
+			ZindexCouter++;
+			ZindexCouter++;
+
+			document.all(spanname).style.visibility = "visible";
+			document.all(spanname).style.zIndex = ZindexCouter;
+			document.all(divname).style.zIndex = ZindexCouter + 1;
+		}
+		else{
+			document.all(spanname).style.visibility = "hidden";
+		}
+	}
+
+
+	function PlaceOnHold(){
+		var StatusRange = "project";
+		if( {JS_MULTIPLE_PROJECTS} ){
+			if(confirm("Do you want to change the status on every project in the order?\n\nOK = Change status on all projects in order.\nCancel = Change status on this project only.\n\nThe status will only be changed on other projects if the Product ID's are the same and the status is New or Proofed.")){
+				StatusRange = "order";
+			}
+		}
+		document.location = "./ad_actions.php?action=StatusChange&newstatus=H&projectid={PROJECTORDERED}&returnurl={CURRENTURL_ENCODED}&statusrange=" + StatusRange + "&form_sc={FORM_SECURITY_CODE}";
+
+	}
+
+
+	function ChangeStatusOnScreen(StatusDesc){
+		document.all.currentstatusdiv.innerHTML = "Status: <b>" + StatusDesc + "</b>";
+	}
+
+	function UpdateNote(ViewName){
+
+		if( {JS_MULTIPLE_PROJECTS} ){
+			if(confirm("Do you want this note to be copied to every project in the order?\n\nOK = Save to all projects in order.\nCancel = Save to this project only.")){
+
+				if(ViewName == "admin")
+					document.forms["adminmessageform"].notetype.value = "order";
+				else if(ViewName == "production")
+					document.forms["productionmessageform"].notetype.value = "order";
+				else
+					alert("Illegal View Name with UpdateNote.");
+			}
+		}
+		else{
+			document.forms["adminmessageform"].notetype.value = "project";
+			document.forms["productionmessageform"].notetype.value = "project";
+		}
+	}
+
+	function WaitingForReply(){
+		var StatusRange = "project";
+		if( {JS_MULTIPLE_PROJECTS} ){
+			if(confirm("Do you want to change the status on every project in the order?\n\nOK = Change status on all projects in order.\nCancel = Change status on this project only.\n\nThe status will only be changed on other projects if the Product ID's are the same and the status is New or Proofed.")){
+				StatusRange = "order";
+			}
+		}
+		document.location = "./ad_actions.php?action=StatusChange&newstatus=W&projectid={PROJECTORDERED}&returnurl={CURRENTURL_ENCODED}&statusrange=" + StatusRange + "&form_sc={FORM_SECURITY_CODE}";
+	}
+
+	function ArtworkHelp(){
+		var StatusRange = "project";
+		if( {JS_MULTIPLE_PROJECTS} ){
+			if(confirm("Do you want to change the status on every project in the order?\n\nOK = Change status on all projects in order.\nCancel = Change status on this project only.\n\nThe status will only be changed on other projects if the Product ID's are the same and the status is New or Proofed.")){
+				StatusRange = "order";
+			}
+		}
+		document.location = "./ad_actions.php?action=StatusChange&newstatus=L&projectid={PROJECTORDERED}&returnurl={CURRENTURL_ENCODED}&statusrange=" + StatusRange + "&form_sc={FORM_SECURITY_CODE}";
+	}
+
+
+
+	function SaveNewProject(){
+		var address="./ad_savenewproject.php?projectid={PROJECTORDERED}";
+		var newWindow3 = window.open(address, "savenewproject", "height=150,width=370,directories=no,location=no,menubar=no,scrollbars=no,status=no,toolbar=no,resizable=no");
+		newWindow3.focus();
+	}
+
+	function OverrideLock(){
+		if(confirm("Do you want to override control for this order?\nIt will lock out the person that currently owns the lock.\nIt could cause some confusion."))
+			document.location = "./ad_proof_artwork.php?form_sc={FORM_SECURITY_CODE}&action=overridelock&projectid={PROJECTORDERED}&returnurl={CURRENTURL_ENCODED}";
+	}
+
+	function ShowSymbols(){
+		var win2=window.open("./symbols.html", "symbols", "width=400, height=530, toolbar=0, locaction=0, directories=0, status=0, menubar=0, scrollbars=1, resizeable=0, copyhistory=0");
+		win2.focus();
+	}
+
+	StartAdmin();
+
+
+</script>
+<script type="text/javascript" src="./library/customer_service.js"></script>
+<script type="text/javascript" src="./library/admin_library.js"></script>
+<script type="text/javascript" src="./library/clipboard.js"></script>
+
+<style type="text/css">
+	.cssproject	{
+	position:relative;
+	margin: 0;
+	margin-bottom:0px;
+	padding: 0;
+	}
+	.cssproject span {
+		position:absolute;
+		left:0px;
+		top:0px;
+		margin:0;
+		cursor: hand;
+	}
+
+A.ProductLink 	{ font-size:12px; color:#666666;  font-family:Arial,Helvetica,sans-serif; font-weight:normal;  text-decoration:none}
+A.ProductLink:visited { color: #333333; }
+A.ProductLink:link { color: #333333; }
+A.ProductLink:hover { color: #0000FF; text-decoration:underline}
+
+</style>
+
+
+<link rel="stylesheet" type="text/css" href="library/calendar/themes/winter.css"/>
+<script type="text/javascript" src="library/calendar/src/utils.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar.js"></script>
+<script type="text/javascript" src="library/calendar/lang/calendar-en.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar-setup.js"></script>
+<script type="text/javascript" src="library/formatDate.js"></script>
+</head>
+<body bgcolor="#FFFFFF" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0"  onLoad="">
+<div align="center">
+{HEADER}
+
+<table width="760" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td class="Body">
+<!-- Inner Body  -->
+
+
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0" >
+  <tr>
+            <td class="SmallBody" width="34%">Order # <a class="BlueRedLink" href="./ad_order.php?orderno={MAIN_ORDERID}"><b>{MAIN_ORDERID}</b></a>
+              - <a class="BlueRedLink" href="./ad_project.php?projectorderid={PROJECTORDERED}"><b>P{PROJECTORDERED}</b></a> - <b>A{PROJECTORDERED}</b></td>
+            <td class="Body" width="23%">
+		<!-- BEGIN HideMultiOrderWindowBL1 -->
+			  <div id="ordergroupdiv" class="cssproject" onmouseover="showOrderGroup(true);" onmouseout="showOrderGroup(false);" >
+                <span style="visibility:hidden; left:125px; top:-3" id="ordergroupspan">
+                <table width="250" border="0" cellspacing="0" cellpadding="3" bgcolor="#999900">
+                  <tr>
+                    <td>
+                      <table width="100%" border="0" cellspacing="0" cellpadding="6" bgcolor="#FFFFFF">
+                        <tr>
+                          <td class="SmallBody">{ORDER_GROUP_LINKS} </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                </table>
+                </span>
+                <!-- END HideMultiOrderWindowBL1 -->
+                {NOSETS} in this order.
+                <!-- BEGIN HideMultiOrderWindowBL2 -->
+              </div>
+		<!-- END HideMultiOrderWindowBL2 -->
+			</td>
+            <td class="Body" width="19%">
+
+              <div id="shippingdiv" class="cssproject" onmouseover="showShippingInfo(true);" onmouseout="showShippingInfo(false);" >
+                <span style="visibility:hidden; left:-170px; top:-3" id="shippingspan">
+                <table width="170" border="0" cellspacing="0" cellpadding="3" bgcolor="#009900">
+                  <tr>
+                    <td>
+                      <table width="100%" border="0" cellspacing="0" cellpadding="6" bgcolor="#FFFFFF">
+                        <tr>
+                          <td class="ReallySmallBody">{SHIPPING_INFO} </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                </table>
+                </span> {SHIPPING_METHOD} </div>
+			</td>
+            <td class="Body" width="24%">
+
+              <div id="projecthistorydiv" class="cssproject" onmouseover="showStatusHistory(true);" onmouseout="showStatusHistory(false);" >
+                <span style="visibility:hidden; left:-300px; top:-47" id="projecthistoryspan">
+                <table width="300" border="0" cellspacing="0" cellpadding="3" bgcolor="#990000">
+                  <tr>
+                    <td>
+                      <table width="100%" border="0" cellspacing="0" cellpadding="6" bgcolor="#FFFFFF">
+                        <tr>
+                          <td class="ReallySmallBody">{STATUS_HISTORY} </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                </table>
+                </span>
+                <table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td class="Body"><div id="currentstatusdiv"><a href="javascript:ViewStatusHistory({MAIN_ORDERID}, {PROJECTORDERED})""  class="ProductLink">Status:  {CURRENT_STATUS}</a></div></td>
+  </tr>
+</table>
+
+</div></td>
+  </tr>
+</table>
+
+
+<img src="./images/transparent.gif" height="4" width="3" alt="" /><table width="100%" border="0" cellspacing="0" cellpadding="1" bgcolor="#CCCCCC">
+  <tr>
+    <td>
+<table width="100%" border="0" cellspacing="0" cellpadding="3">
+  <tr>
+                  <td  bgcolor="#EEEEEE" class="SmallBody" width="60%"><a href="javascript:AdminEditOptions({PROJECTORDERED}, {PROJECT_COMPLETE}, '{CURRENTURL_DOUBLE_ENCODED}')"  class="ProductLink">{ORDER_DESCRIPTION}</a>
+				  <!-- BEGIN VariableDataLinkBL -->
+				  <br/>
+				  <a class="ProductLink" href="javascript:ModifyVariableData();"><b>Variable Data</b></a>
+				  <!-- END VariableDataLinkBL -->
+				  </td>
+                  <td  bgcolor="#EEEEEE"  align="left" width="30%" class="SmallBody"><a href="./ad_users_orders.php?byuser={CUSTOMER_ID}"  class="ProductLink">Total Orders - {CUSTOMER_PROJECTS}</a>&nbsp;&nbsp;-&nbsp;&nbsp;<!-- BEGIN SavedProjectLink --><img src="./images/admin/linked.png" align="absmiddle" alt="" /><!-- END SavedProjectLink --><a href='javascript:SaveProj("{DOMAIN_URL}", {CUSTOMER_ID});' class="ProductLink">Saved - {SAVED_PROJECTS}</a>
+				  <!-- BEGIN SaveNewProjectLink --><a href="javascript:SaveNewProject();"><img src="./images/admin/SaveNewProject_a.gif" onmouseover="this.src='./images/admin/SaveNewProject_b.gif';" onmouseout="this.src='./images/admin/SaveNewProject_a.gif';" border="0" align="absmiddle" alt="" /></a><!-- END SaveNewProjectLink --></td>
+					<td  bgcolor="#EEEEEE" class="SmallBody" width="10%">{EDIT_TEMPLATE}</td>
+  </tr>
+</table>
+	</td>
+  </tr>
+</table><img src="./images/transparent.gif" height="4" width="3" alt="" /><table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td class="Body">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+                  <td width="40%">
+                    <table  border="0" cellspacing="0" cellpadding="1" bgcolor="#333333">
+  <tr>
+    <td><table width="100%" border="0" cellspacing="0" cellpadding="4" >
+<form name='pdfsettings'>
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+  <tr>
+    <td class="SmallBody" style="background-image: url(./images/admin/header-pdf-save.png); background-repeat:">
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+
+  <tr>
+
+
+
+<td class="SmallBody"><input type="button" name="ViewProofButton" value="View PDF" class="AdminButton" onmouseover="this.style.background='#ffeeaa';" onmouseout="this.style.background='#FFFFDD';" onclick="PDFViewProof();" />
+<!-- BEGIN PDFmergeBL -->
+<br/><img  src="./images/transparent.gif" height="5" width="1" alt="" /><br/><input type="button" name="ViewProofButtonMerge" value="View PDF (with merge)" class="AdminButton" onmouseover="this.style.background='#ffeeaa';" onmouseout="this.style.background='#FFFFDD';" onclick="ViewPDFproofWithMerge(false);" style="width:153px; background-color:#DDEEDD" /><!-- END PDFmergeBL --><!-- BEGIN HideMailMaskPreviewButton --><br/><img  src="./images/transparent.gif" height="5" width="1" alt="" /><br/><input type="button" name="ViewProofMask" value="View PDF (with mask)" class="AdminButton" onmouseover="this.style.background='#ffeeaa';" onmouseout="this.style.background='#FFFFDD';" onclick="ViewPDFproofWithMerge(true);" style="width:153px; background-color:#DDDDEE" />
+<!-- END HideMailMaskPreviewButton -->
+</td>
+<td><img src="./images/transparent.gif" height="5" width="20" alt="" /></td>
+
+
+
+
+                                    <td>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<!-- BEGIN SideBLock -->
+  <tr>
+                                      <td class="SmallBody" width="36%" nowrap>{SIDE_NAME} -&nbsp;</td>
+                                      <td class="SmallBody" width="62%"><select name="bleedtype{SIDENUMBER}"  class="AdminDropDown" onChange="ChangeBleedSetting();">{BLEED_CHOICES}</select></td>
+									  <td width="2%" class="SmallBody">{FLIP180}</td>
+  </tr>
+<!-- END SideBLock -->
+</table></td>
+
+<td>
+
+
+<img src="./images/transparent.gif" name="pdfsaved" align="absmiddle" alt="" />
+
+
+
+
+
+
+
+
+
+
+</td>
+  </tr>
+</table>
+
+
+
+
+
+
+	</td>
+  </tr>
+ </form>
+</table>
+</td>
+  </tr>
+</table><img src="./images/transparent.gif" border="0" width="1" height="7" alt="" /></td>
+                  <td class="Body" align="center" valign="middle" width="30%">
+                    <a onclick="CancelArtworkChanges();"><img src="./images/transparent.gif" border="0" align="absmiddle" name="cancelbutton" alt="" /></a>
+                    <a onclick="SaveArtworkChanges();"><img src="./images/transparent.gif" border="0" align="absmiddle" name="savebutton" alt="" /></a>
+
+
+                  </td>
+                  <td class="Body" align="right" width="30%">
+				<img  src="./images/transparent.gif" border="0" width="1" height="7" alt="" /><br/>
+				  <a class="BlueRedLink" href="./ad_jumptoorder.php?command=previousproof&projectorderid={PROJECTORDERED}">&lt;
+                    Previous Proof</a>&nbsp;&nbsp;&nbsp;&nbsp; <a class="BlueRedLink" href="./ad_jumptoorder.php?command=nextproof&projectorderid={PROJECTORDERED}">Next Proof &gt;</a>
+
+					<br/><img  src="./images/transparent.gif" border="0" width="1" height="10" alt="" /><br/>
+
+				  <a class="BlueRedLink" href="./ad_jumptoorder.php?command=previousartwork&projectorderid={PROJECTORDERED}">&lt;
+                    Previous Artwork</a>&nbsp;&nbsp;&nbsp;&nbsp; <a class="BlueRedLink" href="./ad_jumptoorder.php?command=nextartwork&projectorderid={PROJECTORDERED}">Next Artwork &gt;</a>
+					<br/><img src="./images/transparent.gif" border="0" width="1" height="7" alt="" /></td>
+  </tr>
+</table>
+
+
+</td>
+  </tr>
+</table>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<form name="customernote" action="ad_proof_artwork.php">
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+<input type="hidden" name="custid" value="{CUSTOMER_ID}" />
+<input type="hidden" name="projectid" value="{PROJECTORDERED}" />
+<input type="hidden" name="returnurl" value="ad_proof_artwork.php?projectid={PROJECTORDERED}" />
+<input type="hidden" name="action" value="updatecustomernote" />
+
+  <tr>
+    <td><input type="text" name="notesmsg" value="{CUSTOMERNOTES}" class="SavedProjectsNote" maxlength="199" style="width:470px; font-weight:bold; color:#CC0000; text-align:center;" />
+<input type="submit" name="customernotebtn" value="&lt; Update Proofing Notes" class="AdminButton" onmouseover="this.style.background='#ffeeaa';" onmouseout="this.style.background='#FFFFDD';" style="width:160px;"  /><img  src="./images/transparent.gif" width="25" height="1" alt="" /><a class="blueredlink" href="javascript:CustomerMemo({CUSTOMER_ID}, true)">{MEMOS}</a><br/><img src="./images/transparent.gif" height="5" width="5" alt="" /></td>
+  </tr>
+</form>
+</table>
+
+<!-- BEGIN ArbitrationBL -->
+
+<table width="60%" border="0" cellspacing="0" cellpadding="1" align="center">
+  <tr>
+    <td bgcolor="#FF66CC"><table width="100%" border="0" cellspacing="0" cellpadding="3">
+  <tr>
+    <td bgcolor="#FFDDEE"><table width="100%" border="0" cellspacing="0" cellpadding="2">
+  <tr>
+    <td bgcolor="#FFFFFF" class="SmallBody" align="center">{ARB_NAME} is currently working on this order.<br/>Lock lasts for 10 minutes (from last change). <a href="javascript:OverrideLock();" class="blueredlink">Override</a></td>
+  </tr>
+
+</table>
+	</td>
+  </tr>
+</table>
+	</td>
+  </tr>
+</table>
+<img src="./images/transparent.gif" height="9" width="5" alt="" />
+<!-- END ArbitrationBL -->
+
+<table border="0" cellspacing="0" cellpadding="0" width="100%">
+  <tr>
+    <td bgcolor="#666666"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+</tr>
+<form name="ProofingControls">
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+<tr>
+    <td align="left" bgcolor="#BBBBBB"  valign="middle" class="SmallBody">&nbsp;
+
+<input type="button" name="Generate" value="Clipboard" class="AdminButton" onmouseover="this.style.background='#ffeeaa';" onmouseout="this.style.background='#FFFFDD';" onclick="ViewClipboard({PROJECTORDERED});" />
+
+<img src="./images/transparent.gif" border="0" width="10" height="1" alt="" />
+<input type="button" name="Generate" value="Copy Art" class="AdminButton" onmouseover="this.style.background='#ffeeaa';" onmouseout="this.style.background='#FFFFDD';" onclick="CopyToClipboard(this, 'proof', {PROJECTORDERED});" />
+
+
+<img src="./images/transparent.gif" border="0" width="10" height="1" alt="" />
+<!-- BEGIN OriginalArtworkButton -->
+<input type="button" name="xx1" value="Original Art" class="AdminButton" onmouseover="this.style.background='#ffeeaa';" onmouseout="this.style.background='#FFFFDD';" onclick="OriginalArtwork();" />
+<!-- END OriginalArtworkButton -->
+
+<!-- BEGIN ReApplyChangesButton -->
+<input type="button" name="xx2" value="Re-apply Changes" class="AdminButton" onmouseover="this.style.background='#ffeeaa';" onmouseout="this.style.background='#FFFFDD';" onclick="ReApplyArtworkChanges();" />
+<!-- END ReApplyChangesButton -->
+
+
+
+
+
+	<!-- BEGIN HideHoldButton -->
+	<img src="./images/transparent.gif" border="0" width="10" height="1" alt="" />
+	<input type="button" name="OnHold" value="Put on Hold" class="AdminButton" onmouseover="this.style.background='#ffeeaa';" onmouseout="this.style.background='#FFFFDD';" onclick="PlaceOnHold();" />
+	<!-- END HideHoldButton -->
+
+<img src="./images/transparent.gif" border="0" width="10" height="1" alt="" />
+
+	<!-- BEGIN HideProofButton -->
+	<input type="button" name="MarkProofed" value="Mark as Proofed" class="{PROOF_BUTTON_STYLE}" onclick="MarkProjectAsProofed();" />
+	<!-- END HideProofButton -->
+
+
+
+<img src="./images/transparent.gif" border="0" width="10" height="3" alt="" /></td>
+</tr>
+</form>
+<tr>
+    <td bgcolor="#666666"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+</tr>
+<tr>
+    <td align="center" bgcolor="#EEEEEE"><img  src="./images/transparent.gif" border="0" width="1" height="5" alt="" /><br/>
+<OBJECT classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="https://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=7,0,19,0" width="740" height="650" id="drawtech" align="middle">
+<param name="allowScriptAccess" value="sameDomain" />
+<param name="movie" value="./DotEditingTool.swf?GuideMargin={GUIDE_MARGIN}" />
+<param name="quality" value="high" />
+<param name="bgcolor" value="#ffffff" />
+<embed src="./DotEditingTool.swf?GuideMargin={GUIDE_MARGIN}" quality="high" bgcolor="#ffffff" width="740" height="650" name="drawtech" align="middle" allowScriptAccess="sameDomain" type="application/x-shockwave-flash" pluginspage="https://www.macromedia.com/go/getflashplayer" /></embed>
+</OBJECT>
+<br/>
+<img src="./images/transparent.gif" border="0" width="1" height="20" alt="" />
+</td>
+</tr>
+</table>
+<br/>
+
+				<table width='100%' border='0'>
+				<form name='dpichange' action='ad_proof_artwork.php'>
+				<tr><td align='right' class='SmallBody'><b>DPI setting:</b>&nbsp;&nbsp;
+				<input type='hidden' name='projectid' value='{PROJECTORDERED}' />
+				<input type='hidden' name='returnurl' value='ad_proof_artwork.php?projectid={PROJECTORDERED}&nocache=' />
+				<input type='hidden' name='view' value='proof' />
+				<input type='hidden' name='action' value='changeDPIsetting' />
+				<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+
+				<input type='radio' name='dpisetting' value='200' onclick='document.dpichange.submit();' {DPI_200} /> 200&nbsp;&nbsp;&nbsp;
+				<input type='radio' name='dpisetting' value='300' onclick='document.dpichange.submit();' {DPI_300} /> 300
+				</td></tr>
+				</form>
+				</table>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+
+  <tr>
+
+              <td width="47%" class="SmallBody" align="left">Show next &amp previous
+                links for &nbsp;&nbsp;
+                <table width="60%" border="0" cellspacing="0" cellpadding="1" bgcolor="#dddddd">
+  <tr>
+    <td><table width="100%" border="0" cellspacing="0" cellpadding="3" bgcolor="#f3f3f3">
+  <form name="productselectform" method="get" action="./ad_openorders.php">
+  <input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+  <input type="hidden" name="returnurl" value="{CURRENTURL}&nocache={NOCACHE}" />
+  <input type="hidden" name="action" value="changeProductLimiter" />
+  <tr>
+    <td class="SmallBody"><table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+                                <td width="62%">
+                                  <select class="AdminDropDown" name="productlimitselect[]" size="4" multiple>
+	{PRODUCT_DROPDOWN}
+	</select></td>
+                                <td width="38%">
+<input type="image" src="./images/button-change-u.png" onmouseover="this.src='./images/button-change-d.png';" onmouseout="this.src='./images/button-change-u.png';" border="0" align="absmiddle" /></td>
+  </tr>
+</table>
+
+</td>
+  </tr>
+  </form>
+</table>
+</td>
+  </tr>
+</table></td>
+	          <td width="53%" class="Body">{ARTWORKHELP_LINK}</td>
+  </tr>
+
+</table>
+
+
+
+
+
+
+
+<img src="./images/transparent.gif" border="0" width="1" height="10" alt="" />
+
+
+
+
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0" >
+<tr>
+
+
+
+            <td width="42%" valign="top">
+              <table width="100%" border="0" cellspacing="0" cellpadding="0">
+<form name="adminmessageform" action="./ad_actions.php" onsubmit="UpdateNote('admin')">
+			<input type="hidden" name="returl" value="{CURRENTURL}" />
+			<input type="hidden" name="projectid" value="{PROJECTORDERED}" />
+			<input type="hidden" name="notetype" value="project" />
+			<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+						<input type="hidden" name="action" value="MessageAdmin" />
+  <tr>
+    <td>
+
+<table width="330 border="0" cellspacing="0" cellpadding="0">
+  <tr>
+                          <td class="Body" width="166"><font color="#000000">Admin Notes</font></td>
+                          <td align="right" width="162">
+<input type="submit" name="xx" value="Update" class="AdminButton" onmouseover="this.style.background='#ffeeaa';" onmouseout="this.style.background='#FFFFDD';" /></td>
+  </tr>
+</table>
+
+
+
+
+                      <textarea name="adminmessage" style="width:330px; height:50px; background-color:{MESSAGECOLOR_ADMIN}; font-size:11;" wrap="VIRTUAL">{ADMIN_MESSAGE}</textarea>
+                    </td>
+  </tr>
+ 			  </form>
+</table>
+
+
+&nbsp;
+
+
+
+</td>
+
+            <td valign="top" width="9%" align="right">&nbsp; </td>
+
+            <td valign="top" width="49%" align="right">
+              <table width="100%" border="0" cellspacing="0" cellpadding="0">
+<form name="productionmessageform" action="./ad_actions.php" onsubmit="UpdateNote('production')">
+			<input type="hidden" name="returl" value="{CURRENTURL}" />
+			<input type="hidden" name="notetype" value="project" />
+			<input type="hidden" name="projectid" value="{PROJECTORDERED}" />
+			<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+						<input type="hidden" name="action" value="MessageProduction" />
+  <tr>
+    <td>
+
+<table width="330 border="0" cellspacing="0" cellpadding="0">
+  <tr>
+                          <td class="Body" width="213"><font color="#000000">Message for Production
+                            </font></td>
+                          <td align="right" width="115">
+                            <input type="submit" name="xx" value="Update" class="AdminButton" onmouseover="this.style.background='#ffeeaa';" onmouseout="this.style.background='#FFFFDD';" /></td>
+  </tr>
+</table>
+
+
+
+
+              <textarea name="productionmessage" style="width:330px; height:50px; background-color:{MESSAGECOLOR_PRODUCTION}; font-size:11;" wrap="VIRTUAL">{PRODUCTION_MESSAGE}</textarea>
+
+	</td>
+  </tr>
+ 			  </form>
+</table>
+
+			</td>
+            </tr>
+</table>
+
+
+
+
+
+
+
+<img  src="./images/transparent.gif" border="0" width="1" height="20" alt="" /><br/>
+
+
+
+
+
+<!-- BEGIN HideCustomerServiceBL -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td class="Body"><font class="AdminLabel">Customer Service </font></td>
+    <td class="Body" align="right">{WAITING_FOR_REPLY_LINK}</td>
+  </tr>
+</table>
+<img  src="./images/blackpixel.gif" height="1" width="760" alt="" /><br/><img  src="./images/transparent.gif" height="5" width="1" alt="" /><br/>
+<!-- BEGIN EmptyCSInquiriesBL -->
+<table width="100%" border="0" cellspacing="0" cellpadding="1" bgcolor="#666699">
+  <tr>
+    <td><table width="100%" border="0" cellspacing="1" cellpadding="3">
+  <tr>
+                  <td bgcolor="#ddddee" class="SmallBody" width="5%">Date</td>
+                  <td bgcolor="#ddddee" class="SmallBody" width="16%">Subject</td>
+	              <td bgcolor="#ddddee" class="SmallBody" width="69%">Message</td>
+				  <td bgcolor="#ddddee" class="SmallBody" width="10%">&nbsp;</td>
+  </tr>
+  <!-- BEGIN csInquiriesBL -->
+   <tr>
+                  <td bgcolor="#FFFFFF" class="SmallBody" width="5%">{CS_DATE}</td>
+                  <td bgcolor="#FFFFFF" class="SmallBody" width="16%">{CS_SUBJECT}</td>
+	              <td bgcolor="#FFFFFF" class="SmallBody" width="69%">{CS_ATTACHMENTS}{CS_MESSAGE}</td>
+				  <td bgcolor="#FFFFFF" class="SmallBody" width="10%" align="center">{CS_SNDMSG}</td>
+  </tr>
+   <!-- END csInquiriesBL -->
+</table></td>
+  </tr>
+</table>
+<br/><br/>
+<!-- END EmptyCSInquiriesBL -->
+<input type="button" name="Generate" value="New Customer Service Item" class="AdminButton" onmouseover="this.style.background='#ffeeaa';" onmouseout="this.style.background='#FFFFDD';" onclick="document.location='./ad_actions.php?action=newcsitem&orderno={MAIN_ORDERID}&returl={CURRENTURL}&form_sc={FORM_SECURITY_CODE}'" />&nbsp;&nbsp;&nbsp;<input type="button" name="Generate2" value="Resource Center" class="AdminButton" onmouseover="this.style.background='#ffeeaa';" onmouseout="this.style.background='#FFFFDD';" onclick="CannedMessages();" />
+<br/>
+
+
+
+<br/>&nbsp;<br/>
+<!-- END HideCustomerServiceBL -->
+
+<script>
+	//We need to record the parameters of the bleed settings when the page loads.  That way we can detect changes
+	var OriginalBleedStr = GetBleedSting();
+</script>
+
+
+
+
+
+<!-- Inner Body  END -->
+</td>
+</tr>
+</table>
+<table width="760" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="360" class="NavColor"><img src="./images/footer.gif" border="0" width="350" height="16" usemap="#footer" alt="" /></td>
+	<td width="400" align="right" class="NavColor"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+  </tr>
+</table>
+<font class="copyright"> </font>
+</div>
+&nbsp;
+<script type="text/javascript" src="./library/ImageMap-footer.js"></script><br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+
+</body>
+</html>

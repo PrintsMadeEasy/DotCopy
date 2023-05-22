@@ -1,0 +1,662 @@
+
+Please Edit this document as you go along.
+Try and be as detailed as possible. Fill in the blanks for IP addresses, Host names, subnet, firewall settings, anything that you come accross
+
+
+
+
+####################                                ####################
+#################### ----- Server Details --------- ####################
+####################                                ####################
+
+
+IP Address of Server, Server Monitor, and Firewall
+===================================================
+pr01-E458953 74.53.59.100 Server
+pr01-E458953 - 74.53.59.121 (IPMI)
+E458953-AC20-CHK16 - 74.53.59.126 (Firewall)
+All usable IPs: 74.53.59.100 - 74.53.59.121
+*Please note that some ip addresses have already been used by servers, IPMI, firewalls, etc.
+Your server has been equipped with a dual IPMI/Network Interface Card. This interface requires that one of the additional public IP addresses from this subnet be bound to it. This ip will not be pingable, and will only respond to IPMI traffic. The IPMI 1.5 interface will allow Orbit to interact with your server and provide improved remote reporting and functionality.
+
+
+BANDWIDTH GRAPHS
+=====================================================
+Bandwidth graphs are available for all your private servers but you will be billed only according to the traffic passed at the switch uplink. The switch is named ac20a.02.dllstx6 and the following is a direct link to the graphs:
+https://orbit.theplanet.com/nav_hardware/a1_bandwidth_utilization.html
+
+NAMESERVERS
+================================================================================
+If you are using another registrar but want to use our nameservers, please use:
+- [ns2.theplanet.com 12.96.160.115]
+- [ns1.theplanet.com 216.234.234.30]
+
+If you are using The Planet as your domain registrar and nameserver, please use:
+- [ns1.theplanetdomains.com 216.185.113.11]
+- [ns2.theplanetdomains.com 216.185.109.13]
+
+
+FIREWALLS AND ACCESS
+===============================================================
+If you set access control limits or other rules, such as IPtables, ZoneAlarm or other firewalls on your server (including Windows 2003 SP1 internal firewall), please configure them to allow inbound and outbound traffic on all ports (TCP & UDP 1-65535) from:
+If access is blocked by your server or firewall, we will not be able to monitor your server to report downtime or provide emergency support as needed.
+12.96.160.0/24 (12.96.160.*)
+67.19.0.0/24 (67.19.0.*)
+216.234.234.0/24. (216.234.234.*)
+70.85.125.0/24 (70.85.125.*)
+70.84.160.0/24 (70.84.160.*)
+
+
+mysqladmin -u printsa -p oldpassword newpass
+
+
+####################                                                         ####################
+#################### ----- Install Procedures From Barbone Restore --------- ####################
+####################                                                         ####################
+
+
+1) Go to root Cpanel Install programs access URL http://74.53.59.100:2086/
+
+	*) When it asks for the name servers... put in the primary and secondary IP addresses of the nameservers... ns1.theplanet.com   & ns2.theplanet.com
+		1) 216.234.234.30
+		2) 12.96.160.115
+
+	*) A popup window appears asking to forward roots mail.  just send emails to brian@PrintsMadeEasy.com
+
+
+	*) On the left hand nav click the next button to continue running the Web Host Manager for the first time.
+		c) It will warn you not to change the name server... just click on "OK". -> next step
+		d) Resolver Setup...  click continue  .. enter the IP address of the name servers... same as listed above..  -> continue -> next step
+		e) Mysql root password ... xxxxxxxxxxxxxxxx   ...  -> finish -> continue
+		f) Comes up asking for an A Entry screen..   click on OK... however it was reporting an error to me saying "connection refused".  This popup keeps coming up.  I sumbited a Trouble Ticket to support for this.
+			This is what should be in the /etc/hosts file
+			--------------------------------------------------
+			74.53.59.100 s10.printsmadeeasy.com s10 
+			10.0.0.2 pr01-e458953.theplanet.host pr01-e458953
+			127.0.0.1 localhost
+			
+			Test the Name servers listed in /etc/resolv.conf  by typing something like "host google.com"
+
+	
+	*) May need to install Exim (for email) if it is not already installed.
+		You can run the following install script....  /scripts/exim4 
+	
+
+	*) Bind the additional IP address through Cpanel
+		- in Cpanel go to...   "IP Functions" -> "Add a new IP address"  
+		- Add the IP  XXX.xxx.xxx.XXX   and use a subnet of 255.255.XXX.XXX
+	
+
+	*) Create a new account with the domain "printsmadeeasy.com"  
+		This adds an a new user called "printsma" automatically... set passowrd to bpcSDz!2h04  ... do NOT check the IP address checkbox  It should have it's own IP of 74.53.59.100
+
+	*) Create a new account with the domain "printsmadeasy.com"  (only 1 'e')  set User Name "prints2" and password to "2334dfd*jkl"   ... It should have it's own IP of 74.53.59.101
+
+	*) Go to "Edit Setup"...
+		Make sure that the "Hostname" is set to "XXXXXXXXXXXXXXXXXXXXX"
+		Server Contact = bpiere21@hotmail.com
+
+	*) On left hand nav under "Software"
+		a) click on "Update Cpanel"
+		b) click on "Update Apache"
+			-- Make sure to put a checkmark over GD 2.01 when updating apache.
+		
+
+	*) Set Server Date  -->  Server Setup -> Server Time
+		Within the control panel set the time zone to US/Pacific
+		Maybe Syncronize Time
+		
+	*) On the last run I could not get the PHP function mail() to work.  The reason is that the sendmail binary file was missing at the time PHP was compiled.
+		I am not sure why sendmail did not come installed with CPanel after the restore????   Anyway, rather than trying to install or compile send mail I just copied over the binary from the development server and then re-compiled PHP
+		I stored the binary file within the unix_files subdirectory in the CVS repository in case you need it.  
+		copy it to.... /usr/sbin/sendmail    The permissions on the file should be -rwxr-Sr-x
+
+
+
+2) Setup the File System.  I left /dev/sdb7 open... Possibly use it as a second scratch disk (if memory fills up)
+
+	Filesystem           1K-blocks      Used Available Use% Mounted on
+	/dev/sda5              8254240    285812   7549136   4% /
+	/dev/sdb2            192243960  65722660 124568200  35% /backup
+	/dev/sda1               124427     20147     97856  18% /boot
+	none                   6151464         0   6151464   0% /dev/shm
+	/dev/sdb1             96124904  79450416  15697900  84% /home
+	/dev/sda7              1035660     70112    912940   8% /tmp
+	/dev/sda2             20641788   5345128  14248020  28% /usr
+	/dev/sda3             10317860    213496   9580244   3% /var
+	/dev/sdb3            752551324 136414708 608491124  19% /var/lib/mysql
+	/dev/sdb10            22920084     77800  21677976   1% /home/EmptyPartition
+	/dev/sdb9              2885780     61152   2678040   3% /home/printsma/TempFiles
+	/dev/sdb5             43256112    432940  40625884   2% /home/printsma/public_html/ming
+	/dev/sdb6             24034912   4835840  17978136  22% /home/printsma/public_html/customer_attachments
+	/dev/sdb8              7692876    424004   6878096   6% /home/printsma/public_html/pdf_generate/proofs
+	/dev/sda6             27537904     77788  26061260   1% /var/lib/mysql_binlog
+	/tmp                   1035660     70112    912940   8% /var/tmp
+
+	/etc/fstab
+	# This file is edited by fstab-sync - see 'man fstab-sync' for details
+	LABEL=/                 /                       ext3    defaults,usrquota        1 1
+	LABEL=/backup           /backup                 ext3    defaults        1 2
+	LABEL=MySQL             /var/lib/mysql          ext3    defaults        1 2
+	LABEL=EmptyPartition    /home/printsma/ImageCaching    ext3    defaults        1 2
+	LABEL=ScratchDisk      	/home/printsma/TempFiles ext3    defaults        1 2
+	LABEL=Images  		/home/printsma/public_html/ming   ext3    defaults        1 2
+	LABEL=Attachments  	/home/printsma/public_html/customer_attachments   ext3    defaults        1 2
+	LABEL=DynamicFileDL     /home/printsma/public_html/pdf_generate/proofs   ext3    defaults        1 2
+	LABEL=SqlBinLogging     /var/lib/mysql_binlog   ext3    defaults        1 2
+	LABEL=/boot             /boot                   ext3    defaults        1 2
+	none                    /dev/pts                devpts  gid=5,mode=620  0 0
+	none                    /dev/shm                tmpfs   defaults        0 0
+	LABEL=/home             /home                   ext3    defaults,usrquota        1 2
+	none                    /proc                   proc    defaults        0 0
+	none                    /sys                    sysfs   defaults        0 0
+	LABEL=/tmp              /tmp                    ext3    defaults        1 2
+	LABEL=/usr              /usr                    ext3    defaults,usrquota        1 2
+	LABEL=/var              /var                    ext3    defaults,usrquota        1 2
+	LABEL=SWAP-sda8         swap                    swap    defaults        0 0
+	/dev/hda                /media/cdrom            auto    pamconsole,exec,noauto,managed 0 0
+
+
+3) 	/etc/hosts
+		10.0.0.2                s10.printsmadeeasy.com s10
+		74.53.59.100            www.printsmadeeasy.com www
+		127.0.0.1               localhost
+
+2) Transfered all web files to the new directory and FTP account under "/home/printsma/public_html"
+
+
+3) Logged into the client Cpanel by accessing the URL https:/myIPaddress:2083
+
+	* Under Databases created 1 new database and added 1 new user for the UPS worldship.   
+
+		Then add a "%" for a wild card host access
+		
+		
+
+	* SetUp e-Mail accounts or move over the backup of CPANEL
+		
+
+
+4) Set up datbase for the main server 
+	
+
+	#-- We want to create a user for the db
+	CREATE database pme_db;
+
+	GRANT SELECT,INSERT,UPDATE,DELETE,CREATE,DROP,ALTER,LOCK TABLES,INDEX
+	ON pme_db.*
+	TO brian@localhost
+	IDENTIFIED BY '*NU39kdDCIN9';
+
+
+	CREATE database printsma_shipping;
+
+	GRANT SELECT,INSERT,UPDATE,DELETE,CREATE,DROP,ALTER,LOCK TABLES,INDEX
+	ON printsma_shipping.*
+	TO printsma_worldsh@'%'
+	IDENTIFIED BY 'MyShippingDB*';
+	GRANT SELECT,INSERT,UPDATE,DELETE,CREATE,DROP,ALTER,LOCK TABLES,INDEX
+	ON printsma_shipping.*
+	TO printsma_worldsh@localhost
+	IDENTIFIED BY 'MyShippingDB*';
+
+	CREATE database printsma_shipping;
+
+
+	
+	CREATE database session_db;
+
+	# The Real password should be found by looking at the text file pointed to in the class SessionHandler.php
+	GRANT SELECT,INSERT,UPDATE,DELETE
+	ON session_db.*
+	TO session_user@'localhost'
+	IDENTIFIED BY 'password';
+	
+	
+
+
+	5) Import databases... 
+		* Don't forget to create the tables within the shipping database for UPS worldship export.  These tables are stored within the CVS repository.
+
+
+
+
+5) Install 3rd party software
+	Download Ming
+	http://ming.sourceforge.net/
+
+
+	##-- Download source code Image Magick --#
+	http://www.imagemagick.org
+
+
+	#-- Leave all of the tarballs within the default ftp directory /home2/printsma/download...  unpack and install
+
+
+	###  --- Install Ming  ----###
+	shell> make && make install
+	shell> cp libming.so /usr/lib
+	
+	
+	#-- I had some problems getting PHP 4.4.6 to compile with MING.
+	The default path for the ming extention was /home/cpapachebuild/buildapache/php-4.4.6/ext/ming  .... I moved that to /home/cpapachebuild/buildapache/php-4.4.6/ext/ming
+	Then I downloaded ming-0.3.0.tar.tz and unpacked it in the directory.... I changed the path to say "ming" in place of the PHP packaged install.
+	Then I had to go into the "src" directory and copy *.h and *.c down 1 directory level.     I also had to copy the "blocks" directory down 1 level as well.
+	shell> cd /home/cpapachebuild/buildapache/php-4.4.6/ext/ming/src
+	shell> cp *.h ../ && cp *.c ../ && cp -r blocks ../
+	
+	Then I had to go into the PHP ming Package install and copy those files into "ming" directory.  You SHOULD overrite "ming.c"
+	shell> cd /home/cpapachebuild/buildapache/php-4.4.6/ext/ming-old
+	shell> cp * ../ming
+	
+	- Then I edited "ming.c" becuaes there was a problem with the constant "HAVE_NEW_MING"... it was getting defined (not sure where)... and it shouldn't have been
+	  This was causing compiling errors.  Either disable that constant. (set to undefined at the top of the script)... or edit the code and remove the 4rth paramter wherever you find it (as well as disable the Steaming Sound function definition.
+	
+	Then it was possible to recompile PHP with the configure script.
+
+
+	#-- Compile Png2DBL in the MING "util" directory for turning PNG graphics into Ming Objects --#
+	(you may be able to move over a binary of "png2dbl" from an old server or backup)
+	shell> PATH=$PATH:.
+	shell> make png2dbl
+	shell> cp png2dbl /usr/bin
+
+
+	#--- Install Ghostscript (before compiling Image Magick) ... used for converting PDF and EPS files etc (through Image Magick)---#
+	http://www.ghostscript.com/
+	./configure && make && make install
+
+	#-- Install Little CMS (before compiling Image Magic) ... needed for using ICC profiles during image conversions
+	#-- Make sure that Little CMS shows up as "YES" within the Image magick "./configure" results.
+	http://www.littlecms.com/download.html
+
+	#--- Install Image Magick ---#
+
+	I had troubles with the RPM... downloading the Unix source and compiling is the way to go
+
+		un pack the source code
+		shell> ./configure && make && make install
+		
+		
+	#--- Create Symbolic Links for Image Magick and Ghostscript ---#
+	I found some old binaries located in /usr/bin ... all of the new versions were installed within /usr/local/bin
+	... This made things really confusion because executing commands in the Shell would default to /usr/local/bin and apache would default to /usr/bin
+	
+
+	If you find any old binaries... remove them before creating the links
+	/usr/bin/convert -version    and ....  /usr/bin/local/convert -version
+	/usr/bin/mogrify -version    and ....  /usr/bin/local/mogrify -version
+	/usr/bin/gs -version    and ....  /usr/bin/local/gs -version
+	
+	Create Symbolic Links.  I think this is the best option so that if a newer version is installed there won't be any confusion.
+	ln /usr/local/bin/convert /usr/bin/convert
+	ln /usr/local/bin/mogrify /usr/bin/mogrify
+	ln /usr/local/bin/gs /usr/bin/gs
+
+	======================
+	
+
+	#-- Download and install PDFlib
+	http://www.pdflib.com/download/pdflib-family/pdflib-6/
+	Make sure to download the version for   ... "Intel x86"  and NOT PPO
+	Just un-tared the download and copied the PHP DSO module into the common library
+
+	shell> cd PDFlib-6.0.4-Linux/bind/php/php-4.2.1 (or whatever the version is)
+	shell> cp libpdf_php.so /usr/local/lib
+
+	Will need to edit PHP.ini file to load the extension  (later) 
+
+
+	All pdf files that are generated have water marks so I had to buy a license. 
+	Details are in my Receipts folder in my development system... and the license key has already been embedded within the PHP scripts.
+
+
+6) Re-compile PHP with the configure script that we need to get the 3rd party softwares working	
+
+	// For PHP 5 with Apache 2
+	shell> cd /home/printsma/programs/PHP_5.3.1/php-5.3.1
+	shell>make clean
+	shell>./configure --with-apxs2=/usr/local/apache2_2/bin/apxs --with-mysql --with-mysql-sock=/var/lib/mysql/mysql.sock --prefix=/usr/local/apache2_2/php --disable-cgi --with-zlib --with-gettext --enable-soap --with-openssl --without-pdo-sqlite --with-curl=/usr/bin/curl --with-ming
+	
+	
+6.2) Make sure to put the php.ini file within 
+		/usr/local/apache2_2/php/lib/php.ini
+	
+	
+
+	-------------  Some of the following stuff is not Needed anymore after the move to PHP 5  ... I did a custom instalation at /usr/local/apache2_2/php
+
+
+
+
+	#--- Important to run make clean before reconfiguring PHP... it is supposed to work without recompiling but seemes buggy
+	shell> /home/printsma/programs/PHP_5.3.1/php-5.3.1
+	shell> make clean
+	shell> ./conifgure ... parameters seen above
+	shell> make && make install
+	
+	
+6.3) Install the "Reverse Proxy Add Forward Module for Apache (mod_rpaf)
+	* Because the proxy servers are forwarding are traffic, the IP addresses are being masked and only the proxy IP's are showing up in our apache logs.
+	* Download the source from ... http://stderr.net/apache/rpaf/
+	* After un-tarring it, compile the SO file.
+		$ cd /home/printsma/programs/mod_rpaf-0.6
+		# This command will also copy the *.so file into the /modules directory
+		$ /usr/local/apache2_2/bin/apxs -i -c -n mod_rpaf-2.0.so mod_rpaf-2.0.c
+	* Edit http.conf
+		#Put this under the section where there PHP module is loaded
+		LoadModule php5_module modules/libphp5.so
+		LoadModule rpaf_module modules/mod_rpaf-2.0.so
+	
+	# Put this section lower down	
+	<IfModule mod_rpaf-2.0.c>
+	        # Enable reverse proxy add forward
+	        RPAFenable On
+	        # Do not let other clients trick us.
+	        RPAFproxy_ips 127.0.0.1 10.0.0.1 10.0.0.2 208.64.124.141 72.51.37.43 76.74.152.195 190.120.230.87 109.123.98.140 207.182.130.16
+	        # let rpaf update vhost settings allows to have the same hostnames as in the "real" configuration for the forwarding Apache
+	        RPAFsethostname On
+	        # Allows you to change which header mod_rpaf looks for
+	        RPAFheader X-Forwarded-For
+	</IfModule>
+		
+
+
+6.5) Ming has to be installed as a PECL module now.  It used to be included as a configure option in PHP.
+	* I couldn't get it workign by downloading the SRC from http://pecl.php.net
+	* So I copied the "ext/ming" directory from PHP 5.26 into 5.3.1
+	* Then I had to force the new configure script to recognize it.
+		$ cd /your/phpsrcdir 
+		$ rm configure
+		$ ./buildconf --force
+		$ ./configure --help
+		$ ./configure .... "Using the configure script above".
+		$ make
+
+
+
+7) Edit PHP.ini vile
+
+	edit file
+	/usr/local/apache2_2/php/lib/php.ini
+
+	* Change this setting so that we can capture raw XML data.
+	always_populate_raw_post_data = On
+
+	* Register Global on with PHP .. In PHP 4.3.3 they the ini file is set to Off by default.
+	register_globals = On
+
+	* Also change maximum execution time from 30 to 60
+	* Change maximum memory from 8MB to 15MB
+	* Change upload_max_filesize = 8M
+	
+
+	* Add the DSO extension to the the PDFlib working  (by windows extensions)
+	extension=libpdf_php.so 
+
+	* Change the default extension directory in the php ini file  ..  PDF lib will not work unless you do this
+	ini file>> extension_dir   =       /usr/local/lib         -------- It was just ./
+	
+	* Change session lifetime from 24 minutes to 4 hours.
+		"session.gc_maxlifetime    = 1400" 
+		to  
+		"session.gc_maxlifetime    = 14400"
+		
+	* Prevent "Session Fixation" for security. 
+	session.use_only_cookies = 1
+
+	* restart apache... >> http://www.printsmadeeasy.com:2086   .... click on the link at the bottom RESTART SERVICES  HTTP Server (Apache)
+
+
+
+8) So PHP can write into these directories
+
+	chgrp nobody /home/printsma/TempFiles
+	chmod g+w /home/printsma/TempFiles
+
+	chgrp nobody /home/printsma/public_html/image_preview
+	chmod g+w /home/printsma/public_html/image_preview
+
+	chgrp nobody /home/printsma/public_html/ming
+	chmod g+w /home/printsma/public_html/ming
+
+	chgrp nobody /home/printsma/public_html/customer_attachments
+	chmod g+w /home/printsma/public_html/customer_attachments
+
+	chgrp nobody /home/printsma/DomainSandBox.com/previews
+	chmod g+w /home/printsma/DomainSandBox.com/previews
+	
+	chgrp nobody /home/printsma/ReportCaching
+	chmod g+w /home/printsma/ReportCaching
+	
+	chgrp nobody /home/printsma/ImageCaching
+	chmod g+w /home/printsma/ImageCaching
+	
+	
+	
+
+
+9) Install CronTab  ... just paste in the file "crontab_liveserver.txt" that is checked into CVS within the "unix_files" directory
+
+
+
+10) Setup the SSL Certificate
+
+	#-- You maybe able to use the existing Key and CTR file.... located in the CVS repostiory at /documents/ssl_cert.txt
+	#-- Follow these steps to build a new one
+
+	Generate RSA (private key) and CSR within the apache keys directory
+	shell> cd /usr/local/apache/conf/ssl.key
+	shell> openssl genrsa -out printsmadeeasy.key 1024
+	shell> openssl req -new -key printsmadeeasy.key -out printsmadeeasy.csr
+	PromptsForInformation
+	Country Name: US
+	State: California
+	City: Chatsworth
+	Organization: Prints Made Easy, Inc.
+	Unit Name: Sales
+	Common Name: www.printsmadeeasy.com
+	Email: CustomerService@PrintsMadeEasy.com
+	Password: slk8dFSFsd
+	--
+	No extra attributes... no password
+
+
+	Fill Out Quick SSL request form...
+	https://members.ev1.net/rsMembers/english/ssl/sslorder.asp
+	Fill in Details and select "Mod SSL" for server type
+	My Order# 110520
+
+
+	Go back to the main Cpanel Console  -- port 2086
+	Click on "install an SSL certificate"
+	Paste the CTR and Key file into the form and hit save.
+
+
+
+
+11)  Edit the my.cnf file for Mysql 
+
+	##- binary logging is needed for Database replication
+	
+	##- 32M packet is needed for working with saved images 
+	
+	shell>> vi /etc/my.cnf
+	
+	------------------------
+	[mysqld]
+	datadir=/var/lib/mysql
+	socket=/var/lib/mysql/mysql.sock
+	# Default to using old password format for compatibility with mysql 3.x
+	# clients (those using the mysqlclient10 compatibility package).
+	#old_passwords=1
+	log-bin
+	binlog-do-db=pme_db
+	tmpdir=/var/lib/mysql_binlog
+	server-id=1
+	max_connections=400
+	max_connect_errors=10
+	max_allowed_packet=50M
+	thread_concurrency=16
+	log-error=/var/log/mysql-errors.log
+	key_buffer=3000M
+	join_buffer=20M
+	read_buffer_size = 7M
+	sort_buffer_size = 2M
+	table_cache=2000
+	query_cache_type = 1
+	query_cache_limit=548576
+	query_cache_size=600M
+	record_buffer=7M
+	thread_cache = 100
+	tmp_table_size = 50048576
+	#log-slow-queries = /var/lib/mysql_binlog/MysqlSlowQuery.log
+	long_query_time = 3
+
+	[mysql.server]
+	user=mysql
+	basedir=/var/lib
+
+	[mysqld_safe]
+	err-log=/var/log/mysqld.log
+	log-error=/var/log/mysql-errors.log
+	set-variable = tmpdir=/var/lib/mysql_binlog
+	pid-file=/var/run/mysqld/mysqld.pid
+	timezone = America/Los_Angeles
+	-------------
+	
+	
+	# Restart the myssql server through the Cpanel.
+
+
+12) Install the Zend Optimizer so that we can parse Microsoft Excel files using a 3rd party library
+	http://www.zend.com/store/products/zend-optimizer.php
+
+
+
+	
+	
+14) - Cpanel does not setup log rotations automatically.?????  
+      I had this problem a while ago... but maybe a newer version of Cpanel has fixed the problem.
+      Just double check.  If you don't setup log rotations then the server may crash in a couple of months.
+      View this article: http://www.crucialparadigm.com/resources/tutorials/dedicated-server/fix-log-rotation-problems.php
+
+
+
+15) Configure Client Key for the PayPal API
+	1) Copy the file "pme_PayPal_cert_key_pem.txt" which is in the "documents" directory protected under CVS
+	2) FTP the file to the server and rename it to ...  pme_PayPal_cert_key.pem
+	3) Run the following command on the pem file
+		openssl pkcs12 -export -inkey pme_PayPal_cert_key.pem -in pme_PayPal_cert_key.pem -out pme_PayPal_cert_key.p12
+		use the password "bigal2121"
+	4) copy the p12 file to the directory /usr/share/ssl
+		cp pme_PayPal_cert_key.p12 /usr/share/ssl/PayPal.p12
+	5) Convert the p12 file into a pem file using this command
+		cd /usr/share/ssl
+		openssl pkcs12 -in PayPal.p12 -out PayPal.pem
+			... use the same password "bigal2121"
+
+
+
+16) configure Spam Assassin 
+	1) Just enable it from within Cpanel at https://www.printsmadeeasy.com:2083
+	2) Disable the "Spam Box"
+	3) Configure Spam Assassin to Rewrite Subjects
+		... Set the Required Score to 7.5
+		... Change Header Subject to:::    ***SPAM*** Score:_HITS_ T:_REQD_
+	4) Install Rules Du Jour for automatic download of new Spam Rules
+		... http://www.exit0.us/index.php?pagename=RulesDuJour
+		... Follow all of the installation instructions
+			... I put the Bash script in: /usr/local/bin/rules_du_jour
+			... This is the Config file that I put in:  /etc/rulesdujour/config
+			... Here are the 4 lines in the config file
+			TRUSTED_RULESETS="TRIPWIRE SARE_ADULT SARE_REDIRECT_POST300 SARE_OBFU SARE_HTML SARE_HEADER SARE_SPECIFIC SARE_BML SARE_FRAUD SARE_SPOOF SARE_RANDOM SARE_GENLSUBJ0 SARE_URI1 SARE_STOCKS"
+			SA_DIR="/etc/mail/spamassassin"
+			MAIL_ADDRESS="brian@printsmadeeasy.com"
+			SA_RESTART="killall -HUP spamd"
+	
+	5) Install rules_du_jour into the Root's Cron.
+		crontab -e   ::: Add this line to run every Saturday at 6:30 in the morning
+		30 6 * * 6 /usr/local/bin/rules_du_jour
+
+
+17) Edit the Exim filter file at /etc/antivirus.exim and add the following rule
+
+	###  The Host name of this machine is s10.printsmadeeasy.com
+	###  If someone is sending a message that supposedly comes from PrintsMadeEasy then we want to verify it came from our server.
+	if ($header_from: contains "@printsmadeeasy.com") and ($message_headers does not contain "s10")
+	then
+	  fail text "Message is being rejected because the return path says\n\
+		     it is from PrintsMadeEasy, but it wasn't sent from our server."
+	  seen finish
+	endif
+
+
+
+	#----------------  FORWARD Copies Of Employee Emails to a special mailbox --------------
+	# ----------------  Only copy the emails if they exist within our Text file "/etc/spylist" -----------
+
+
+	if ("${lookup{${sender_address}}lsearch*@{/etc/spylist}{pass}{fail}}" is "pass")
+	then
+	     unseen deliver spy-outgoing@printsmadeeasy.com
+	endif
+
+
+	if foranyaddress $h_to: ("${lookup{${thisaddress}}lsearch*@{/etc/spylist}{pass}{fail}}" is "pass")
+	then
+		unseen deliver spy-incoming@printsmadeeasy.com
+	endif
+
+
+	#-- To forward all emails sent to "Custom@PrintsMadeEasy.com" to Mike Trudeau.
+	if foranyaddress $h_to: ( $thisaddress contains "custom@printsmadeeasy.com" )
+	then
+	        unseen deliver mtrudeau@printsmadeeasy.com
+	        unseen deliver susie@printsmadeeasy.com
+	endif
+
+
+
+
+
+18) Edit /etc/antivirus.exim
+
+
+	Add these lines.  It makes sure that only mail from "printsamdeeasy" must be sent from the printsmadeeasy server...
+	...........................
+	###  The Host name of this machine is s10.printsmadeeasy.com
+	###  If someone is sending a message that supposedly comes from PrintsMadeEasy then we want to verify it came from our s
+	erver.
+	if ($header_from: contains "@printsmadeeasy.com") and ($message_headers does not contain "s10")
+	then
+	  fail text "Message is being rejected because the return path says\n\
+		     it is from PrintsMadeEasy, but it wasn't sent from our server."
+	  seen finish
+	endif
+
+
+
+
+
+####################                                ####################
+#################### ----- Firewall Setup --------- ####################
+####################                                ####################
+
+
+
+Open up
+	* SSH
+	* HTTP
+	* FTP
+	* MySQL (3306)
+	* PING
+	* Cpanel (2083 & 2087)
+	
+	
+	
+
+#--- Setup IP Tables on live server.  See the file named ip_tables.txt
+
+	
+

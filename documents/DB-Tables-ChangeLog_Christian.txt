@@ -1,0 +1,1512 @@
+
+
+
+
+#--- Added 2-11-09 ----
+DROP TABLE emailnotifycollection;
+DROP TABLE emailnotifystatushistory;
+
+CREATE TABLE IF NOT EXISTS emailnotifycollection (
+  ID int(11) NOT NULL AUTO_INCREMENT,
+  Status char(1),
+  Email varchar(60),
+  ImportDate DATETIME,
+  LastStatusChange DATETIME,
+  LastEmailDate DATETIME,
+  
+  PRIMARY KEY (ID),
+  INDEX emailnotifycollection_Email (Email),
+  INDEX emailnotifycollection_Status (Status),
+  INDEX emailnotifycollection_LastEmailDate (Status)
+);
+
+
+CREATE TABLE IF NOT EXISTS emailnotifyhistory (
+  ID int(11) NOT NULL AUTO_INCREMENT,
+  EmailID int(11),
+  MessageID int(11),
+  Date DATETIME,
+  
+  PRIMARY KEY (ID),
+  INDEX emailnotifyhistory_EmailID (EmailID)
+);
+
+
+CREATE TABLE IF NOT EXISTS emailunsubscriptions (
+  ID int(11) NOT NULL AUTO_INCREMENT,
+  EmailID int(11),
+  DomainID int(11),
+  Date DATETIME,
+  
+  PRIMARY KEY (ID),
+  INDEX emailunsubscriptions_EmailID (EmailID)
+);
+
+ALTER TABLE emailnotifycollection ADD COLUMN SourceType char(1);
+
+CREATE TABLE IF NOT EXISTS emailcheckdomains (
+  ID int(11) NOT NULL AUTO_INCREMENT,
+  DomainName varchar(68),
+  Status char(1),
+  Retries int(11),
+  LastDate datetime,
+  
+  PRIMARY KEY  (ID),
+  INDEX emailcheckdomains_DomainName (DomainName)
+);
+
+ALTER TABLE emailnotifyhistory ADD COLUMN DomainID int(11);
+
+CREATE TABLE IF NOT EXISTS emailnotifymessages (
+  ID int(11) NOT NULL AUTO_INCREMENT,
+  Subject varchar(200),
+  DateRangeStart date,
+  DateRangeEnd date,
+  Active char(1),
+  HTMLText char(1),
+  Body text,
+  CreatedByUserID int(11),
+  CreatedOnDate datetime,
+  LastEditedByUserID int(11),
+  LastEditedOnDate datetime,
+  
+  PRIMARY KEY  (ID),
+  INDEX emailnotifymessages_DateRangeStart (DateRangeStart),  
+  INDEX emailnotifymessages_DateRangeEnd   (DateRangeEnd)
+);
+
+
+CREATE TABLE IF NOT EXISTS emailnotifydomains (
+  ID int(11),
+  DomainName varchar(68),
+  Token varchar(100),
+  AddDate datetime,
+  LastJobRequest datetime,
+  Active char(1),
+  
+  PRIMARY KEY  (ID)
+);
+
+ALTER TABLE emailunsubscriptions ADD COLUMN IP varchar(20);
+alter table emailunsubscriptions add GoodOrBad char (1);
+alter table emailunsubscriptions add Email varchar (60);
+
+#Added June 30th 2009
+
+CREATE TABLE IF NOT EXISTS emailnotifypictures (
+  ID int(11) NOT NULL AUTO_INCREMENT,
+  BinaryData longblob,
+  BinaryThumb longblob,
+  Filename varchar(100),
+  FileSize int(11),
+  DateAdded datetime ,
+  MessageID int(11),
+  Width int(11),
+  Height int(11),
+  
+  PRIMARY KEY  (ID)
+);
+
+#Added July 4th 2009
+
+alter table emailnotifyhistory add JobID int(11);
+
+DROP TABLE if exists emailnotifydomains;
+
+CREATE TABLE IF NOT EXISTS emailnotifydomains (
+  ID int(11) NOT NULL AUTO_INCREMENT,
+  DomainID int(11),
+  Active char(1),
+  Token varchar(100),
+  LastJobRequest datetime,
+ 
+  PRIMARY KEY  (ID)
+);
+
+insert into emailnotifydomains(DomainID,Active) values(1,'Y');
+insert into emailnotifydomains(DomainID,Active) values(2,'Y');
+insert into emailnotifydomains(DomainID,Active) values(3,'Y');
+insert into emailnotifydomains(DomainID,Active) values(4,'Y');
+insert into emailnotifydomains(DomainID,Active) values(5,'Y');
+
+
+CREATE TABLE IF NOT EXISTS emailnotifyjob (
+  ID int(11) NOT NULL AUTO_INCREMENT,
+  DomainID int(11),
+  DeliveryDate datetime,
+ 
+  PRIMARY KEY  (ID)
+);
+
+
+CREATE TABLE IF NOT EXISTS emailnotifytrack (
+  ID int(11) NOT NULL AUTO_INCREMENT,
+  DomainID int(11),
+  EmailID int(11),
+  Date datetime,
+  
+  PRIMARY KEY  (ID)
+);
+
+#Added 6th July 2009
+
+CREATE TABLE IF NOT EXISTS domainemailconfig (
+  ID int(11) NOT NULL AUTO_INCREMENT,
+  DomainID int(11),
+  EmailType varchar(50),
+  Name varchar(100),
+  Email varchar(100),
+  MailServerHost varchar(100),
+  MailServerUser varchar(100),
+  MailServerPassword varchar(100),
+  
+  PRIMARY KEY  (ID)
+);
+
+#This is the data that's equal to the current script values
+
+INSERT INTO domainemailconfig
+  (DomainID, EmailType, Name, Email, MailServerHost, MailServerUser, MailServerPassword)
+VALUES
+  (1, "CustomerService", "PrintsMadeEasy.com", "CustomerService@PrintsMadeEasy.com", "127.0.0.1", "customerservice+printsmadeeasy.com", "DJ*djl388!j");
+
+INSERT INTO domainemailconfig
+  (DomainID, EmailType, Name, Email, MailServerHost, MailServerUser, MailServerPassword)
+VALUES
+  (1, "Webmaster", "Webmaster at PME", "Webmaster@PrintsMadeEasy.com", "", "", "");
+
+INSERT INTO domainemailconfig
+  (DomainID, EmailType, Name, Email, MailServerHost, MailServerUser, MailServerPassword)
+VALUES
+  (1, "ShipmentNotify", "PrintsMadeEasy.com", "CustomerService@PrintsMadeEasy.com", "", "", "");
+
+INSERT INTO domainemailconfig
+  (DomainID, EmailType, Name, Email, MailServerHost, MailServerUser, MailServerPassword)
+VALUES
+  (1, "EmailNotify", "", "donotreply@printsmadeeasy.com", "127.0.0.1", "donotreply+printsmadeeasy.com", "password");
+
+INSERT INTO domainemailconfig
+  (DomainID, EmailType, Name, Email, MailServerHost, MailServerUser, MailServerPassword)
+VALUES
+  (1, "ArtWork", "PrintsMadeEasy.com", "AutomatedArtwork@PrintsMadeEasy.com", "", "", "");
+
+INSERT INTO domainemailconfig
+  (DomainID, EmailType, Name, Email, MailServerHost, MailServerUser, MailServerPassword)
+VALUES
+  (1, "Reminder", "PrintsMadeEasy.com", "CustomerService@PrintsMadeEasy.com", "", "", "");
+
+INSERT INTO domainemailconfig
+  (DomainID, EmailType, Name, Email, MailServerHost, MailServerUser, MailServerPassword)
+VALUES
+  (1, "Sales", "PrintsMadeEasy.com", "Sales@PrintsMadeEasy.com", "", "", "");
+
+INSERT INTO domainemailconfig
+  (DomainID, EmailType, Name, Email, MailServerHost, MailServerUser, MailServerPassword)
+VALUES
+  (1, "Confirmation", "PrintsMadeEasy.com", "auto-confirm@PrintsMadeEasy.com", "", "", "");
+
+INSERT INTO domainemailconfig
+  (DomainID, EmailType, Name, Email, MailServerHost, MailServerUser, MailServerPassword)
+VALUES
+  (1, "Paypal", "Paypal Admin", "Brian@PrintsMadeEasy.com", "", "", "");
+
+INSERT INTO domainemailconfig
+  (DomainID, EmailType, Name, Email, MailServerHost, MailServerUser, MailServerPassword)
+VALUES
+  (1, "Marketing", "PME Marketing", "MarketingData@PrintsMadeEasy.com", "127.0.0.1", "marketingdata+printsmadeeasy.com", "engine");
+
+INSERT INTO domainemailconfig
+  (DomainID, EmailType, Name, Email, MailServerHost, MailServerUser, MailServerPassword)
+VALUES
+  (1, "ReturnEnvelope", "", "", "nobody@s10.printsmadeeasy.com", "", "");
+
+INSERT INTO domainemailconfig
+  (DomainID, EmailType, Name, Email, MailServerHost, MailServerUser, MailServerPassword)
+VALUES
+  (5, "CustomerService", "PrintsMadeEasy.com", "CustomerService@PrintsMadeEasy.com", "", "", "");
+
+INSERT INTO domainemailconfig
+  (DomainID, EmailType, Name, Email, MailServerHost, MailServerUser, MailServerPassword)
+VALUES
+  (5, "Webmaster", "Webmaster", "webmaster@dotcopyshop.com", "", "", "");
+
+INSERT INTO domainemailconfig
+  (DomainID, EmailType, Name, Email, MailServerHost, MailServerUser, MailServerPassword)
+VALUES
+  (5, "ShipmentNotify", "PrintsMadeEasy.com", "CustomerService@PrintsMadeEasy.com", "", "", "");
+
+INSERT INTO domainemailconfig
+  (DomainID, EmailType, Name, Email, MailServerHost, MailServerUser, MailServerPassword)
+VALUES
+  (5, "EmailNotify", "", "", "127.0.0.1", "donotreply+dotcopyshop.com", "password");
+
+INSERT INTO domainemailconfig
+  (DomainID, EmailType, Name, Email, MailServerHost, MailServerUser, MailServerPassword)
+VALUES
+  (5, "ArtWork", "PrintsMadeEasy.com", "AutomatedArtwork@PrintsMadeEasy.com", "", "", "");
+
+INSERT INTO domainemailconfig
+  (DomainID, EmailType, Name, Email, MailServerHost, MailServerUser, MailServerPassword)
+VALUES
+  (5, "Reminder", "PrintsMadeEasy.com", "CustomerService@PrintsMadeEasy.com", "", "", "");
+
+INSERT INTO domainemailconfig
+  (DomainID, EmailType, Name, Email, MailServerHost, MailServerUser, MailServerPassword)
+VALUES
+  (5, "Sales", "PrintsMadeEasy.com", "Sales@PrintsMadeEasy.com", "", "", "");
+
+INSERT INTO domainemailconfig
+  (DomainID, EmailType, Name, Email, MailServerHost, MailServerUser, MailServerPassword)
+VALUES
+  (5, "Confirmation", "PrintsMadeEasy.com", "auto-confirm@PrintsMadeEasy.com", "", "", "");
+
+INSERT INTO domainemailconfig
+  (DomainID, EmailType, Name, Email, MailServerHost, MailServerUser, MailServerPassword)
+VALUES
+  (5, "Paypal", "Paypal Admin", "Brian@PrintsMadeEasy.com", "", "", "");
+
+INSERT INTO domainemailconfig
+  (DomainID, EmailType, Name, Email, MailServerHost, MailServerUser, MailServerPassword)
+VALUES
+  (5, "Marketing", "PME Marketing", "MarketingData@PrintsMadeEasy.com", "127.0.0.1", "marketingdata+printsmadeeasy.com", "engine");
+
+INSERT INTO domainemailconfig
+  (DomainID, EmailType, Name, Email, MailServerHost, MailServerUser, MailServerPassword)
+VALUES
+  (5, "ReturnEnvelope", "", "", "nobody@s10.printsmadeeasy.com", "", "");
+
+INSERT INTO domainemailconfig
+  (DomainID, EmailType, Name, Email, MailServerHost, MailServerUser, MailServerPassword)
+VALUES
+  (4, "CustomerService", "PrintsMadeEasy.com", "CustomerService@PrintsMadeEasy.com", "", "", "");
+
+INSERT INTO domainemailconfig
+  (DomainID, EmailType, Name, Email, MailServerHost, MailServerUser, MailServerPassword)
+VALUES
+  (4, "Webmaster", "Webmaster at PME", "Webmaster@PrintsMadeEasy.com", "", "", "");
+
+INSERT INTO domainemailconfig
+  (DomainID, EmailType, Name, Email, MailServerHost, MailServerUser, MailServerPassword)
+VALUES
+  (3, "CustomerService", "PrintsMadeEasy.com", "CustomerService@PrintsMadeEasy.com", "", "", "");
+
+INSERT INTO domainemailconfig
+  (DomainID, EmailType, Name, Email, MailServerHost, MailServerUser, MailServerPassword)
+VALUES
+  (3, "Webmaster", "Webmaster at PME", "Webmaster@PrintsMadeEasy.com", "", "", "");
+
+INSERT INTO domainemailconfig
+  (DomainID, EmailType, Name, Email, MailServerHost, MailServerUser, MailServerPassword)
+VALUES
+  (3, "ShipmentNotify", "PrintsMadeEasy.com", "CustomerService@PrintsMadeEasy.com", "", "", "");
+
+INSERT INTO domainemailconfig
+  (DomainID, EmailType, Name, Email, MailServerHost, MailServerUser, MailServerPassword)
+VALUES
+  (3, "EmailNotify", "PrintsMadeEasy.com", "", "127.0.0.1", "donotreply+bang4buckprinting.com", "password");
+
+INSERT INTO domainemailconfig
+  (DomainID, EmailType, Name, Email, MailServerHost, MailServerUser, MailServerPassword)
+VALUES
+  (3, "ArtWork", "PrintsMadeEasy.com", "AutomatedArtwork@PrintsMadeEasy.com", "", "", "");
+
+INSERT INTO domainemailconfig
+  (DomainID, EmailType, Name, Email, MailServerHost, MailServerUser, MailServerPassword)
+VALUES
+  (3, "Reminder", "PrintsMadeEasy.com", "CustomerService@PrintsMadeEasy.com", "", "", "");
+
+INSERT INTO domainemailconfig
+  (DomainID, EmailType, Name, Email, MailServerHost, MailServerUser, MailServerPassword)
+VALUES
+  (3, "Sales", "PrintsMadeEasy.com", "Sales@PrintsMadeEasy.com", "", "", "");
+
+INSERT INTO domainemailconfig
+  (DomainID, EmailType, Name, Email, MailServerHost, MailServerUser, MailServerPassword)
+VALUES
+  (3, "Confirmation", "PrintsMadeEasy.com", "auto-confirm@PrintsMadeEasy.com", "", "", "");
+
+INSERT INTO domainemailconfig
+  (DomainID, EmailType, Name, Email, MailServerHost, MailServerUser, MailServerPassword)
+VALUES
+  (3, "Paypal", "Paypal Admin", "Brian@PrintsMadeEasy.com", "", "", "");
+
+INSERT INTO domainemailconfig
+  (DomainID, EmailType, Name, Email, MailServerHost, MailServerUser, MailServerPassword)
+VALUES
+  (3, "Marketing", "PME Marketing", "MarketingData@PrintsMadeEasy.com", "127.0.0.1", "marketingdata+printsmadeeasy.com", "engine");
+
+INSERT INTO domainemailconfig
+  (DomainID, EmailType, Name, Email, MailServerHost, MailServerUser, MailServerPassword)
+VALUES
+  (3, "ReturnEnvelope", "", "", "nobody@s10.printsmadeeasy.com", "", "");
+
+INSERT INTO domainemailconfig
+  (DomainID, EmailType, Name, Email, MailServerHost, MailServerUser, MailServerPassword)
+VALUES
+  (4, "ShipmentNotify", "PrintsMadeEasy.com", "CustomerService@PrintsMadeEasy.com", "", "", "");
+
+INSERT INTO domainemailconfig
+  (DomainID, EmailType, Name, Email, MailServerHost, MailServerUser, MailServerPassword)
+VALUES
+  (4, "EmailNotify", "", "", "127.0.0.1", "donotreply+marketingengine.biz", "password");
+
+INSERT INTO domainemailconfig
+  (DomainID, EmailType, Name, Email, MailServerHost, MailServerUser, MailServerPassword)
+VALUES
+  (4, "ArtWork", "PrintsMadeEasy.com", "AutomatedArtwork@PrintsMadeEasy.com", "", "", "");
+
+INSERT INTO domainemailconfig
+  (DomainID, EmailType, Name, Email, MailServerHost, MailServerUser, MailServerPassword)
+VALUES
+  (4, "Reminder", "PrintsMadeEasy.com", "CustomerService@PrintsMadeEasy.com", "", "", "");
+
+INSERT INTO domainemailconfig
+  (DomainID, EmailType, Name, Email, MailServerHost, MailServerUser, MailServerPassword)
+VALUES
+  (4, "Sales", "PrintsMadeEasy.com", "Sales@PrintsMadeEasy.com", "", "", "");
+
+INSERT INTO domainemailconfig
+  (DomainID, EmailType, Name, Email, MailServerHost, MailServerUser, MailServerPassword)
+VALUES
+  (4, "Confirmation", "PrintsMadeEasy.com", "auto-confirm@PrintsMadeEasy.com", "", "", "");
+
+INSERT INTO domainemailconfig
+  (DomainID, EmailType, Name, Email, MailServerHost, MailServerUser, MailServerPassword)
+VALUES
+  (4, "Paypal", "Paypal Admin", "Brian@PrintsMadeEasy.com", "", "", "");
+
+INSERT INTO domainemailconfig
+  (DomainID, EmailType, Name, Email, MailServerHost, MailServerUser, MailServerPassword)
+VALUES
+  (4, "Marketing", "PME Marketing", "MarketingData@PrintsMadeEasy.com", "127.0.0.1", "marketingdata+printsmadeeasy.com", "engine");
+
+INSERT INTO domainemailconfig
+  (DomainID, EmailType, Name, Email, MailServerHost, MailServerUser, MailServerPassword)
+VALUES
+  (4, "ReturnEnvelope", "", "", "nobody@s10.printsmadeeasy.com", "", "");
+
+INSERT INTO domainemailconfig
+  (DomainID, EmailType, Name, Email, MailServerHost, MailServerUser, MailServerPassword)
+VALUES
+  (2, "CustomerService", "Postcards.com Support", "Support@Postcards.com", "127.0.0.1", "support+postcards.com", "LKJDF34^jd");
+
+INSERT INTO domainemailconfig
+  (DomainID, EmailType, Name, Email, MailServerHost, MailServerUser, MailServerPassword)
+VALUES
+  (2, "Webmaster", "Webmaster at Postcards.com", "Webmaster@Postcards.com", "", "", "");
+
+INSERT INTO domainemailconfig
+  (DomainID, EmailType, Name, Email, MailServerHost, MailServerUser, MailServerPassword)
+VALUES
+  (2, "ShipmentNotify", "Postcards.com Shipping Notification", "Support@Postcards.com", "", "", "");
+
+INSERT INTO domainemailconfig
+  (DomainID, EmailType, Name, Email, MailServerHost, MailServerUser, MailServerPassword)
+VALUES
+  (2, "EmailNotify", "EmailNotify", "emailnotify@postcards.com", "127.0.0.1", "donotreply+postcards.com", "password");
+
+INSERT INTO domainemailconfig
+  (DomainID, EmailType, Name, Email, MailServerHost, MailServerUser, MailServerPassword)
+VALUES
+  (2, "ArtWork", "Postcards.com", "ArtworkAutomation@Postcards.com", "", "", "");
+
+INSERT INTO domainemailconfig
+  (DomainID, EmailType, Name, Email, MailServerHost, MailServerUser, MailServerPassword)
+VALUES
+  (2, "Reminder", "Postcards.com", "Support@PrintsMadeEasy.com", "", "", "");
+
+INSERT INTO domainemailconfig
+  (DomainID, EmailType, Name, Email, MailServerHost, MailServerUser, MailServerPassword)
+VALUES
+  (2, "Sales", "Postcards.com", "Sales@Postcards.com", "", "", "");
+
+INSERT INTO domainemailconfig
+  (DomainID, EmailType, Name, Email, MailServerHost, MailServerUser, MailServerPassword)
+VALUES
+  (2, "Confirmation", "Postcards.com", "order-confirm@Postcards.com", "", "", "");
+
+INSERT INTO domainemailconfig
+  (DomainID, EmailType, Name, Email, MailServerHost, MailServerUser, MailServerPassword)
+VALUES
+  (2, "Paypal", "Paypal Admin", "Payments@Postcards.com", "", "", "");
+
+INSERT INTO domainemailconfig
+  (DomainID, EmailType, Name, Email, MailServerHost, MailServerUser, MailServerPassword)
+VALUES
+  (2, "Marketing", "", "", "", "", "");
+
+INSERT INTO domainemailconfig
+  (DomainID, EmailType, Name, Email, MailServerHost, MailServerUser, MailServerPassword)
+VALUES
+  (2, "ReturnEnvelope", "", "", "nobody@www.postcards.com", "", "");
+
+
+#Added 7th July 2009
+
+drop table if exists emailnotifytrack;
+
+alter table emailnotifyjob add MessageID int(11);
+alter table emailnotifyjob add TrackingCount int(11);
+
+#Added 8th July 2009
+
+CREATE TABLE IF NOT EXISTS emailnotifyorders (
+  ID int(11) NOT NULL AUTO_INCREMENT,
+  JobID int(11),
+  Email varchar(50),
+  Date datetime,
+ 
+  PRIMARY KEY  (ID),
+    
+  INDEX emailnotifyorders_JobID (JobID)
+);
+
+alter table emailnotifymessages add DomainID int(11);
+
+#Added 9th July 2009
+
+alter table emailnotifycollection add FirstName varchar(50);
+alter table emailnotifycollection add LastName varchar(50);
+
+#Added 23th July 2009
+
+alter table emailnotifycollection drop FirstName;
+alter table emailnotifycollection drop LastName;
+
+alter table emailnotifycollection add Name varchar(100);
+alter table emailnotifycollection add CompanyName varchar(100);
+alter table emailnotifycollection add Title varchar(50);
+alter table emailnotifycollection add Address varchar(100);
+alter table emailnotifycollection add City varchar(100);
+alter table emailnotifycollection add State varchar(100);
+alter table emailnotifycollection add Zip varchar(10);
+alter table emailnotifycollection add Country char(2);
+alter table emailnotifycollection add Phone varchar(10);
+alter table emailnotifycollection add IndustryType varchar(20);
+alter table emailnotifycollection add SICCode int(11);
+alter table emailnotifycollection add UpdateDate datetime;
+
+#Added 6th August 2009
+
+CREATE TABLE IF NOT EXISTS emailnotifysenderror (
+  ID int(11) auto_increment,
+  Date datetime,
+  ErrorCode int(11),
+  Email varchar(50),
+  Domain varchar(50),
+  
+  PRIMARY KEY (ID)
+);
+
+#Added 8th August 2009
+
+alter table emailnotifycollection add BatchID int(11);
+
+#Added 11th August 2009
+
+CREATE TABLE IF NOT EXISTS emailnotifybatch (
+  ID int(11) auto_increment,
+  Description varchar(255),
+  Date datetime,
+  Sequence int(11),
+  Priority int(11),
+  
+  PRIMARY KEY (ID)
+);
+
+#Added 12th August 2009
+
+CREATE TABLE IF NOT EXISTS emailnotifybatchdomain (
+  ID int(11) auto_increment,
+  BatchID int(11),
+  DomainID int(11),
+ 
+  PRIMARY KEY (ID)
+);
+
+#Added 16th August 2009
+
+alter table emailnotifyjob add BatchID int(11);
+alter table emailnotifyjob add SendErrorCount int(11);
+
+#Added 17th August 2009
+
+CREATE INDEX emailnotifyjob_BatchID ON emailnotifyjob (BatchID);
+DROP INDEX emailnotifyorders_JobID ON emailnotifyorders;
+CREATE INDEX emailnotifyorders_JobID ON emailnotifyorders (JobID);
+
+#Added 24th August 2009
+
+alter table emailnotifyjob drop SendErrorCount;
+alter table emailnotifyjob drop BatchID;
+alter table emailnotifyjob drop TrackingCount;
+alter table emailnotifybatch drop Priority;
+
+alter table emailnotifysenderror add BatchID int(11);
+alter table emailnotifysenderror add JobID int(11);
+CREATE INDEX emailnotifysenderror_BatchID ON emailnotifysenderror (BatchID);
+CREATE INDEX emailnotifysenderror_JobID ON emailnotifysenderror (JobID);
+alter table emailnotifyhistory add BatchID int(11);
+CREATE INDEX emailnotifyhistory_BatchID ON emailnotifyhistory (BatchID);
+alter table emailnotifyorders add BatchID int(11);
+alter table emailnotifyorders add MessageID int(11);
+CREATE INDEX emailnotifyorders_BatchID ON emailnotifyorders (BatchID);
+CREATE INDEX emailnotifyorders_JobID ON emailnotifyorders (JobID);
+
+#Added 25th August 2009
+
+CREATE TABLE IF NOT EXISTS emailnotifytracking (
+  ID int(11) auto_increment,
+  Date datetime,
+  JobID int(11),
+  BatchID int(11),
+  DomainID int(11),
+  MessageID int(11),
+  EmailID int(11),
+  
+  PRIMARY KEY (ID),
+
+  INDEX emailnotifytracking_JobID (JobID),
+  INDEX emailnotifytracking_BatchID (BatchID),
+  INDEX emailnotifytracking_MessageID (MessageID),
+  INDEX emailnotifytracking_DomainID (DomainID)
+);
+
+alter table emailnotifyorders add DomainID int(11);
+CREATE INDEX emailnotifyorders_DomainID ON emailnotifyorders (DomainID);
+
+alter table emailnotifysenderror drop Domain;
+alter table emailnotifysenderror add DomainID int(11);
+CREATE INDEX emailnotifysenderror_DomainID ON emailnotifysenderror (DomainID);
+
+#Added 27th August 2009
+
+alter table emailnotifycollection add LastDomainID int(11);
+CREATE INDEX emailnotifycollection_LastDomainID ON emailnotifycollection (LastDomainID);
+
+#Added 29th August 2009
+
+ALTER TABLE orders ADD COLUMN EmailNotifyMessageID int(11);
+
+#Added 2nd September 2009
+
+alter table orders drop EmailNotifyMessageID;
+ALTER TABLE orders ADD COLUMN EmailNotifyJobHistoryID int(11);
+CREATE INDEX orders_EmailNotifyJobHistoryID ON orders (EmailNotifyJobHistoryID);
+
+#Added 9th September 2009
+
+CREATE INDEX emailnotifysenderror_Email ON emailnotifysenderror (Email);
+
+#Added 15th September 2009
+
+CREATE TABLE IF NOT EXISTS emailnotifypatternstoignore (
+  ID int(11) auto_increment,
+  EmailDomain varchar(100),
+  Date datetime,
+  PRIMARY KEY  (ID)
+);
+
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("prints.com");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("print.com");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("prints.net");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("print.net");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("printing.com");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("printers.com");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("printer.com");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("cards.com");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("card.com");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("cards.net");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("card.net");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("zazzle.com");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("businesscard");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("postcard");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  (".co.uk");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("fedex.com");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("ups.com");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  (".gov");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("printingforless.com");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("bizcard");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("4over.com");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("4over.net");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("printplace");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("flyers.com");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("letterhead");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("digitalroom.com");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("ipccsite.com");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("carddobserver");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("inkd.com");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("cardcreator.com");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("cardconnection");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("moo.com");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("hp.com");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("degraeve.com");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("epson");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("microsoft");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("copycenter.com");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("nebs.com");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("papercard");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("metalcards.com");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("printvisions");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("spamhaus.org");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("abuseat.org");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("robtex.com");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("antisource.com");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  (".jp");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  (".cn");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  (".in");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("rbl.org");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("rbl.com");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("dnswatch");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("simpledns");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("curce.ca");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("emailtalk");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("spamwall");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("sonicwall");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("xerox");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("dnsbl");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("dnsstuff");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("theplanet");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("yaritz.net");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("norton");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("mcafee");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("dns.com");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("mozilla");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("apple.com");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("declude.com");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("sun.com");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("spamassasin");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("dmoz.org");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("rfc-ignorant.org");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("verio");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("opendns");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("webmaster");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("admin@");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("support@");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("service@");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("webmaster@");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("dan.me.uk");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("blacklist");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("blocklist");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("emailtalk.org");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("wikipedia");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("rblcheck");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("port25");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("spam-block");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("spamblock");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("inboxer");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("cpanel");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("crystalgraphics.com");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("digitalroom");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("printing");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("posters");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("river.com");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("ietf.org");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("mxtoolbox.com");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("farheap");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("syntegra.com");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("barracuda");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("swik.net");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("dslreports");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("wapedia.mobi");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("spam");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("exim");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("filesland");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("zdnet");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("dnswl.org");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("w3c");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("google");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("irbs.net");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("osdir.com");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("vamsoft");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("hmailserver");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("apache");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("isc.org");
+
+INSERT INTO emailnotifypatternstoignore
+  (EmailDomain)
+VALUES
+  ("dns");
+
+
+#Added 9th December 2009
+
+alter table orders ADD COLUMN ThirdPartyInvoiceID varchar(10);
+
+#Added 19th January 2010
+
+alter table emailnotifymessages ADD COLUMN FromName varchar(50);
+alter table emailnotifymessages ADD COLUMN FromEmail varchar(50);
+
+#Added 21th January 2010
+
+drop table emailnotifydomains;
+
+
+#Added 9th February 2010
+
+
+CREATE TABLE  IF NOT EXISTS domainaddresses (
+  ID int(11) auto_increment,
+  DomainID int(11),
+  Type varchar(50),
+  AddressType varchar(100),
+  Attention varchar(100),
+  Company varchar(100),
+  AddressOne varchar(100),
+  AddressTwo varchar(100),
+  City varchar(100),
+  State varchar(100),
+  ZIP varchar(10),
+  CountryCode char(2),
+  Phone varchar(20),
+  ResidentialFlag int(11),
+  TaxIDNo varchar(50),
+  TaxIDType varchar(50),
+  UPSAccountNo varchar(50),
+  PRIMARY KEY  (ID),
+  INDEX domainaddresses_DomainID (DomainID)
+);
+
+INSERT INTO domainaddresses
+  (DomainID, Type, AddressType, Attention, Company, AddressOne, AddressTwo, City, State, ZIP, CountryCode, Phone, ResidentialFlag, TaxIDNo, TaxIDType, UPSAccountNo)
+VALUES
+  (1, "NonAddress", "", "", "", "", "", "", "", "", "", "", 0, "52-2371010", "EIN", "Y23191");
+
+INSERT INTO domainaddresses
+  (DomainID, Type, AddressType, Attention, Company, AddressOne, AddressTwo, City, State, ZIP, CountryCode, Phone, ResidentialFlag, TaxIDNo, TaxIDType, UPSAccountNo)
+VALUES
+  (1, "Address", "CustomerService", "Customer Service", "Prints Made Easy, Inc.", "822 N Marshall", "", "Marshfield", "MO", "65706", "US", "1-800-263-0847", 0, "", "", "");
+
+INSERT INTO domainaddresses
+  (DomainID, Type, AddressType, Attention, Company, AddressOne, AddressTwo, City, State, ZIP, CountryCode, Phone, ResidentialFlag, TaxIDNo, TaxIDType, UPSAccountNo)
+VALUES
+  (1, "Address", "ShippingDept", "Shipping Dept.", "Prints Made Easy, Inc.", "822 N Marshall", "", "Marshfield", "MO", "65706", "US", "1-800-263-0847", 0, "", "", "");
+
+INSERT INTO domainaddresses
+  (DomainID, Type, AddressType, Attention, Company, AddressOne, AddressTwo, City, State, ZIP, CountryCode, Phone, ResidentialFlag, TaxIDNo, TaxIDType, UPSAccountNo)
+VALUES
+  (1, "Address", "BillingDept", "Billing Dept.", "Prints Made Easy, Inc.", "822 N Marshall", "", "Marshfield", "MO", "65706", "US", "1-800-263-0847", 0, "", "", "");
+
+INSERT INTO domainaddresses
+  (DomainID, Type, AddressType, Attention, Company, AddressOne, AddressTwo, City, State, ZIP, CountryCode, Phone, ResidentialFlag, TaxIDNo, TaxIDType, UPSAccountNo)
+VALUES
+  (1, "Address", "DefaultProduction", "", ".", "9655 De Soto Ave.", "", "Chatsworth", "CA", "91311", "US", "", 0, "", "", "");
+
+INSERT INTO domainaddresses
+  (DomainID, Type, AddressType, Attention, Company, AddressOne, AddressTwo, City, State, ZIP, CountryCode, Phone, ResidentialFlag, TaxIDNo, TaxIDType, UPSAccountNo)
+VALUES
+  (2, "NonAddress", "", "", "", "", "", "", "", "", "", "", 0, "52-2371010", "EIN", "Y23191");
+
+INSERT INTO domainaddresses
+  (DomainID, Type, AddressType, Attention, Company, AddressOne, AddressTwo, City, State, ZIP, CountryCode, Phone, ResidentialFlag, TaxIDNo, TaxIDType, UPSAccountNo)
+VALUES
+  (2, "Address", "CustomerService", "Customer Support", "Postcards.com", "9655 De Soto Ave.", "", "Chatsworth", "CA", "91311", "US", "1-888-663-7080", 0, "", "", "");
+
+INSERT INTO domainaddresses
+  (DomainID, Type, AddressType, Attention, Company, AddressOne, AddressTwo, City, State, ZIP, CountryCode, Phone, ResidentialFlag, TaxIDNo, TaxIDType, UPSAccountNo)
+VALUES
+  (2, "Address", "ShippingDept", "Shipping Deptartment", "Postcards.com", "9655 De Soto Ave.", "", "Chatsworth", "CA", "91311", "US", "1-888-663-7080", 0, "", "", "");
+
+INSERT INTO domainaddresses
+  (DomainID, Type, AddressType, Attention, Company, AddressOne, AddressTwo, City, State, ZIP, CountryCode, Phone, ResidentialFlag, TaxIDNo, TaxIDType, UPSAccountNo)
+VALUES
+  (2, "Address", "BillingDept", "Billing Department", "Postcards.com", "9655 De Soto Ave.", "", "Chatsworth", "CA", "91311", "US", "1-888-663-7080", 0, "", "", "");
+
+INSERT INTO domainaddresses
+  (DomainID, Type, AddressType, Attention, Company, AddressOne, AddressTwo, City, State, ZIP, CountryCode, Phone, ResidentialFlag, TaxIDNo, TaxIDType, UPSAccountNo)
+VALUES
+  (2, "Address", "DefaultProduction", "", ".", "9655 De Soto Ave.", "", "Chatsworth", "CA", "91311", "US", "", 0, "", "", "");
+
+INSERT INTO domainaddresses
+  (DomainID, Type, AddressType, Attention, Company, AddressOne, AddressTwo, City, State, ZIP, CountryCode, Phone, ResidentialFlag, TaxIDNo, TaxIDType, UPSAccountNo)
+VALUES
+  (3, "NonAddress", "", "", "", "", "", "", "", "", "", "", 0, "52-2371010", "EIN", "Y23191");
+
+INSERT INTO domainaddresses
+  (DomainID, Type, AddressType, Attention, Company, AddressOne, AddressTwo, City, State, ZIP, CountryCode, Phone, ResidentialFlag, TaxIDNo, TaxIDType, UPSAccountNo)
+VALUES
+  (3, "Address", "CustomerService", "Customer Support", "Bang4BuckPrinting.com", "", "", "", "", "", "US", "", 0, "", "", "");
+
+INSERT INTO domainaddresses
+  (DomainID, Type, AddressType, Attention, Company, AddressOne, AddressTwo, City, State, ZIP, CountryCode, Phone, ResidentialFlag, TaxIDNo, TaxIDType, UPSAccountNo)
+VALUES
+  (3, "Address", "ShippingDept", "Shipping Deptartment", "Bang4BuckPrinting.com", "", "", "", "", "", "US", "", 0, "", "", "");
+
+INSERT INTO domainaddresses
+  (DomainID, Type, AddressType, Attention, Company, AddressOne, AddressTwo, City, State, ZIP, CountryCode, Phone, ResidentialFlag, TaxIDNo, TaxIDType, UPSAccountNo)
+VALUES
+  (3, "Address", "BillingDept", "Billing Department", "Bang4BuckPrinting.com", "", "", "", "", "", "US", "", 0, "", "", "");
+
+INSERT INTO domainaddresses
+  (DomainID, Type, AddressType, Attention, Company, AddressOne, AddressTwo, City, State, ZIP, CountryCode, Phone, ResidentialFlag, TaxIDNo, TaxIDType, UPSAccountNo)
+VALUES
+  (3, "Address", "DefaultProduction", "", ".", "", "", "", "", "", "US", "", 0, "", "", "");
+
+INSERT INTO domainaddresses
+  (DomainID, Type, AddressType, Attention, Company, AddressOne, AddressTwo, City, State, ZIP, CountryCode, Phone, ResidentialFlag, TaxIDNo, TaxIDType, UPSAccountNo)
+VALUES
+  (4, "NonAddress", "", "", "", "", "", "", "", "", "", "", 0, "52-2371010", "EIN", "Y23191");
+
+INSERT INTO domainaddresses
+  (DomainID, Type, AddressType, Attention, Company, AddressOne, AddressTwo, City, State, ZIP, CountryCode, Phone, ResidentialFlag, TaxIDNo, TaxIDType, UPSAccountNo)
+VALUES
+  (4, "Address", "CustomerService", "Customer Service", "Prints Made Easy, Inc.", "822 N Marshall", "", "Marshfield", "MO", "65706", "US", "1-800-263-0847", 0, "", "", "");
+
+INSERT INTO domainaddresses
+  (DomainID, Type, AddressType, Attention, Company, AddressOne, AddressTwo, City, State, ZIP, CountryCode, Phone, ResidentialFlag, TaxIDNo, TaxIDType, UPSAccountNo)
+VALUES
+  (4, "Address", "ShippingDept", "Shipping Dept.", "Prints Made Easy, Inc.", "822 N Marshall", "", "Marshfield", "MO", "65706", "US", "1-800-263-0847", 0, "", "", "");
+
+INSERT INTO domainaddresses
+  (DomainID, Type, AddressType, Attention, Company, AddressOne, AddressTwo, City, State, ZIP, CountryCode, Phone, ResidentialFlag, TaxIDNo, TaxIDType, UPSAccountNo)
+VALUES
+  (4, "Address", "BillingDept", "Billing Dept.", "Prints Made Easy, Inc.", "822 N Marshall", "", "Marshfield", "MO", "65706", "US", "1-800-263-0847", 0, "", "", "");
+
+INSERT INTO domainaddresses
+  (DomainID, Type, AddressType, Attention, Company, AddressOne, AddressTwo, City, State, ZIP, CountryCode, Phone, ResidentialFlag, TaxIDNo, TaxIDType, UPSAccountNo)
+VALUES
+  (4, "Address", "DefaultProduction", "", ".", "9655 De Soto Ave.", "", "Chatsworth", "CA", "91311", "US", "", 0, "", "", "");
+
+INSERT INTO domainaddresses
+  (DomainID, Type, AddressType, Attention, Company, AddressOne, AddressTwo, City, State, ZIP, CountryCode, Phone, ResidentialFlag, TaxIDNo, TaxIDType, UPSAccountNo)
+VALUES
+  (5, "NonAddress", "", "", "", "", "", "", "", "", "", "", 0, "52-2371010", "EIN", "Y23191");
+
+INSERT INTO domainaddresses
+  (DomainID, Type, AddressType, Attention, Company, AddressOne, AddressTwo, City, State, ZIP, CountryCode, Phone, ResidentialFlag, TaxIDNo, TaxIDType, UPSAccountNo)
+VALUES
+  (5, "Address", "CustomerService", "Customer Service", "Prints Made Easy, Inc.", "822 N Marshall", "", "Marshfield", "MO", "65706", "US", "1-800-263-0847", 0, "", "", "");
+
+INSERT INTO domainaddresses
+  (DomainID, Type, AddressType, Attention, Company, AddressOne, AddressTwo, City, State, ZIP, CountryCode, Phone, ResidentialFlag, TaxIDNo, TaxIDType, UPSAccountNo)
+VALUES
+  (5, "Address", "ShippingDept", "Shipping Dept.", "Prints Made Easy, Inc.", "822 N Marshall", "", "Marshfield", "MO", "65706", "US", "1-800-263-0847", 0, "", "", "");
+
+INSERT INTO domainaddresses
+  (DomainID, Type, AddressType, Attention, Company, AddressOne, AddressTwo, City, State, ZIP, CountryCode, Phone, ResidentialFlag, TaxIDNo, TaxIDType, UPSAccountNo)
+VALUES
+  (5, "Address", "BillingDept", "Billing Dept.", "Prints Made Easy, Inc.", "822 N Marshall", "", "Marshfield", "MO", "65706", "US", "1-800-263-0847", 0, "", "", "");
+
+INSERT INTO domainaddresses
+  (DomainID, Type, AddressType, Attention, Company, AddressOne, AddressTwo, City, State, ZIP, CountryCode, Phone, ResidentialFlag, TaxIDNo, TaxIDType, UPSAccountNo)
+VALUES
+  (5, "Address", "DefaultProduction", "", ".", "9655 De Soto Ave.", "", "Chatsworth", "CA", "91311", "US", "", 0, "", "", "");
+
+INSERT INTO domainaddresses
+  (DomainID, Type, AddressType, Attention, Company, AddressOne, AddressTwo, City, State, ZIP, CountryCode, Phone, ResidentialFlag, TaxIDNo, TaxIDType, UPSAccountNo)
+VALUES
+  (6, "NonAddress", "", "", "", "", "", "", "", "", "", "", 0, "52-2371010", "EIN", "Y23191");
+
+INSERT INTO domainaddresses
+  (DomainID, Type, AddressType, Attention, Company, AddressOne, AddressTwo, City, State, ZIP, CountryCode, Phone, ResidentialFlag, TaxIDNo, TaxIDType, UPSAccountNo)
+VALUES
+  (6, "Address", "CustomerService", "Customer Support", "Letterhead.com", "9655 De Soto Ave.", "", "Chatsworth", "CA", "91311", "US", "1-877-205-6484", 0, "", "", "");
+
+INSERT INTO domainaddresses
+  (DomainID, Type, AddressType, Attention, Company, AddressOne, AddressTwo, City, State, ZIP, CountryCode, Phone, ResidentialFlag, TaxIDNo, TaxIDType, UPSAccountNo)
+VALUES
+  (6, "Address", "ShippingDept", "Shipping Deptartment", "Letterhead.com", "9655 De Soto Ave.", "", "Chatsworth", "CA", "91311", "US", "1-877-205-6484", 0, "", "", "");
+
+INSERT INTO domainaddresses
+  (DomainID, Type, AddressType, Attention, Company, AddressOne, AddressTwo, City, State, ZIP, CountryCode, Phone, ResidentialFlag, TaxIDNo, TaxIDType, UPSAccountNo)
+VALUES
+  (6, "Address", "BillingDept", "Billing Department", "Letterhead.com", "9655 De Soto Ave.", "", "Chatsworth", "CA", "91311", "US", "1-877-205-6484", 0, "", "", "");
+
+INSERT INTO domainaddresses
+  (DomainID, Type, AddressType, Attention, Company, AddressOne, AddressTwo, City, State, ZIP, CountryCode, Phone, ResidentialFlag, TaxIDNo, TaxIDType, UPSAccountNo)
+VALUES
+  (6, "Address", "DefaultProduction", "", ".", "9655 De Soto Ave.", "", "Chatsworth", "CA", "91311", "US", "", 0, "", "", "");
+
+INSERT INTO domainaddresses
+  (DomainID, Type, AddressType, Attention, Company, AddressOne, AddressTwo, City, State, ZIP, CountryCode, Phone, ResidentialFlag, TaxIDNo, TaxIDType, UPSAccountNo)
+VALUES
+  (7, "NonAddress", "", "", "", "", "", "", "", "", "", "", 0, "52-2371010", "EIN", "Y23191");
+
+INSERT INTO domainaddresses
+  (DomainID, Type, AddressType, Attention, Company, AddressOne, AddressTwo, City, State, ZIP, CountryCode, Phone, ResidentialFlag, TaxIDNo, TaxIDType, UPSAccountNo)
+VALUES
+  (7, "Address", "CustomerService", "Customer Support", "VinylBanners.com", "9655 De Soto Ave.", "", "Chatsworth", "CA", "91311", "US", "1-888-299-6780", 0, "", "", "");
+
+INSERT INTO domainaddresses
+  (DomainID, Type, AddressType, Attention, Company, AddressOne, AddressTwo, City, State, ZIP, CountryCode, Phone, ResidentialFlag, TaxIDNo, TaxIDType, UPSAccountNo)
+VALUES
+  (7, "Address", "ShippingDept", "Shipping Deptartment", "VinylBanners.com", "9655 De Soto Ave.", "", "Chatsworth", "CA", "91311", "US", "1-888-299-6780", 0, "", "", "");
+
+INSERT INTO domainaddresses
+  (DomainID, Type, AddressType, Attention, Company, AddressOne, AddressTwo, City, State, ZIP, CountryCode, Phone, ResidentialFlag, TaxIDNo, TaxIDType, UPSAccountNo)
+VALUES
+  (7, "Address", "BillingDept", "Billing Department", "VinylBanners.com", "9655 De Soto Ave.", "", "Chatsworth", "CA", "91311", "US", "1-888-299-6780", 0, "", "", "");
+
+INSERT INTO domainaddresses
+  (DomainID, Type, AddressType, Attention, Company, AddressOne, AddressTwo, City, State, ZIP, CountryCode, Phone, ResidentialFlag, TaxIDNo, TaxIDType, UPSAccountNo)
+VALUES
+  (7, "Address", "DefaultProduction", "", ".", "9655 De Soto Ave.", "", "Chatsworth", "CA", "91311", "US", "", 0, "", "", "");
+
+INSERT INTO domainaddresses
+  (DomainID, Type, AddressType, Attention, Company, AddressOne, AddressTwo, City, State, ZIP, CountryCode, Phone, ResidentialFlag, TaxIDNo, TaxIDType, UPSAccountNo)
+VALUES
+  (8, "NonAddress", "", "", "", "", "", "", "", "", "", "", 0, "52-2371010", "EIN", "Y23191");
+
+INSERT INTO domainaddresses
+  (DomainID, Type, AddressType, Attention, Company, AddressOne, AddressTwo, City, State, ZIP, CountryCode, Phone, ResidentialFlag, TaxIDNo, TaxIDType, UPSAccountNo)
+VALUES
+  (8, "Address", "CustomerService", "Customer Support", "RefrigeratorMagnets.com", "", "", "", "", "", "US", "", 0, "", "", "");
+
+INSERT INTO domainaddresses
+  (DomainID, Type, AddressType, Attention, Company, AddressOne, AddressTwo, City, State, ZIP, CountryCode, Phone, ResidentialFlag, TaxIDNo, TaxIDType, UPSAccountNo)
+VALUES
+  (8, "Address", "ShippingDept", "Shipping Deptartment", "RefrigeratorMagnets.com", "", "", "", "", "", "US", "", 0, "", "", "");
+
+INSERT INTO domainaddresses
+  (DomainID, Type, AddressType, Attention, Company, AddressOne, AddressTwo, City, State, ZIP, CountryCode, Phone, ResidentialFlag, TaxIDNo, TaxIDType, UPSAccountNo)
+VALUES
+  (8, "Address", "BillingDept", "Billing Department", "RefrigeratorMagnets.com", "", "", "", "", "", "US", "", 0, "", "", "");
+
+INSERT INTO domainaddresses
+  (DomainID, Type, AddressType, Attention, Company, AddressOne, AddressTwo, City, State, ZIP, CountryCode, Phone, ResidentialFlag, TaxIDNo, TaxIDType, UPSAccountNo)
+VALUES
+  (8, "Address", "DefaultProduction", "", ".", "", "", "", "", "", "US", "", 0, "", "", "");
+
+INSERT INTO domainaddresses
+  (DomainID, Type, AddressType, Attention, Company, AddressOne, AddressTwo, City, State, ZIP, CountryCode, Phone, ResidentialFlag, TaxIDNo, TaxIDType, UPSAccountNo)
+VALUES
+  (9, "NonAddress", "", "", "", "", "", "", "", "", "", "", 0, "52-2371010", "EIN", "Y23191");
+
+INSERT INTO domainaddresses
+  (DomainID, Type, AddressType, Attention, Company, AddressOne, AddressTwo, City, State, ZIP, CountryCode, Phone, ResidentialFlag, TaxIDNo, TaxIDType, UPSAccountNo)
+VALUES
+  (9, "Address", "CustomerService", "Customer Support", "PostcardPrinting.com", "18801 Willowtree Ln.", "", "Northridge", "CA", "91326", "US", "", 0, "", "", "");
+
+INSERT INTO domainaddresses
+  (DomainID, Type, AddressType, Attention, Company, AddressOne, AddressTwo, City, State, ZIP, CountryCode, Phone, ResidentialFlag, TaxIDNo, TaxIDType, UPSAccountNo)
+VALUES
+  (9, "Address", "ShippingDept", "Shipping Deptartment", "PostcardPrinting.com", "18801 Willowtree Ln.", "", "Northridge", "CA", "91326", "US", "", 0, "", "", "");
+
+INSERT INTO domainaddresses
+  (DomainID, Type, AddressType, Attention, Company, AddressOne, AddressTwo, City, State, ZIP, CountryCode, Phone, ResidentialFlag, TaxIDNo, TaxIDType, UPSAccountNo)
+VALUES
+  (9, "Address", "BillingDept", "Billing Department", "PostcardPrinting.com", "18801 Willowtree Ln.", "", "Northridge", "CA", "91326", "US", "", 0, "", "", "");
+
+INSERT INTO domainaddresses
+  (DomainID, Type, AddressType, Attention, Company, AddressOne, AddressTwo, City, State, ZIP, CountryCode, Phone, ResidentialFlag, TaxIDNo, TaxIDType, UPSAccountNo)
+VALUES
+  (9, "Address", "DefaultProduction", "", ".", "18801 Willowtree Ln.", "", "Northridge", "CA", "91326", "US", "", 0, "", "", "");
+
+INSERT INTO domainaddresses
+  (DomainID, Type, AddressType, Attention, Company, AddressOne, AddressTwo, City, State, ZIP, CountryCode, Phone, ResidentialFlag, TaxIDNo, TaxIDType, UPSAccountNo)
+VALUES
+  (10, "NonAddress", "", "", "", "", "", "", "", "", "", "", 0, "52-2371010", "EIN", "Y23191");
+
+INSERT INTO domainaddresses
+  (DomainID, Type, AddressType, Attention, Company, AddressOne, AddressTwo, City, State, ZIP, CountryCode, Phone, ResidentialFlag, TaxIDNo, TaxIDType, UPSAccountNo)
+VALUES
+  (10, "Address", "CustomerService", "Customer Support", "BusinessCards24.com", "4315 Greenwood St.", "", "Newbury Park", "CA", "91320", "US", "", 0, "", "", "");
+
+INSERT INTO domainaddresses
+  (DomainID, Type, AddressType, Attention, Company, AddressOne, AddressTwo, City, State, ZIP, CountryCode, Phone, ResidentialFlag, TaxIDNo, TaxIDType, UPSAccountNo)
+VALUES
+  (10, "Address", "ShippingDept", "Shipping Deptartment", "BusinessCards24.com", "4315 Greenwood St.", "", "Newbury Park", "CA", "91320", "US", "", 0, "", "", "");
+
+INSERT INTO domainaddresses
+  (DomainID, Type, AddressType, Attention, Company, AddressOne, AddressTwo, City, State, ZIP, CountryCode, Phone, ResidentialFlag, TaxIDNo, TaxIDType, UPSAccountNo)
+VALUES
+  (10, "Address", "BillingDept", "Billing Department", "BusinessCards24.com", "4315 Greenwood St.", "", "Newbury Park", "CA", "91320", "US", "", 0, "", "", "");
+
+INSERT INTO domainaddresses
+  (DomainID, Type, AddressType, Attention, Company, AddressOne, AddressTwo, City, State, ZIP, CountryCode, Phone, ResidentialFlag, TaxIDNo, TaxIDType, UPSAccountNo)
+VALUES
+  (10, "Address", "DefaultProduction", "", ".", "4315 Greenwood St.", "", "Newbury Park", "CA", "91320", "US", "", 0, "", "", "");
+
+#Added 17th February 2010
+
+CREATE TABLE IF NOT EXISTS urlrewrites (
+  ID int(11) auto_increment,
+  DomainID int(11),
+  Request varchar(255),
+  BackgroundURL mediumtext,
+  
+  INDEX urlrewrites_DomainID (DomainID),
+    
+  PRIMARY KEY (ID)
+);
+
+#Added 23th March 2010
+
+alter table emailunsubscriptions drop EmailID;
+alter table emailunsubscriptions drop GoodOrBad;
+CREATE INDEX emailunsubscriptions_Email ON emailunsubscriptions (Email);
+
+
+
+#Added 3rd Feb 2011
+
+CREATE TABLE  IF NOT EXISTS pop3getemails (
+  ID int(11) auto_increment,
+  DomainID int(11),
+  LastConnection datetime,
+  
+  PRIMARY KEY  (ID)
+);
+
+

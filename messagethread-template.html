@@ -1,0 +1,37 @@
+<!-- BEGIN messageThreadBL -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+	<tr>
+	  <td bgcolor="{ROW_COLOR}">
+	    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+	      <tr>
+	        <td width="68%" class="ReallySmallBody" style="color:#FFFFFF" nowrap="nowrap">&nbsp;From:
+	          &nbsp;&nbsp;<b>{USER_NAME}
+	          <!-- BEGIN makeRevisionLinkBL -->
+	         	<img src="./images/transparent.gif" width="30" height="1" alt="" /><a href="javascript:AddMessageRevision({MESSAGE_ID}, true)" class="messageRevisionLink">Revise</a>
+	          <!-- END makeRevisionLinkBL -->
+	          <!-- BEGIN showRevisionLinkBL -->
+				<img src="./images/transparent.gif" width="20" height="1" alt="" /><a class='messageRevisionLink' href='javascript:ShowMessageRevisions({MESSAGE_ID}, true)'>{REVISION_COUNT} Revision(s)</a>
+	          <!-- END showRevisionLinkBL -->
+
+				<img src="./images/transparent.gif" width="20" height="1" alt="" />{ATTACHMENTS_DISP}
+	       
+	          </b></td>
+	        <td width="32%" class="ReallySmallBody" align="right" style="color:#FFFFFF">{DATE_CREATED}&nbsp;<img src="./images/blackpixel.gif" border="0" width="2" height="15" align="absmiddle" alt="" /></td>
+	      </tr>
+	    </table>
+	  </td>
+	</tr>
+	<tr>
+	  <td bgcolor="#000000"><img src="./images/transparent.gif" border="0" width="1" height="2" alt="" /></td>
+	</tr>
+	<tr>
+	  <td class="SmallBody">
+	  	<table width="100%" cellpadding="3" cellspacing="0" border="0" style="border-color:#CCCCCC; border-style:solid; border-width:1;">
+	  	<tr>
+	  		<td class="SmallBody">{MESSAGE_TEXT}</td>
+	  	</tr>
+	   </table>
+	   </td>
+	</tr>
+</table>
+<!-- END messageThreadBL -->

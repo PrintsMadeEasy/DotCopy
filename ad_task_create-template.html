@@ -1,0 +1,270 @@
+<html>
+<head>
+<title>Create a New Task</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+
+
+
+
+<script language="javascript">
+
+	//Make an array of the images we want to preload for the mouse-overs.
+	arImageSrc = new Array (
+		"./images/button-go-d.gif",
+		"./images/button-cancel-blue-d.gif",
+		"./images/button-createtask-d.gif"
+	)
+
+	//Preload images.
+	arImageList = new Array ();
+	for (counter in arImageSrc) {
+		arImageList[counter] = new Image();
+		arImageList[counter].src = arImageSrc[counter];
+	}
+
+
+
+
+	function SubmitForm(){
+		if(document.forms[0].task.value==""){
+			alert("Please type a message before creating the task.");
+		}
+		else{
+			document.forms[0].submit();
+		}
+	}
+
+</script>
+
+
+
+	<script type="text/javascript">
+
+	var startTimer = new Date();
+
+	// don't let a date in the past get submitted.
+	// Also don't allow a date greater than 99 days from now
+	function timeOutOfRange(date, year, month, day, hours, minutes) {
+
+		var curdate = new Date();
+
+		// Give it a 3 mintue buffer time for what it considers the Past... otherwise the "Today" link might not work to well.
+		if(date.getTime() < (curdate.getTime() - 1000 * 60 * 3))
+			return true;
+
+		var daysInFuture = Math.round((date.getTime() - curdate.getTime()) / (1000 * 60 * 60 * 24));
+
+		if(daysInFuture > 360)
+			return true;
+
+		return false;
+	}
+
+	function CalenderDateChanged(newDateStr){
+
+		var calendarDate = new Date(Date.parse(newDateStr));
+
+		var curdate = new Date();
+
+		var millisecondsInADay = (1000 * 60 * 60 * 24);
+		var millisecondsInAnHour = (1000 * 60 * 60);
+		var millisecondsInAMinute = (1000 * 60);
+
+		var daysInFuture = Math.floor((calendarDate.getTime() - curdate.getTime()) / millisecondsInADay);
+		var hoursInFuture = Math.floor((calendarDate.getTime() - curdate.getTime() - (daysInFuture * millisecondsInADay)) / millisecondsInAnHour);
+		var minutesInFuture = Math.floor((calendarDate.getTime() - curdate.getTime() - (daysInFuture * millisecondsInADay) - (hoursInFuture * millisecondsInAnHour)) / millisecondsInAMinute);
+
+		if(daysInFuture < 0){
+			daysInFuture = 0;
+			hoursInFuture = 0;
+			minutesInFuture = 0;
+		}
+		if(hoursInFuture < 0){
+			hoursInFuture = 0;
+			minutesInFuture = 0;
+		}
+		
+		if(hoursInFuture == 23 && minutesInFuture > 50){
+			daysInFuture++;
+			minutesInFuture = 0;
+			hoursInFuture = 0;
+		}
+		
+		if(minutesInFuture < 10 || minutesInFuture > 50){
+			minutesInFuture = 0;
+		}
+
+		if(daysInFuture == 0)
+			daysInFuture = "";
+		if(hoursInFuture == 0)
+			hoursInFuture = "";
+		if(minutesInFuture == 0)
+			minutesInFuture = "";
+
+		document.forms["TaskFrm"].days.value = daysInFuture;
+		document.forms["TaskFrm"].hours.value = hoursInFuture;
+		document.forms["TaskFrm"].minutes.value = minutesInFuture;
+
+	}
+
+	function checkDays(inputVal){
+		document.forms["TaskFrm"].days.value = inputVal.replace(/([^\d])/g, "");
+	}
+	function checkHours(inputVal){
+		document.forms["TaskFrm"].hours.value = inputVal.replace(/([^\d])/g, "");
+	}
+	function checkMinutes(inputVal){
+		document.forms["TaskFrm"].minutes.value = inputVal.replace(/([^\d])/g, "");
+	}
+
+
+
+
+
+	</script>
+
+
+<script type="text/javascript" src="library/calendar/src/utils.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar.js"></script>
+<script type="text/javascript" src="library/calendar/lang/calendar-en.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar-setup.js"></script>
+<script type="text/javascript" src="library/formatDate.js"></script>
+<link rel="stylesheet" type="text/css" href="library/calendar/themes/winter.css"/>
+
+
+</head>
+
+<body bgcolor="#3366CC" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="document.forms['TaskFrm'].task.focus();" >
+<img  src="./images/transparent.gif" border="0" width="1" height="10" alt="" /><br/>
+<div align="center">
+<table bgcolor="#EEEEEE" width="350" cellpadding="0" cellspacing="0" border="0">
+
+<tr>
+<td bgcolor="#CCCCCC" align="center" class="Body" style="background-image: url(./images/admin/header-shipping.png); background-repeat: no-repeat;"><b>Create a Task</b>{TASK_FOR}</td>
+
+<tr>
+<td align="center">
+<table bgcolor="#EEEEEE" width="350" cellpadding="0" cellspacing="0" border="0">
+<form name="TaskFrm" method="post" action="./ad_task_save.php">
+<input type="hidden" name="linkdesc" value="{LINK_DESC}" />
+<input type="hidden" name="taskref" value="{REFID}" />
+<input type="hidden" name="refreshParent" value="{REFRESH_PARENT}" />
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+
+<tr>
+<td colspan="2"><img src="./images/transparent.gif" border="0" width="1" height="3" alt="" /></td>
+</tr>
+<tr>
+<td width="8">&nbsp;</td>
+<td width="330" class="Body">
+<img  src="./images/transparent.gif" border="0" width="1" height="5" alt="" /><br/>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td class="SmallBody">
+	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td class="SmallBody">	<font class="OptionNames"><b>Priority</b></font><br/>
+<input type="radio" name="priority" value="normal" checked /> Normal&nbsp;&nbsp;&nbsp;<input type="radio" name="priority" value="high" /> High</td>
+    <td class="SmallBody" align="center"><font color="#bbbbbb">(Tasks are Private)</font></td>
+  </tr>
+</table>
+
+
+</td>
+   
+  </tr>
+</table>
+<table width="330" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td><img src="./images/transparent.gif" border="0" width="1" height="7" alt="" /></td>
+</tr>
+<tr>
+<td bgcolor="#999999"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+</tr>
+<tr>
+<td><img src="./images/transparent.gif" border="0" width="1" height="7" alt="" /></td>
+</tr>
+</table>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+
+    <td class="SmallBody"><font class="OptionNames"><b>Reminder</b></font> <font color="#999999">(optional)</font><br/>
+Days <input type="input" name="days" value="" class="AdminTemplateInputBox" style="width:30px; border-width:1" maxlength="3" onKeyUp="checkDays(this.value)" />&nbsp;&nbsp;&nbsp;Hours <input type="input" name="hours" value="" class="AdminTemplateInputBox" style="width:22px; border-width:1" maxlength="2" onKeyUp="checkHours(this.value)" />&nbsp;&nbsp;&nbsp;Minutes <input type="input" name="minutes" value="" class="AdminTemplateInputBox" style="width:22px; border-width:1" maxlength="2" onKeyUp="checkMinutes(this.value)" /><img src="./images/transparent.gif" width="35" height="5" /><img alt='Calendar' align='absmiddle' src='./images/calendar5.gif' border='0' id='calicon'  onmouseover="this.style.cursor='pointer'" onmouseout="this.style.cursor='default'" />
+<input type="hidden" name="timefield" value="" id="datefield" onChange="CalenderDateChanged(this.value)" />
+</td>
+  </tr>
+</table>
+
+
+<table width="330" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td><img src="./images/transparent.gif" border="0" width="1" height="7" alt="" /></td>
+</tr>
+<tr>
+<td bgcolor="#999999"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+</tr>
+<tr>
+<td><img src="./images/transparent.gif" border="0" width="1" height="7" alt="" /></td>
+</tr>
+</table>
+
+<font class="OptionNames"><b>Task Description</b></font><br/>
+<textarea name="task" style="width:330px; height:100px;" wrap="VIRTUAL"></textarea>
+</td>
+</tr>
+<tr>
+<td colspan="2"><img src="./images/transparent.gif" border="0" width="1" height="5" alt="" /></td>
+</tr>
+</form>
+</table>
+</td>
+</tr>
+
+
+<tr>
+<td><img src="images/header-editoptions-fade-bot.gif" width="350" alt="" /></td>
+</tr>
+</table>
+
+<table width="350" border="0" cellspacing="0" cellpadding="0">
+
+  <tr>
+
+    <td align="center">
+
+<img  src="./images/transparent.gif" border="0" width="1" height="5" alt="" /><br/>
+<a onclick="SubmitForm();" ><img src="./images/button-createtask-u.gif" onmouseover="this.src='./images/button-createtask-d.gif';" onmouseout="this.src='./images/button-createtask-u.gif';" border="0"  align="absmiddle" alt="" /></a>  &nbsp;&nbsp;
+
+<a onclick="window.close();" ><img src="./images/button-cancel-blue-u.gif" onmouseover="this.src='./images/button-cancel-blue-d.gif';" onmouseout="this.src='./images/button-cancel-blue-u.gif';" border="0" width="76" height="25" align="absmiddle" alt="" /></a>
+<br/>
+&nbsp;
+	</td>
+
+  </tr>
+</table>
+
+{EXISTING_TASKS}
+
+</div>
+
+	<script type="text/javascript">
+		var cal = new Zapatec.Calendar.setup({
+
+		inputField     :    "datefield",     // id of the input field
+		singleClick    :     false,     // require two clicks to submit
+		ifFormat       :    '%a, %e %b %Y %H:%M:%S',     //  of the input field
+		timeFormat     : 	"12",
+		ampm           :     true,
+		showsTime      :     true,     // show time as well as date
+		button         :    "calicon",  // trigger button
+		dateStatusFunc :    timeOutOfRange,
+		timeInterval   :     10,
+		floating			 : 	  true
+
+		});
+		
+		</script>
+</body>
+</html>

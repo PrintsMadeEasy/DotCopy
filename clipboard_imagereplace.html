@@ -1,0 +1,69 @@
+<html>
+<head>
+<title>Clipboard - Replace Image</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+
+<script language="javascript">
+
+	function UploadImage(){
+		document.forms[0].submit();
+	}
+
+</script>
+
+
+
+</head>
+
+
+
+<body bgcolor="#93A3CC" text="#000000" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="">
+<form name="uploadimage" action="./clipboard_imagereplace.php?layerid={LAYERID}&returl={RETURL_ENCODED}&sidenumber={SIDENUMBER}&projectid={PROJECTID}&view={VIEW}&saveimage=true" method="post" enctype="multipart/form-data">
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+<table width="100%" height="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td align="center"> <font class="Body"><font color="#993333"><b>{ERROR}</b> 
+      <br/>
+      &nbsp;</font></font>
+<table width="500" border="0" cellspacing="0" cellpadding="2" bgcolor="#333333">
+
+  <tr>
+    <td><table width="100%" border="0" cellspacing="0" cellpadding="20" bgcolor="#3366CC">
+  <tr>
+    <td class="Body"><table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td class="Body" align="center"><font color="#FFFFFF"><u>Replace an image on the active document.</u></font></td>
+  </tr>
+</table>
+<br/><input  checked type="radio" name="uploadtype" value="existing" /> <font color="#FFFF99">Use height &amp; width of current image.</font><br/><input   type="radio" name="uploadtype" value="default" /><font color="#FFFF99"> Use default height &amp; width of new image.</font>
+	<br/><br/>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td align="center"><input type="file" name="imagefile" style="width:450; background-color:#FFFFFF; font-size:9px;" /> </td>
+  </tr>
+  <tr>
+    <td align="center">
+	&nbsp;<br/>
+<OBJECT classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"
+ codebase="https://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=7,0,19,0"
+ WIDTH=205 HEIGHT=50> <param name="movie" VALUE="./uploadimage.swf" /> <param name="quality" VALUE=best /> <param NAME=bgcolor VALUE=#3366cc /> <EMBED src="./uploadimage.swf" quality="best" bgcolor=#3366cc  WIDTH=205 HEIGHT=50 TYPE="application/x-shockwave-flash" PLUGINSPAGE="https://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash"></EMBED>
+</OBJECT>
+</td>
+  </tr>
+</table>
+	
+	
+	</td>
+  </tr>
+</table></td>
+  </tr>
+ 
+</table>
+&nbsp;<br/><a href="{RETURL}" class="blueRedLink"><font style="font-size:16px;">Cancel</font></a>
+	</td>
+  </tr>
+</table>
+ </form>
+</body>
+</html>

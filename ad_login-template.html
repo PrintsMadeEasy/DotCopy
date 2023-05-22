@@ -1,0 +1,224 @@
+<html>
+<head>
+<title>Admin Login</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<script language="javascript">
+
+function chooseSiteKeyImage(imageID){
+
+	var siteKeyDesc = document.forms["siteKeyForm"].siteKeyDesc.value;
+	
+	var siteKeyDescNoSpaces = siteKeyDesc.replace(/\s/g, "");
+
+	if(siteKeyDescNoSpaces.length == 0){
+		alert("Please enter a sentence or a keyword corresponding to the image that you clicked on.");
+	}
+	else if(siteKeyDescNoSpaces.length < 4){
+		alert("Your Site Key description must be at least 4 characters long.");
+	}
+	else{
+		document.forms["siteKeyForm"].siteKeyID.value = imageID;
+		document.forms["siteKeyForm"].submit();
+	}
+	
+	
+}
+
+function checkEmailForm(){
+
+	var UserEmail = document.forms["emailAddresForm"].email.value;
+	
+	if(UserEmail.search(/^\w+([-.]\w+)*\@\w+([-.]\w+)*\.\w+$/) == -1){
+		alert("Your email address is invalid.");
+		return false;
+	}
+	else{
+		return true;
+	}
+}
+
+var formAlreadySubmitted = false;
+function passwordSubmitted(){
+
+	if(formAlreadySubmitted)
+		return false;
+	
+	formAlreadySubmitted = true;
+	document.all.passwordButton.value = "Checking ...";
+	document.all.passwordButton.disabled = true;
+	
+	return true;
+	
+}
+
+	function hltd(e)
+	{
+		e.style.background='#ddddcc';
+	}
+	function dltd(e)
+	{
+		e.style.background='#f6f6f6';
+	}
+	
+function focusCursor(){
+
+	if(typeof(document.forms['passwordForm']) != 'undefined') {
+		document.forms['passwordForm'].pw.focus(); 
+	}
+
+
+
+
+}
+
+</script>
+
+</head>
+<body bgcolor="#FFFFFF" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="focusCursor()">
+<br/>
+<br/>
+
+<div align="center">
+<table width="760" border="0" cellspacing="0" cellpadding="3">
+  <tr>
+    <td width="360" class="NavColor" ><strong><font color="#FFFFFF" face="Arial, Helvetica, sans-serif" style="font-size:16px">{PAGE_TITLE}</font></strong></td>
+	<td width="400" align="right" class="NavColor"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+  </tr>
+</table>
+
+<table width="760" cellpadding="1" cellspacing="0" border="0">
+<tr>
+<td class="Body" bgcolor="#0099FF">
+<table width="100%" border="0" cellspacing="0" cellpadding="5">
+  <tr>
+    <td bgcolor="#f6f6f6">
+<br/>
+<br/>
+
+<!-- BEGIN ErrorBL -->
+<font class="Body" style="color:#CC0000">{ERROR_MESSAGE}</font><br/>
+
+<!-- END ErrorBL -->
+
+
+<!-- BEGIN ChangeSiteKeyBL -->
+<br/>
+
+<input type="button" onclick="document.location='ad_login.php?action=ShowSiteKeySelections&form_sc={FORM_SECURITY_CODE}';" name="Next" value="Change Your Site Key" class="AdminButton" onmouseover="this.style.background='#ffeeaa';" onmouseout="this.style.background='#FFFFDD';"  />
+<br/>
+
+<!-- END ChangeSiteKeyBL -->
+
+<!-- BEGIN EmailBL -->
+<form name="emailAddresForm" action="ad_login.php" onsubmit="return checkEmailForm();">
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+<input type="hidden" name="transferaddress" value="{TRANSFER_ADDRESS}" />
+<font class="LargeBody"><font color="#336699"><b>What is your Email Address?</b></font></font><br/>
+<input type="text" style="font-size:14px; font-family:Arial, Helvetica, sans-serif; width:220px;" name="email" value="{EMAIL}" /> <input type="Submit" name="Next" value="Next" class="AdminButton" onmouseover="this.style.background='#ffeeaa';" onmouseout="this.style.background='#FFFFDD';"  />
+
+</form>
+<!-- END EmailBL -->
+
+
+<!-- BEGIN PasswordBL -->
+<br/>
+<font class="LargeBody"><font color="#336699"><b>{EMAIL}</b></font></font>&nbsp;&nbsp;&nbsp;<a href='./ad_login.php?forceNewEmailAddress=true&transferaddress={TRANSFER_ADDRESS_ENCODED}' class="BlueRedLink">Change Email</a><br/><br/>
+
+<!-- BEGIN ExistingSiteKeyBL -->
+<font class="Body"><font color="#336699"><u>Site Key</u></font></font><br/>
+
+<img  src="./images/SiteKeys/{SITE_KEY_ID}.bmp" border="1" style="border-color:#333333" alt="" /><br/><font class="Body" style="color:#CC0000"><strong>{SITE_KEY_DESC}</strong></font><br/>
+<br/><br/>
+
+<font class="Body"><font color="#336699">Do not enter your password unless you recognize your Site Key.</font></font>
+<!-- END ExistingSiteKeyBL -->
+<br/>
+
+
+<!-- BEGIN PasswordInputFieldBL -->
+<form name="passwordForm" action="ad_login.php" style="display:inline" onsubmit="return passwordSubmitted()">
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+<input type="hidden" name="email" value="{EMAIL}" />
+<input type="hidden" name="transferaddress" value="{TRANSFER_ADDRESS}" />
+<input type="hidden" name="action" value="CheckUserNamePassword" />
+<!-- BEGIN VerifyAddressInBrowserBL -->
+<font class="Body"><font color="#336699">Verify that the URL in the address bar of your browser is legitimate.</font></font>
+<!-- END VerifyAddressInBrowserBL -->
+<br/>
+<font class="Body">Password</font><br/>
+<input type="password" style="font-size:14px; font-family:Arial, Helvetica, sans-serif; width:150px;" name="pw" value="" /> <input  id="passwordButton" type="Submit" name="Submit" value="Submit" class="AdminButton" onmouseover="this.style.background='#ffeeaa';" onmouseout="this.style.background='#FFFFDD';"  />
+
+</form>
+<!-- END PasswordInputFieldBL -->
+<!-- END PasswordBL -->
+
+
+
+
+<!-- BEGIN SiteKeyImagesBL -->
+
+<font class="Body"><font color="#336699">Select from one of the images below. <br/>
+You will use this as a Site Key for future logins to confirm that you are not at a fake website.<br/>
+<br/>
+Enter sentence or a keyword that corresponds with the image you choose.<br/>
+<form name="siteKeyForm" action="ad_login.php" style="display:inline" onsubmit="return false">
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+<input type="hidden" name="transferaddress" value="{TRANSFER_ADDRESS}" />
+<input type="hidden" name="action" value="SaveSiteKey" />
+<input type="hidden" name="siteKeyID" value="" />
+<input type="text" style="font-size:14px; font-family:Arial, Helvetica, sans-serif; width:470px;" name="siteKeyDesc" value="" maxlength="100" />
+</form>
+</font></font><br/>
+<br/><br/>
+
+
+<table width="100%" border="0" cellspacing="0" cellpadding="4">
+<!-- BEGIN SiteKeyRowBL -->
+  <tr>
+    <td onmouseover="hltd(this);" onmouseout="dltd(this)" align="center"><a href="javascript:chooseSiteKeyImage({SITE_KEY_COL1});"><img src="./images/SiteKeys/{SITE_KEY_COL1}.bmp" border="0" alt="" /></a></td>
+    <td onmouseover="hltd(this);" onmouseout="dltd(this)" align="center"><a href="javascript:chooseSiteKeyImage({SITE_KEY_COL2});"><img src="./images/SiteKeys/{SITE_KEY_COL2}.bmp" border="0" alt="" /></a></td>
+    <td onmouseover="hltd(this);" onmouseout="dltd(this)" align="center"><a href="javascript:chooseSiteKeyImage({SITE_KEY_COL3});"><img src="./images/SiteKeys/{SITE_KEY_COL3}.bmp" border="0" alt="" /></a></td>
+    <td onmouseover="hltd(this);" onmouseout="dltd(this)" align="center"><a href="javascript:chooseSiteKeyImage({SITE_KEY_COL4});"><img src="./images/SiteKeys/{SITE_KEY_COL4}.bmp" border="0" alt="" /></a></td>
+    <td onmouseover="hltd(this);" onmouseout="dltd(this)" align="center"><a href="javascript:chooseSiteKeyImage({SITE_KEY_COL5});"><img src="./images/SiteKeys/{SITE_KEY_COL5}.bmp" border="0" alt="" /></a></td>
+    <td onmouseover="hltd(this);" onmouseout="dltd(this)" align="center"><a href="javascript:chooseSiteKeyImage({SITE_KEY_COL6});"><img src="./images/SiteKeys/{SITE_KEY_COL6}.bmp" border="0" alt="" /></a></td>
+  </tr>
+<!-- END SiteKeyRowBL -->
+</table>
+
+
+<!-- END SiteKeyImagesBL -->
+
+<br/>
+&nbsp;
+
+
+
+
+
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+</td>
+  </tr>
+</table>
+</td>
+</tr>
+</table>
+<table width="760" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="360" class="NavColor">&nbsp;</td>
+	<td width="400" align="right" class="NavColor"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+  </tr>
+</table>
+<font class="copyright"> </font>
+</div>
+&nbsp;
+<script type="text/javascript" src="./library/ImageMap-footer.js"></script>
+</body>
+</html>

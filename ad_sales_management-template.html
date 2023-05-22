@@ -1,0 +1,323 @@
+<html>
+<head>
+<meta HTTP-EQUIV="refresh" content="600;URL=./ad_home.php" />
+<title>Admin</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<script>
+
+	function VerifyAddress(UserID, SalesName, SalesAddress){
+		if(confirm("Do you want to verify the address for " + SalesName + "?\n\nThe address to be verified is...\n\n" + SalesAddress + "\n\n")){
+			document.location = "./ad_sales_management.php?form_sc={FORM_SECURITY_CODE}&action=verifyaddress&salesuserid=" + UserID;
+		}
+	}
+
+	function ReceiveW9(UserID){
+		newWindow = window.open("./ad_sales_w9.php?salesuserid=" + UserID, "receivew9", "height=690,width=450,directories=no,location=no,menubar=no,scrollbars=yes,status=yes,toolbar=no,resizable=no");
+		newWindow.focus();
+	}
+
+
+
+
+	function hl(e)
+	{
+		e.style.color='#990000';
+		e.style.textDecoration='underline';
+	}
+	function dl(e)
+	{
+		e.style.color='black';
+		e.style.textDecoration='none';
+	}
+
+	function GenerateAddressVerifications(){
+		newWindow = window.open("./ad_sales_addressverify.php", "addressverify", "height=460,width=375,directories=no,location=no,menubar=no,scrollbars=no,status=no,toolbar=yes,resizable=yes");
+		newWindow.focus();
+
+	}
+
+	function GenerateW9Forms(year){
+		newWindow = window.open("./ad_sales_w9report.php?year=" + year, "w9report", "height=460,width=575,directories=no,location=no,menubar=no,scrollbars=yes,status=no,toolbar=no,resizable=yes");
+		newWindow.focus();
+	}
+
+	function RetryCharge(UserID){
+		document.location = "./ad_sales_management.php?form_sc={FORM_SECURITY_CODE}&action=retrycharges&salesuserid=" + UserID;
+	}
+
+	function RetryMassPay(MassPayID){
+		if(confirm("Do you really want to retry the Mass Payment? \nPlease log into Paypal and be asbolutely certain that the payment has not gone through yet or we may pay everyone twice.\n")){
+			document.location = "./ad_sales_management.php?form_sc={FORM_SECURITY_CODE}&action=retrymasspay&masspayid=" + MassPayID;
+		}
+	}
+	function ManuallyConfirmMassPay(MassPayID){
+		if(confirm("Do you really want to manually confirm the Mass Payment? \nPlease log into Paypal and double check that the payment has actually gone through. \nOthewise people may not get paid.\n")){
+			document.location = "./ad_sales_management.php?form_sc={FORM_SECURITY_CODE}&action=manuallyconfirmmasspay&masspayid=" + MassPayID;
+		}
+	}
+
+	function ShowInactiveItems(flag){
+		if(flag)
+			document.location = "./ad_sales_management.php?form_sc={FORM_SECURITY_CODE}&action=ShowInactiveItems";
+		else
+			document.location = "./ad_sales_management.php?form_sc={FORM_SECURITY_CODE}&action=HideInactiveItems";
+	}
+
+	function ResendEmailVerification(UserID){
+		newWindow = window.open("./ad_sales_resendemailverify.php?SalesID=" + UserID, "emailveify", "height=250,width=400,directories=no,location=no,menubar=no,scrollbars=yes,status=no,toolbar=no,resizable=yes");
+		newWindow.focus();
+	}
+	function ShowSalesAbuse(){
+		newWindow = window.open("./ad_sales_abuse.php", "salesabuse", "height=450,width=550,directories=no,location=no,menubar=no,scrollbars=yes,status=no,toolbar=no,resizable=yes");
+		newWindow.focus();
+	}
+	function EnterEmployeePayments(){
+		newWindow = window.open("./ad_sales_employeepayments.php", "employeepayments", "height=350,width=445,directories=no,location=no,menubar=no,scrollbars=yes,status=yes,toolbar=no,resizable=yes");
+		newWindow.focus();
+	}
+
+
+</script>
+<link rel="stylesheet" type="text/css" href="library/calendar/themes/winter.css"/>
+<script type="text/javascript" src="library/calendar/src/utils.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar.js"></script>
+<script type="text/javascript" src="library/calendar/lang/calendar-en.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar-setup.js"></script>
+<script type="text/javascript" src="library/formatDate.js"></script>
+</head>
+<body bgcolor="#FFFFFF" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="">
+<div align="center">
+{HEADER}
+&nbsp;
+<table width="760" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td class="Body">
+<font color="#CC0000">*</font> <font class="SmallBody">If payments have been suspended, due to a late Address Verification or W-9 form, the payments will automatically be released after confirmation.</font><br/><img  src="./images/transparent.gif" border="0" width="1" height="5" alt="" /><br/>
+
+
+<table width="35%" border="0" cellspacing="0" cellpadding="1" bgcolor="#999999">
+<form name="prefs">
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+  <tr>
+    <td><table width="100%" border="0" cellspacing="0" cellpadding="1" bgcolor="#EEEEEE">
+  <tr>
+    <td><font class="SmallBody">&nbsp;&nbsp;Show inactive items?&nbsp;&nbsp;Yes
+                <input type='radio' name='inactive' value='yes' onclick="ShowInactiveItems(true)" {SHOW_INACTIVE_YES} />&nbsp;&nbsp;No <input type='radio' name='inactive' value='no' onclick="ShowInactiveItems(false)" {SHOW_INACTIVE_NO} /></font></td>
+  </tr>
+</table>
+</td>
+  </tr>
+  </form>
+</table>
+
+
+
+
+
+
+<br/>
+<!-- BEGIN HideAddressFormButtonBL -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td align="right"><input type="button" name="xx" value="Enter Employee Payments" class="AdminButton" onmouseover="this.style.background='#ffeeaa';" onmouseout="this.style.background='#FFFFDD';" onclick="EnterEmployeePayments();" /><img src="./images/transparent.gif" border="0" width="100" height="10" alt="" /><input type="button" name="xx" value="Generate Address Verification Forms" class="AdminButton" onmouseover="this.style.background='#ffeeaa';" onmouseout="this.style.background='#FFFFDD';" onclick="GenerateAddressVerifications();" /></td>
+  </tr>
+</table>
+<!-- END HideAddressFormButtonBL -->
+<br/>
+<font class="AdminLabel">Waiting For Address Verification</font>
+<img  src="./images/greypixel.gif" border="0" width="742" height="1" alt="" /><br/>
+<img  src="./images/transparent.gif" border="0" width="1" height="10" alt="" /><br/>
+ <!-- BEGIN HideAddressVerificationsBL -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#333333">
+  <tr>
+    <td><table width="100%" border="0" cellspacing="1" cellpadding="2">
+  <tr bgcolor="#CCCCCC">
+                  <td class="SmallBody" width="26%">Sales Person's Name</td>
+				  <td class="SmallBody" width="24%">Will Suspend Payments On</td>
+	              <td class="SmallBody" width="29%">Contact</td>
+	              <td class="SmallBody" width="21%">Commands</td>
+  </tr>
+ <!-- BEGIN addressBL -->
+   <tr bgcolor="#EEEEEE"   onmouseover="hl(this)" onmouseout="dl(this)">
+                  <td  width="26%" style="font-face:arial; font-size:11px;">{SALES_NAME}</td>
+				  <td  width="24%" style="font-face:arial; font-size:11px;">{SUSPEND_DATE}</td>
+	              <td  width="29%" style="font-face:arial; font-size:11px;">{EMAIL}<br/>
+                    {PHONE}</td>
+	              <td class="SmallBody" width="21%"> <a href="javascript:VerifyAddress('{USERID}', '{SALES_NAME_JS}', '{SALES_ADDRESS}');" class="BlueRedLink">Address
+                    Verified</a> </td>
+  </tr>
+  <!-- END addressBL -->
+</table></td>
+  </tr>
+</table>
+ <!-- END HideAddressVerificationsBL -->
+<br/><br/><br/><br/>
+
+<font class="AdminLabel">Waiting For W-9 Form</font>&nbsp;&nbsp;&nbsp;<font class="ReallySmallBody">Payments will be suspended if the total commissions earned exceed $500.</font>
+<img  src="./images/greypixel.gif" border="0" width="742" height="1" alt="" /><br/>
+<img  src="./images/transparent.gif" border="0" width="1" height="10" alt="" /><br/>
+ <!-- BEGIN HideW9BL -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#333333">
+  <tr>
+    <td><table width="100%" border="0" cellspacing="1" cellpadding="2">
+  <tr bgcolor="#CCCCCC">
+                  <td class="SmallBody" width="26%">Sales Person's Name</td>
+	              <td class="SmallBody" width="24%">Total Commissions Earned</td>
+	              <td class="SmallBody" width="29%">Contact</td>
+	              <td class="SmallBody" width="21%">Commands</td>
+  </tr>
+ <!-- BEGIN w9BL -->
+   <tr bgcolor="#EEEEEE"  onmouseover="hl(this)" onmouseout="dl(this)">
+                  <td width="26%" style="font-face:arial; font-size:11px;">{SALES_NAME}</td>
+	              <td width="24%" style="font-face:arial; font-size:11px;">{TOTAL_COMMISIONS}</td>
+	              <td width="29%" style="font-face:arial; font-size:11px;">{EMAIL}<br/>
+                    {PHONE}</td>
+	              <td class="SmallBody" width="21%"> <a href="javascript:ReceiveW9('{USERID}');" class="BlueRedLink">W-9
+                    Received</a> </td>
+  </tr>
+  <!-- END w9BL -->
+</table></td>
+  </tr>
+</table>
+ <!-- END HideW9BL -->
+
+
+
+  <!-- BEGIN HideEmailVerificationBL -->
+  <br/><br/><br/>
+
+ <font class="AdminLabel">Waiting For Email Verifications</font>
+<img  src="./images/greypixel.gif" border="0" width="742" height="1" alt="" /><br/>
+<img  src="./images/transparent.gif" border="0" width="1" height="10" alt="" /><br/>
+
+<table width="70%" border="0" cellspacing="0" cellpadding="0" bgcolor="#333333">
+  <tr>
+    <td><table width="100%" border="0" cellspacing="1" cellpadding="2">
+  <tr bgcolor="#CCCCCC">
+                  <td class="SmallBody" width="31%">Name</td>
+	              <td class="SmallBody" width="38%">Email</td>
+	              <td class="SmallBody" width="31%">&nbsp;</td>
+  </tr>
+ <!-- BEGIN emailVerifyBL -->
+   <tr bgcolor="#EEEEEE"  onmouseover="hl(this)" onmouseout="dl(this)">
+                  <td width="31%" style="font-face:arial; font-size:11px;">{SALES_NAME}</td>
+	              <td width="38%" style="font-face:arial; font-size:11px;">{EMAIL}<br/>
+                    {PHONE}</td>
+	              <td class="SmallBody" width="31%"> <a href="javascript:ResendEmailVerification('{USERID}');" class="BlueRedLink">Re-Send
+                    Email</a> </td>
+  </tr>
+  <!-- END emailVerifyBL -->
+</table></td>
+  </tr>
+</table>
+ <!-- END HideEmailVerificationBL -->
+
+
+
+
+
+
+<!-- BEGIN HideReturnedPaymentsBL -->
+<br/><br/><br/>
+<font class="AdminLabel">The Following Sales Reps Have Returned or Denied Payments Through PayPal</font><br/>
+<img  src="./images/greypixel.gif" border="0" width="742" height="1" alt="" /><br/>
+<img  src="./images/transparent.gif" border="0" width="1" height="10" alt="" /><br/>
+<table width="40%" border="0" cellspacing="0" cellpadding="0" bgcolor="#999999">
+  <tr>
+    <td><table width="100%" border="0" cellspacing="1" cellpadding="3">
+	<!-- BEGIN ReturnPaymentBL -->
+  <tr bgcolor="#EEEEEE" onmouseover="hl(this)" onmouseout="dl(this)">
+    <td class="Body">{RETURNED_NAME}</td>
+	<td class="Body"><a href="javascript:RetryCharge({SALES_ID});" class="blueredlink">Retry</a></td>
+  </tr>
+  <!-- END ReturnPaymentBL -->
+</table>
+</td>
+  </tr>
+</table>
+
+
+<!-- END HideReturnedPaymentsBL -->
+
+
+
+
+
+
+<!-- BEGIN HideMassPayErrorsBL -->
+<br/><br/><br/>
+        <font class="AdminLabel">The Following PayPal MassPayments Could Have Errors</font>
+        <font class="SmallBody"></font><br/>
+<img  src="./images/greypixel.gif" border="0" width="742" height="1" alt="" /><br/>
+<img  src="./images/transparent.gif" border="0" width="1" height="10" alt="" /><br/>
+<table width="90%" border="0" cellspacing="0" cellpadding="0" bgcolor="#999999">
+  <tr>
+    <td><table width="100%" border="0" cellspacing="1" cellpadding="3">
+  <tr bgcolor="#CCCCCC" >
+                  <td class="Body" width="20%">Last Status</td>
+				  <td class="Body" width="21%">Amount</td>
+                  <td class="Body" width="41%">Error Message</td>
+	              <td class="Body" width="18%">Commands</td>
+  </tr>
+
+	<!-- BEGIN MassPayErrorBL -->
+  <tr bgcolor="#EEEEEE" onmouseover="hl(this)" onmouseout="dl(this)">
+                  <td class="Body" width="20%">{MASSPAY_DATE}</td>
+				  <td class="Body" width="21%">{MASSPAY_AMOUNT}</td>
+                  <td class="Body" width="41%">{MASSPAY_ERROR}</td>
+	              <td class="Body" width="18%"><a href="javascript:RetryMassPay({MASSPAY_ID});" class="blueredlink">Retry</a><img src="./images/transparent.gif" border="0" width="10" height="1" alt="" /><a href="javascript:ManuallyConfirmMassPay({MASSPAY_ID});" class="blueredlink">Confirm
+                    OK</a></td>
+  </tr>
+  <!-- END MassPayErrorBL -->
+</table>
+</td>
+  </tr>
+</table>
+
+
+<!-- END HideMassPayErrorsBL -->
+
+
+
+
+<!-- BEGIN HideSalesMasterBL -->
+<br/><br/><br/>
+<font class="AdminLabel">Generate Sales Commission Reports For W-9</font><br/>
+<img  src="./images/greypixel.gif" border="0" width="742" height="1" alt="" /><br/>
+<img  src="./images/transparent.gif" border="0" width="1" height="10" alt="" /><br/>
+<table width="30%" border="0" cellspacing="0" cellpadding="1" bgcolor="#999999">
+<form name="w9year">
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+  <tr>
+    <td><table width="100%" border="0" cellspacing="0" cellpadding="3" bgcolor="#EEEEEE">
+  <tr>
+    <td>&nbsp;{YEAR_SELECT}&nbsp;&nbsp;<input type="button" name="xx" value="Generate" class="AdminButton" onmouseover="this.style.background='#ffeeaa';" onmouseout="this.style.background='#FFFFDD';" onclick="GenerateW9Forms(document.forms['w9year'].year.value);" /></td>
+  </tr>
+</table>
+</td>
+  </tr>
+  </form>
+</table>
+<br/><br/>
+<input type="button" name="xx" value="Show Sales Rep Abuse" class="AdminButton" onmouseover="this.style.background='#ffeeaa';" onmouseout="this.style.background='#FFFFDD';" onclick="ShowSalesAbuse();" />
+
+<!-- END HideSalesMasterBL -->
+<br/>&nbsp;<br/><br/><br/>
+        <br/>
+        &nbsp;<br/></td>
+</tr>
+</table>
+<table width="760" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="360" class="NavColor"><img src="./images/footer.gif" border="0" width="350" height="16" usemap="#footer" alt="" /></td>
+	<td width="400" align="right" class="NavColor"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+  </tr>
+</table>
+<font class="copyright"> </font>
+</div>
+&nbsp;
+<script type="text/javascript" src="./library/ImageMap-footer.js"></script>
+</body>
+</html>

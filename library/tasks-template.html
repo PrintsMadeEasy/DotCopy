@@ -1,0 +1,67 @@
+<!-- BEGIN EmptyTaskBL -->
+<table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#999999">
+<tr>
+            <td>
+              <table width="100%" border="0" cellspacing="1" cellpadding="2">
+                <tr>
+                  <td width="21%" class="SmallBody" bgcolor="#FAE1BA"><font color="#000000">Date</font></td>
+                  <td width="11%" class="SmallBody" bgcolor="#FAE1BA"><font color="#000000">Priority</font></td>
+                  <td width="13%" class="SmallBody" bgcolor="#FAE1BA"><font color="#000000">Complete</font></td>
+                  <td width="11%" class="SmallBody" bgcolor="#FAE1BA"><font color="#000000">Link</font></td>
+                  <td width="44%" class="SmallBody" bgcolor="#FAE1BA"><font color="#000000">Task</font></td>
+
+                </tr>
+                <!-- BEGIN taskBL -->
+                <tr class="{TASK_ROW_CSS}">
+
+                  <td width="21%" class="ReallySmallBody">
+
+					Created: {TASK_CREATION_DATE}
+					<!-- BEGIN taskReminderInFutureBL -->
+					<br/><font style='font-size:11px;' color='#000066'><b>Reminder:</b></font><br/>{TASK_REMINDER}
+					<!-- END taskReminderInFutureBL -->
+
+					<!-- BEGIN taskReminderInPastBL -->
+					<br/><font style='font-size:11px;' color='#990000'><b>Reminder:</b><br/>{TASK_REMINDER}</font>;
+					<!-- END taskReminderInPastBL -->
+
+                  </td>
+                  <td width="11%" class="SmallBody">
+
+					<!-- BEGIN taskHighPriorityBL -->
+				  	<font color='#990000'><b>High</b></font>
+					<!-- END taskHighPriorityBL -->
+
+					<!-- BEGIN taskNormalPriorityBL -->
+					Normal
+					<!-- END taskNormalPriorityBL -->
+
+                  </td>
+                  <td width="13%" class="SmallBody">
+
+					<!-- BEGIN taskCompletedBL -->
+					Completed<br/><font class='ReallySmallBody'>{TASK_DATE_COMPLETED}</font>
+					<!-- END taskCompletedBL -->
+
+					<!-- BEGIN taskUnCompletedBL -->
+					<input type="button" name="xx" value="Done" class="AdminTaskComplete" onmouseover="this.style.cursor='pointer'" onmouseout="this.style.cursor='default'" onclick="document.location='./ad_actions.php?action=completetask&form_sc={FORM_SECURITY_CODE}&taskid={TASK_ID}&returl={RETURN_URL_ENCODED}'" />
+					<!-- END taskUnCompletedBL -->
+
+                  </td>
+
+                  <td width="11%" class="SmallBody">
+
+                  <!-- BEGIN taskLinkBL -->
+                  <a href='{TASK_LINK_URL}&task=' class='BlueRedLinkRecord'>{TASK_LINK_SUBJECT}</a>
+                  <!-- END taskLinkBL -->
+
+                  </td>
+                  <td width="44%" class="SmallBody">{TASK_DESC}</td>
+
+                </tr>
+                <!-- END taskBL -->
+              </table>
+            </td>
+		</tr>
+		</table>
+		<!-- END EmptyTaskBL -->

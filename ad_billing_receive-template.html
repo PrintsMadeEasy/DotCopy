@@ -1,0 +1,243 @@
+<html>
+<head>
+<title>Payments Received</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+
+<script language="javascript">
+
+	//Make an array of the images we want to preload for the mouse-overs.
+	arImageSrc = new Array (
+		"./images/button-go-d.gif",
+		"./images/button-cancel-blue-d.gif",
+		"./images/button-createtask-d.gif"
+	)
+
+	//Preload images.
+	arImageList = new Array ();
+	for (counter in arImageSrc) {
+		arImageList[counter] = new Image();
+		arImageList[counter].src = arImageSrc[counter];
+	}
+
+
+	function EnterCustomerID(IdValue){
+
+		if(IdValue.search(/^(u|U)?\d+$/) == -1 ){
+			alert("The customer ID must be a digit with no spaces.");
+			return false;
+		}
+		else{
+			return true;
+		}
+	}
+
+	// Be really careful with entering payment.
+	// Set a global variable that we monitor to avoid someone double-clicking the Submit button or inadvertenly hitting their enter key twice
+	var PaymentFormSubmitted = false;
+	function EnterAmount(Amount, TheNotes){
+
+		if(Amount.search(/^(-)?\d+\.\d{1,2}$/) == -1 ){
+			alert("The dollar amount may not contain any commas, but it must contain a decimal.\nEX. 23.00  or  3232.34\n\nThe amount may be positive negative.");
+			return false;
+		}
+
+		var AmountNum = parseFloat(Amount);
+
+		// If the amount is negative, make sure that they have entered a note
+		if(AmountNum < 0){
+			if(TheNotes.search(/^\s*$/) != -1 ){
+				alert("If you enter a negative payment amount then you must enter a note, explaining the reason why.");
+				return false;
+			}
+
+		}
+
+		if(!PaymentFormSubmitted){
+			PaymentFormSubmitted = true;
+			return true;
+		}
+		else
+			return false;
+
+	}
+
+	function FocusOnObject(){
+		{JS_FOCUS_COMMAND}
+	}
+
+
+</script>
+
+</head>
+
+<body bgcolor="#3366CC" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="FocusOnObject();" >
+<img  src="./images/transparent.gif" border="0" width="1" height="10" alt="" /><br/>
+<div align="center">
+<table bgcolor="#EEEEEE" width="420" cellpadding="0" cellspacing="0" border="0">
+
+<tr>
+<td align="center" class="Body" bgcolor="#CCCCCC"><b>Enter Payments Received</b></td>
+
+<tr>
+<td align="center">
+<table bgcolor="#EEEEEE" width="96%" cellpadding="0" cellspacing="0" border="0">
+
+<tr>
+
+<td class="Body">
+<img src="./images/transparent.gif" border="0" width="1" height="5" alt="" />
+<br/>
+<!-- BEGIN CustomerIDbl -->
+<font class="OptionNames"><b>Customer ID</b></font>
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td><img src="./images/transparent.gif" border="0" width="1" height="2" alt="" /></td>
+</tr>
+<tr>
+<td bgcolor="#999999"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+</tr>
+<tr>
+<td><img src="./images/transparent.gif" border="0" width="1" height="2" alt="" /></td>
+</tr>
+</table>
+
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<form name="customeridform" onsubmit="return EnterCustomerID(this.customerid.value);">
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+<input type="hidden" name="view" value="getPayment" />
+   <tr>
+    <td class="SmallBody" width="50%"><input type="text" name="customerid" value="" style="width:110px; border-width:1; font-size:10px; color:#666666" /></td>
+    <td class="SmallBody" width="50%" align="left"><input type="submit" name="xx" value="Next" class="AdminButton" onmouseover="this.style.background='#ffeeaa';" onmouseout="this.style.background='#FFFFDD';" /></td>
+  </tr>
+  </form>
+</table>
+
+<br/>
+              <font color="#990000">*</font> You can find the Customer ID on the
+              return slip, or if you have a bar-code scanner you may zap it in.
+              The Customer ID can also be found on the user's account page. <br/>
+<br/>
+<!-- END CustomerIDbl -->
+<!-- BEGIN PaymentBL -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td class="Body"><b>Company:</b>&nbsp;&nbsp;{CUSTOMER_NAME}<br/><img  src="./images/transparent.gif" border="0" width="1" height="5" alt="" /><br/><font class="SmallBody"><b>Current Balance:</b>&nbsp;&nbsp;{CUSTOMER_BALANCE}</font><br/>
+              <br/></td>
+    <td align="right"><a href="./ad_billing_receive.php" class="blueRedLink">&lt; Start Over</a></td>
+  </tr>
+</table>
+
+<font class="OptionNames"><b>Payment Details</b></font>
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td><img src="./images/transparent.gif" border="0" width="1" height="2" alt="" /></td>
+</tr>
+<tr>
+<td bgcolor="#999999"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+</tr>
+<tr>
+<td><img src="./images/transparent.gif" border="0" width="1" height="2" alt="" /></td>
+</tr>
+</table>
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+
+                  <td class="SmallBody" width="24%"><b>Amount</b></td>
+
+                  <td class="SmallBody" width="60%"><b>Notes</b></td>
+
+                  <td class="SmallBody" width="16%">&nbsp;</td>
+  </tr>
+  <form name="amountform" onsubmit="return EnterAmount(this.paymentamount.value, this.paymentnotes.value)">
+  <input type="hidden" name="view" value="savePayment" />
+  <input type="hidden" name="customerid" value="{CUSTOMERID}" />
+  <input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+  <tr>
+<td colspan="3"><img src="./images/transparent.gif" border="0" width="1" height="5" alt="" /></td>
+</tr>
+   <tr>
+                    <td class="SmallBody" width="24%">$
+                      <input type="text" style="width:60px; border-width:1; font-size:10px; color:#666666" name="paymentamount" value="" /></td>
+                    <td class="SmallBody" width="60%">
+                      <input type="text" name="paymentnotes" value="" style="width:210px; border-width:1; font-size:10px; color:#666666" /></td>
+                    <td class="SmallBody" width="16%" align="right">
+                      <input type="submit" name="xx" value="OK" class="AdminButton" onmouseover="this.style.background='#ffeeaa';" onmouseout="this.style.background='#FFFFDD';" /></td>
+  </tr>
+
+  </form>
+</table>
+&nbsp;<br/>
+
+             <font color="#990000">*</font> If a customer bounces a check we may need to enter a negative payment.
+			  <br/>
+              <font color="#990000">*</font>Negative amounts require that a short note be added, explaining to
+              the customer the reason for the increase in charges. <br/>
+			  <font color="#990000">*</font>Otherwise the
+              &quot;Notes&quot; field is optional.<br/>
+			  <font color="#990000">*</font>If you make a mistake entering a charge, you will have to correct it with a counter payment.<br/>
+
+<!-- END PaymentBL -->
+<!-- BEGIN MessageBL -->
+{THE_MESSAGE}
+<!-- END MessageBL -->
+
+
+<!-- BEGIN PaymentReceivedBL -->
+
+The payment for {CUSTOMER_NAME} was received.
+<br/><br/>
+Current Balance: <b>{BALANCE}</b>
+<br/><br/>
+<font color="#990000"><b>Last 5 Payments Received</b></font>
+<table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="996600">
+  <tr>
+    <td><table width="100%" border="0" cellspacing="1" cellpadding="2">
+  <tr>
+                        <td class="Body" bgcolor="#CC9999" width="59%">Date</td>
+                        <td class="Body" bgcolor="#CC9999" width="41%">Payment
+                          Amount</td>
+  </tr>
+ <!-- BEGIN PaymentAmounts -->
+   <tr>
+                        <td class="Body" bgcolor="#FFEEEE" width="59%">{PAYMENT_DATE}</td>
+                        <td class="Body" bgcolor="#FFEEEE" width="41%">{PAYMENT_AMOUNT}</td>
+  </tr>
+  <!-- END PaymentAmounts -->
+</table>
+</td>
+  </tr>
+</table>
+<br/>
+<form name="PaymentReceivedForm">
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+<div align="right">
+<input type="button" name="NextPaymentBtn" value="Next Payment Input &gt;" class="AdminButton" onmouseover="this.style.background='#ffeeaa';" onmouseout="this.style.background='#FFFFDD';" onclick="document.location='./ad_billing_receive.php';" />
+</div>
+</form>
+<!-- END PaymentReceivedBL -->
+</td>
+</tr>
+<tr>
+<td ><img src="./images/transparent.gif" border="0" width="1" height="5" alt="" /></td>
+</tr>
+</table>
+</td>
+</tr>
+
+
+<tr>
+<td><img src="images/header-editoptions-fade-bot.gif" width="420" alt="" /></td>
+</tr>
+</table>
+
+
+
+</div>
+
+
+</body>
+</html>

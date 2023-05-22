@@ -1,0 +1,251 @@
+<html>
+<head>
+<title>Admin</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<script type="text/javascript" src="./library/admin_library.js"></script>
+<script language="javascript">
+
+	//Make an array of the images we want to preload for the mouse-overs.
+	arImageSrc = new Array (
+		"./images/arrow_small_blue_up-d.png",
+		"./images/arrow_small_blue_down-d.png"
+	)
+
+	//Preload images.
+	arImageList = new Array ();
+	for (counter in arImageSrc) {
+		arImageList[counter] = new Image();
+		arImageList[counter].src = arImageSrc[counter];
+	}
+
+	var floatNumRegex = /^\s*((\d+(\.\d+)?)|(\.\d+))\s*$/;
+	var floatNumRegexNegative = /^\s*(\-)?((\d+(\.\d+)?)|(\.\d+)\s*)$/;
+	var decimalNumRegex = /^\s*\d+\s*$/;
+	var hexColorCode = /^#([0-9a-fA-F]{6})$/;
+
+	function moveBatchUp(batchID){
+		document.location = "ad_emailNotifyCollectionBatch.php?form_sc={FORM_SECURITY_CODE}&action=moveBatchUp&batchID=" + batchID;
+	}
+	function moveBatchDown(batchID){
+		document.location = "ad_emailNotifyCollectionBatch.php?form_sc={FORM_SECURITY_CODE}&action=moveBatchDown&batchID=" + batchID;
+	}
+
+	function submitEmailBatchEditForm(){
+			document.forms['EmailBatchEditForm'].submit();
+	}
+
+</script>
+
+
+<link rel="stylesheet" type="text/css" href="library/calendar/themes/winter.css"/>
+<script type="text/javascript" src="library/calendar/src/utils.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar.js"></script>
+<script type="text/javascript" src="library/calendar/lang/calendar-en.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar-setup.js"></script>
+<script type="text/javascript" src="library/formatDate.js"></script>
+</head>
+<body bgcolor="#FFFFFF" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="">
+<div align="center">
+{HEADER}
+
+<table width="760" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td class="Body">
+<br />
+<br />
+{EMAIL_NOTIFY_TABS}
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td bgcolor="#3366CC"><img src="./images/transparent.gif" border="0" width="2" height="4" alt="" /></td>
+</tr>
+</table>
+<br/>
+
+<table width="100%" border="0" cellspacing="0" cellpadding="1">
+  <tr>
+
+<font class="LargeBody"><font color="#336699"><b>Email Collection Batches</b></font>
+
+<img onmouseover="this.src='./images/question_mark_down.png'; showTheToolTip('helpDiv_CollectionBatches'); this.style.cursor ='hand';" onmouseout="hideTheToolTipContainer('helpDiv_CollectionBatches'); this.src='./images/question_mark_up.png'; " src="./images/question_mark_up.png"  border="0"  align="absmiddle" alt="" />	
+<div>
+<div id="helpDiv_CollectionBatches" style='width:690px; background-image: url(./images/tool_tips_back.png);  border:solid; border-color:#660000; border-width:1px; padding:6; filter:progid:DXImageTransform.Microsoft.dropShadow(Color=#999999,offX=3,offY=3)' class="SmallBody">
+Help text here.
+</div> 
+</div>
+<script>
+hideTheToolTipContainer("helpDiv_CollectionBatches");
+</script>	
+</tr>
+</table>
+
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td bgcolor="#3366CC"><img src="./images/transparent.gif" border="0" width="2" height="4" alt="" /></td>
+</tr>
+</table>
+
+<!-- BEGIN StartBL -->
+
+<br/>
+<img  src="./images/transparent.gif" width="5" height="7" alt="" /><br/>
+
+<form name="dateSelection" method="post">
+<input type="hidden" name="view" value="start">
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+	<tr>	
+	<td>Statistics between 	
+		{START_MONTH_SELECT}&nbsp;&nbsp;	
+		<input align='absmiddle' type='text' name='startday' value='{START_DAY}' class='' style='width:28px; height=22px;' maxlength='2'>&nbsp;&nbsp;	
+		{START_YEAR_SELECT}
+		&nbsp;&nbsp;-&nbsp;&nbsp;
+		{END_MONTH_SELECT}&nbsp;&nbsp;	
+		<input align='absmiddle' type='text' name='endday' value='{END_DAY}' class='' style='width:28px; height=22px;' maxlength='2'>&nbsp;&nbsp;	
+		{END_YEAR_SELECT}
+	</td>
+	<td width="20%" align="right"><input type="submit" value="Select Date" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" /></td>
+</table>
+</form>
+<br>
+
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#CC6600">
+<tr>
+<td>
+<table width="760" border="0" cellspacing="1" cellpadding="4">
+<form name="shippingChoicesForm">
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+
+ <!-- BEGIN BatchListHeaderBL -->
+<tr>
+	<td width="11" class="SmallBody" bgcolor="#FCE6E0">&nbsp;</td>
+	<td width="100" class="SmallBody" bgcolor="#FCE6E0"><strong>Description</strong></td>
+	<td width="180" class="SmallBody" bgcolor="#FCE6E0" nowrap="nowrap"><strong>Allowed Domains</strong></td>
+	<td width="60" class="SmallBody" bgcolor="#FCE6E0" nowrap="nowrap"><strong>Sent Emails</strong></td>
+	<td width="60" class="SmallBody" bgcolor="#FCE6E0" nowrap="nowrap"><strong>Send Errors</strong></td>
+	<td width="60" class="SmallBody" bgcolor="#FCE6E0" nowrap="nowrap"><strong>Tracking</strong></td>
+	<td width="60" class="SmallBody" bgcolor="#FCE6E0" nowrap="nowrap"><strong>Clicks</strong></td>
+	<td width="60" class="SmallBody" bgcolor="#FCE6E0" align="center"><strong>Orders</strong></td>
+	<td width="60" class="SmallBody" bgcolor="#FCE6E0" align="center"><strong>Conv Rate</strong></td>
+	
+</tr>
+ <!-- END BatchListHeaderBL -->
+ 
+ <!-- BEGIN BatchListBL -->
+ <tr bgcolor="#f3f3f3" onmouseover="hlSuperRow(this)" onmouseout="dlSuperRow(this)">
+ 
+    <td width="11"  class="SmallBody" align="center"><!-- BEGIN upLink --><a href="javascript:moveBatchUp({BATCH_ID});"><img src="./images/arrow_small_blue_up-u.png" onmouseover="this.src='./images/arrow_small_blue_up-d.png';" onmouseout="this.src='./images/arrow_small_blue_up-u.png';" border="0" align="absmiddle" alt="" /></a><!-- END upLink --><!-- BEGIN downLink --><a href="javascript:moveBatchDown({BATCH_ID});"><img src="./images/arrow_small_blue_down-u.png" onmouseover="this.src='./images/arrow_small_blue_down-d.png';" onmouseout="this.src='./images/arrow_small_blue_down-u.png';" border="0" align="absmiddle" alt="" /></a><!-- END downLink --></td>
+		
+	<td class="SmallBody"><a href="./ad_emailNotifyCollectionBatch.php?view=editEmailBatch&batchID={BATCH_ID}" class="BlueRedLink">{BATCH_NAME}</a><br>{BATCH_IMPORTDATE}</td>
+
+	<td class="SmallBody" ><font color="#333333">{DOMAINNAMES}</font></td>
+	<td class="SmallBody" ><font color="#333333">{STATISTIC_SENTEMAILS}</font></td>
+	<td class="SmallBody" ><font color="#333333">{STATISTIC_SENDERROR}</font></td>
+	<td class="SmallBody" ><font color="#333333">{STATISTIC_TRACKING}</font></td>
+	<td class="SmallBody" ><font color="#333333">{STATISTIC_CLICKS}</font></td>	
+	<td class="SmallBody" ><font color="#333333">{STATISTIC_ORDERS}</font></td>
+	<td class="SmallBody" ><font color="#333333">{STATISTIC_CONVRATE}</font></td>
+	
+  
+  </tr>
+ <!-- END BatchListBL -->
+</form>
+</table>
+<!-- END StartBL -->
+
+
+<!-- BEGIN EditBatchBL -->
+
+<form enctype="plain/text" action="./ad_emailNotifyCollectionBatch.php?view=start" method="GET">
+<input type="submit" value="Back to List" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" />
+</form>
+<br />
+<br />
+<form name="EmailBatchEditForm" action="./ad_emailNotifyCollectionBatch.php" method="get" onsubmit="">
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+<input type="hidden" name="batchID" value="{BATCH_ID}" />
+<input type="hidden" name="action" value="saveEmailBatch" />
+<table width="100%" border="0" cellspacing="0" cellpadding="2">
+
+<tr> <td colspan="2" bgcolor="DDDDE3"><img src="./images/transparent.gif" border="0" width="1" height="2" alt="" /></td>
+</tr>
+
+<tr>
+<td width="32%" class="Body" align="right">
+Email Batch Name&nbsp;&nbsp;</td>
+<td width="68%" class="SmallBody">
+<font color="#CC6600" style="font-size:14px"><strong>{BATCH_NAME}</strong></font>
+</td>
+</tr>
+
+<tr>
+<td colspan="2" bgcolor="DDDDE3"><img src="./images/transparent.gif" border="0" width="1" height="2" alt="" /></td>
+</tr>
+
+
+<tr>
+<td width="32%" class="Body" align="right">
+<img onmouseover="this.src='./images/question_mark_down.png'; showTheToolTip('helpDiv_domainList'); this.style.cursor ='hand';" onmouseout="hideTheToolTipContainer('helpDiv_domainList'); this.src='./images/question_mark_up.png'; " src="./images/question_mark_up.png"  border="0"  align="absmiddle" alt="" />
+Allowed Domains&nbsp;&nbsp;
+</td>
+
+<td width="68%" class="SmallBody">
+
+<div>
+ <div id="helpDiv_domainList" style='width:450px; background-image: url(./images/tool_tips_back.png);  border:solid; border-color:#660000; border-width:1px; padding:6; filter:progid:DXImageTransform.Microsoft.dropShadow(Color=#999999,offX=3,offY=3)' class="SmallBody"> 
+Domain Help Text here
+</div>
+<script>
+hideTheToolTipContainer("helpDiv_domainList");
+</script>
+
+{DOMAIN_CHECKBOXES}
+</td>
+</tr>
+
+<tr>
+<td colspan="2" bgcolor="DDDDE3"><img src="./images/transparent.gif" border="0" width="1" height="2" alt="" /></td>
+</tr>
+
+
+
+
+</table>
+<br/>
+<table width="100%" border="0" cellspacing="0" cellpadding="1">
+  <tr>
+    <td align="right">
+
+	<input type="button" name="EditBatch" value="Save Changes" class="AdminButton" onmouseover="this.style.background='#ffeeaa';" onmouseout="this.style.background='#FFFFDD';" onclick="submitEmailBatchEditForm();" />
+
+
+	</td>
+  </tr>
+</table>
+</form>
+
+<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+<!-- END EditBatchBL -->
+
+
+
+
+
+</td>
+</tr>
+</table>
+<br/>
+<table width="760" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="360" class="NavColor"><img src="./images/footer.gif" border="0" width="350" height="16" usemap="#footer" alt="" /></td>
+	<td width="400" align="right" class="NavColor"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+  </tr>
+</table>
+<font class="copyright"> </font>
+</div>
+&nbsp;
+<script type="text/javascript" src="./library/ImageMap-footer.js"></script>
+</body>
+</html>

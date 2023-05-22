@@ -1,0 +1,376 @@
+<html>
+<head>
+<title>Gang Runs</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+
+<script language="javascript">
+
+	//Make an array of the images we want to preload for the mouse-overs.
+	arImageSrc = new Array (
+		"./images/button-go-d.gif",
+		"./images/button-closewindow-blue-d.gif",
+		"./images/button-sendmessage-blue-d.gif"
+	)
+
+
+	function ShowCurrentTask(Msg){
+		document.all.curenttask.innerHTML = Msg;
+	}
+
+	function DataPercent(Status, Percent){
+		ShowProgress('<em>' + Status + '</em><font color="#990000"><b>' + Percent + "%</b></font> complete.");
+	}
+	function ShowProgress(Msg){
+		document.all.percentcomplete.innerHTML = Msg;
+	}
+
+	function StartGangRun(counter){
+	
+		var formObj = document.forms["FormNum" + counter];
+		
+		var printingPressID = formObj.printingPressID.value;
+		
+		if(printingPressID == 0){
+			if(confirm("Are you sure that you want to start a new GangRun without selecting a Printer?"))
+				formObj.submit();
+		}
+		else{
+			formObj.submit();
+		}
+	
+		
+	}
+	
+	function CancelBatch(gangRunID){
+	
+		if(confirm("Are you sure that you want to cancel this Gang Run?\n\nAll Project Statuses will be reset to 'Proofed'. \nHowever, if any Project Status has recently been changed to something other than 'Plated' (or canceled), \nthen the status will not be changed."))
+			document.location = "ad_gangRun.php?current_action=CancelGangRun&form_sc={FORM_SECURITY_CODE}&gangRunID=" + gangRunID;
+	}
+	
+	function ConfirmBatch(gangRunID){
+	
+
+		var confirmationName = prompt("Please enter your Name or Initials.", "");
+
+		if(confirmationName == null || confirmationName == "null")
+			return;
+
+		if(confirmationName == ""){
+			alert("You must enter your name before confirming this batch.");
+			return;
+		}
+			
+		document.location = "ad_gangRun.php?current_action=ConfirmGangRun&gangRunID=" + gangRunID + "&form_sc={FORM_SECURITY_CODE}&confirmedBy=" + escape(confirmationName);
+	}
+	
+	function DownloadZip(gangRunID){
+		var downloadURL = "./ad_gangRun.php?current_action=saveFileToDisk&form_sc={FORM_SECURITY_CODE}&downloadFileType=Tar&gangRunID=" + gangRunID;
+		fileDownloadWindow(downloadURL);
+	}
+	function ShowGangRunCover(gangRunID){
+		var downloadURL = "./ad_gangRun.php?current_action=saveFileToDisk&form_sc={FORM_SECURITY_CODE}&downloadFileType=Cover&gangRunID=" + gangRunID;
+		fileDownloadWindow(downloadURL);
+	}
+	function ShowGangRunFront(gangRunID){
+		var downloadURL = "./ad_gangRun.php?current_action=saveFileToDisk&form_sc={FORM_SECURITY_CODE}&downloadFileType=Front&gangRunID=" + gangRunID;
+		fileDownloadWindow(downloadURL);
+	}
+	function ShowGangRunBack(gangRunID){
+		var downloadURL = "./ad_gangRun.php?current_action=saveFileToDisk&form_sc={FORM_SECURITY_CODE}&downloadFileType=Back&gangRunID=" + gangRunID;
+		fileDownloadWindow(downloadURL);
+	}
+	
+	function fileDownloadWindow(popUpURL){
+		newWindow = window.open(popUpURL, "gangRunDownload", "height=600,width=750,directories=no,location=no,menubar=no,scrollbars=no,status=no,toolbar=no,resizable=yes");
+		newWindow.focus();
+	}
+
+	//Allways increate a global variable  to ensure that the fly open layer is always on top
+	var ZindexCouter = 5;
+
+	function showGangRunThumbWindow(ganRunID, divShow, frontBack) {
+
+		if(frontBack == "Front"){
+			var spanname = "gangRunFrontSpan" + ganRunID;
+			var divname = "gangRunFrontDiv" + ganRunID;
+		}
+		else if(frontBack == "Back"){
+			var spanname = "gangRunBackSpan" + ganRunID;
+			var divname = "gangRunBackDiv" + ganRunID;
+		}
+		else{
+			alert("Error in function showGangRunThumbWindow");
+		}
+		
+		
+
+		if (divShow) {
+			ZindexCouter++;
+			ZindexCouter++;
+
+			document.all(spanname).style.visibility = "visible";
+			document.all(spanname).style.zIndex = ZindexCouter;
+			document.all(divname).style.zIndex = ZindexCouter + 2;
+		}
+		else{
+
+			document.all(spanname).style.visibility = "hidden";
+		}
+
+	}
+
+</script>
+
+
+<style type="text/css">
+ .isHighlighted { background-color: #FFDDDD; }
+ .notHighlighted { background-color: #E3E3FF; }
+
+A.proofLink 	{ font-size:10px; color:#333333; font-family:Arial,Helvetica,sans-serif;  text-decoration:none}
+A.proofLink:visited { color: #990000; }
+A.proofLink:link { color: #333333; }
+A.proofLink:hover { color: #0000FF;  text-decoration:underline}
+
+</style>
+
+</head>
+
+<body bgcolor="#3366CC" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="window.resizeTo(750,600)" >
+<img  src="./images/transparent.gif" border="0" width="1" height="10" alt="" /><br/>
+<div align="center">
+<table bgcolor="#EEEEEE" width="700" cellpadding="0" cellspacing="0" border="0">
+
+<tr>
+<td bgcolor="#cccccc" class="SmallBody" align="center" style="background-image: url(./images/admin/header-shipping.png); background-repeat: no-repeat;"><img  src="./images/transparent.gif" border="0" width="1" height="3" alt="" /><br/> <!-- BEGIN GangRunTitleBL --> <font color="#333333"><strong>Gang Run{GANG_ID_TITLE}</strong>: Sheet Count: <strong>{SHEET_QUANTITY}</strong>, {SIZE_PREFERENCE} {SIDES} Run</font>  <!-- END GangRunTitleBL --><br/>
+<img src="./images/transparent.gif" border="0" width="1" height="3" alt="" /></td>
+
+<tr>
+<td align="center" class="Body"><img  src="./images/transparent.gif" border="0" width="8" height="8" alt="" /><br/>
+<!-- BEGIN SuyperProfileName -->
+Profile Name: <strong>{SUPER_PDF_PROFILE_NAME}</strong>
+<br/>&nbsp;
+<!-- END SuyperProfileName -->
+<!-- BEGIN ErrorMessage -->
+<table width="95%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+            <td class="Body"><font color="#990000"><br/>{ERROR_MESSAGE}<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;</font>
+			</td>
+  </tr>
+</table>
+<!-- END ErrorMessage -->
+
+<!-- BEGIN ConfirmBlock -->
+<table width="95%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+            <td class="Body"><font color="#006600"><br/>{CONFIRM_MESSAGE}<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;</font>
+			</td>
+  </tr>
+</table>
+<!-- END ConfirmBlock -->
+
+
+<!-- BEGIN DownloadBlock -->
+<table width="95%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+            <td class="SmallBody"><font color="#000000"><br/>Your download should begin immediately. If not, click on the following link.<br/><br/><a href='{DOWNLOAD_BASE}/{DOWNLOAD_FILENAME}'>{DOWNLOAD_FILENAME}</a><br/>&nbsp;<br/>&nbsp;<br/>&nbsp;</font>
+			</td>
+  </tr>
+</table>
+<!-- END DownloadBlock -->
+
+<!-- BEGIN GangResults -->
+
+
+
+
+<table width="100%" border="0" cellspacing="8" cellpadding="3">
+
+  <tr>
+              <td class="SmallBody" bgcolor="#CCCCEE" width="28%"><font color="#000000"><b>Profile</b></font></td>
+              <td class="SmallBody" bgcolor="#CCCCEE" width="21%"><font color="#000000"><b>Score</b></font></td>
+	          <td class="SmallBody" bgcolor="#CCCCEE" width="40%"><font color="#000000"><strong>Options</strong></font></td>
+			  <td class="SmallBody" bgcolor="#CCCCEE" width="11%"><font color="#000000"><strong>&nbsp;</strong></font></td>
+  </tr>
+<!-- BEGIN GangBL -->
+<form action="ad_gangRun.php" method="post" name="FormNum{COUNTER}" >
+<input type="hidden" name="current_action" value="StartGangRun" />
+<input type="hidden" name="projectlist" value="{PROJECTLIST}" />
+<input type="hidden" name=superpdfprofileID value="{SUPERPROFILEID}" />
+<input type="hidden" name="sheet_quantity" value="{SHEETCOUNT}" />
+<input type="hidden" name="side_count" value="{SIDECOUNT}" />
+<input type="hidden" name="quantity_preference" value="{QUANTITYPREF}" />
+<input type="hidden" name="force_quantity" value="{FORCE_QUANTITY}" />
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+  <tr>
+              <td class="ReallySmallBody" width="28%"><font class="ReallySmallBody">{PROFILE_DESC}</font></td>
+	          <td class="ReallySmallBody" width="21%">{SCORE}</td>
+			  <td class="ReallySmallBody" width="40%">{OPTIONS}</td>
+			  <td class="ReallySmallBody" width="11%" align="center"><a href="javascript:StartGangRun({COUNTER});"  class="BlueRedLink">Start</a></td>
+  </tr>
+  </form>
+ <!-- END GangBL -->
+
+</table>
+&nbsp;
+
+
+
+
+<!-- END GangResults -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- BEGIN GangRunIDbl -->
+
+
+
+
+<table width="100%" border="0" cellspacing="8" cellpadding="3">
+
+  <tr>
+              <td class="SmallBody" bgcolor="#CCCCEE" width="46%"><font color="#000000"><b>Artwork for Gang Run - G{GANGID}</b></font></td>
+	          <td class="SmallBody" bgcolor="#CCCCEE" width="36%"><font color="#000000"><strong>Options</strong></font></td>
+			  <td class="SmallBody" bgcolor="#CCCCEE" width="18%" align="center"><font color="#000000"><strong>Commands</strong></font></td>
+  </tr>
+<!-- BEGIN GangID -->
+<form action="ad_gangRun.php" method="get" name="FormNum{GANGID}" >
+<input type="hidden" name="current_action" value="UpdateGangRun" />
+<input type="hidden" name="gangRunID" value="{GANGID}" />
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+
+  <tr>
+              <td class="ReallySmallBody" width="46%"><font class="ReallySmallBody">{PDF_FILES}</font></td>
+			  <td class="ReallySmallBody" width="36%">{OPTIONS}</td>
+			  <td class="ReallySmallBody" width="18%" align="center">
+			 <img  src="./images/icon-greencheck.gif" width='16' height="16" border="0" align="absmiddle" alt="" />  <a href="javascript:ConfirmBatch({GANGID});"  class="BlueRedLink">Confirm</a><br/>
+		      &nbsp;<br/><img  src="./images/icon-redx.gif" width='16' height="16" border="0" align="absmiddle" alt="" /> <a href="javascript:CancelBatch({GANGID});"  class="BlueRedLink">Cancel</a><br/>&nbsp;<br/><img src="./images/icon-save.gif" width='16' height="16" border="0" align="absmiddle" alt="" /> <a href="javascript:document.forms['FormNum{GANGID}'].submit();"  class="BlueRedLink">Update</a></td>
+  </tr>
+  </form>
+ <!-- END GangID -->
+
+</table>
+&nbsp;
+
+
+
+
+<!-- END GangRunIDbl -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- BEGIN ProgressBL -->
+&nbsp;
+<table width="95%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+                    <td class="SmallBody">
+<table width="100%" border="0" cellspacing="0" cellpadding="2" bgcolor="#CCCCCC">
+  <tr>
+    <td><table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td align="center" bgcolor="#dddddd"><div id="curenttask" class="Largebody">
+<b>Status:</b> Analyzing Gang Run
+</div>
+	<div id="percentcomplete" class="Largebody">
+&nbsp;
+</div>
+<div id="flashanimation" class="Largebody">
+<img  src='./images/transparent.gif' wight='7' height='7' alt="" /><br/>
+<OBJECT classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="https://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=7,0,19,0" width="250" height="100" id="GeneratingArtwork" align="middle">
+<param name="allowScriptAccess" value="sameDomain" />
+<param name="movie" value="./Thinking.swf" />
+<param name="quality" value="high" />
+<param name="bgcolor" value="#ffffff" />
+<embed src="./Thinking.swf" quality="high" bgcolor="#ffffff" width="250" height="100" name="GeneratingArtwork" align="middle" allowScriptAccess="sameDomain" type="application/x-shockwave-flash" pluginspage="https://www.macromedia.com/go/getflashplayer" /></embed>
+</OBJECT>
+<br/>
+</div>
+&nbsp;
+	</td>
+  </tr>
+</table>
+
+				  </td>
+  </tr>
+</table>
+</td>
+  </tr>
+</table>
+                <br/>
+<!-- END ProgressBL -->
+
+
+<br/><br/>
+</td>
+</tr>
+
+
+<tr>
+<td><img src="images/header-editoptions-fade-bot.gif" width="700" alt="" /></td>
+</tr>
+</table>
+
+</div>
+
+
+</body>
+</html>

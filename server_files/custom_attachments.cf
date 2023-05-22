@@ -1,0 +1,16 @@
+#-- Custom Spam Assassin Rule
+#-- If there is an empty body with a certain type of attachment
+#-- Place this file in /etc/mail/spamassassin
+#-- Always run "spamassassin --lint" ... then restart spamd
+
+full __ATTACH_RTF /name\s*=\s*"\w+\.rtf/i
+score __ATTACH_RTF 0.1
+describe __ATTACH_RTF An RTF file was attached to the email.
+
+body __EMPTY_BODY /^(\s|\r|\n)*$/
+score __EMPTY_BODY 0.1
+describe __EMPTY_BODY There is an empty body.
+
+meta EMPTY_BODY_WITH_ATTACHMENT_RTF  (__ATTACH_RTF && __EMPTY_BODY)
+score  EMPTY_BODY_WITH_ATTACHMENT_RTF 5.0
+describe EMPTY_BODY_WITH_ATTACHMENT_RTF There is an empty body with an RTF file attached.

@@ -1,0 +1,110 @@
+<html>
+<head>
+<title>Admin</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<script>
+
+
+	function AddReturnedPackageMessage(NotifyID){
+		var TheMessage = prompt("Enter a message that you would like to record about this returned package.", "");
+
+		if(!TheMessage || TheMessage == "")
+			return;
+
+		document.forms["newMessageForm"].notificationid.value = NotifyID;
+		document.forms["newMessageForm"].message.value = TheMessage;
+		document.forms["newMessageForm"].submit();
+	}
+
+	function CloseReturnedPackageNotification(NotifyID){
+		if(confirm("Are you sure that you want to close this Returned Package Notification?")){
+			document.location = "./ad_returnedpackages.php?form_sc={FORM_SECURITY_CODE}&action=closenotification&notificationid=" + NotifyID;
+		}
+	}
+
+	function MarkAnOrderAsReturned(){
+		var ProjectNumber = prompt("Enter a project number - EX: P283832.\nOnly 1 project number is needed from the entire order.", "");
+
+		if(!ProjectNumber)
+			return;
+
+		ProjectNumber = ProjectNumber.toUpperCase();
+		if(ProjectNumber.search(/^P\d+$/) == -1){
+			alert("The project number is not in the proper format.");
+			return;
+		}
+
+		document.location = "./ad_returnedpackages.php?form_sc={FORM_SECURITY_CODE}&action=MarkPackageAsReturned&projectid=" + ProjectNumber;
+	}
+</script>
+<link rel="stylesheet" type="text/css" href="library/calendar/themes/winter.css"/>
+<script type="text/javascript" src="library/calendar/src/utils.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar.js"></script>
+<script type="text/javascript" src="library/calendar/lang/calendar-en.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar-setup.js"></script>
+<script type="text/javascript" src="library/formatDate.js"></script>
+</head>
+<body bgcolor="#FFFFFF" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="">
+<div align="center">
+{HEADER}
+&nbsp;
+<table width="760" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td class="Body">
+<br/>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td align="right"><input type="button" name="Generate" value="Mark an Order as Returned" class="AdminButton" onmouseover="this.style.background='#ffeeaa';" onmouseout="this.style.background='#FFFFDD';" onclick="MarkAnOrderAsReturned()" /></td>
+  </tr>
+</table>
+<br/>
+<font class="AdminLabel">Returned Packages</font>
+<img  src="./images/greypixel.gif" border="0" width="742" height="1" alt="" /><br/>
+<img  src="./images/transparent.gif" border="0" width="1" height="10" alt="" /><br/>
+ <!-- BEGIN EmptyItemsBL -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#333333">
+  <tr>
+    <td><table width="100%" border="0" cellspacing="1" cellpadding="2">
+  <tr bgcolor="#336699">
+
+	              <td class="Body" width="25%"><font color="#FFFFFF">Order</font></td>
+	              <td class="Body" width="58%"><font color="#FFFFFF">Messages</font></td>
+	              <td class="Body" width="17%"><font color="#FFFFFF">Commands</font></td>
+  </tr>
+ <!-- BEGIN itemsBL -->
+   <tr bgcolor="#F3F3F3">
+	              <td class="SmallBody" width="25%"><a href="./ad_order.php?orderno={ORDERNO}" class="BlueRedLink">{ORDERNO}</a><br/>
+                    <img  src="./images/transparent.gif" border="0" width="1" height="5" alt="" /><br/>{COMPANY_OR_NAME}</td>
+	              <td class="SmallBody" width="58%">{MESSAGES}</td>
+	              <td class="SmallBody" width="17%">{RETURNED_PACKAGE_COMM}</td>
+  </tr>
+  <!-- END itemsBL -->
+</table></td>
+  </tr>
+</table>
+ <!-- END EmptyItemsBL -->
+ <form name="newMessageForm" action="./ad_returnedpackages.php">
+ <input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+ <input type="hidden" name="action" value="newmessage" />
+  <input type="hidden" name="notificationid" value="" />
+  <input type="hidden" name="message" value="" />
+ </form>
+<br/><br/><br/><br/>
+        <br/>
+        &nbsp;<br/></td>
+</tr>
+</table>
+<table width="760" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="360" class="NavColor"><img src="./images/footer.gif" border="0" width="350" height="16" usemap="#footer" alt="" /></td>
+	<td width="400" align="right" class="NavColor"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+  </tr>
+</table>
+<font class="copyright"> </font>
+</div>
+&nbsp;
+<script type="text/javascript" src="./library/ImageMap-footer.js"></script>
+</body>
+</html>

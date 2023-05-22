@@ -1,0 +1,44 @@
+MAILTO="printsma"
+50 23 * * 0 lynx -dump http://www.PrintsMadeEasy.com/server_clean_extra_images.php
+20 8 * * 0 lynx -dump http://www.printsmadeeasy.com/server_clean_cs_attachments.php
+30 * * * * cd /home/printsma/ShellScripts; sh replication_check.sh
+32 * * * * lynx -dump http://www.PrintsMadeEasy.com/server_verifyPop3Activity.php
+40 * * * * sh /home/printsma/ShellScripts/replication_sync.sh
+0 0 * * * sh /home/printsma/ShellScripts/clean_pdfs.sh
+0 1 * * * cd /home/printsma/ShellScripts; sh clean_session.sh
+0 1 * * * lynx -dump http://www.PrintsMadeEasy.com/server_clean_dos_attacks.php
+20 6 * * 0 lynx -dump http://www.PrintsMadeEasy.com/server_clean_ming_images.php
+*/2 * * * * lynx -dump http://www.PrintsMadeEasy.com/get_emails.php
+#35 * * * * lynx -dump http://www.PrintsMadeEasy.com/server_emailUnsubscribeFromAffiliates.php
+3 3 * * * sh /home/printsma/ShellScripts/clean_images.sh
+1 3 5 8 * sh /home/printsma/ShellScripts/clean_customerattachments.sh
+*/2 * * * * lynx -dump http://www.PrintsMadeEasy.com/server_update_projectsordered.php
+*/25 * * * * lynx -dump http://www.PrintsMadeEasy.com/server_payment_captures.php
+*/20 * * * * lynx -dump http://www.PrintsMadeEasy.com/server_checkProxies.php
+20 6 8,22 * * lynx -dump http://www.PrintsMadeEasy.com/paypal_masspay_send.php?domainID=1
+50 23 * * * sh /home/printsma/ShellScripts/sales_payments_prepare.sh
+0 2 * * * lynx -dump http://www.PrintsMadeEasy.com/server_table_rotations.php
+*/5 * * * * lynx -dump http://www.PrintsMadeEasy.com/server_checkattendance.php
+1 19 * * * lynx -dump http://www.PrintsMadeEasy.com/server_late_shipment_notify.php
+15 3 * * * sh /home/printsma/ShellScripts/clean_TempFiles.sh
+1 2 * * * lynx -dump http://www.PrintsMadeEasy.com/server_sitemap.php
+30 9 * * * lynx -dump http://www.PrintsMadeEasy.com/server_chargeLoyaltyMembers.php
+1 14 * * * lynx -dump http://www.PrintsMadeEasy.com/server_chargeLoyaltyMembers.php
+40 23 * * * lynx -dump http://www.PrintsMadeEasy.com/server_chargeLoyaltyMembers.php
+1 6 * * * lynx -dump http://www.PrintsMadeEasy.com/server_reminderemails.php?messageType=NoOrders
+35 3 * * * lynx -dump http://www.PrintsMadeEasy.com/server_reminderemails.php?messageType=ReOrder
+*/10 * * * * lynx -dump http://www.PrintsMadeEasy.com/server_update_iptables.php
+*/15 * * * * sh /home/printsma/ShellScripts/reports_15minutes.sh
+#10 * * * * sh /home/printsma/ShellScripts/reports_hourly.sh
+#01 0 * * * sh /home/printsma/ShellScripts/reports_nightly.sh
+#30 1 1 * * sh /home/printsma/ShellScripts/reports_monthly.sh
+2 0 * * * lynx -dump http://www.printsmadeeasy.com/server_clean_gangruns.php
+2 3 * * * lynx -dump http://www.printsmadeeasy.com/server_clean_pdf_previews.php
+20 5 * * * lynx -dump http://www.printsmadeeasy.com/server_clean_ming_images.php
+*/5 * * * * lynx -dump http://www.printsmadeeasy.com/server_getMarketingData.php
+1 * * * * lynx -dump http://www.printsmadeeasy.com/server_report_exceptions.php
+
+#--- Put this in "Root's" Crontab ----------------------------------------
+#--- This can add lots of files quickly, so only use it when you have a problem.
+#*/1 * * * * sh /home/printsma/ShellScripts/getApacheServerStatus.sh
+*/15 * * * * sh /home/printsma/public_html/ip_tables_output.txt

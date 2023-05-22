@@ -1,0 +1,168 @@
+<html>
+<head>
+<title>Untitled Document</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+
+<script>
+	function ShowCat(CatID){
+		top.MsgBody.document.location = "./ad_cannedmsg_body.php?categoryid=" + CatID;
+	}
+	function ShowMessage(MessageID){
+		top.MsgBody.document.location = "./ad_cannedmsg_body.php?messageid=" + MessageID;
+	}
+
+		//These global variables are checked every time a folder is clicked on the tree
+		//It one is set to true... It will try to abort the operation and Move the folder/message
+		var MoveCategory = false;
+		var MoveMessage = false;
+		var MoveCatID = 0;
+		var MoveMsgID = 0;
+
+		function SetMoveCategory(TheID){
+			MoveCategory = true;
+			MoveCatID = TheID;
+		}
+		function SetMoveMessage(TheID){
+			MoveMessage = true;
+			MoveMsgID = TheID;
+		}
+		function CheckIfMovingCategory(){
+			return MoveCategory;
+		}
+		function CheckIfMovingMessage(){
+			return MoveMessage;
+		}
+
+
+
+	//This function is run every time that a folder is clicked on.
+	//We want to listen in and see if we are trying to move a folder or a message into a folder.  If so, then intercept it
+	function onItemSelectHandler(o_item){
+
+		if(top.TreeFrame.CheckIfMovingCategory() || top.TreeFrame.CheckIfMovingMessage()){
+
+			var CategoryRegEx  = /ShowCat\((\d+)\)/;
+			var result = o_item.a_config[1].match(CategoryRegEx);
+
+			if (result) {
+				var CategoryMoveTo = result[1];
+
+				if(top.TreeFrame.CheckIfMovingCategory())
+					var ServerCommand = "MoveCategory"
+				else if(top.TreeFrame.CheckIfMovingMessage())
+					var ServerCommand = "MoveMessage"
+				else
+					alert("Error");
+
+
+				MoveCategory = false;
+				MoveMessage = false;
+
+				top.document.location = "./ad_cannedmsg.php?cannedmessagecommand=" +  ServerCommand + "&messageid=" +  MoveMsgID + "&categoryid=" +  MoveCatID + "&form_sc={FORM_SECURITY_CODE}&returnurl=ad_cannedmsg.php&moveto=" + CategoryMoveTo
+			}
+			else{
+				alert("You can't move an object into a message.  \nOperation canceled.");
+				MoveCategory = false;
+				MoveMessage = false;
+			}
+
+			return false;
+		}
+
+		//proceed with the default handler
+		return true;
+
+	}
+
+	function openTreeItem (NodeType, TheID) {
+
+		if(NodeType == "category")
+			var s_caption = "javascript:ShowCat(" + TheID + ")";
+		else if(NodeType == "message")
+			var s_caption = "ShowMessage(" + TheID + ")";
+		else
+			alert("Illegal Note type");
+
+		collapse_all();
+
+		o_tree = (TREES[0]);
+
+
+		// find item with specified caption
+		var a_item = o_tree.find_item(s_caption, true);
+
+		// Check to make sure that the search worked.
+		if(a_item.length != 0)
+			o_tree.select(a_item[0].n_id)
+
+
+		for(var n=0; n < a_item.length; n++) {
+			o_item=a_item[n];
+
+			// collect info about all item's parents
+			var n_id = o_item.n_id,
+				n_depth = o_item.n_depth,
+				a_index = o_item.o_root.a_index,
+				a_parents = [o_item];
+
+			while (n_depth) {
+				if (a_index[n_id].n_depth < n_depth) {
+					a_parents[a_parents.length] = a_index[n_id];
+					n_depth--;
+				}
+				n_id--;
+			}
+
+			// open all parents starting from root
+			for (var i = a_parents.length-1; i >= 0; i--)
+			   // check if node or root
+			   if (a_parents[i].n_state & 48)
+				  a_parents[i].open();
+
+		}
+	}
+
+
+
+	function collapse_all (n_index, n_depth) {
+		var o_tree = TREES[n_index ? n_index : 0];
+		if (!n_depth) n_depth = 1;
+		if (!o_tree)
+			alert("Tree is not initialized yet");
+		var a_nodes = o_tree.a_nodes;
+		for (var i = a_nodes.length - 1; i >= 0; i--)
+			if (a_nodes[i].n_depth >= n_depth && a_nodes[i].open)
+				a_nodes[i].open(1, 1);
+		o_tree.ndom_refresh();
+	}
+
+
+</script>
+
+<script language="JavaScript" src="library/tree.js"></script>
+<script language="JavaScript" src="{TREE_JAVASCRIPT_PATH}"></script>
+<script language="JavaScript" src="library/cs_cannedmsg_tree_tpl.js"></script>
+<link rel="stylesheet" href="library/cs_cannedmsg_tree.css" />
+
+<style type="text/css">
+
+	Body {
+	  background: white url("./images/background_vardata_bottom2.gif");
+	  background-repeat: repeat;
+	  background-position: left top;
+	  background-color: #EEEEEE;
+	}
+
+</style>
+
+</head>
+
+<body>
+
+
+		<script language="JavaScript">
+			new tree (TREE_ITEMS, TREE_TPL);
+		</script>
+
+</body>
+</html>

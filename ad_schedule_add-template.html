@@ -1,0 +1,370 @@
+<html>
+<head>
+<title>Event</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<style type="text/css">
+	A.DescriptionLink 	{ font-size:12px; color:#333333; font-family:Arial,Helvetica,sans-serif; text-decoration:none}
+	A.DescriptionLink:visited { color: #333377; }
+	A.DescriptionLink:link { color: #333333; }
+	A.DescriptionLink:hover { color: #cc0000; text-decoration:underline }
+</style>
+<script language="javascript">
+
+	//Make an array of the images we want to preload for the mouse-overs.
+	arImageSrc = new Array (
+		"./images/button-go-d.gif",
+		"./images/button-cancel-blue-d.gif",
+		"./images/button-update-blue-d.gif"
+	)
+
+	//Preload images.
+	arImageList = new Array ();
+	for (counter in arImageSrc) {
+		arImageList[counter] = new Image();
+		arImageList[counter].src = arImageSrc[counter];
+	}
+
+	function AddEvent(){
+		var theTitle = document.forms["addform"].title.value;
+
+		var startTime = document.forms["addform"].startTimeDisplay.value;
+		var endTime = document.forms["addform"].endTimeDisplay.value;
+	
+		var timeErrorFlag = false;
+		var startMintuesFromMidnight = 0;
+		var endMintuesFromMidnight = 0;
+		
+		if(startTime != "" || endTime != "" ){
+			startMintuesFromMidnight = getMinutesSinceMidnight(startTime);
+			endMintuesFromMidnight = getMinutesSinceMidnight(endTime);
+			
+			if(startMintuesFromMidnight == "" || endMintuesFromMidnight == "")
+				timeErrorFlag = true;
+			
+			if(startMintuesFromMidnight >= endMintuesFromMidnight)
+				timeErrorFlag = true;
+				
+			// Make sure that the user hasn't selected a Production or Transit Delay when a Time has been entered.
+			var productionCheckBox = document.all.delaysproduction.checked;
+			var transitCheckBox = document.all.delaystransit.checked;
+			
+			if(productionCheckBox || transitCheckBox){
+				alert("You can not add a Transit or Production Delay with a Time Duration.");
+				return false;
+			}
+		}
+		
+		// Set the converted values (From Time Descr AM/PM) into our "minutes" values that our PHP script will understand.
+		document.forms["addform"].startMinute.value = startMintuesFromMidnight;
+		document.forms["addform"].endMinute.value = endMintuesFromMidnight;
+	
+
+
+		if(theTitle.search(/\w/) == -1){
+			alert("You forgot to enter a title.");
+			return false;
+		}
+		else if(timeErrorFlag){
+			alert("Fix the Time Range.");
+			return false;
+		}
+		else{
+			return true;
+		}
+	}
+	function DeleteEvent(){
+		if(confirm("Do you Really want to delete this event?"))
+			document.location = "./ad_schedule_add.php?form_sc={FORM_SECURITY_CODE}&action=deleteEvent&eventSignature={EVENT_SIG}";
+	}
+	
+	function EditEvent(EventSignature){
+		document.location = './ad_schedule_add.php?eventSignature=' + EventSignature;
+	}
+	
+	function timeChanged(timePart){
+	
+		var startTimeTextBoxObj = document.forms["addform"].startTimeDisplay;
+		var endTimeTextBoxObj = document.forms["addform"].endTimeDisplay;
+	
+		var startTime = startTimeTextBoxObj.value;
+		var endTime = endTimeTextBoxObj.value;
+	
+		// If the Start Time and End Time are blank, then clean any errors.
+		if(startTime == "" && endTime == "" ){
+			startTimeTextBoxObj.style.background = "#ffffff";
+			endTimeTextBoxObj.style.background = "#ffffff";
+			document.all.timeMessage.innerHTML = "";
+			return;
+		}
+	
+		var startMintuesFromMidnight = getMinutesSinceMidnight(startTime);
+		var endMintuesFromMidnight = getMinutesSinceMidnight(endTime);
+
+	
+		if(startMintuesFromMidnight == ""){
+			startTimeTextBoxObj.style.background = "#FFdddd";
+		}
+		else{
+			startTimeTextBoxObj.style.background = "#ddffdd";
+		}
+		
+		if(endMintuesFromMidnight == ""){
+			endTimeTextBoxObj.style.background = "#FFdddd";
+		}
+		else{
+			endTimeTextBoxObj.style.background = "#ddffdd";
+		}
+		
+	
+		if(startMintuesFromMidnight != "" && endMintuesFromMidnight != ""){
+			
+			if(startMintuesFromMidnight == endMintuesFromMidnight)
+				document.all.timeMessage.innerHTML = "<font color='#990000'><b>Times Can't Match</b></font>";
+			else if(startMintuesFromMidnight > endMintuesFromMidnight)
+				document.all.timeMessage.innerHTML = "<font color='#990000'><b>Invalid Range</b></font>";
+			else
+				document.all.timeMessage.innerHTML = "";
+		}
+		else{
+			document.all.timeMessage.innerHTML = "";
+		}
+	
+
+	}
+	
+	// Returns blank string if the timeDescription is not recognizeable.
+	function getMinutesSinceMidnight(timeDescription){
+		
+		if(!timeDescription.match(/^\s*\d{1,2}(:\d{2})?\s*(am|pm)\s*$/i))
+			return "";
+		
+		var amFlag = false;
+		
+		if(timeDescription.match(/am/i)){
+			amFlag = true;
+		}
+		
+		// Now we know if it is am or pm, so get rid of tail.
+		timeDescription = timeDescription.replace(/\s*(am|pm)\s*$/i, "");
+		
+		timeDescription = timeDescription.replace(/\s/, "");
+		
+		
+		var hourPart = 0;
+		var minutePart = 0;
+		
+		// Find out if they entered a minute... or just the hour.
+		if(timeDescription.match(/\d:\d/)){
+			timePartsArr = timeDescription.split(":");
+			hourPart = timePartsArr[0];
+			minutePart = timePartsArr[1];
+		}
+		else{
+			hourPart = timeDescription;
+			minutePart = 0;
+		}
+		
+		if(hourPart > 12)
+			return "";
+		if(minutePart > 59)
+			return "";
+		
+		hourPart = parseInt(hourPart);
+		minutePart = parseInt(minutePart);
+		
+		if(hourPart == 12)
+			hourPart = 0;
+		
+		if(!amFlag)
+			hourPart += 12;
+		
+		var numberOfMinutesSinceMidnight = (hourPart * 60) + minutePart;
+	
+		// We don't allow Zero for "Minutes"
+		// So return 1 if it is Zero.
+		if(numberOfMinutesSinceMidnight == 0)
+			numberOfMinutesSinceMidnight = 1;
+	
+			
+		return numberOfMinutesSinceMidnight;
+	}
+	
+	function selectAnotherTitle(eventSig){
+		if(eventSig == 0 || eventSig == 1)
+			return;
+		document.location = "./ad_schedule_add.php?eventSignature=" + eventSig;
+	}
+	
+	function setTheFocus(){
+	
+		var focusCommand = "{EDIT_EVENT_AGAIN_FOCUS_COMMAND}";
+		if(focusCommand == "EditEventAgain"){
+			document.forms["addform"].description.focus();
+			document.forms["addform"].description.select();
+		}
+		else if(focusCommand == "EventWasUpdated"){
+			document.all.addAnotherButton.focus();
+		}
+		else if(focusCommand == "new"){
+			document.forms["addform"].title.focus();
+		}
+
+
+	}
+	
+	function warnTransit(checkedFlag){
+
+		if(checkedFlag)
+			alert("WARNING!\n\nAre you sure that you want to add a Shipping Delay?\nDon't add Shipping Delays for the Post Office.");
+	}
+
+</script>
+
+
+
+
+</head>
+
+<body bgcolor="#3366CC" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="setTheFocus();">
+<img  src="./images/transparent.gif" border="0" width="1" height="10" alt="" /><br/>
+<div align="center">
+<table bgcolor="#EEEEEE" width="350" cellpadding="0" cellspacing="0" border="0">
+
+<tr>
+<td bgcolor="#CCCCCC" align="center" class="Body" style="background-image: url(./images/admin/header-shipping.png); background-repeat: no-repeat;"><b>{HEADER_DESC} {DATE_DESC}</b></td>
+
+<tr>
+<tr>
+<td bgcolor="#666666" align="center" class="Body"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+
+<tr>
+<td align="center" class="Body">
+
+<!-- BEGIN AddEditBl -->
+<form action="./ad_schedule_add.php" name="addform" onSubmit="return AddEvent()" method="post">
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+<table width="90%" border="0" cellspacing="0" cellpadding="0">
+<input type="hidden" name="action" value="savedata" />
+<input type="hidden" name="year" value="{YEAR}" />
+<input type="hidden" name="month" value="{MONTH}" />
+<input type="hidden" name="day" value="{DAY}" />
+<input type="hidden" name="eventSignature" value="{EVENT_SIG}" />
+
+  <tr>
+    <td class="Body">
+	&nbsp;<br/>
+	<!-- BEGIN ViewEventGroupLink -->
+	<div align="right"><a class="BlueRedLink" href="./ad_schedule_add.php?eventTitleSignature={EVENT_TITLE_SIG}">&lt; View Event Group</a></div>
+	<!-- END ViewEventGroupLink -->
+	
+	Event Title<br/><input type="text" name="title" value="{EVENT_TITLE}" class="AdminInput" style="width:300px;" />
+	
+	<br/>&nbsp;<br/>Event Description &nbsp;&nbsp;&nbsp;&nbsp;<font class="SmallBody"><i>(optional)</i></font><br/><input type="text" name="description" value="{EVENT_DESC}" class="AdminInput" style="width:300px; background-color:#FFFFFF" />
+<br/><br/>
+
+<font class="SmallBody">Start Time:</font> <input type="text" name="startTimeDisplay" value="{START_TIME_DISPLAY}" style="width:55px; font-family:Arial, Helvetica, sans-serif; font-size:11px;" maxlength="8" onKeyUp="timeChanged('start');" />&nbsp;&nbsp;&nbsp;<font class="SmallBody">End Time:</font> <input type="text" name="endTimeDisplay" value="{END_TIME_DISPLAY}" style="width:55px; font-family:Arial, Helvetica, sans-serif; font-size:11px;" maxlength="8" onKeyUp="timeChanged('end');" />
+<input type="hidden" name="startMinute" value="{START_MINUTE}" />
+<input type="hidden" name="endMinute" value="{END_MINUTE}" /> <div id="timeMessage" class="SmallBody">&nbsp;</div>
+<br/>
+
+
+
+<select name="productid" class="AdminDropDown">{PRODUCT_DROP_DOWN}</select>
+<br/>
+
+
+<!-- BEGIN HideDelaysBL -->
+<br/>
+<input type="checkbox" name="delaysproduction" value="yes" {DELAY_PRODUCTION} /> Delays Production
+<br/>
+<input type="checkbox" name="delaystransit" value="yes" {DELAY_TRANSIT} onClick="warnTransit(this.checked)" /> Delays Transit
+<!-- END HideDelaysBL -->
+</td>
+  </tr>
+
+</table>
+&nbsp;<br/>
+
+<input type="submit" name="xx" value="Update" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" />
+<img src="./images/transparent.gif" border="0" width="15" height="1" alt="" />
+<input type="button" name="xx" value="Cancel" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" onClick="window.close();" />
+<!-- BEGIN DeleteBL -->
+<img src="./images/transparent.gif" border="0" width="15" height="1" alt="" />
+<input type="button" name="xx" value="Delete Event" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" onClick="javascript:DeleteEvent();" />
+<!-- END DeleteBL -->
+ </form>
+<!-- END AddEditBl -->
+
+<!-- BEGIN EventSignaturesBl -->
+&nbsp;
+<div align="right"><a href="javascript:location='ad_schedule_add.php?year={YEAR}&month={MONTH}&day={DAY}&defaultTitle={TITLE_ENCODED}'" class="BlueRedLink"><b>+</b>Add another Event with the same Title</a>&nbsp;&nbsp;</div><img src="./images/transparent.gif" border="0" width="15" height="10" alt="" /><table width="95%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td bgcolor="#679E9B">
+<table width="100%" border="0" cellspacing="1" cellpadding="3">
+  <tr>
+    <td width="65%" bgcolor="#cccccc" class="SmallBody"><strong><font color="#000000">Event Description</font></strong></td>
+    <td width="35%" bgcolor="#cccccc" class="SmallBody"><strong><font color="#000000">Time</font></strong></td>
+  </tr>
+<!-- BEGIN EventSigBL -->
+  <tr>
+    <td width="65%" bgcolor="#eeeeee" class="SmallBody"><a href='javascript:EditEvent("{EVENT_SIGNATURE}")' class="DescriptionLink">{EVENT_DESC}</a></td>
+    <td width="35%" bgcolor="#eeeeee" class="SmallBody">{EVENT_TIME}</td>
+  </tr>
+ <!-- END EventSigBL -->
+</table>
+	</td>
+  </tr>
+</table>
+<br/>
+<br/>
+
+
+
+<!-- END EventSignaturesBl -->
+
+<!-- BEGIN EventUpdatedBL -->
+<br/>
+<br/>
+
+Update was updated.<br/><br/>
+Add another Event with the same Title?
+<br/>
+<br/>
+<strong>{TITLE}</strong><br/>
+
+<br/>
+<script>
+if(window.opener){
+	window.opener.location = window.opener.location;
+}
+</script>
+
+<input type="button" id="addAnotherButton" name="xx" value="Add Another" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" onClick="document.location='ad_schedule_add.php?year={YEAR}&month={MONTH}&day={DAY}&defaultTitle={DEFAULT_TITLE}'" />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<input type="button" name="xx" value="Close Window" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" onClick="window.close();" />
+
+<br/><br/><br/>
+
+<select name="chooseOneToEdit" style="font-family:Arial, Helvetica, sans-serif; font-size:11px;" onChange="selectAnotherTitle(this.value)">
+{CHOOSE_ANOTHER_TITLE_LIST}
+</select>
+<br/>
+<br/>
+<!-- END EventUpdatedBL -->
+</td>
+</tr>
+
+
+<tr>
+<td><img src="images/header-editoptions-fade-bot.gif" width="350" height="50" alt="" /></td>
+</tr>
+</table>
+
+
+</div>
+
+
+</body>
+</html>

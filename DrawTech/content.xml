@@ -1,0 +1,175 @@
+<?xml version="1.0" ?>
+<content>
+<side>
+	<description>Side 0</description>
+	<initialzoom>100</initialzoom>
+	<rotatecanvas>90</rotatecanvas>
+	<contentwidth>300</contentwidth>
+	<contentheight>300</contentheight>
+	<backgroundimage>0</backgroundimage>
+	<background_x>-100</background_x>
+	<background_y>-100</background_y>
+	<background_width>100</background_width>
+	<background_height>100</background_height>
+	<background_color>16777215</background_color>
+	<scale>100</scale>
+	<folds_horiz>1</folds_horiz>
+	<folds_vert>1</folds_vert>
+	<color_definitions />
+	
+	<dpi>300</dpi>
+	<side_permissions>0</side_permissions>
+	
+
+
+	<layer>
+		<level>10004</level>
+		<x_coordinate>-25.6</x_coordinate>
+		<y_coordinate>-90.55</y_coordinate>
+		<rotation>0</rotation>
+		
+		<text>
+		
+			<field_name>Company</field_name>
+			<permissions>0</permissions>
+			<shadow_level_link>10003</shadow_level_link>
+			<shadow_distance>3</shadow_distance>
+			<shadow_angle>45</shadow_angle>
+			<font>Eurasia</font>
+			<size>20</size>
+			<bold>yes</bold>
+			<italics>yes</italics>
+			<underline>yes</underline>
+			<align>Left</align>
+			<message>Should be Italics</message>
+			<color>0</color>
+		</text>
+	</layer>
+	
+	<layer>
+		<level>10009</level>
+		<x_coordinate>-25.6</x_coordinate>
+		<y_coordinate>-90.55</y_coordinate>
+		<rotation>0</rotation>
+		
+		<text>
+		
+			<field_name>Company</field_name>
+			<permissions>0</permissions>
+			<shadow_level_link></shadow_level_link>
+			<shadow_distance></shadow_distance>
+			<shadow_angle></shadow_angle>
+			<font>Eurasia</font>
+			<size>20</size>
+			<bold>yes</bold>
+			<italics>yes</italics>
+			<underline>yes</underline>
+			<align>Left</align>
+			<message>Brian Piere</message>
+			<color>0</color>
+		</text>
+	</layer>
+	<layer>
+		<level>10003</level>
+		<x_coordinate>-25.6</x_coordinate>
+		<y_coordinate>-90.55</y_coordinate>
+		<rotation>0</rotation>
+		
+		<text>
+		
+			<field_name>Company</field_name>
+			<permissions>0</permissions>
+			<shadow_level_link></shadow_level_link>
+			<shadow_distance></shadow_distance>
+			<shadow_angle></shadow_angle>
+			<font>Eurasia</font>
+			<size>20</size>
+			<bold>yes</bold>
+			<italics>yes</italics>
+			<underline>yes</underline>
+			<align>Left</align>
+			<message>Should be Italics</message>
+			<color>0</color>
+		</text>
+	</layer>
+
+</side>
+<side>
+	<description>Back</description>
+	<initialzoom>100</initialzoom>
+	<rotatecanvas>90</rotatecanvas>
+	<contentwidth>300</contentwidth>
+	<contentheight>300</contentheight>
+	<backgroundimage>0</backgroundimage>
+	<background_x>-100</background_x>
+	<background_y>-100</background_y>
+	<background_width>100</background_width>
+	<background_height>100</background_height>
+	<background_color>16777215</background_color>
+	<scale>100</scale>
+	<folds_horiz>1</folds_horiz>
+	<folds_vert>1</folds_vert>
+	<color_definitions />
+	
+	<dpi>300</dpi>
+	<side_permissions>0</side_permissions>
+	
+	
+	<layer>
+		<level>10025</level>
+		<x_coordinate>-25.6</x_coordinate>
+		<y_coordinate>-90.55</y_coordinate>
+		<rotation>0</rotation>
+		
+		<text>
+		
+			<field_name>Company</field_name>
+			<permissions>0</permissions>
+			<shadow_level_link>10010</shadow_level_link>
+			<shadow_distance>3</shadow_distance>
+			<shadow_angle>45</shadow_angle>
+			<font>Eurasia</font>
+			<size>20</size>
+			<bold>yes</bold>
+			<italics>yes</italics>
+			<underline>yes</underline>
+			<align>Left</align>
+			<message>Should be Italics</message>
+			<color>0</color>
+		</text>
+	</layer>
+	
+	<layer>
+		<level>10010</level>
+		<x_coordinate>-25.6</x_coordinate>
+		<y_coordinate>-90.55</y_coordinate>
+		<rotation>0</rotation>
+		
+		<text>
+		
+			<field_name>Company</field_name>
+			<permissions>0</permissions>
+			<shadow_level_link></shadow_level_link>
+			<shadow_distance></shadow_distance>
+			<shadow_angle></shadow_angle>
+			<font>Eurasia</font>
+			<size>20</size>
+			<bold>yes</bold>
+			<italics>yes</italics>
+			<underline>yes</underline>
+			<align>Left</align>
+			<message>Should be Italics</message>
+			<color>0</color>
+		</text>
+	</layer>
+
+</side>
+</content>
+
+
+
+
+
+
+
+

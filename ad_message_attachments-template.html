@@ -1,0 +1,135 @@
+<html>
+<head>
+<title>Message Attachments</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+
+<script>
+
+function deleteAttachment(fileID){
+	if(confirm("Are you sure that you want to delete the attachment?"))
+		document.location = './ad_message_attachments.php?command=delete&form_sc={FORM_SECURITY_CODE}&msgid={MESSAGEID}&fileid=' + fileID;
+}
+</script>
+
+<script src="./library/general_lib.js" type="text/javascript"></script>
+</head>
+<body bgcolor="#3366CC" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="" >
+<img  src="./images/transparent.gif" border="0" width="1" height="10" alt="" /><br/>
+<div align="center">
+
+<table bgcolor="#EEEEEE" width="540" cellpadding="0" cellspacing="0" border="0">
+
+<tr>
+<td bgcolor="#CCCCCC" align="center" class="Body" style="background-image: url(./images/admin/header-shipping.png); background-repeat: no-repeat;"><b>Message Attachments</b></td>
+
+<tr>
+<tr>
+<td bgcolor="#666666" align="center" class="Body"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+
+<tr>
+<td align="center">
+
+
+<!-- BEGIN UploadBL -->
+
+<img src="./images/transparent.gif" border="0" width="1" height="1" alt="" />
+
+<form enctype="multipart/form-data" action="ad_message_attachments.php?command=upload&msgid={MESSAGEID}" method="POST">
+<table width="95%" border="0" cellspacing="0" cellpadding="0">
+<tr>     
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+<input type="hidden" name="MAX_FILE_SIZE" value="1000000" />
+<td class="SmallBody"><strong>New Attachment</strong></td><td><input name="attachedfile" type="file" size="37" class="AdminInput"/></td><td align="right"><input type="submit" value="Upload" class="AdminButton" onmouseover="this.style.background='#ffeeaa';" onmouseout="this.style.background='#FFFFDD';" /></td>
+</tr>
+</table>
+</form>
+
+
+
+
+	<table width="90%" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td><img src="./images/transparent.gif" border="0" width="1" height="7" alt="" /></td>
+</tr>
+<tr>
+<td bgcolor="#999999"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+</tr>
+<tr>
+<td><img src="./images/transparent.gif" border="0" width="1" height="7" alt="" /></td>
+</tr>
+</table>
+&nbsp;
+<!-- END UploadBL -->
+
+
+<!-- BEGIN confirmUploadBL -->
+File was uploaded.  
+<script>
+RefreshParentWindow();
+document.location = "ad_message_attachments.php?command=list&msgid={MESSAGEID}";
+</script>
+<!-- END confirmUploadBL -->
+
+<!-- BEGIN errorUploadBL -->
+&nbsp;<br/>
+
+<font class="Body">{ERROR_MSG}</font>
+<br/><br/>
+<a href='javascript:history.back();' class="BlueRedLink">Go Back to Attachment List</a>
+<br/><br/>
+<!-- END errorUploadBL -->
+
+<!-- BEGIN deleteUploadBL -->
+File has been deleted.
+<script>
+RefreshParentWindow();
+document.location = "ad_message_attachments.php?command=list&msgid={MESSAGEID}";
+</script>
+<!-- END deleteUploadBL -->
+
+<!-- BEGIN EmptyAttachmentBL -->
+ 
+ <table width="95%" border="1" cellspacing="0" cellpadding="2" bgcolor="#FFFFFF">
+<!-- BEGIN attachmentBL -->
+
+       
+         <tr>
+
+            <td width="40%" class="Body"><a href="./ad_message_attachments.php?command=dnload&msgid={MESSAGEID}&fileid={FILEID}" style="font-size:12px;" target="top"><img src='./images/paperclip.gif' align='absmiddle' border="0" alt="" /> {FILENAME}</a></td>
+    	    <td width="5%" class="SmallBody" nowrap>{FILESIZE}</td>
+			<td width="20%" class="SmallBody">{ADDDATE}</td>
+  
+			<!-- BEGIN deleteBL -->
+    	    <td width="7%" class="Body" align = center><a href="javascript:deleteAttachment({FILEID})" class="BlueRedLink">Delete</a></td>
+    	    <!-- END deleteBL -->
+    	      	    
+         </tr>
+       
+	   
+<!-- END attachmentBL -->
+</table>
+
+
+<!-- END EmptyAttachmentBL -->
+
+
+
+
+</td>
+</tr>
+
+
+<tr>
+<td><img src="images/header-editoptions-fade-bot.gif" width="540" alt="" /></td>
+</tr>
+</table>
+
+
+
+
+
+ </div>
+</body>
+</html>

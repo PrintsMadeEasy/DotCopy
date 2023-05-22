@@ -1,0 +1,942 @@
+<html>
+<head>
+<title>Admin</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<script language="javascript">
+
+	//Make an array of the images we want to preload for the mouse-overs.
+	arImageSrc = new Array (
+		"./images/button-go-d.gif"
+
+	)
+
+	//Preload images.
+	arImageList = new Array ();
+	for (counter in arImageSrc) {
+		arImageList[counter] = new Image();
+		arImageList[counter].src = arImageSrc[counter];
+	}
+
+	function ChangeBillingTypeRadioButton(){
+
+		var CreditCardRadio = GetRadioButtonValue(document.forms['GeneralUserForm'].billingtype) ;
+
+		// Make the "Address Locked" radio button follow whatever the billing type is doing
+		if(CreditCardRadio == "N"){
+			SetRadioButtonValue(document.forms['GeneralUserForm'].addresslocked, "N");
+		}
+		// For now.... we will not be automatically locking Invoiced Accounts by default.
+		//else{
+		//	SetRadioButtonValue(document.forms['GeneralUserForm'].addresslocked, "Y");
+		//}
+
+		SetCreditLimitInputBox();
+	}
+
+
+	// Call everytime you change the radio button... or when the page first loads
+	// If you select a Credit Card... then it will disable the Credit Limit box.. (only used for invoiced customers)
+	function SetCreditLimitInputBox(){
+
+		var CreditCardRadio = GetRadioButtonValue(document.forms['GeneralUserForm'].billingtype) ;
+		var CreditLimitInputBox = document.forms["GeneralUserForm"].creditlimit;
+		var MonthsChargesLimitInputBox = document.forms["GeneralUserForm"].monthschargeslimit;
+		var SingleOrderLimitInputBox = document.forms["GeneralUserForm"].singleorderlimit;
+
+
+		if(CreditCardRadio == "N"){
+			CreditLimitInputBox.value = "";
+			CreditLimitInputBox.disabled = true;
+
+			MonthsChargesLimitInputBox.disabled = false;
+			SingleOrderLimitInputBox.disabled = false;
+		}
+		else{
+
+			MonthsChargesLimitInputBox.value = "";
+			SingleOrderLimitInputBox.value = "";
+			MonthsChargesLimitInputBox.disabled = true;
+			SingleOrderLimitInputBox.disabled = true;
+
+			CreditLimitInputBox.disabled = false;
+		}
+	}
+
+
+	function checkUserForm(){
+		var ErrorMessage = "";
+
+		var CreditCardRadio = GetRadioButtonValue(document.forms['GeneralUserForm'].billingtype) ;
+		var CreditLimitInputBox = document.forms["GeneralUserForm"].creditlimit;
+		var MonthsChargesLimitInputBox = document.forms["GeneralUserForm"].monthschargeslimit;
+		var SingleOrderLimitInputBox = document.forms["GeneralUserForm"].singleorderlimit;
+		var CountryCode = document.forms["GeneralUserForm"].country.value;
+
+		if(CreditLimitInputBox.value == "" && CreditCardRadio == "C"){
+			ErrorMessage = "1) If you are enabling coporate invoicing then you must set a credit limit.<br/><br/>"
+			alert(save(ErrorMessage, "\"GeneralUserForm\""));
+			document.images.imgcreditlimit.src = "./images/error_arrow.gif";
+		}
+		else if(SingleOrderLimitInputBox.value == "" && CreditCardRadio == "N"){
+			ErrorMessage = "1) If you are saving a credit card customer's profile then you must set a Single Order limit.<br/><br/>"
+			alert(save(ErrorMessage, "\"GeneralUserForm\""));
+			document.images.imgsingleorderlimit.src = "./images/error_arrow.gif";
+		}
+		else if(MonthsChargesLimitInputBox.value == "" && CreditCardRadio == "N"){
+			ErrorMessage = "1) If you are saving a credit card customer's profile then you must set a Monthly Charge limit.<br/><br/>"
+			alert(save(ErrorMessage, "\"GeneralUserForm\""));
+			document.images.imgmonthschargeslimit.src = "./images/error_arrow.gif";
+		}
+		else if(CountryCode == "US" && !CheckState(document.forms["GeneralUserForm"].state.value)){
+			ErrorMessage = "1) Select a valid 2-letter abbreviation for your state.<br/><br/>"
+			document.images.imgstate.src = "./images/error_arrow.gif";
+			document.images.imgintlstate.src = "./images/transparent.gif";
+			alert(save(ErrorMessage, "\"GeneralUserForm\""));
+		}
+		else if(CountryCode != "US" && (document.forms["GeneralUserForm"].intl_state.value == "")){
+			ErrorMessage = "1) Type in a valid state/province for the selected country.<br/><br/>"
+			document.images.imgstate.src = "./images/transparent.gif";
+			document.images.imgintlstate.src = "./images/error_arrow.gif";
+			alert(save(ErrorMessage, "\"GeneralUserForm\""));
+		}
+		else{
+			if(save('', "\"GeneralUserForm\"") != ""){   //This does the error checking and submits the form.
+				alert(save('', "\"GeneralUserForm\""));
+			}
+		}
+	}
+
+
+	function checkResellerForm(){
+		var ErrorMessage = "";
+
+		var FormObj = document.forms["ResellerUserForm"];
+
+		var AccountTypeRadio = GetRadioButtonValue(FormObj.accounttype) ;
+
+		var ResellerCompany = FormObj.r_company.value;
+		var ResellerAttention = FormObj.r_attention.value;
+		var ResellerAddress = FormObj.r_address.value;
+		var ResellerAddress2 = FormObj.r_address2.value;
+		var ResellerCity = FormObj.r_city.value;
+		var ResellerState = FormObj.r_state.value;
+		var ResellerZip = FormObj.r_zip.value;
+		var ResellerPhone = FormObj.r_phone.value;
+		var InvoiceMessage1 = FormObj.inv_message1.value;
+		var InvoiceMessage2 = FormObj.inv_message2.value;
+		var InvoiceMessage3 = FormObj.inv_message3.value;
+
+
+
+		if(AccountTypeRadio == "R" &&
+				(
+					ResellerCompany == "" || ResellerAttention == "" || ResellerAddress == "" || ResellerCity == ""
+					|| ResellerState == "" || ResellerZip == "" || ResellerPhone == ""
+					|| InvoiceMessage1 == "" || InvoiceMessage2 == "" || InvoiceMessage3 == ""
+				)
+			){
+			ErrorMessage = "The red arrows indicate the required fields for resellers."
+			alert(ErrorMessage);
+
+			if(ResellerCompany == "" )
+				document.images.imgr_company.src = "./images/error_arrow.gif";
+			else
+				document.images.imgr_company.src = "./images/transparent.gif";
+
+			if(ResellerAttention == "")
+				document.images.imgr_attention.src = "./images/error_arrow.gif";
+			else
+				document.images.imgr_attention.src = "./images/transparent.gif";
+
+			if(ResellerAddress == "")
+				document.images.imgr_address.src = "./images/error_arrow.gif";
+			else
+				document.images.imgr_address.src = "./images/transparent.gif";
+
+			if(ResellerCity == "")
+				document.images.imgr_city.src = "./images/error_arrow.gif";
+			else
+				document.images.imgr_city.src = "./images/transparent.gif";
+
+			if(ResellerState == "")
+				document.images.imgr_state.src = "./images/error_arrow.gif";
+			else
+				document.images.imgr_state.src = "./images/transparent.gif";
+
+			if(ResellerZip == "")
+				document.images.imgr_zip.src = "./images/error_arrow.gif";
+			else
+				document.images.imgr_zip.src = "./images/transparent.gif";
+
+			if(ResellerPhone == "")
+				document.images.imgr_phone.src = "./images/error_arrow.gif";
+			else
+				document.images.imgr_phone.src = "./images/transparent.gif";
+
+			if(InvoiceMessage1 == "")
+				document.images.imginv_message1.src = "./images/error_arrow.gif";
+			else
+				document.images.imginv_message1.src = "./images/transparent.gif";
+
+			if(InvoiceMessage2 == "")
+				document.images.imginv_message2.src = "./images/error_arrow.gif";
+			else
+				document.images.imginv_message2.src = "./images/transparent.gif";
+
+			if(InvoiceMessage3 == "")
+				document.images.imginv_message3.src = "./images/error_arrow.gif";
+			else
+				document.images.imginv_message3.src = "./images/transparent.gif";
+
+			return false;
+		}
+		else{
+			return true;
+		}
+	}
+
+
+	function EnterPaymentForCustomer(){
+		var address = "./ad_billing_receive.php?billingTypeOverride=true&customerid={CUSTOMERID}&view=getPayment";
+		newWindow = window.open(address, "billingreceive", "height=400,width=500,directories=no,location=no,menubar=no,scrollbars=yes,status=no,toolbar=no,resizable=yes");
+		newWindow.moveTo((self.screenLeft + self.screen.width/9),(self.screenTop + self.screen.height/9));
+		newWindow.focus();
+	}
+
+	function CopyrightInfo(){
+		newWindow = window.open("./TemplateCopyrightInfo.html", "CopyrightInfo", "height=600,width=590,directories=no,location=no,menubar=no,scrollbars=yes,status=yes,toolbar=no,resizable=no");
+		newWindow.focus();
+	}
+
+</script>
+<script type="text/javascript" src="./library/admin_library.js"></script>
+<link rel="stylesheet" type="text/css" href="library/calendar/themes/winter.css"/>
+<script type="text/javascript" src="library/calendar/src/utils.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar.js"></script>
+<script type="text/javascript" src="library/calendar/lang/calendar-en.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar-setup.js"></script>
+<script type="text/javascript" src="library/formatDate.js"></script>
+</head>
+<body bgcolor="#FFFFFF" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="">
+<div align="center">
+{HEADER}
+&nbsp;
+<table width="760" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td class="Body">
+<!-- Inner Body  -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td class="Body"><a href="{RETURL}">&lt; Go Back</a> to the {RETDESC}.</td>
+    <td align="right" class="Body"><!-- BEGIN InputPaymentButton --><input type="button" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" name="Inoices" value="Enter Payment" onClick="EnterPaymentForCustomer();" /><!-- END InputPaymentButton --> &nbsp;&nbsp;{SALESREP}</td>
+  </tr>
+</table>
+&nbsp;<br/>
+<br/>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+            <td class="SmallBody" width="68%">&nbsp;Account information for: {PERSONS_NAME} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Account ID: <b>U{CUSTOMERID}</b></td>
+            <td class="SmallBody" width="32%" align="right">{NAV_BAR_HTML}</td>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td class="NavColor"><img src="./images/transparent.gif" border="0" width="1" height="2" alt="" /></td>
+</tr>
+</table>
+<br/>
+<!-- BEGIN GeneralFormBL -->
+<form name="GeneralUserForm" method="post" action="./ad_users_account.php">
+<input type="hidden" name="customerid" value="{CUSTOMERID}" />
+<input type="hidden" name="view" value="{VIEW}" />
+<input type="hidden" name="action" value="savegeneral" />
+<input type="hidden" name="returl" value="{RETURL}" />
+<input type="hidden" name="retdesc" value="{RETDESC}" />
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+
+  <tr>
+            <td width="32%" class="Body" align="right">Full Name&nbsp;&nbsp;</td>
+            <td width="68%">
+<input type="text" name="fullname" value="{FULLNAME}" class="adminInput" maxlength="30" style="background-color:#F3F3F3" />&nbsp;&nbsp;<img name="imgfullname" src="./images/transparent.gif" height="16" width="22" alt="" /></td>
+  </tr>
+  <tr>
+  <td colspan="2"><img src="./images/transparent.gif" border="0" width="1" height="5" alt="" /></td>
+  </tr>
+
+
+  <tr>
+            <td width="32%" class="Body" align="right"><font color="#CCCCCC"><b>Optional</b></font>&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Company Name&nbsp;&nbsp;</td>
+            <td width="68%">
+<input type="text" name="company" value="{COMPANY}" class="adminInput" maxlength="50" style="background-color:#F3F3F3"  />&nbsp;&nbsp;<img name="imgcompany" src="./images/transparent.gif" height="16" width="22" alt="" /></td>
+  </tr>
+  <tr>
+  <td colspan="2"><img src="./images/transparent.gif" border="0" width="1" height="5" alt="" /></td>
+  </tr>
+  <tr>
+            <td width="32%" class="Body" align="right">Email Address&nbsp;&nbsp;</td>
+            <td width="68%">
+<input type="text" name="email" value="{EMAIL}" class="adminInput" maxlength="50" style="background-color:#F3F3F3" />&nbsp;&nbsp;<img name="imgemail" src="./images/transparent.gif" height="16" width="22" alt="" /></td>
+  </tr>
+  <tr>
+  <td colspan="2"><img src="./images/transparent.gif" border="0" width="1" height="5" alt="" /></td>
+  </tr>
+
+   <tr>
+            <td width="32%" class="Body" align="right">Address&nbsp;&nbsp;</td>
+            <td width="68%" class="Body">
+<input type="text" name="address" value="{ADDRESS}" class="adminInput" style=" width:300px; background-color:#F3F3F3;" maxlength="70" />&nbsp;&nbsp;<img name="imgaddress" src="./images/transparent.gif" height="16" width="22" alt="" /> </td>
+  </tr>
+   <tr>
+  <td colspan="2"><img src="./images/transparent.gif" border="0" width="1" height="5" alt="" /></td>
+  </tr>
+
+   <tr>
+            <td width="32%" class="Body" align="right">Address 2&nbsp;&nbsp;</td>
+            <td width="68%" class="Body">
+<input type="text" name="address2" value="{ADDRESS_TWO}" class="adminInput" maxlength="30"  style="background-color:#F3F3F3" />&nbsp;&nbsp;<img name="imgaddress2" src="./images/transparent.gif" height="16" width="22" alt="" /> </td>
+  </tr>
+  <tr>
+  <td colspan="2"><img src="./images/transparent.gif" border="0" width="1" height="5" alt="" /></td>
+  </tr>
+
+            <td width="32%" class="Body" align="right">City&nbsp;&nbsp;</td>
+            <td width="68%">
+<input type="text" name="city" value="{CITY}" class="adminInput" maxlength="30" style="background-color:#F3F3F3"  />&nbsp;&nbsp;<img name="imgcity" src="./images/transparent.gif" height="16" width="22" alt="" /></td>
+  </tr>
+      <tr>
+  <td colspan="2"><img src="./images/transparent.gif" border="0" width="1" height="5" alt="" /></td>
+  </tr>
+
+
+   <tr>
+            <td width="32%" class="Body" align="right">State&nbsp;&nbsp;</td>
+            <td width="68%" class="Body">
+<input type="text" name="state" value="{STATE}" class="adminInput" style="width:30px; background-color:#F3F3F3;" maxlength="2" />&nbsp;&nbsp;<img name="imgstate" src="./images/transparent.gif" height="16" width="22" alt="" />&nbsp;&nbsp;<font color="#CCCCCC">If International &gt;</font> <input type="text" name="intl_state" value="{INTL_STATE}" class="adminInput" style="width:130px; background-color:#F3F3F3;" maxlength="30" />&nbsp;&nbsp;<img name="imgintlstate" src="./images/transparent.gif" height="16" width="22" alt="" /></td>
+  </tr>
+  <tr>
+  <td colspan="2"><img src="./images/transparent.gif" border="0" width="1" height="5" alt="" /></td>
+  </tr>
+   <tr>
+            <td width="32%" class="Body" align="right">Zip/Postal Code&nbsp;&nbsp;</td>
+            <td width="68%">
+<input type="text" name="zip" value="{ZIP}" class="adminInput" maxlength="15" style="background-color:#F3F3F3"  />&nbsp;&nbsp;<img name="imgzip" src="./images/transparent.gif" height="16" width="22" alt="" /></td>
+  </tr>
+  <tr>
+  <td colspan="2"><img src="./images/transparent.gif" border="0" width="1" height="5" alt="" /></td>
+  </tr>
+   <tr>
+            <td width="32%" class="Body" align="right">Country&nbsp;&nbsp;</td>
+            <td width="68%">
+<select name="country" class="AdminDropDown" style="background-color:#F3F3F3">{COUNTRIES_DROPDOWN}</select>
+<img name="imgcountry" src="./images/transparent.gif" height="16" width="22" alt="" /></td>
+  </tr>
+  <tr>
+  <td colspan="2"><img src="./images/transparent.gif" border="0" width="1" height="5" alt="" /></td>
+  </tr>
+   <tr>
+            <td width="32%" class="Body" align="right">Phone Number&nbsp;&nbsp;</td>
+            <td width="68%">
+<input type="text" name="phone" value="{PHONE}" class="adminInput" maxlength="30" style="background-color:#F3F3F3"  />&nbsp;&nbsp;<img name="imgphone" src="./images/transparent.gif" height="16" width="22" alt="" /></td>
+  </tr>
+
+  <tr>
+  <td colspan="2"><img src="./images/transparent.gif" border="0" width="1" height="5" alt="" /></td>
+  </tr>
+  <!-- BEGIN HidePasswordBL -->
+   <tr>
+            <td width="32%" class="Body" align="right">Password&nbsp;&nbsp;</td>
+            <td width="68%">
+<input type="text" name="password1" value="{PASSWORD}" class="adminInput" style="width:120px; background-color:#F3F3F3;" maxlength="30"  />&nbsp;&nbsp;<img name="imgphone" src="./images/transparent.gif" height="16" width="22" alt="" /></td>
+  </tr>
+    <!-- END HidePasswordBL -->
+
+  <tr>
+  <td colspan="2"><img src="./images/transparent.gif" border="0" width="1" height="5" alt="" /></td>
+  </tr>
+   <tr>
+            <td width="32%" class="Body" align="right">Password Hint&nbsp;&nbsp;</td>
+            <td width="68%">
+<input type="text" name="hint" value="{HINT}" class="adminInput" maxlength="30" style="background-color:#F3F3F3"  />&nbsp;&nbsp;<img name="imgphone" src="./images/transparent.gif" height="16" width="22" alt="" /></td>
+  </tr>
+
+  <tr>
+  <td colspan="2"><img src="./images/transparent.gif" border="0" width="1" height="5" alt="" /></td>
+  </tr>
+   <tr>
+            <td width="32%" class="Body" align="right">Credit Limit&nbsp;&nbsp;$</td>
+            <td width="68%" class="Body">
+<input type="text" name="creditlimit" value="{CREDITLIMIT}" class="adminInput" maxlength="7" style="width:50px; background-color:#F3F3F3"  />&nbsp;&nbsp;<img name="imgcreditlimit" src="./images/transparent.gif" height="16" width="22" alt="" /><font color="#CCCCCC">&nbsp;&nbsp;<b>&lt;&nbsp;&nbsp;For invoiced customers only.</b></font></td>
+  </tr>
+
+  <tr>
+  <td colspan="2"><img src="./images/transparent.gif" border="0" width="1" height="15" alt="" /></td>
+  </tr>
+    <tr>
+            <td width="32%" class="Body" align="right">Single Order Limit&nbsp;&nbsp;$</td>
+            <td width="68%" class="Body">
+<input type="text" name="singleorderlimit" value="{SINGLEORDERLIMIT}" class="adminInput" maxlength="7" style="width:50px; background-color:#F3F3F3"  />
+&nbsp;&nbsp;<img name="imgsingleorderlimit" src="./images/transparent.gif" height="16" width="22" alt="" /><font color="#CCCCCC">&nbsp;&nbsp;<b>&lt;&nbsp;&nbsp;For Credit Card customers only.</b></font></td>
+  </tr>
+
+  <tr>
+  <td colspan="2"><img src="./images/transparent.gif" border="0" width="1" height="15" alt="" /></td>
+  </tr>
+    <tr>
+            <td width="32%" class="Body" align="right">Monthly Limit&nbsp;&nbsp;$</td>
+            <td width="68%" class="Body">
+<input type="text" name="monthschargeslimit" value="{MONTHSCHARGESLIMIT}" class="adminInput" maxlength="7" style="width:50px; background-color:#F3F3F3"  />
+&nbsp;&nbsp;<img name="imgmonthschargeslimit" src="./images/transparent.gif" height="16" width="22" alt="" /><font color="#CCCCCC">&nbsp;&nbsp;<b>&lt;&nbsp;&nbsp;For Credit Card customers only.</b></font></td>
+  </tr>
+
+  <tr>
+  <td colspan="2"><img src="./images/transparent.gif" border="0" width="1" height="15" alt="" /></td>
+  </tr>
+    <tr>
+            <td width="32%" class="Body" align="right">Receive Newsletter&nbsp;&nbsp;</td>
+            <td width="68%" class="SmallBody">
+<table width="300" border="0" cellspacing="0" cellpadding="1" bgcolor="#DDDDDD">
+  <tr>
+    <td><table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#F3F3F3">
+  <tr>
+    <td class="SmallBody">&nbsp;&nbsp;&nbsp;<input type="radio" name="specialoffers" value="Y" {SPECIALOFFERS_YES} /><b>Yes</b>&nbsp;&nbsp;&nbsp;<input type="radio" name="specialoffers" value="N" {SPECIALOFFERS_NO} /><b>No</b></td>
+  </tr>
+</table></td>
+  </tr>
+</table></td>
+  </tr>
+
+
+
+  <tr>
+  <td colspan="2"><img src="./images/transparent.gif" border="0" width="1" height="5" alt="" /></td>
+  </tr>
+    <tr>
+            <td width="32%" class="Body" align="right" valign="top"><img  src="./images/transparent.gif" border="0" width="1" height="13" alt="" /><br/>Account is Enabled&nbsp;&nbsp;</td>
+            <td width="68%" class="ReallySmallBody">Disabling an account will prevent the user from logging in.
+<table width="300" border="0" cellspacing="0" cellpadding="1" bgcolor="#DDDDDD">
+  <tr>
+    <td><table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#F3F3F3">
+  <tr>
+    <td class="SmallBody">&nbsp;&nbsp;&nbsp;<input type="radio" name="accountstatus" value="G" {ACCOUNTSTATUS_GOOD} /><b>Yes</b>&nbsp;&nbsp;&nbsp;<input type="radio" name="accountstatus" value="B" {ACCOUNTSTATUS_BAD} /><b>No</b></td>
+  </tr>
+</table></td>
+  </tr>
+</table></td>
+  </tr>
+
+
+
+
+
+  <tr>
+  <td colspan="2"><img src="./images/transparent.gif" border="0" width="1" height="5" alt="" /></td>
+  </tr>
+    <tr>
+            <td width="32%" class="Body" align="right" valign="top"><img  src="./images/transparent.gif" border="0" width="1" height="30" alt="" /><br/>Address is Locked&nbsp;&nbsp;</td>
+              <td width="68%" class="ReallySmallBody">Locking an address will
+                prevent them from changing their account information. Additionally
+                they can not specify an alternate shipping address or billing address on the checkout
+                process.
+                <table width="300" border="0" cellspacing="0" cellpadding="1" bgcolor="#DDDDDD">
+  <tr>
+    <td><table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#F3F3F3">
+  <tr>
+    <td class="SmallBody">&nbsp;&nbsp;&nbsp;<input type="radio" name="addresslocked" value="Y" {ADDRESSLOCKED_YES} /><b>Yes</b>&nbsp;&nbsp;&nbsp;<input type="radio" name="addresslocked" value="N" {ADDRESSLOCKED_NO} /><b>No</b></td>
+  </tr>
+</table></td>
+  </tr>
+</table></td>
+  </tr>
+
+
+
+  <tr>
+  <td colspan="2"><img src="./images/transparent.gif" border="0" width="1" height="5" alt="" /></td>
+  </tr>
+    <tr>
+            <td width="32%" class="Body" align="right" valign="top"><img  src="./images/transparent.gif" border="0" width="1" height="30" alt="" /><br/>Downgrade Shipping&nbsp;&nbsp;</td>
+              <td width="68%" class="ReallySmallBody">If production is ahead of shedule then the system may downgrade the shipping method.  The user will still get the order when they are promised.  Some customers may not appreciate this and changing the value here will prevent this from happening to them in the future.
+                <table width="300" border="0" cellspacing="0" cellpadding="1" bgcolor="#DDDDDD">
+  <tr>
+    <td><table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#F3F3F3">
+  <tr>
+    <td class="SmallBody">&nbsp;&nbsp;&nbsp;<input type="radio" name="downgradeshipping" value="Y" {DOWNGRADESHIPPING_YES} /><b>Yes</b>&nbsp;&nbsp;&nbsp;<input type="radio" name="downgradeshipping" value="N" {DOWNGRADESHIPPING_NO} /><b>No</b></td>
+  </tr>
+</table></td>
+  </tr>
+</table></td>
+  </tr>
+
+
+
+     <tr>
+  <td colspan="2"><img src="./images/transparent.gif" border="0" width="1" height="5" alt="" /></td>
+  </tr>
+    <tr>
+            <td width="32%" class="Body" align="right" valign="top"><img  src="./images/transparent.gif" border="0" width="1" height="54" alt="" /><br/>Billing Type&nbsp;&nbsp;</td>
+            <td width="68%" class="ReallySmallBody">If corporate Invoicing is enabled, a credit limit needs to be set.  $200 is probably a good start.<br/>It might be a good idea to lock the address for Invoiced users to prevent an employee from shipping products for resale outside of the companies knowledge.
+<table width="300" border="0" cellspacing="0" cellpadding="1" bgcolor="#DDDDDD">
+  <tr>
+    <td><table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#F3F3F3">
+  <tr>
+    <td class="SmallBody">&nbsp;&nbsp;&nbsp;<input type="radio" name="billingtype" value="N" {BILLINGTYPE_NORMAL} onClick="ChangeBillingTypeRadioButton();" /><b>Credit Card</b>&nbsp;&nbsp;&nbsp;<input type="radio" name="billingtype" value="C" {BILLINGTYPE_CORPORATE} onClick="ChangeBillingTypeRadioButton();" /><b>Invoiced (corporate)</b></td>
+  </tr>
+</table></td>
+  </tr>
+</table></td>
+  </tr>
+
+
+
+
+    <tr>
+  <td colspan="2"><img src="./images/transparent.gif" border="0" width="1" height="5" alt="" /></td>
+  </tr>
+    <tr>
+            <td width="32%" class="Body" align="right" valign="top"><img  src="./images/transparent.gif" border="0" width="1" height="13" alt="" /><br/>Billing Status&nbsp;&nbsp;</td>
+            <td width="68%" class="ReallySmallBody">A bad billing status will let the user login, but they may not place another order.
+<table width="300" border="0" cellspacing="0" cellpadding="1" bgcolor="#DDDDDD">
+  <tr>
+    <td><table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#F3F3F3">
+  <tr>
+    <td class="SmallBody">&nbsp;&nbsp;&nbsp;<input type="radio" name="billingstatus" value="G" {BILLINGSTATUS_GOOD} /><b>Good</b>&nbsp;&nbsp;&nbsp;<input type="radio" name="billingstatus" value="B" {BILLINGSTATUS_BAD} /><b>Bad</b></td>
+  </tr>
+</table></td>
+  </tr>
+</table></td>
+  </tr>
+
+<!-- BEGIN CopyrightBL -->
+
+    <tr>
+  <td colspan="2"><img src="./images/transparent.gif" border="0" width="1" height="5" alt="" /></td>
+  </tr>
+    <tr>
+            <td width="32%" class="Body" align="right" valign="top"><img  src="./images/transparent.gif" border="0" width="1" height="13" alt="" /><br/>Copyright Permission&nbsp;&nbsp;</td>
+            <td width="68%" class="ReallySmallBody">If this setting is enabled, a charge will be automatically applied for every new template that a customer orders.  It will show up on as a Balance Adjustment on the order. 
+              <table width="300" border="0" cellspacing="0" cellpadding="1" bgcolor="#DDDDDD">
+  <tr>
+    <td><table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#F3F3F3">
+  <tr>
+    <td class="SmallBody">&nbsp;&nbsp;&nbsp;<input type="radio" name="copyright" value="Y" {COPYRIGHT_YES} /><b>Yes</b>&nbsp;&nbsp;&nbsp;<input type="radio" name="copyright" value="N" {COPYRIGHT_NO} /><b>No</b></td>
+  </tr>
+</table></td>
+  </tr>
+</table></td>
+  </tr>
+<!-- END CopyrightBL -->
+
+
+
+<!-- BEGIN LoyaltyProgram -->
+    <tr>
+  <td colspan="2"><img src="./images/transparent.gif" border="0" width="1" height="5" alt="" /></td>
+  </tr>
+    <tr>
+            <td width="32%" class="Body" align="right" valign="top"><img  src="./images/transparent.gif" border="0" width="1" height="13" alt="" /><br/>
+            Savings Program&nbsp;&nbsp;</td>
+            <td width="68%" class="ReallySmallBody">If this setting is enabled, the user will be charged a monthly fee, starting from the date of their first order.  This subscription will entitle them to receive discounts on all orders they place. &nbsp;&nbsp;<span id="loyaltyDetailsLink"><a href="javascript:showLoyaltyCancelation();">Cancelation Policy</a></span>
+        <script type="text/javascript">
+		function showLoyaltyCancelation(){
+		document.getElementById('cancelationPolicy').style.display = 'block'; 
+		document.getElementById('loyaltyDetailsLink').style.display = 'none';
+		}
+		</script>    
+            <div style="display:none;" id="cancelationPolicy">
+            <br>
+
+CANCELATION POLICY:<br>
+If the customer decides against using our savings program...
+<ol style="margin-top:5px;">
+<li>Offer to immediately cancel their enrollment after explaining the benefits that they have received.</li>
+<li>If the customer then requests a reversal of the fees, we will refund up to 6 months of fees, minus any savings that they received as a result of the  program.</li>
+<li>If they have subscribed to the  program longer than 6 months (and demand an extended refund), explain that the remainder must be refunded after receiving a manager approval.  Ask for their contact information and say that someone will be in touch within 1 week. </li>
+</ol>
+</div>
+
+<table width="300" border="0" cellspacing="0" cellpadding="1" bgcolor="#DDDDDD">
+  <tr>
+    <td><table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#F3F3F3">
+  <tr>
+    <td class="SmallBody">Total Savings Accrued: ${LOYALTY_SAVINGS}<br>
+    Balance Paid into Program: ${LOYALTY_BALANCE}<br>
+    <a href="ad_loyalty_program.php?customerid={CUSTOMERID}&returl={CURRENT_URL_ENCODED}&retdesc=User+Account+Screen">Refunds</a>
+ </td>
+  </tr>
+</table></td>
+  </tr>
+</table>
+&nbsp;
+
+              <table width="300" border="0" cellspacing="0" cellpadding="1" bgcolor="#DDDDDD">
+  <tr>
+    <td><table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#F3F3F3">
+  <tr>
+    <td class="SmallBody">&nbsp;&nbsp;&nbsp;<input type="radio" name="loyalty" value="Y" {LOYALTY_YES} /><b>Yes</b>&nbsp;&nbsp;&nbsp;<input type="radio" name="loyalty" value="N" {LOYALTY_NO} /><b>No</b></td>
+  </tr>
+</table></td>
+  </tr>
+</table>
+&nbsp;
+
+
+</td>
+  </tr>
+
+<!-- END LoyaltyProgram -->
+
+
+
+
+
+
+
+
+</table>
+
+
+
+<img  src="./images/transparent.gif" border="0" width="1" height="30" alt="" /><br/>
+
+<div align="right">
+<input type="button" name="xx" value="Save Data" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" onClick="return checkUserForm();" />
+</div>
+
+<!-- BEGIN HideChangeLog -->
+<br/><img  src="./images/transparent.gif" border="0" width="1" height="15" alt="" /><br/>
+<font class="AdminLabel">Change Log</font><br/><img  src="./images/transparent.gif" border="0" width="1" height="3" alt="" /><br/>
+<table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#666699">
+  <tr>
+    <td><table width="100%" border="0" cellspacing="1" cellpadding="4">
+  <tr>
+                    <td class="SmallBody" bgcolor="#ddddff" width="36%"><b>Changed
+                      From:</b></td>
+	                <td class="SmallBody" bgcolor="#ddddff" width="33%"><b>Changed
+                      To:</b></td>
+	                <td class="SmallBody" bgcolor="#ddddff" width="31%"><b>Recorded:</b></td>
+  </tr>
+  <!-- BEGIN ChangesBL -->
+  <tr>
+                    <td class="SmallBody" bgcolor="#f9f9ff" width="36%" valign="top">{CHANGED_FROM}</td>
+	                <td class="SmallBody" bgcolor="#f9f9ff" width="33%" valign="top">{CHANGED_TO}</td>
+	                <td class="SmallBody" bgcolor="#FFFFFF" width="31%" valign="top">{CHANGE_RECORD}</td>
+  </tr>
+  <!-- END ChangesBL -->
+</table></td>
+  </tr>
+</table>
+<!-- END HideChangeLog -->
+
+<br/><img  src="./images/transparent.gif" border="0" width="1" height="15" alt="" /><br/>
+</form>
+<script>
+// Set the state of the CreditLimit input field.  It should be disabled if we are not invoicing.
+SetCreditLimitInputBox();
+</script>
+
+<script>
+
+/* Create List of Fields that need to be validated */
+var validationName = new Array();
+var validationRegEx = new Array();
+var validationMessage = new Array();
+
+validationName[0] = "fullname";
+validationRegEx[0] = /^.{5,50}$/;
+validationMessage[0] = "Your name must have at least 5 letters.";
+
+validationName[1] = "email";
+validationRegEx[1] = /^\w+([-.]\w+)*\@\w+([-.]\w+)*\.\w+$/;
+validationMessage[1] = "Your email address is invalid.";
+
+validationName[2] = "address";
+validationRegEx[2] = /^.{8,70}$/;
+validationMessage[2] = "Your address must have at least 8 characters.";
+
+validationName[3] = "address2";
+validationRegEx[3] = /^.{0,30}$/;
+validationMessage[3] = "Address 2 is incorrect.";
+
+validationName[4] = "city";
+validationRegEx[4] = /^.{2,50}$/;
+validationMessage[4] = "Your city must have at least 2 characters.";
+
+validationName[5] = "zip";
+validationRegEx[5] = /^.{5,50}$/;
+validationMessage[5] = "Your Zip/Postal code must have at least 5 characters.";
+
+validationName[6] = "phone";
+validationRegEx[6] = /^.{10,50}$/;
+validationMessage[6] = "Your phone number must have at least 10 numbers (xxx)xxx-xxxx.";
+
+validationName[7] = "creditlimit";
+validationRegEx[7] = /^\d{0,7}$/;
+validationMessage[7] = "Credit limit must be a sold number, such as 500.";
+
+validationName[8] = "singleorderlimit";
+validationRegEx[8] = /^\d{0,7}$/;
+validationMessage[8] = "Single Order limit must be a sold number, such as 2500.";
+
+validationName[9] = "monthschargeslimit";
+validationRegEx[9] = /^\d{0,7}$/;
+validationMessage[9] = "Monthly Charge limit must be a sold number, such as 5000.";
+
+
+<!-- BEGIN HidePasswordCheckBL -->
+validationName[10] = "password1";
+validationRegEx[10] = /[^\s]{5,30}$/;
+validationMessage[10] = "Your password must be between 5 and 30 characters and may not contain spaces.";
+<!-- END HidePasswordCheckBL -->
+
+/* Create Validation for Drop down */
+var validationNameDropDown = new Array();
+var validationValueDropDown = new Array();
+var validationMessageDropDown = new Array();
+
+
+
+</script>
+
+<!-- END GeneralFormBL -->
+
+<!-- BEGIN ResellerFormBL -->
+
+<form name="ResellerUserForm" action="./ad_users_account.php"  enctype="multipart/form-data" method="post" >
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+<input type="hidden" name="customerid" value="{CUSTOMERID}" />
+<input type="hidden" name="view" value="{VIEW}" />
+<input type="hidden" name="action" value="savereseller" />
+<input type="hidden" name="returl" value="{RETURL}" />
+<input type="hidden" name="retdesc" value="{RETDESC}" />
+
+
+
+<font class="AdminLabel">General</font><br/>
+             <img  src="./images/greypixel.gif" height="1" width="740" alt="" /><br/><img src="./images/transparent.gif" height="4" width="1" alt="" />
+
+
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+
+  <tr>
+            <td width="32%" class="Body" align="right">Customer Is a Reseller&nbsp;&nbsp;</td>
+            <td width="68%" class="Body"><table width="300" border="0" cellspacing="0" cellpadding="1" bgcolor="#DDDDDD">
+  <tr>
+    <td><table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#F3F3F3">
+  <tr>
+    <td class="SmallBody">&nbsp;&nbsp;&nbsp;<input type="radio" name="accounttype" value="R" {RESELLER_YES} /><b>Yes</b>&nbsp;&nbsp;&nbsp;<input type="radio" name="accounttype" value="N" {RESELLER_NO} /><b>No</b></td>
+  </tr>
+</table></td>
+  </tr>
+</table></td>
+  </tr>
+  <tr>
+  <td colspan="2"><img src="./images/transparent.gif" border="0" width="1" height="5" alt="" /></td>
+  </tr>
+
+
+</table>
+
+<br/><br/><br/>
+
+
+
+<font class="AdminLabel">Return Address</font>&nbsp;&nbsp;&nbsp;<font class="SmallBody">(Seen on the invoice and the Shipping Label. --  The phone # is only for the freight company.)</font><br/>
+             <img  src="./images/greypixel.gif" height="1" width="740" alt="" /><br/><img src="./images/transparent.gif" height="4" width="1" alt="" />
+
+
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+
+  <tr>
+            <td width="32%" class="Body" align="right">Company&nbsp;&nbsp;</td>
+            <td width="68%" class="Body"><input type="text" name="r_company" value="{R_COMPANY}" class="adminInput" maxlength="30" style="background-color:#F3F3F3" />&nbsp;&nbsp;<img name="imgr_company" src="./images/transparent.gif" height="16" width="22" alt="" /></td>
+  </tr>
+  <tr>
+  <td colspan="2"><img src="./images/transparent.gif" border="0" width="1" height="5" alt="" /></td>
+  </tr>
+
+
+  <tr>
+            <td width="32%" class="Body" align="right">Attention&nbsp;&nbsp;</td>
+            <td width="68%" class="Body"><input type="text" name="r_attention" value="{R_ATTENTION}" class="adminInput" maxlength="50" style="background-color:#F3F3F3"  />&nbsp;&nbsp;<img name="imgr_attention" src="./images/transparent.gif" height="16" width="22" alt="" /></td>
+  </tr>
+  <tr>
+  <td colspan="2"><img src="./images/transparent.gif" border="0" width="1" height="5" alt="" /></td>
+  </tr>
+   <tr>
+            <td width="32%" class="Body" align="right">Address&nbsp;&nbsp;</td>
+            <td width="68%" class="Body"><input type="text" name="r_address" value="{R_ADDRESS}" class="adminInput" style=" width:300px; background-color:#F3F3F3;" maxlength="70" />&nbsp;&nbsp;<img name="imgr_address" src="./images/transparent.gif" height="16" width="22" alt="" /> </td>
+  </tr>
+   <tr>
+  <td colspan="2"><img src="./images/transparent.gif" border="0" width="1" height="5" alt="" /></td>
+  </tr>
+
+   <tr>
+            <td width="32%" class="Body" align="right">Address 2&nbsp;&nbsp;</td>
+            <td width="68%" class="Body"><input type="text" name="r_address2" value="{R_ADDRESS_TWO}" class="adminInput" maxlength="30"  style="background-color:#F3F3F3" />&nbsp;&nbsp;<img name="imgr_address2" src="./images/transparent.gif" height="16" width="22" alt="" /> </td>
+  </tr>
+  <tr>
+  <td colspan="2"><img src="./images/transparent.gif" border="0" width="1" height="5" alt="" /></td>
+  </tr>
+
+            <td width="32%" class="Body" align="right">City&nbsp;&nbsp;</td>
+            <td width="68%">
+<input type="text" name="r_city" value="{R_CITY}" class="adminInput" maxlength="30" style="background-color:#F3F3F3"  />&nbsp;&nbsp;<img name="imgr_city" src="./images/transparent.gif" height="16" width="22" alt="" /></td>
+  </tr>
+      <tr>
+  <td colspan="2"><img src="./images/transparent.gif" border="0" width="1" height="5" alt="" /></td>
+  </tr>
+
+
+   <tr>
+            <td width="32%" class="Body" align="right">State&nbsp;&nbsp;</td>
+            <td width="68%" class="Body">
+<input type="text" name="r_state" value="{R_STATE}" class="adminInput" style="width:30px; background-color:#F3F3F3;" maxlength="2" />&nbsp;&nbsp;<img name="imgr_state" src="./images/transparent.gif" height="16" width="22" alt="" />&nbsp;&nbsp;<font color="#CCCCCC">If International &gt;</font> <input type="text" name="intl_r_state" value="{INTL_R_STATE}" class="adminInput" style="width:130px; background-color:#F3F3F3;" maxlength="30" /></td>
+  </tr>
+  <tr>
+  <td colspan="2"><img src="./images/transparent.gif" border="0" width="1" height="5" alt="" /></td>
+  </tr>
+   <tr>
+            <td width="32%" class="Body" align="right">Zip/Postal Code&nbsp;&nbsp;</td>
+            <td width="68%">
+<input type="text" name="r_zip" value="{R_ZIP}" class="adminInput" maxlength="15" style="background-color:#F3F3F3"  />&nbsp;&nbsp;<img name="imgr_zip" src="./images/transparent.gif" height="16" width="22" alt="" /></td>
+  </tr>
+  <tr>
+  <td colspan="2"><img src="./images/transparent.gif" border="0" width="1" height="5" alt="" /></td>
+  </tr>
+   <tr>
+            <td width="32%" class="Body" align="right">Country&nbsp;&nbsp;</td>
+            <td width="68%">
+<select name="r_country" class="AdminDropDown" style="background-color:#F3F3F3">{COUNTRIES_DROPDOWN}</select>
+<img name="imgr_country" src="./images/transparent.gif" height="16" width="22" alt="" /></td>
+  </tr>
+  <tr>
+  <td colspan="2"><img src="./images/transparent.gif" border="0" width="1" height="5" alt="" /></td>
+  </tr>
+   <tr>
+            <td width="32%" class="Body" align="right">Phone Number&nbsp;&nbsp;</td>
+            <td width="68%">
+<input type="text" name="r_phone" value="{R_PHONE}" class="adminInput" maxlength="30" style="background-color:#F3F3F3"  />&nbsp;&nbsp;<img name="imgr_phone" src="./images/transparent.gif" height="16" width="22" alt="" /></td>
+  </tr>
+
+
+
+
+
+
+</table>
+
+<br/><br/><br/>
+
+
+<font class="AdminLabel">Invoice Details</font><br/>
+             <img  src="./images/greypixel.gif" height="1" width="740" alt="" /><br/><img src="./images/transparent.gif" height="4" width="1" alt="" />
+
+
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+
+
+  <tr>
+            <td width="32%" class="Body" align="right">Invoice Message - Line 1&nbsp;&nbsp;</td>
+            <td width="68%" class="Body"><input type="text" name="inv_message1" value="{INV_MESSAGE_1}" class="adminInput" style=" width:350px; background-color:#F3F3F3;" maxlength="70" />&nbsp;&nbsp;<img name="imginv_message1" src="./images/transparent.gif" height="16" width="22" alt="" /></td>
+  </tr>
+  <tr>
+  <td colspan="2"><img src="./images/transparent.gif" border="0" width="1" height="5" alt="" /></td>
+  </tr>
+
+
+  <tr>
+            <td width="32%" class="Body" align="right">Invoice Message - Line 2&nbsp;&nbsp;</td>
+            <td width="68%" class="Body" ><input type="text" name="inv_message2" value="{INV_MESSAGE_2}" class="adminInput" style=" width:350px; background-color:#F3F3F3;" maxlength="70" />&nbsp;&nbsp;<img name="imginv_message2" src="./images/transparent.gif" height="16" width="22" alt="" /></td>
+  </tr>
+  <tr>
+  <td colspan="2"><img src="./images/transparent.gif" border="0" width="1" height="5" alt="" /></td>
+  </tr>
+   <tr>
+            <td width="32%" class="Body" align="right">Invoice Message - Line 3&nbsp;&nbsp;</td>
+            <td width="68%" class="Body"><input type="text" name="inv_message3" value="{INV_MESSAGE_3}" class="adminInput" style=" width:350px; background-color:#F3F3F3;" maxlength="70" />&nbsp;&nbsp;<img name="imginv_message3" src="./images/transparent.gif" height="16" width="22" alt="" /> </td>
+  </tr>
+   <tr>
+  <td colspan="2"><img src="./images/transparent.gif" border="0" width="1" height="5" alt="" /></td>
+  </tr>
+  <tr>
+            <td width="32%" class="Body" align="right">&nbsp;</td>
+              <td width="68%" class="ReallySmallBody">The logo should be about 200
+                pixels wide by 100 pixels tall. You can play around with extra
+                white space around the perimeter to adjust the final position that it will appear
+                on the invoice.</td>
+  </tr>
+  <tr>
+            <td width="32%" class="Body" align="right">Insert/Update Logo&nbsp;&nbsp;</td>
+            <td width="68%" class="Body"><input type="file" name="logo" style=" width:350px; background-color:#F3F3F3;" class="adminInput" />&nbsp;&nbsp;</td>
+  </tr>
+  <tr>
+  <td colspan="2"><img src="./images/transparent.gif" border="0" width="1" height="5" alt="" /></td>
+  </tr>
+
+
+</table>
+
+
+<img  src="./images/transparent.gif" border="0" width="1" height="30" alt="" /><font class="ReallySmallBody"><font color="#999999"><font color="#990000">*</font> In order to generate a sample invoice, you will need to generate one from a previous order after the &quot;Reseller&quot; option has been enabled.  If there are no previous orders from this customer, then you may have to place an order for them and then cancel it.<br/>
+</font></font><br/>
+{RESELLER_LOGO}
+<div align="right">
+<input type="submit" name="xx" value="Save Data" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" onClick="return checkResellerForm();"  />
+</div>
+
+
+<br/><img src="./images/transparent.gif" border="0" width="1" height="15" alt="" />
+
+</form>
+
+<script>
+
+/* Create List of Fields that need to be validated */
+var validationName = new Array();
+var validationRegEx = new Array();
+var validationMessage = new Array();
+
+
+
+/* Create Validation for Drop down */
+var validationNameDropDown = new Array();
+var validationValueDropDown = new Array();
+var validationMessageDropDown = new Array();
+
+
+
+</script>
+
+<!-- END ResellerFormBL -->
+
+
+<!-- BEGIN CorporateBillingHistoryBL -->
+{BILLING_HISTORY}<br/><br/><br/>
+<!-- END CorporateBillingHistoryBL -->
+
+
+<script language="JavaScript" src="./library/saveformcheck.js"></script>
+
+
+<!-- Inner Body  END -->
+</td>
+</tr>
+</table>
+<table width="760" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="360" class="NavColor"><img src="./images/footer.gif" border="0" width="350" height="16" usemap="#footer" alt="" /></td>
+	<td width="400" align="right" class="NavColor"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+  </tr>
+</table>
+<font class="copyright"> </font>
+</div>
+&nbsp;
+<script type="text/javascript" src="./library/ImageMap-footer.js"></script>
+</body>
+</html>

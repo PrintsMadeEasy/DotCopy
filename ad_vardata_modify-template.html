@@ -1,0 +1,113 @@
+<html>
+<head>
+<title>Variable Data Modifications</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+
+<script type='text/javascript' src='./library/general_lib.js'></script>
+<script>
+function ViewArtworkWithMerge(){
+
+	alert("viewing merge");
+}
+	function ImportExcelFile(){
+		var address = "./vardata_textfile.php?editorview={VIEWTYPE}&projectrecord={PROJECTRECORD}&tabview=excel";
+
+		newWindow = window.open(address, "importdatafile", "height=585,width=700,directories=no,location=no,menubar=no,scrollbars=yes,status=no,toolbar=no,resizable=yes");
+		newWindow.focus();
+	}
+
+	function DownloadDataFile(){
+		document.location = "./vardata_csv.php?editorview={VIEWTYPE}&projectrecord={PROJECTRECORD}";
+	}
+
+{JS_RELOAD_PARENT}
+
+</script>
+</head>
+
+<body bgcolor="#3366CC" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" >
+{JavaScriptSectionBL}
+<img  src="./images/transparent.gif" border="0" width="1" height="10" alt="" /><br/>
+<div align="center">
+
+
+
+
+<table width="750" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td bgcolor="#333333"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+</tr>
+<tr>
+<td bgcolor="#999999" class="Body" align="center" style="background-image: url(./images/header-greygradient.png); background-repeat: no-repeat;"><img src="./images/transparent.gif" border="0" width="1" height="3" alt="" /><table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="15%" class="Body">&nbsp;</td>
+    <td width="70%" class="Body" align="center"><font color="#333333"><b>Modify Variable Data for P{PROJECT_NUMBER}</b></font></td>
+    <td width="15%" class="Body" align="right"><a href="javascript:self.close()" class="blueredlink">Close Window</a>&nbsp;&nbsp;</td>
+  </tr>
+</table><img src="./images/transparent.gif" border="0" width="1" height="3" alt="" /></td>
+</tr>
+<tr>
+<td bgcolor="#666666"><img src="./images/transparent.gif" border="0" width="1" height="2" alt="" /></td>
+</tr>
+<tr>
+<td align="center">
+<table bgcolor="#FFFFEE" width="750" cellpadding="0" cellspacing="0" border="0">
+<form name="datafileform" action="./vardata_textfile.php" method="post">
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+
+ 	<input type="hidden" name="projectrecord" value="{PROJECTRECORD}" />
+	<input type="hidden" name="editorview" value="{VIEWTYPE}" />
+	<input type="hidden" name="action" value="savefile" />
+
+
+
+
+<tr>
+<td colspan="2"><img src="./images/transparent.gif" border="0" width="1" height="3" alt="" /></td>
+</tr>
+<tr>
+<td width="10">&nbsp;</td>
+              <td width="730" class="Body">
+                <table width="100%" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td><img src="./images/transparent.gif" border="0" width="1" height="7" alt="" /></td>
+</tr>
+<tr>
+<td bgcolor="#999999"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+</tr>
+<tr>
+<td><img src="./images/transparent.gif" border="0" width="1" height="7" alt="" /></td>
+</tr>
+</table>
+{BodySectionBL}
+
+              </td>
+<td width="10">&nbsp;</td>
+</tr>
+<tr>
+<td colspan="2"><img src="./images/transparent.gif" border="0" width="1" height="5" alt="" /></td>
+</tr>
+</form>
+</table>
+</td>
+</tr>
+
+
+<tr>
+<td><img src="images/header-editoptions-fade-bot.gif" width="750" height="30" alt="" /></td>
+</tr>
+</table>
+
+
+
+
+&nbsp;
+
+
+</div>
+
+
+</body>
+</html>

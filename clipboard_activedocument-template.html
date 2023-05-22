@@ -1,0 +1,246 @@
+<html>
+<head>
+<title>Untitled Document</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<style type="text/css">
+	.CellBackground	{ background-color:#eeeeee; font-size:12px; color:#333333;  font-family:Arial,Helvetica,sans-serif; }
+	.CellHighlight { background-color:#FFFFcc; font-size:12px; color:#333333;  font-family:Arial,Helvetica,sans-serif; }
+	
+	.CellTopBackground { background-color:#6699CC; font-size:12px; color:#333333;  font-family:Arial,Helvetica,sans-serif; }
+
+	body {background-image: url("./images/clipboard-back-active.png"); background-repeat: repeat; background-attachment: fixed }
+
+</style>
+<script>
+	function LinkToTab(TabID){
+		top.Commands.SwitchSides(TabID);
+	}
+	
+	// increate a global variable  to ensure that the fly open layer is always on top
+	var ZindexCouter = 5;
+
+	function showLayerPermissions(LayerLevel, divShow) {
+
+		var spanname = "LayerPermSpan" + LayerLevel;
+		var divname = "LayerPermDiv" + LayerLevel;
+
+		if (divShow) {
+			ZindexCouter++;
+			ZindexCouter++;
+
+			document.all(spanname).style.visibility = "visible";
+			document.all(spanname).style.zIndex = ZindexCouter;
+			document.all(divname).style.zIndex = ZindexCouter + 2;
+		}
+		else{
+			document.all(spanname).style.visibility = "hidden";
+
+		}
+	}
+	
+	function SwitchPermission(LayerLevel, PermissionType){
+		document.location = "./clipboard_actions.php?command=layerpermission&view={VIEW}&projectid={PROJECTID}&sidenumber={SIDENUMBER}&layerlevel=" + LayerLevel +"&permissiontype=" + PermissionType + "&returl={RETURN_URL_ENCODED}&form_sc={FORM_SECURITY_CODE}";
+	}
+	
+	function SavePermissions(LayerType, LayerLevel){
+	
+		if(LayerType == "text"){
+			var formObj = document.forms["textlayers"];
+			var parameterNames = Array("position_x_locked",  "position_y_locked", "size_locked", "deletion_locked", "color_locked", "font_locked", "alignment_locked", "rotation_locked", "selectable_no", "transferable_no", "data_locked");
+		}
+		else if(LayerType == "graphic"){
+			var formObj = document.forms["imagelayers"];
+			var parameterNames = Array("position_x_locked",  "position_y_locked", "size_locked", "deletion_locked", "rotation_locked", "always_on_top", "selectable_no", "transferable_no");
+		}
+		else{
+			alert("Illegal layer type.");
+		}
+		
+		
+		// Build a URL with a yes and no value for each permission
+		var updatePermURL = "./clipboard_actions.php?command=layerpermission&layertype=" + LayerType + "&view={VIEW}&projectid={PROJECTID}&sidenumber={SIDENUMBER}&layerlevel=" + LayerLevel +"&returl={RETURN_URL_ENCODED}&form_sc={FORM_SECURITY_CODE}"
+		
+		for(var i=0; i<parameterNames.length; i++){
+			var permissionBox = eval("formObj." + parameterNames[i] + "_" + LayerLevel)
+			updatePermURL += "&" + parameterNames[i] + "=" + String(permissionBox.checked ? "yes" : "no");
+		}
+		
+		document.location = updatePermURL;
+	}
+	
+	function DownloadVectorFile(VectorID, FileView){
+		document.location = "./image_vector_download.php?view={VIEW}&projectid={PROJECTID}&vectorimageid=" + VectorID + "&fileview=" + FileView;
+	}
+
+</script />
+</head>
+
+
+
+<body bgcolor="#FFFFFF" text="#000000" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="">
+<table  border="0" cellspacing="0" cellpadding="0">
+<form name="textlayers">
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+<input type="hidden" name="textcheck" value="" />
+<input type="hidden" name="textcheck" value="" />
+  <tr>
+    <td bgcolor="#669966" width="12"><img src="./images/transparent.gif" width="12" height="1" alt="" /></td>
+	<td class="largebody">
+	
+	
+<!-- BEGIN eraseTabsBL -->
+<table width="730" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td align="right">
+<table  border="0" cellspacing="0" cellpadding="4">
+  <tr>	
+	<!-- BEGIN TABS_bl -->
+     <td><img src="./images/transparent.gif" width="13" height="1" alt="" /></td>
+    <td bgcolor="{TABCOLOR}" class="Body">{LINKSTART}&nbsp;&nbsp;<font color="#FFFFFF"><b>{TABNAME}</b></font>&nbsp;&nbsp;{LINKEND}</td>
+	<!-- END TABS_bl -->
+  </tr>
+</table>
+	</td>
+  </tr>
+</table>
+<!-- END eraseTabsBL -->
+
+
+	
+	<img src="./images/transparent.gif" width="8" height="1" alt="" /><font color="#336633" size="4"><b>Text</b></font><!-- BEGIN HideTextSelectAll --> &nbsp;&nbsp;&nbsp;&nbsp;<a href='javascript:top.Commands.ChangeAll("active", "text", true);' class="blueredlink"><b>Select All</b></a>&nbsp;&nbsp;&nbsp;&nbsp;<a href='javascript:top.Commands.ChangeAll("active", "text", false);' class="blueredlink"><b>Clear</b></a><!-- END HideTextSelectAll -->
+	
+	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td ><img src="./images/transparent.gif" width="1" height="5" alt="" /></td>
+	</tr>
+	</table>
+	
+	<!-- BEGIN TextOuterTableBL -->
+	<table width="720" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="8"><img src="./images/transparent.gif" width="8" height="1" alt="" /></td>
+    <td width="50%" valign="top">
+	
+	
+<!-- BEGIN TextInnerTableBL -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td bgcolor="#000000">
+<table width="100%" border="0" cellspacing="1" cellpadding="3">
+  <tr >
+    <td  class="CellTopBackground">
+	
+	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td class="CellTopBackground"><input type="checkbox" name="textcheck" value="{LAYERID}" onclick="top.Commands.NewClick('active', 'text', '{LAYERID}');" /> <img src="./images/transparent.gif" width="28" height="1" alt="" /><select name="textattdropdn" class="admindropdown" onChange="top.Commands.CopyAttribute(this.value)">{TEXT_ATTRIBUTES}</select></td>
+    <td class="SmallBody" align="left">{PERMISSIONS}</td>
+  </tr>
+</table>
+</td>
+  </tr>
+  <tr onclick="top.Commands.ClickOnLayerBox('text', 'active', '{LAYERID}');">
+    <td id="layerback{LAYERID}" class="CellBackground" style="cursor:hand">{TEXT_INFO}</td>
+  </tr>
+</table>
+	</td>
+  </tr>
+</table>
+<!-- END TextInnerTableBL -->
+
+
+	</td>
+    <td width="8"><img src="./images/transparent.gif" width="8" height="1" alt="" /></td>
+    <td width="50%" valign="top">
+{TEXT_COLUMN2}	
+</td>
+  </tr>
+</table>
+
+<img src="./images/transparent.gif" width="12" height="12" alt="" />
+
+<!-- END TextOuterTableBL -->
+
+<br/>&nbsp;
+
+	</td>
+  </tr>
+ </form>
+</table>
+
+<table  border="0" cellspacing="0" cellpadding="0">
+<form name="imagelayers">
+<input type="hidden" name="form_sc" value="{FORM_SECURITY_CODE}" />
+<input type="hidden" name="imagecheck" value="" />
+<input type="hidden" name="imagecheck" value="" />
+  <tr>
+      <td bgcolor="#AB5313" width="12"><img src="./images/transparent.gif" width="12" height="8" alt="" /></td>
+	<td class="largebody">
+	
+<img src="./images/transparent.gif" width="8" height="1" alt="" /><font color="#663300" size="4"><b>Images</b></font> <!-- BEGIN HideImageSelectAll -->&nbsp;&nbsp;&nbsp;&nbsp;<a href='javascript:top.Commands.ChangeAll("active", "image", true);' class="blueredlink"><b>Select All</b></a>&nbsp;&nbsp;&nbsp;&nbsp;<a href='javascript:top.Commands.ChangeAll("active", "image", false);' class="blueredlink"><b>Clear</b></a><!-- END HideImageSelectAll -->
+	
+	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td ><img src="./images/transparent.gif" width="1" height="5" alt="" /></td>
+	</tr>
+	</table>
+	
+	<!-- BEGIN ImageLayerBl -->
+	<table width="720" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="8"><img src="./images/transparent.gif" width="8" height="1" alt="" /></td>
+    <td valign="top">
+	
+	
+	
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td bgcolor="#000000">
+<table width="100%" border="0" cellspacing="1" cellpadding="3">
+  <tr>
+    <td class="CellTopBackground">
+	
+<table width="720" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="33"  class="SmallBody" ><input type="checkbox" name="imagecheck" value="{LAYERID}" onclick="top.Commands.NewClick('active', 'image', '{LAYERID}');" /></td>
+	<td width="102"  class="SmallBody" >{PERMISSIONS}</td>
+    <td width="585">
+	<font class="ReallySmallBody"><font color="#FFFFFF">{IMAGE_ATTRIBUTES}</font></font>	</td>
+  </tr>
+</table>
+	 {DPI_WARNING}</td>
+  </tr>
+  <!-- BEGIN VectorImageBL -->
+  <tr>
+    <td bgcolor="#9966CC" class="LargeBody">Uploaded as a <strong>{VECTOR_IMAGE_TYPE}</strong> File: <a href="./image_vector_download.php?view={VIEW}&projectid={PROJECTID}&vectorimageid={VECTOR_IMAGE_ID}&fileview=ORIGINAL" class="blueredlink"><font style="font-size:16px;">{VECTOR_IMAGE_NAME}</font></a> - {VECTOR_IMAGE_SIZE} &nbsp;&nbsp;&nbsp;<a href="./image_vector_download.php?view={VIEW}&projectid={PROJECTID}&vectorimageid={VECTOR_IMAGE_ID}&fileview=PDF" class="blueredlink"><font style="font-size:16px;">Filtered PDF</font></a>
+	</td>
+  </tr>
+  <!-- END VectorImageBL -->
+  <tr onclick="top.Commands.ClickOnLayerBox('image', 'active', '{LAYERID}');">
+    <td id="layerback{LAYERID}" class="CellBackground"  style="cursor:hand"><img  src="{IMAGE_SRC}" alt="" /><br/><img src="./images/transparent.gif" width="8" height="8" alt="" /></td>
+  </tr>
+</table>
+	</td>
+  </tr>
+</table>
+</td>
+
+  </tr>
+
+</table>
+
+<img src="./images/transparent.gif" width="12" height="12" alt="" />
+
+	<!-- END ImageLayerBl -->
+
+
+
+
+
+	</td>
+  </tr>
+   </form>
+</table>
+
+</body>
+</html>

@@ -1,0 +1,100 @@
+<html>
+<head>
+<meta HTTP-EQUIV="refresh" content="600;URL=./ad_home.php" />
+<title>Admin</title>
+<link rel="stylesheet" href="./library/stylesheet.css" TYPE="text/css" />
+<link rel="SHORTCUT ICON" href="/favicon.ico" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<script>
+
+	function makeNewWindow(address){
+		newWindow = window.open(address, "sub", "height=360,width=375,directories=no,location=no,menubar=no,scrollbars=no,status=no,toolbar=no,resizable=no");
+		newWindow.focus();
+	}
+	function makeNewWindow2(address){
+		newWindow = window.open(address, "sub", "height=395,width=375,directories=no,location=no,menubar=no,scrollbars=no,status=no,toolbar=no,resizable=no");
+		newWindow.focus();
+	}
+	function makeNewWindow3(address){
+		newWindow3 = window.open(address, "newwin3", "height=695,width=575,directories=no,location=no,menubar=no,scrollbars=yes,status=no,toolbar=no,resizable=yes");
+		newWindow3.focus();
+	}
+	function RetryCharge(ChargeID){
+		document.location = "./ad_creditcard_errors.php?action=retrycharge&form_sc={FORM_SECURITY_CODE}&chargeid=" + ChargeID + "&returl=ad_creditcard_errors.php";
+	}
+	function CancelCharge(ChargeID){
+		if(confirm("Are you sure that you want to permanently cancel the charge?\nMaybe you are better off waiting a day or two.\nThis could result in a loss of payment for us.")){
+			document.location = "./ad_creditcard_errors.php?action=cancelcharge&form_sc={FORM_SECURITY_CODE}&chargeid=" + ChargeID + "&returl=ad_creditcard_errors.php";
+		}
+
+	}
+</script>
+<link rel="stylesheet" type="text/css" href="library/calendar/themes/winter.css"/>
+<script type="text/javascript" src="library/calendar/src/utils.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar.js"></script>
+<script type="text/javascript" src="library/calendar/lang/calendar-en.js"></script>
+<script type="text/javascript" src="library/calendar/src/calendar-setup.js"></script>
+<script type="text/javascript" src="library/formatDate.js"></script>
+</head>
+<body bgcolor="#FFFFFF" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="">
+<div align="center">
+{HEADER}
+&nbsp;
+<table width="760" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td class="Body">
+<br/>
+<font class="AdminLabel">Credit Card Errors</font>
+<img  src="./images/greypixel.gif" border="0" width="742" height="1" alt="" /><br/>
+<img  src="./images/transparent.gif" border="0" width="1" height="10" alt="" /><br/>
+ <!-- BEGIN HideChargesBL -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#333333">
+  <tr>
+    <td><table width="100%" border="0" cellspacing="1" cellpadding="2">
+  <tr bgcolor="#CCCCCC">
+                  <td class="Body" width="15%">Charge Type</td>
+	              <td class="Body" width="14%">Order #</td>
+				  <td class="Body" width="15%">Error Date</td>
+	              <td class="Body" width="33%">Error Description</td>
+				  <td class="Body" width="10%">Retries</td>
+	              <td class="Body" width="13%">Commands</td>
+  </tr>
+ <!-- BEGIN chargesBL -->
+   <tr bgcolor="#EEEEEE">
+                  <td class="SmallBody" width="15%">{CHARGE_TYPE}</td>
+	              <td class="SmallBody" width="15%">{DOMAIN_LOGO}<a href="./ad_order.php?orderno={ORDERNO}" class="BlueRedLink">{ORDERNO}</a></td>
+				  <td class="SmallBody" width="14%">{ERROR_DATE}</td>
+	              <td class="SmallBody" width="33%">{ERROR_DESC}</td>
+				  <td class="SmallBody" width="10%">{RETRIES}</td>
+	              <td class="SmallBody" width="13%">
+				  <a href="javascript:RetryCharge('{CHARGE_ID}');" class="BlueRedLink">Retry Charge</a>
+				  <br/><img  src="./images/transparent.gif" border="0" width="1" height="3" alt="" /><br/>
+				  <a href="javascript:CancelCharge('{CHARGE_ID}');" class="BlueRedLink">Cancel Charge</a>
+				  </td>
+  </tr>
+  <!-- END chargesBL -->
+</table></td>
+  </tr>
+</table>
+ <!-- END HideChargesBL -->
+<br/><br/><br/><br/>
+ <font class="AdminLabel">Orders Waiting to be Captured</font>
+<img  src="./images/greypixel.gif" border="0" width="742" height="1" alt="" /><br/>
+<img  src="./images/transparent.gif" border="0" width="1" height="10" alt="" /><br/>
+{WAITING_CAPTURES}
+
+<br/>&nbsp;<br/><br/><br/><input type="button" name="SeachErrors" value="Search for Order Errors" class="AdminButton" onMouseOver="this.style.background='#ffeeaa';" onMouseOut="this.style.background='#FFFFDD';" onClick="document.location='./ad_creditcard_errors.php?searcherrors=true'" />&nbsp;<br/><font class="ReallySmallBody">Looks for completed orders that do not have a corresponding capture amount to the grand total.</font><br/>&nbsp;<br/>{ORDER_ERRORS}<br/>&nbsp;<br/></td>
+</tr>
+</table>
+<table width="760" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="360" class="NavColor"><img src="./images/footer.gif" border="0" width="350" height="16" usemap="#footer" alt="" /></td>
+	<td width="400" align="right" class="NavColor"><img src="./images/transparent.gif" border="0" width="1" height="1" alt="" /></td>
+  </tr>
+</table>
+<font class="copyright"> </font>
+</div>
+&nbsp;
+<script type="text/javascript" src="./library/ImageMap-footer.js"></script>
+</body>
+</html>
